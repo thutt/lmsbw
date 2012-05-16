@@ -1,0 +1,7 @@
+/set type=dir uname=root gname=root mode=0750
+.               uname=tlambert gname=eng size=4096
+    test            uname=tlambert gname=eng size=4096
+        CVS             uname=tlambert gname=eng size=4096
+        ..
+    ..
+..
