@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# 
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+function main ()
+{
+    local lmsbw_error_file="/tmp/lmsbw-errors.${BASHPID}";
+    local makeopts="--warn-undefined-variables -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
+
+    start_seconds=$(date +%s)
+    build_system_dir=$(readlink -f $(dirname ${0})/..);
+    makefile=${build_system_dir}/wrapper/Makefile
+
+    # Adding silent to this command line will affect all submakes.
+    # Specifically, submakes for packages will not have commands
+    # printed, and this is *not* desired.  Instead, all submakes
+    # should be fully expanded in their respective log files.
+    #
+    cmd="make ${makeopts} -f ${makefile}";
+
+    echo "${cmd}" "$@"
+    success="yes";
+    ${cmd} "$@" 2>"${lmsbw_error_file}" || unset success;
+    end_seconds=$(date +%s)
+
+    # When using the 'seconds since epoch' notation (@), the time
+    # printed will be in the local time zone.  We need to normalize
+    # the 'HH:MM:SS' display to be based at GMT.  This is done by
+    # subtracting the numnber of hours offset from GMT for the local
+    # time ('%z').
+    #
+    elapsed_seconds=$((${end_seconds} - ${start_seconds}));
+    elapsed_time=$(date -u -d "1970-01-01 ${elapsed_seconds} seconds" +"%H:%M:%S");
+    echo -e  "\n++++ Build time: ${elapsed_time}  (seconds: ${elapsed_seconds})";
+
+    if [ -z "${success}" ] ; then
+        echo -e "\n*****\n***** Failed; subdirectory failures:\n*****\n";
+        cat "${lmsbw_error_file}";
+        echo -e "\n";
+    fi;
+
+    if [ -e "${lmsbw_error_file}" ] ; then
+        rm -f "${lmsbw_error_file}";
+    fi;
+
+    [ ! -z "${success}" ] ;
+}
+
+main ${@};
