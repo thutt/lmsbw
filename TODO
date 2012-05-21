@@ -1,2 +1,3 @@
  o Need way to indicate where the install mtree manifest goes
  o Allow multiple configuration files.
+ o Add a 'print-build-targets'.  Print all user-accessible targets & snippet.
