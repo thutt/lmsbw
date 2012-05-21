@@ -30,9 +30,9 @@ function main ()
     # printed, and this is *not* desired.  Instead, all submakes
     # should be fully expanded in their respective log files.
     #
-    cmd="make ${makeopts} -f ${makefile}";
+    cmd="make ${makeopts} -f ${makefile} ${@}";
 
-    echo "${cmd}" "$@"
+    echo "${cmd}";
     success="yes";
     ${cmd} "$@" 2>"${lmsbw_error_file}" || unset success;
     end_seconds=$(date +%s)
