@@ -16,15 +16,18 @@
 
 export LMSBW_DIR := $(realpath $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))/..)
 
-all:
-	$(error all target has not bee completed)
+all:	install-all-components
+	$(ATSIGN)$(TRUE)
 
 include $(LMSBW_DIR)/wrapper/gmsl/gmsl
 include $(LMSBW_DIR)/wrapper/engine/lmsbw-system.mk
 include $(LMSBW_DIR)/wrapper/engine/module-declaration-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
+include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-rules.mk
 
+
+install-all-components::		# Build & install components
 
 environment-report:
 	$(call _environment_variable_report)
@@ -36,10 +39,10 @@ dependency-report:
 	$(call dependency_report)
 	$(ATSIGN)$(TRUE);
 
-packages-report::	environment-report loaded-configuration-report
+component-report::
 	@$(TRUE);
 
-build-report:		packages-report environment-report loaded-configuration-report
+build-report:		component-report environment-report loaded-configuration-report
 
 reverse-dependency-report:
 	$(call reverse_dependency_report)
@@ -58,5 +61,5 @@ $(LMSBW_DIR)/utilities/mtree/mtree:
 
 
 .PHONY:		environment-report loaded-configuration-report		\
-		packages-report build-report				\
+		component-report build-report				\
 		dependency-report reverse_dependency_report
