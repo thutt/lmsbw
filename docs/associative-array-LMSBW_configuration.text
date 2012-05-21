@@ -1,0 +1,44 @@
+The associative array 'LMSBW_configuration' is initialized by a
+user-supplied configuration file.  The full pathname to the
+configuration file is provided to the LMSBW through the
+'LMSBW_CONFIGURATION_FILE' environment variable.
+
+This file describes the keys of the associative array, and their
+semantics.
+
+
+o load-configuration-function
+
+  The load-configuration-function entry contains the name of a
+  user-supplied function which will be used to load the configuration
+  information for each module which is to be built.
+
+  This function receives one parameter: the full pathname of the
+  configuration file which declared the function.
+
+  It is assumed that the load function will either be declared in the
+  'LMSBW_CONFIGURATION_FILE', or in a file included by it.  Because of
+  this, it is also assumed that any actual loading of module
+  declaration files will be based on the original configuration file's
+  directory; passing the full pathname of the configuration file to
+  the load function facilitates further inclusion of files from that
+  directory.
+
+  This function needs to produce two sets of data:
+
+  + LMSBW_components
+
+    This is an associative array.  The key is the 'component', and the
+    value for each key is the name of the implementing module.
+
+    LMSBW_modules := [component [' ' component]...]
+
+  + LMSBW_<component>
+
+    While loading the configuration, the function is responsible for
+    making an associative array for each component that is loaded.
+
+    This array contains all the information required to build a module
+    into a component.
+
+    See 'associative-array-LMSBW_component.text'.

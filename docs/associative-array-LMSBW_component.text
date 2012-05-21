@@ -1,0 +1,92 @@
+Each component which is to be included in the build must have an
+associate array which describes the sources and how to build them.
+The name of the array is 'LMSBW_<component>', where '<component>' is,
+obviously, the component name.
+
+There are two types of modules that are supported by the LMSBW: source
+& download.  The type of the module, either 'source' or 'download' has
+an affect on the array members which must be present.
+
+o Common Fields
+
+  + kind
+
+    This field indicates the type of the module that is being
+    implemented.
+
+    It must be defined.
+    It must either be 'source' or 'download'.
+
+    A 'source' module is built from source that is already present on
+    the system.
+
+    A 'download' module is built using a tarball that is downloaded
+    from a URL.
+
+  + reason
+
+    This indicates the 'reason' that the module is being built.  Valid
+    values are:
+
+    > build
+
+      This module is built as part of the build process, but is not
+      included in the delivered image.
+
+      This option is generally used when building tools which are used
+      to further build the product.
+
+      Modules of this type are not installed into the 'install image'.
+
+    > image
+
+      This module is built because it is delivered into the final
+      image.
+
+      Modules of this type are installed into the 'install image'.
+
+  + component
+
+    This is the name of the component which is produced by building
+    the module.
+
+    This name must be unique for the entire build.
+
+  + module
+
+    This is the name of the module.
+
+    This name must be unique for the entire build.
+
+  + prerequisite
+
+    This is a list of components which must be built & installed
+    before this module can be processed.
+
+o source
+
+  + source-directory
+
+    This element must contain the full pathname to the source
+    directory of the module.  The module sources must have their own
+    Makefile; this Makefile will be automatically invoked when needed.
+
+o download
+
+  + url
+
+    This must be the URL from which the tarball can be downloaded.
+
+      v:=$(call set,LMSBW_sed,url, \
+           http://ftp.gnu.org/gnu/sed/sed-4.2.1.tar.bz2)
+
+  + directory
+
+    This is the name of the directory which is embedded in the
+    tarball.
+
+      v:=$(call set,LMSBW_sed,directory,sed-4.2.1)
+
+    The tarball must have an embeded directory, or it it not
+    compatible with this wrapper system.
+
