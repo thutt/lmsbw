@@ -37,22 +37,34 @@ $(call get,LMSBW_$(strip $(1)),build-directory) \
 
 endef
 
-# generate_component_build_and_install <component>
+# generate_component_build <component>
 #
-define generate_component_build_and_install
-.PHONY:	$(strip $(1))
+define generate_component_build
+.PHONY:	$(strip $(1)).build
 
-install-all-components:: $(strip $(1))
-
-$(strip $(1)):	$(call expand_prerequisites,$(1))
+$(strip $(1)).build:	$(call expand_prerequisites,$(1))
 	$(ATSIGN)$(MESSAGE) "building $$@";
+
+endef
+
+# generate_component_install <component>
+#
+define generate_component_install
+.PHONY:	$(strip $(1)).install
+
+install-all-components:: $(strip $(1)).install
+
+$(strip $(1)).install:	$(strip $(1)).build		\
+	$(call expand_prerequisites,$(1))
+	$(ATSIGN)$(MESSAGE) "installing $$@";
 
 endef
 
 
 define generate_component_rules
 $(call generate_component_directory_rules,$(1))
-$(call generate_component_build_and_install,$(1))
+$(call generate_component_build,$(1))
+$(call generate_component_install,$(1))
 $(call generate_component_report,$(1))
 endef
 
