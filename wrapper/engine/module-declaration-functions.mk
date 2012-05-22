@@ -36,7 +36,9 @@ __lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),module,$(strip $(1)))				\
 __lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),component,$(strip $(2)))				\
 __lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),prerequisite,$(strip $(5)))				\
 __lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),source-directory,$(strip $(4)))			\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-directory,$(BW_BUILD_ROOT)/build/$(strip $(2)))	\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),destdir-directory,$(BW_BUILD_ROOT)/destdir/$(strip $(2)))	\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),sysroot-directory,$(BW_BUILD_ROOT)/sysroot)
+__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-root-directory,$(call lmsbw_expand_build_root)/$(strip $(2))/$(call lmsbw_expand_component_hash,$(2)))	\
+__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-directory,$(call get,LMSBW_$(strip $(2)),build-root-directory)/build)	\
+__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),destdir-directory,$(call get,LMSBW_$(strip $(2)),build-root-directory)/destdir)	\
+__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),sysroot-directory,$(call lmsbw_expand_sysroot_directory))	\
+__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-log,$(call get,LMSBW_$(strip $(2)),build-directory)/lmsbw-build.log)
 endef
