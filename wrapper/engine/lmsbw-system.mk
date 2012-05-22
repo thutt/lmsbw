@@ -50,7 +50,7 @@ export LMSBW_HOST_INSTALL_ROOT		:=		\
 # process for its own internal purposes.
 #
 export LMSBW_BUILD_SYSTEM_FILES		:=		\
-	$(LMSBW_HOST_BUILD_ROOT)/lmsbw-system-files
+	$(LMSBW_BUILD_DIR)/lmsbw
 
 # Stores files which are common across all different types of build
 # for the current source tree.
@@ -90,3 +90,6 @@ $(BW_TARBALL_REPOSITORY):
 $(LMSBW_DIRECTORIES):
 	$(ATSIGN)$(MESSAGE) "Creating directory: '$@'";
 	$(ATSIGN)$(MKDIR) --parents $@
+
+$(call lmsbw_expand_sysroot_directory):
+	$(ATSIGN)$(MKDIR) --parents $@;
