@@ -13,3 +13,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+define lmsbw_expand_modules_hash
+$(call lmsbw_expand_md5sum_text,$(call keys,LMSBW_components))
+endef
+
+define lmsbw_expand_component_hash
+$(call lmsbw_expand_md5sum_text,$(strip $(1)))
+endef
+
+define lmsbw_expand_build_root
+$(BW_BUILD_ROOT)
+endef
+
+# lmsbw_expand_sysroot_directory
+#
+#   Expands to the current 'sysroot' directory.
+#
+#   If a toolchain is not being used, this should just be considered
+#   the 'install' directory -- a place where each module will install
+#   deliverables so that other, depdenent, modules can use them.
+#
+define lmsbw_expand_sysroot_directory
+$(call lmsbw_expand_build_root)/sysroot/$(call lmsbw_expand_modules_hash)
+endef
