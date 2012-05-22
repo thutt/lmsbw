@@ -13,19 +13,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+.DEFAULT_GOAL := all
 
 export LMSBW_DIR := $(realpath $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))/..)
 
-all:	install-all-components
-	$(ATSIGN)$(TRUE)
-
 include $(LMSBW_DIR)/wrapper/gmsl/gmsl
+include $(LMSBW_DIR)/wrapper/engine/md5sum.mk
 include $(LMSBW_DIR)/wrapper/engine/lmsbw-system.mk
 include $(LMSBW_DIR)/wrapper/engine/module-declaration-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-rules.mk
 
+
+all:	install-all-components
+	$(ATSIGN)$(TRUE)
 
 install-all-components::		# Build & install components
 
