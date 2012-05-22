@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-define __expand_md5sum_value
+define lmsbw_expand_md5sum_value
 $(strip $(word 1,$(shell $(ECHO) $(1)|$(MD5SUM))))
 endef
 
@@ -23,7 +23,7 @@ endef
 #   This function expands to the md5sum value of the provided '<text>'
 #   argument.
 #
-define _expand_md5sum_text
-$(strip $(call memoize,__expand_md5sum_value,$(1)))
+define lmsbw_expand_md5sum_text
+$(strip $(call memoize,lmsbw_expand_md5sum_value,$(1)))
 endef
 
