@@ -6,7 +6,6 @@ component-report:: $(strip $(1)).report
 .PHONY:	$(strip $(1)).report
 
 $(strip $(1)).report:
-	@$(ECHO) "";
 	@$(ECHO) "$(1)|Module      : $(call get,LMSBW_$(strip $(1)),module)";
 	@$(ECHO) "$(1)|Component   : $(call get,LMSBW_$(strip $(1)),component)";
 	@$(ECHO) "$(1)|Kind        : $(call get,LMSBW_$(strip $(1)),kind)";
@@ -16,7 +15,6 @@ $(strip $(1)).report:
 	@$(ECHO) "$(1)|DESTDIR     : $(call get,LMSBW_$(strip $(1)),destdir-directory)";
 	@$(ECHO) "$(1)|sysroot     : $(call get,LMSBW_$(strip $(1)),sysroot-directory)";
 	@$(ECHO) "$(1)|Prerequisite: $(call get,LMSBW_$(strip $(1)),prerequisite)";
-	@$(ECHO) "";
 
 endef
 
