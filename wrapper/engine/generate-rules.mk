@@ -19,13 +19,17 @@
 #  Expands to a list of prerequisites which can be used in a build
 #  target.
 #
+#  Each of the items on the 'prerequisite' list must be built &
+#  installed prior to <component> being built, thus each will be
+#  transformed into the '.install' target name.
+#
 define expand_prerequisites
-$(BW_TARBALL_REPOSITORY)				\
-$(LMSBW_DIRECTORIES)					\
-$(call get,LMSBW_$(strip $(1)),build-directory)		\
-$(call get,LMSBW_$(strip $(1)),destdir-directory)	\
-$(call get,LMSBW_$(strip $(1)),sysroot-directory)	\
-$(call get,LMSBW_$(strip $(1)),prerequisite)
+$(BW_TARBALL_REPOSITORY)						\
+$(LMSBW_DIRECTORIES)							\
+$(call get,LMSBW_$(strip $(1)),build-directory)				\
+$(call get,LMSBW_$(strip $(1)),destdir-directory)			\
+$(call get,LMSBW_$(strip $(1)),sysroot-directory)			\
+$(patsubst %,%.install,$(call get,LMSBW_$(strip $(1)),prerequisite))
 endef
 
 # generate_component_directory_rules <component>

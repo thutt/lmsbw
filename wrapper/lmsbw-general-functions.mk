@@ -34,6 +34,9 @@ endef
 #   the 'install' directory -- a place where each module will install
 #   deliverables so that other, depdenent, modules can use them.
 #
+
+# This can only be done AFTER all the modules are configured.
+
 define lmsbw_expand_sysroot_directory
-$(call lmsbw_expand_build_root)/sysroot/$(call lmsbw_expand_modules_hash)
+$(call lmsbw_expand_build_root)/sysroot
 endef

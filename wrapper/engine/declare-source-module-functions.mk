@@ -40,5 +40,6 @@ __lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-root-directory,$(call lmsbw_ex
 __lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-directory,$(call get,LMSBW_$(strip $(2)),build-root-directory)/build)	\
 __lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),destdir-directory,$(call get,LMSBW_$(strip $(2)),build-root-directory)/destdir)	\
 __lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),sysroot-directory,$(call lmsbw_expand_sysroot_directory))	\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-log,$(call get,LMSBW_$(strip $(2)),build-directory)/lmsbw-build.log)
+__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-log,$(call get,LMSBW_$(strip $(2)),build-directory)/lmsbw-build.log)	\
+__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),mtree-directory,$(call get,LMSBW_$(strip $(2)),build-root-directory)/mtree)
 endef

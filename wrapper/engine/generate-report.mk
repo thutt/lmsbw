@@ -25,11 +25,12 @@ __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|  Kind      : $(call get,LMSBW_$(strip $(1)),kind)";
 	@$(ECHO) "$(1)|  Reason    : $(call get,LMSBW_$(strip $(1)),reason)";
 	@$(ECHO) "$(1)|  Source    : $(call get,LMSBW_$(strip $(1)),source-directory)";
+	@$(ECHO) "$(1)|  Prereq    : $(call get,LMSBW_$(strip $(1)),prerequisite)";
 	@$(ECHO) "$(1)|Build Root  : $(call get,LMSBW_$(strip $(1)),build-root-directory)";
+	@$(ECHO) "$(1)|  mtree     : $(call get,LMSBW_$(strip $(1)),mtree-directory)";
 	@$(ECHO) "$(1)|  Build     : $(call get,LMSBW_$(strip $(1)),build-directory)";
 	@$(ECHO) "$(1)|  DESTDIR   : $(call get,LMSBW_$(strip $(1)),destdir-directory)";
-	@$(ECHO) "$(1)|sysroot     : $(call get,LMSBW_$(strip $(1)),sysroot-directory)";
-	@$(ECHO) "$(1)|Prerequisite: $(call get,LMSBW_$(strip $(1)),prerequisite)";
+	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),sysroot-directory)";
 endef
 
 # generate_component_report_download <component>
@@ -46,7 +47,6 @@ endef
 #   Generates a report for any type of module.
 #
 define generate_component_report
-component-report:: $(strip $(1)).report
 $(call assert,											\
 	$(call or,										\
 		$(call seq,$(call get,LMSBW_$(strip $(1)),kind),source),			\
@@ -54,10 +54,10 @@ $(call assert,											\
 	Module kind '$(call get,LMSBW_$(strip $(1)),kind)' is not 'source' nor 'download')
 
 
+component-report:: $(strip $(1)).report
 .PHONY:	$(strip $(1)).report __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind)
 
 $(call generate_component_report_$(call get,LMSBW_$(strip $(1)),kind),$(1))
-
 
 $(strip $(1)).report: __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind)
 
