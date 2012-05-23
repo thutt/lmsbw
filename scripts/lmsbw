@@ -19,8 +19,12 @@
 function main ()
 {
     local lmsbw_error_file="/tmp/lmsbw-errors.${BASHPID}";
-    local makeopts="--silent --warn-undefined-variables -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
+    local makeopts="--silent -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
+    local debug;
 
+    if [ ! -z "${LMSBW_DEBUG}" ] ; then
+        debug="--warn-undefined-variables";
+    fi;
     start_seconds=$(date +%s)
     build_system_dir=$(readlink -f $(dirname ${0})/..);
     makefile=${build_system_dir}/wrapper/Makefile
@@ -30,7 +34,7 @@ function main ()
     # printed, and this is *not* desired.  Instead, all submakes
     # should be fully expanded in their respective log files.
     #
-    cmd="make ${makeopts} -f ${makefile} ${@}";
+    cmd="make ${makeopts} ${debug} -f ${makefile} ${@}";
 
     echo "${cmd}";
     success="yes";
