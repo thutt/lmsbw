@@ -32,8 +32,7 @@ endef
 #
 define generate_component_directory_rules
 $(call get,LMSBW_$(strip $(1)),build-directory)			\
-	$(call get,LMSBW_$(strip $(1)),destdir-directory)	\
-	$(call get,LMSBW_$(strip $(1)),sysroot-directory):
+	$(call get,LMSBW_$(strip $(1)),destdir-directory):
 	$(ATSIGN)$(PROGRESS) "Creating directory: '$$@'";
 	$(ATSIGN)$(MKDIR) --parents $$@;
 
@@ -46,7 +45,7 @@ define generate_component_install
 
 install-all-components:: $(strip $(1)).install
 
-$(strip $(1)).install:	$(call expand_prerequisites,$(1))
+$(strip $(1)).install:	$(MTREE) $(call expand_prerequisites,$(1))
 	$(ATSIGN)$(MESSAGE) "installing $$@";
 
 endef
@@ -68,12 +67,27 @@ $(strip $(1)).clean:
 
 endef
 
+# generate_component_build_log <component>
+#
+#   This function generates a rule to dump the build log of the
+#   specified component to stdout.
+#
+define generate_component_build_log
+.PHONY:	$(strip $(1)).log
+
+$(strip $(1)).log:
+	$(ATSIGN)$(if $(wildcard $(call get,LMSBW_$(strip $(1)),build-log)),			\
+		$(CAT) $(call get,LMSBW_$(strip $(1)),build-log),				\
+		$(MESSAGE) "'$(call get,LMSBW_$(strip $(1)),build-log)' does not exist")
+
+endef
 
 define generate_component_rules
 $(call generate_component_directory_rules,$(1))
 $(call generate_component_install,$(1))
 $(call generate_component_clean,$(1))
 $(call generate_component_report,$(1))
+$(call generate_component_build_log,$(1))
 endef
 
 $(foreach c,$(call keys,LMSBW_components),		\
