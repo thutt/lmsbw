@@ -24,7 +24,7 @@ include $(LMSBW_DIR)/wrapper/engine/declare-source-module-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-rules.mk
-
+include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk
 
 all:	install-all-components
 	$(ATSIGN)$(TRUE)

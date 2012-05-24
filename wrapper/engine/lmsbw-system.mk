@@ -82,10 +82,3 @@ export LMSBW_TARBALL_SOURCE_ROOT	:=		\
 
 include $(LMSBW_DIR)/wrapper/lmsbw-general-functions.mk
 include $(LMSBW_DIR)/wrapper/lmsbw-system-utilities.mk
-
-$(BW_TARBALL_REPOSITORY)			\
-$(call lmsbw_expand_sysroot_directory)		\
-$(LMSBW_DIRECTORIES):
-	$(ATSIGN)$(MESSAGE) "Creating directory: '$@'";
-	$(ATSIGN)$(MKDIR) --parents $@
-
