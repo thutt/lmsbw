@@ -14,6 +14,26 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# __msk <component>, <key>, <value>
+#
+#   __msk: Module Set Key
+#
+define __msk
+__dsm:=$(call set,LMSBW_$(strip $(1)),$(strip $(2)),$(strip $(3)))
+endef
+
+# __mgk <component>, <key>
+#
+#   __mgk: Module Get Key
+#
+define __mgk
+$(call get,LMSBW_$(strip $(1)),$(strip $(2)))
+endef
+
+define __expand_build_root
+$(call lmsbw_expand_build_root)/$(strip $(1))/$(call lmsbw_expand_component_hash,$(1))
+endef
+
 # declare_source_module <module-name>,
 #			<component-name>,
 #                       <build | image>,
@@ -30,16 +50,24 @@ $(call assert,$(call seq,$(wildcard $(strip $(4))),)						\
 	Source directory '$(strip $(4))' does not exist)					\
 $(call assert_exists,$(strip $(4)));								\
 $(call set,LMSBW_components,$(strip $(2)),$(strip $(1)))					\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),kind,source)					\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),reason,$(strip $(3)))				\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),module,$(strip $(1)))				\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),component,$(strip $(2)))				\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),prerequisite,$(strip $(5)))				\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),source-directory,$(strip $(4)))			\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-root-directory,$(call lmsbw_expand_build_root)/$(strip $(2))/$(call lmsbw_expand_component_hash,$(2)))	\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-directory,$(call get,LMSBW_$(strip $(2)),build-root-directory)/build)	\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),destdir-directory,$(call get,LMSBW_$(strip $(2)),build-root-directory)/destdir)	\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),sysroot-directory,$(call lmsbw_expand_sysroot_directory))	\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),build-log,$(call get,LMSBW_$(strip $(2)),build-directory)/lmsbw-build.log)	\
-__lmsbw_dsm:=$(call set,LMSBW_$(strip $(2)),mtree-directory,$(call get,LMSBW_$(strip $(2)),build-root-directory)/mtree)
+$(call __msk,$(2),kind,source)									\
+$(call __msk,$(2),reason,$(3))									\
+$(call __msk,$(2),module,$(1))									\
+$(call __msk,$(2),component,$(2))								\
+$(call __msk,$(2),prerequisite,$(5))								\
+$(call __msk,$(2),source-directory,$(4))							\
+$(call __msk,$(2),build-root-directory,$(call __expand_build_root,$(2)))			\
+$(call __msk,$(2),build-directory,$(call __mgk,$(2),build-root-directory)/build)		\
+$(call __msk,$(2),mtree-directory,$(call __mgk,$(2),build-root-directory)/mtree)		\
+$(call __msk,$(2),destdir-directory,$(call __mgk,$(2),build-root-directory)/destdir)		\
+$(call __msk,$(2),build-log,$(call __mgk,$(2),build-directory)/lmsbw-build.log)
+endef
+
+# fixup_component_fields <component>
+#
+#   Sets the component fields which cannot be assigned until the full
+#   set of components is known.
+#
+define fixup_component_fields
+$(call __msk,$(1),sysroot-directory,$(call lmsbw_expand_sysroot_directory))
 endef

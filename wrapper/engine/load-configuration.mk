@@ -61,3 +61,7 @@ $(call assert,$(call seq,$(origin $(call __gcv,load-configuration-function)),fil
 # Load component configuration files.
 #
 $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FILE))
+
+$(foreach c,$(call keys,LMSBW_components),		\
+	$(eval $(call fixup_component_fields,$(c)))	\
+)
