@@ -38,5 +38,5 @@ endef
 # This can only be done AFTER all the modules are configured.
 
 define lmsbw_expand_sysroot_directory
-$(call lmsbw_expand_build_root)/sysroot
+$(call lmsbw_expand_build_root)/sysroot/$(call lmsbw_expand_modules_hash)
 endef
