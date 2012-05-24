@@ -86,7 +86,11 @@ $(strip $(1)).log:
 
 endef
 
-define generate_component_rules
+# generate_component_rules_source <component>
+#
+#   Generate build rules for a 'source' module.
+#
+define generate_component_rules_source
 $(call generate_component_directory_rules,$(1))
 $(call generate_component_install,$(1))
 $(call generate_component_clean,$(1))
@@ -94,6 +98,11 @@ $(call generate_component_report,$(1))
 $(call generate_component_build_log,$(1))
 endef
 
-$(foreach c,$(call keys,LMSBW_components),		\
-	$(eval $(call generate_component_rules,$(c)))	\
+$(foreach c,$(call keys,LMSBW_components),							   \
+	$(call assert,										   \
+		$(call or,									   \
+			$(call seq,$(call get,LMSBW_$(strip $(c)),kind),source),		   \
+			$(call seq,$(call get,LMSBW_$(strip $(c)),kind),download)),		   \
+		Module kind '$(call get,LMSBW_$(strip $(c)),kind)' is not 'source' nor 'download') \
+	$(eval $(call generate_component_rules_$(call get,LMSBW_$(strip $(c)),kind),$(c)))	   \
 )
