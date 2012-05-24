@@ -53,7 +53,6 @@ $(call assert,											\
 		$(call seq,$(call get,LMSBW_$(strip $(1)),kind),download)),			\
 	Module kind '$(call get,LMSBW_$(strip $(1)),kind)' is not 'source' nor 'download')
 
-
 component-report:: $(strip $(1)).report
 .PHONY:	$(strip $(1)).report __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind)
 
