@@ -61,7 +61,11 @@ $(call __msk,$(2),build-directory,$(call __mgk,$(2),build-root-directory)/build)
 $(call __msk,$(2),mtree-directory,$(call __mgk,$(2),build-root-directory)/mtree)		\
 $(call __msk,$(2),destdir-directory,$(call __mgk,$(2),build-root-directory)/destdir)		\
 $(call __msk,$(2),build-log,$(call __mgk,$(2),build-directory)/lmsbw-build.log)			\
-$(call assert,$(call not,$(filter $(2),$(5))),Component '$(2)' cannot have itself as a prerequisite)
+$(call assert,$(call not,$(filter $(2),$(5))),							\
+	Component '$(2)' cannot have itself as a prerequisite)					\
+$(foreach p,$(5),$(call assert,$(call not,$(filter $(2),					\
+	$(call get,LMSBW_$(strip $(p)),prerequisite))),						\
+		Component '$(2)' and '$(p)' are mutually dependent))
 endef
 
 # fixup_component_fields <component>
