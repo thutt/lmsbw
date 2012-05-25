@@ -74,5 +74,5 @@ endef
 #   set of components is known.
 #
 define fixup_component_fields
-$(call __msk,$(1),sysroot-directory,$(call lmsbw_expand_sysroot_directory))
+$(call __msk,$(1),sysinstall-directory,$(call lmsbw_expand_sysinstall_directory))
 endef

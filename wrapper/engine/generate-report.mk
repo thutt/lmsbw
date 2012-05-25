@@ -30,7 +30,7 @@ __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|  mtree     : $(call get,LMSBW_$(strip $(1)),mtree-directory)";
 	@$(ECHO) "$(1)|  Build     : $(call get,LMSBW_$(strip $(1)),build-directory)";
 	@$(ECHO) "$(1)|  DESTDIR   : $(call get,LMSBW_$(strip $(1)),destdir-directory)";
-	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),sysroot-directory)";
+	@$(ECHO) "$(1)|  sysinstall: $(call get,LMSBW_$(strip $(1)),sysinstall-directory)";
 endef
 
 # generate_component_prerequisite_report <component>

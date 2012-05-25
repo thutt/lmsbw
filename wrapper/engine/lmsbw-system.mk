@@ -35,8 +35,8 @@ export LMSBW_BUILD_DIR			:=		\
 export LMSBW_TARGET_BUILD_ROOT		:=		\
 	$(LMSBW_BUILD_DIR)/target
 
-export LMSBW_TARGET_SYSROOT_ROOT	:=		\
-	$(LMSBW_TARGET_BUILD_ROOT)/sysroot
+export LMSBW_TARGET_SYSINSTALL_ROOT	:=		\
+	$(LMSBW_TARGET_BUILD_ROOT)/sysinstall
 
 export LMSBW_HOST_BUILD_ROOT		:=		\
 	$(LMSBW_BUILD_DIR)/host

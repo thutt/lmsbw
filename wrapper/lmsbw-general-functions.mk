@@ -26,9 +26,12 @@ define lmsbw_expand_build_root
 $(BW_BUILD_ROOT)
 endef
 
-# lmsbw_expand_sysroot_directory
+# lmsbw_expand_sysinstall_directory
 #
-#   Expands to the current 'sysroot' directory.
+#   Expands to the current 'sysinstall' directory.
+#
+#   This is a shared directory into which all components will install
+#   shared resources such as executables, libraries and header files.
 #
 #   If a toolchain is not being used, this should just be considered
 #   the 'install' directory -- a place where each module will install
@@ -37,6 +40,6 @@ endef
 
 # This can only be done AFTER all the modules are configured.
 
-define lmsbw_expand_sysroot_directory
-$(call lmsbw_expand_build_root)/sysroot/$(call lmsbw_expand_modules_hash)
+define lmsbw_expand_sysinstall_directory
+$(call lmsbw_expand_build_root)/sysinstall/$(call lmsbw_expand_modules_hash)
 endef
