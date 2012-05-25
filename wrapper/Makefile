@@ -25,31 +25,20 @@ include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-rules.mk
 include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk
-include $(LMSBW_DIR)/wrapper/engine/component-last-chance-rules.mk
 
-all:	install-all-components
-	$(ATSIGN)$(TRUE)
+all:	install
 
-install-all-components::		# Build & install components
+install::
 
-environment-report:
-	$(call _environment_variable_report)
+clean::
 
-loaded-configuration-report:
-	$(call _loaded_configuration_file_report)
+log::
 
-dependency-report:
-	$(call dependency_report)
-	$(ATSIGN)$(TRUE);
+report::
 
-component-report::
-	@$(TRUE);
+prerequisite-report::
 
-build-report:		component-report environment-report loaded-configuration-report
-
-reverse-dependency-report:
-	$(call reverse_dependency_report)
-	$(ATSIGN)$(TRUE);
+dependent-report::
 
 $(MTREE): $(LMSBW_DIR)/utilities/mtree/mtree
 	@$(MESSAGE) "Installing mtree";
@@ -63,6 +52,6 @@ $(LMSBW_DIR)/utilities/mtree/mtree:
 		-f $(LMSBW_DIR)/utilities/mtree/Makefile mtree;
 
 
-.PHONY:		environment-report loaded-configuration-report		\
-		component-report build-report				\
-		dependency-report reverse_dependency_report
+.PHONY:		all install clean report prerequisite-report dependent-report
+
+include $(LMSBW_DIR)/wrapper/engine/component-last-chance-rules.mk

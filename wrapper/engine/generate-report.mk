@@ -33,14 +33,34 @@ __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),sysroot-directory)";
 endef
 
-# generate_component_report_download <component>
+# generate_component_prerequisite_report <component>
 #
-#   Generates a report for a 'download' module.
+#   This function generates a rule to dump the prerequisite modules.
 #
-define generate_component_report_download
-$(error $(0): function is not implemented.)
+define generate_component_prerequisite_report
+.PHONY:	prerequisite.$(strip $(1))
+
+prerequisite-report::	prerequisite.$(strip $(1))
+
+prerequisite.$(strip $(1)):
+	$(ATSIGN)$(ECHO) "$(1): $(call get,LMSBW_$(strip $(1)),prerequisite)";
+
 endef
 
+# generate_component_dependent_report <component>
+#
+#   This function generates a rule to dump the dependent modules.
+#
+define generate_component_dependent_report
+.PHONY:	dependent.$(strip $(1))
+
+dependent-report::	dependent.$(strip $(1))
+
+dependent.$(strip $(1)):
+	$(ATSIGN)$(ECHO) "$(1): $(strip $(foreach c,$(call keys,LMSBW_components),		\
+	$(if $(filter $(1),$(call get,LMSBW_$(c),prerequisite)),$(c))))";
+
+endef
 
 # generate_component_report <component>
 #
@@ -53,7 +73,7 @@ $(call assert,											\
 		$(call seq,$(call get,LMSBW_$(strip $(1)),kind),download)),			\
 	Module kind '$(call get,LMSBW_$(strip $(1)),kind)' is not 'source' nor 'download')
 
-component-report:: report.$(strip $(1))
+report:: report.$(strip $(1))
 .PHONY:	report.$(strip $(1)) __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind)
 
 $(call generate_component_report_$(call get,LMSBW_$(strip $(1)),kind),$(1))

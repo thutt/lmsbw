@@ -25,7 +25,7 @@ $(1).%:
 	$(ATSIGN)$(MESSAGE) "$$(patsubst $(1).%,%,$$@): " \
 		"No verb '$(1)' for component '$$(patsubst $(1).%,%,$$@)'.";
 	$(ATSIGN)$(MESSAGE) "$$(patsubst $(1).%,%,$$@): " \
-		"Does this component exist?  Use 'lmsbw component-report'.";
+		"Does this component exist?  Use 'lmsbw report'.";
 	$(if $(2),$(ATSIGN)$(MESSAGE) "$$(patsubst $(1).%,%,$$@): " $(2);)
 	$(FALSE);
 endef

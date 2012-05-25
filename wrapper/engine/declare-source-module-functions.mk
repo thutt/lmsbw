@@ -60,7 +60,8 @@ $(call __msk,$(2),build-root-directory,$(call __expand_build_root,$(2)))			\
 $(call __msk,$(2),build-directory,$(call __mgk,$(2),build-root-directory)/build)		\
 $(call __msk,$(2),mtree-directory,$(call __mgk,$(2),build-root-directory)/mtree)		\
 $(call __msk,$(2),destdir-directory,$(call __mgk,$(2),build-root-directory)/destdir)		\
-$(call __msk,$(2),build-log,$(call __mgk,$(2),build-directory)/lmsbw-build.log)
+$(call __msk,$(2),build-log,$(call __mgk,$(2),build-directory)/lmsbw-build.log)			\
+$(call assert,$(call not,$(filter $(2),$(5))),Component '$(2)' cannot have itself as a prerequisite)
 endef
 
 # fixup_component_fields <component>

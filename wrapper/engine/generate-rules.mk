@@ -47,7 +47,7 @@ endef
 define generate_component_install
 .PHONY:	install.$(strip $(1))
 
-install-all-components:: install.$(strip $(1))
+install:: install.$(strip $(1))
 
 install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
 	$(ATSIGN)$(MESSAGE) "$(1): installing $$@";
@@ -63,8 +63,10 @@ endef
 define generate_component_clean
 .PHONY:	clean.$(strip $(1))
 
+clean:: clean.$(strip $(1))
+
 clean.$(strip $(1)):
-	$(ATSIGN)$(PROGRESS) "$(1): Cleaning $(1)";
+	$(ATSIGN)$(MESSAGE) "$(1): Cleaning $(1)";
 	$(ATSIGN)$(RM) -rf						\
 		$(call get,LMSBW_$(strip $(1)),build-directory)		\
 		$(call get,LMSBW_$(strip $(1)),destdir-directory)
@@ -78,6 +80,8 @@ endef
 #
 define generate_component_build_log
 .PHONY:	log.$(strip $(1))
+
+log::	log.$(strip $(1))
 
 log.$(strip $(1)):
 	$(ATSIGN)$(if $(wildcard $(call get,LMSBW_$(strip $(1)),build-log)),			\
@@ -96,6 +100,8 @@ $(call generate_component_install,$(1))
 $(call generate_component_clean,$(1))
 $(call generate_component_report,$(1))
 $(call generate_component_build_log,$(1))
+$(call generate_component_prerequisite_report,$(1))
+$(call generate_component_dependent_report,$(1))
 endef
 
 $(foreach c,$(call keys,LMSBW_components),							   \
