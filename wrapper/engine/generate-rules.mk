@@ -21,7 +21,7 @@
 #
 #  Each of the items on the 'prerequisite' list must be built &
 #  installed prior to <component> being built, thus each will be
-#  transformed into the '.install' target name.
+#  transformed into the 'install.' target name.
 #
 define expand_prerequisites
 $(BW_TARBALL_REPOSITORY)						\
@@ -29,7 +29,7 @@ $(LMSBW_DIRECTORIES)							\
 $(call get,LMSBW_$(strip $(1)),build-directory)				\
 $(call get,LMSBW_$(strip $(1)),destdir-directory)			\
 $(call get,LMSBW_$(strip $(1)),sysroot-directory)			\
-$(patsubst %,%.install,$(call get,LMSBW_$(strip $(1)),prerequisite))
+$(patsubst %,install.%,$(call get,LMSBW_$(strip $(1)),prerequisite))
 endef
 
 # generate_component_directory_rules <component>
@@ -37,7 +37,7 @@ endef
 define generate_component_directory_rules
 $(call get,LMSBW_$(strip $(1)),build-directory)			\
 	$(call get,LMSBW_$(strip $(1)),destdir-directory):
-	$(ATSIGN)$(PROGRESS) "Creating directory: '$$@'";
+	$(ATSIGN)$(PROGRESS) "$(1): Creating directory: '$$@'";
 	$(ATSIGN)$(MKDIR) --parents $$@;
 
 endef
@@ -45,12 +45,12 @@ endef
 # generate_component_install <component>
 #
 define generate_component_install
-.PHONY:	$(strip $(1)).install
+.PHONY:	install.$(strip $(1))
 
-install-all-components:: $(strip $(1)).install
+install-all-components:: install.$(strip $(1))
 
-$(strip $(1)).install:	$(MTREE) $(call expand_prerequisites,$(1))
-	$(ATSIGN)$(MESSAGE) "installing $$@";
+install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
+	$(ATSIGN)$(MESSAGE) "$(1): installing $$@";
 
 endef
 
@@ -61,10 +61,10 @@ endef
 #   installed in the 'sysroot'
 #
 define generate_component_clean
-.PHONY:	$(strip $(1)).clean
+.PHONY:	clean.$(strip $(1))
 
-$(strip $(1)).clean:
-	$(ATSIGN)$(PROGRESS) "Cleaning $(1)";
+clean.$(strip $(1)):
+	$(ATSIGN)$(PROGRESS) "$(1): Cleaning $(1)";
 	$(ATSIGN)$(RM) -rf						\
 		$(call get,LMSBW_$(strip $(1)),build-directory)		\
 		$(call get,LMSBW_$(strip $(1)),destdir-directory)
@@ -77,12 +77,12 @@ endef
 #   specified component to stdout.
 #
 define generate_component_build_log
-.PHONY:	$(strip $(1)).log
+.PHONY:	log.$(strip $(1))
 
-$(strip $(1)).log:
+log.$(strip $(1)):
 	$(ATSIGN)$(if $(wildcard $(call get,LMSBW_$(strip $(1)),build-log)),			\
 		$(CAT) $(call get,LMSBW_$(strip $(1)),build-log),				\
-		$(MESSAGE) "'$(call get,LMSBW_$(strip $(1)),build-log)' does not exist")
+		$(MESSAGE) "'$(1): $(call get,LMSBW_$(strip $(1)),build-log)' does not exist")
 
 endef
 
