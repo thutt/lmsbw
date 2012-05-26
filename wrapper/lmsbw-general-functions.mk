@@ -30,9 +30,9 @@ define lmsbw_expand_build_build_root
 $(LMSBW_HOST_BUILD_ROOT)
 endef
 
-# lmsbw_expand_sysinstall_directory <build | image>
+# lmsbw_expand_install_directory <build | image>
 #
-#   Expands to the current 'sysinstall' directory.
+#   Expands to the current 'install' directory.
 #
 #   This is a shared directory into which all components will install
 #   shared resources such as executables, libraries and header files.
@@ -41,9 +41,9 @@ endef
 #   the 'install' directory -- a place where each module will install
 #   deliverables so that other, depdenent, modules can use them.
 #
-
+#
 # This can only be done AFTER all the modules are configured.
-
-define lmsbw_expand_sysinstall_directory
-$(call lmsbw_expand_$(strip $(1))_build_root)/sysinstall/$(call lmsbw_expand_modules_hash)
+#
+define lmsbw_expand_install_directory
+$(call lmsbw_expand_$(strip $(1))_build_root)/install/$(call lmsbw_expand_modules_hash)
 endef

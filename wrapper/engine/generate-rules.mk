@@ -28,7 +28,7 @@ $(BW_TARBALL_REPOSITORY)						\
 $(LMSBW_DIRECTORIES)							\
 $(call get,LMSBW_$(strip $(1)),build-directory)				\
 $(call get,LMSBW_$(strip $(1)),destdir-directory)			\
-$(call get,LMSBW_$(strip $(1)),sysinstall-directory)			\
+$(call get,LMSBW_$(strip $(1)),install-directory)			\
 $(patsubst %,install.%,$(call get,LMSBW_$(strip $(1)),prerequisite))
 endef
 
@@ -58,7 +58,7 @@ endef
 #
 #   This rule will delete the 'build-directory' and
 #   'destdir-directory' array entries.  It does not remove any files
-#   installed in the 'sysinstall' directory.
+#   installed in the 'install' directory.
 #
 define generate_component_clean
 .PHONY:	clean.$(strip $(1))
