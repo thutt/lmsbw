@@ -1,15 +1,15 @@
 # Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
-# 
+#
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -35,14 +35,8 @@ export LMSBW_BUILD_DIR			:=		\
 export LMSBW_TARGET_BUILD_ROOT		:=		\
 	$(LMSBW_BUILD_DIR)/target
 
-export LMSBW_TARGET_SYSINSTALL_ROOT	:=		\
-	$(LMSBW_TARGET_BUILD_ROOT)/sysinstall
-
 export LMSBW_HOST_BUILD_ROOT		:=		\
 	$(LMSBW_BUILD_DIR)/host
-
-export LMSBW_HOST_INSTALL_ROOT		:=		\
-	$(LMSBW_HOST_BUILD_ROOT)/install
 
 # Stores build-system files.
 #
@@ -74,8 +68,7 @@ export LMSBW_MTREE_ROOT			:=		\
 export LMSBW_DIRECTORIES		:=		\
 	$(LMSBW_BUILD_SYSTEM_FILES)			\
 	$(LMSBW_COMMON_BUILD_SYSTEM_FILES)		\
-	$(LMSBW_MTREE_ROOT)				\
-	$(LMSBW_HOST_INSTALL_ROOT)
+	$(LMSBW_MTREE_ROOT)
 
 export LMSBW_TARBALL_SOURCE_ROOT	:=		\
 	$(BW_BUILD_ROOT)

@@ -1,5 +1,4 @@
  o Need way to indicate where the install mtree manifest is located
    via lmsbwe.  Or, LMSBW_configuration associative array.
  o Allow multiple configuration files.
- o Add a 'print-build-targets'.  Print all user-accessible targets & snippet.
  o Have 'sysinstall' directory for 'build' and 'image' modules.

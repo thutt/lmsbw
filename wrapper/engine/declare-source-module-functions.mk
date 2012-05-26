@@ -30,8 +30,11 @@ define __mgk
 $(call get,LMSBW_$(strip $(1)),$(strip $(2)))
 endef
 
+# __expand_build_root <component>
+#
+#
 define __expand_build_root
-$(call lmsbw_expand_build_root)/$(strip $(1))/$(call lmsbw_expand_component_hash,$(1))
+$(call lmsbw_expand_$(call get,LMSBW_$(strip $(1)),reason)_build_root)/$(strip $(1))/$(call lmsbw_expand_component_hash,$(1))
 endef
 
 # declare_source_module <module-name>,
@@ -74,5 +77,7 @@ endef
 #   set of components is known.
 #
 define fixup_component_fields
-$(call __msk,$(1),sysinstall-directory,$(call lmsbw_expand_sysinstall_directory))
+$(call __msk,$(1),sysinstall-directory,				\
+	$(call lmsbw_expand_sysinstall_directory,		\
+		$(call get,LMSBW_$(strip $(1)),reason)))
 endef

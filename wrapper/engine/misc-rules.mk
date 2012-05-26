@@ -25,7 +25,8 @@
 # when all modules are loaded.
 #
 $(BW_TARBALL_REPOSITORY)			\
-$(call lmsbw_expand_sysinstall_directory)	\
+$(call lmsbw_expand_sysinstall_directory,build)	\
+$(call lmsbw_expand_sysinstall_directory,image)	\
 $(LMSBW_DIRECTORIES):
 	$(ATSIGN)$(MESSAGE) "Creating directory: '$@'";
 	$(ATSIGN)$(MKDIR) --parents $@

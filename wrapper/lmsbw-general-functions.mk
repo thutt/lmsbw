@@ -22,11 +22,15 @@ define lmsbw_expand_component_hash
 $(call lmsbw_expand_md5sum_text,$(strip $(1)))
 endef
 
-define lmsbw_expand_build_root
-$(BW_BUILD_ROOT)
+define lmsbw_expand_image_build_root
+$(LMSBW_TARGET_BUILD_ROOT)
 endef
 
-# lmsbw_expand_sysinstall_directory
+define lmsbw_expand_build_build_root
+$(LMSBW_HOST_BUILD_ROOT)
+endef
+
+# lmsbw_expand_sysinstall_directory <build | image>
 #
 #   Expands to the current 'sysinstall' directory.
 #
@@ -41,5 +45,5 @@ endef
 # This can only be done AFTER all the modules are configured.
 
 define lmsbw_expand_sysinstall_directory
-$(call lmsbw_expand_build_root)/sysinstall/$(call lmsbw_expand_modules_hash)
+$(call lmsbw_expand_$(strip $(1))_build_root)/sysinstall/$(call lmsbw_expand_modules_hash)
 endef
