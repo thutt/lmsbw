@@ -21,9 +21,11 @@ include $(LMSBW_DIR)/wrapper/gmsl/gmsl
 include $(LMSBW_DIR)/wrapper/engine/md5sum.mk
 include $(LMSBW_DIR)/wrapper/engine/lmsbw-system.mk
 include $(LMSBW_DIR)/wrapper/engine/declare-source-module-functions.mk
+include $(LMSBW_DIR)/wrapper/engine/declare-targets.mk
 include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-rules.mk
+include $(LMSBW_DIR)/wrapper/engine/mtree.mk
 include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk
 
 all:	install
@@ -40,18 +42,17 @@ prerequisite-report::
 
 dependent-report::
 
-$(MTREE): $(LMSBW_DIR)/utilities/mtree/mtree
-	@$(MESSAGE) "Installing mtree";
-	@$(MKDIR) --parents $(dir $@)
-	@$(CP) $< $@
-
-$(LMSBW_DIR)/utilities/mtree/mtree:
-	@$(MESSAGE) "Building mtree";
-	@$(MAKE) $(CB_VERBOSE)							\
-		-C $(LMSBW_DIR)/utilities/mtree			\
-		-f $(LMSBW_DIR)/utilities/mtree/Makefile mtree;
-
-
 .PHONY:		all install clean report prerequisite-report dependent-report
 
+$(eval $(call declare_target,all,,Perform a full build))
+$(eval $(call declare_target,targets,,Produce this report))
+$(eval $(call declare_target,report,[.<component>],Generate component reports))
+$(eval $(call declare_target,install,[.<component>],Build & install components))
+$(eval $(call declare_target,clean,[.<component>],Clean build output for components))
+$(eval $(call declare_target,log,[.<component>],Display component build logs))
+$(eval $(call declare_target,report,[.<component>],Show component build reports))
+$(eval $(call declare_target,prerequisite-report,,Show declared component prerequisites))
+$(eval $(call declare_target,dependent-report,,Show computed component dependencies))
+
 include $(LMSBW_DIR)/wrapper/engine/component-last-chance-rules.mk
+

@@ -32,6 +32,7 @@ MKTEMP		:= /bin/mktemp
 MTREE		:= $(LMSBW_BUILD_SYSTEM_FILES)/utilities/bin/mtree
 MV		:= /bin/mv
 PATCH		:= /usr/bin/patch
+PRINTF		:= /usr/bin/printf
 PWD		:= /bin/pwd
 RM		:= /bin/rm
 RSYNC		:= /usr/bin/rsync
