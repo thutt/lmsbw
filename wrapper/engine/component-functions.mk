@@ -14,26 +14,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# load_configuration <pathname of configuration file declaring this function>
-#
-define load_configuration
-$(call declare_source_module,			\
-       hello-world-module,			\
-       hello-world,				\
-       image,					\
-       $(1),					\
-       $(subst hello-world.cfg,src,$(1)),	\
-       goodbye-world)
+# This file contains functions which operate upon components.
 
-$(call declare_source_module,			\
-       goodbye-world-module,			\
-       goodbye-world,				\
-       build,					\
-       $(1),					\
-       $(subst hello-world.cfg,src,$(1)))
+
+# lmsbw_component_mtree_command_guard <component>,
+#                                     <commands-to-execute>
+#
+define lmsbw_component_mtree_command_guard
+$(ATSIGN)$(call lmsbw_expand_mtree_command_guard,		\
+	$(1),							\
+	$(call get,LMSBW_$(strip $(1)),mtree-manifest),		\
+	$(call get,LMSBW_$(strip $(1)),source-directory),	\
+	$(2),							\
+	$(call get,LMSBW_$(strip $(1)),configuration-file))
 endef
 
-
-# Set up the LMSBW_configuration associative array.
-#
-vv:=$(call set,LMSBW_configuration,load-configuration-function,load_configuration)

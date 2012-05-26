@@ -26,8 +26,9 @@ __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|  Reason    : $(call get,LMSBW_$(strip $(1)),reason)";
 	@$(ECHO) "$(1)|  Source    : $(call get,LMSBW_$(strip $(1)),source-directory)";
 	@$(ECHO) "$(1)|  Prereq    : $(call get,LMSBW_$(strip $(1)),prerequisite)";
+	@$(ECHO) "$(1)|  config    : $(call get,LMSBW_$(strip $(1)),configuration-file)";
 	@$(ECHO) "$(1)|Build Root  : $(call get,LMSBW_$(strip $(1)),build-root-directory)";
-	@$(ECHO) "$(1)|  mtree     : $(call get,LMSBW_$(strip $(1)),mtree-directory)";
+	@$(ECHO) "$(1)|  mtree     : $(call get,LMSBW_$(strip $(1)),mtree-manifest)";
 	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-directory)";
 	@$(ECHO) "$(1)|  destdir   : $(call get,LMSBW_$(strip $(1)),destdir-directory)";
 	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),install-directory)";

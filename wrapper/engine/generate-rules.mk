@@ -50,7 +50,8 @@ define generate_component_install
 install:: install.$(strip $(1))
 
 install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
-	$(ATSIGN)$(MESSAGE) "$(1): installing $$@";
+	$(call lmsbw_component_mtree_command_guard,$(1), \
+		$(MESSAGE) "$(1): installing $$@";)
 
 endef
 

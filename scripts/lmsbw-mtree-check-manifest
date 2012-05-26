@@ -1,0 +1,135 @@
+#!/bin/bash
+#
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# This uses mtree to check a manifest against a provided directory
+# tree.
+#
+# It returns 0 if directory tree is the same as the manifest, and
+# non-zero if the directory tree differs at all from the manifest.
+#
+# It is used to guard the execution of commands using the contents of
+# the directory.  If the directory contents have not been changed, the
+# guarded statements will not be executed.
+#
+# An example use is this:
+#
+#   If nothing has been modified in a source subdirectory of a
+#   component, there is no reason to invoke the component's build
+#   process to do a NULL build.
+#
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+function display_help ()
+{
+    cat <<EOF
+${program}: Generates a manifest for a directory tree
+
+  --help | -h                  : Show this help and exit
+  --verbose                    : Enable more verbosity
+  --mtree <path to mtree>      : Pathname of mtree executable
+  --component <component name> : Name of the component [optional]
+  --directory-tree <directory> : Tree on which mtree should be executed
+  --manifest <pathname>        : The pathname of the produced manifest
+
+EOF
+}
+
+
+function main ()
+{
+    local argument_failure;
+    local directory_tree;
+    local component;
+    local mtree;
+    local manifest
+    local verbose;
+
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long component:                       \
+        --long directory-tree:                  \
+        --long manifest:                        \
+        --long mtree:                           \
+        --long verbose                          \
+        -n "${program}"                         \
+        -- "$@");
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --directory-tree)
+                directory_tree="${2}";
+                shift 2 ;;
+
+            --component)
+                component="${2}";
+                shift 2 ;;
+
+            --manifest)
+                manifest="${2}";
+                shift 2 ;;
+
+            --mtree)
+                mtree="${2}";
+                shift 2 ;;
+
+            --verbose)
+                verbose="1";
+                shift 1 ;;
+
+            --) shift ;
+                break ;;
+
+            *) echo "Internal error: ${1}!" ;
+                argument_failure="yes" ;
+        esac
+    done
+
+    if ! which mtree ; then
+        if [ ! -x "${mtree}" ] || [ -z "${mtree}" ] ; then
+            fatal \
+                "${program}: '--mtree' argument, '${mtree}', is not the pathname of the mtree executable";
+        fi;
+    fi;
+
+    if [ -z "${directory_tree}" ] ; then
+        fatal "${program} --directory-tree must specify the tree to check.";
+    elif [ ! -d "${directory_tree}" ] ; then
+        fatal "${program}: --directory-tree value, '${directory_tree}' is not a directory.";
+    fi;
+
+    [ -f "${manifest}" ] && \
+        "${mtree}" -f "${manifest}" -p "${directory_tree}" &>/dev/null;
+}
+
+main "$@";

@@ -4,3 +4,5 @@
  o Sharing interfaces between between 'build' and 'image' modules out
    to be disallowed.  The compilers may be different, and their set of
    include directories should not intersect.
+ o Remove LMSBW_MTREE_ROOT
+ o Add new target which reports on build space used per component

@@ -14,26 +14,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# load_configuration <pathname of configuration file declaring this function>
-#
-define load_configuration
-$(call declare_source_module,			\
-       hello-world-module,			\
-       hello-world,				\
-       image,					\
-       $(1),					\
-       $(subst hello-world.cfg,src,$(1)),	\
-       goodbye-world)
-
-$(call declare_source_module,			\
-       goodbye-world-module,			\
-       goodbye-world,				\
-       build,					\
-       $(1),					\
-       $(subst hello-world.cfg,src,$(1)))
-endef
-
-
-# Set up the LMSBW_configuration associative array.
-#
-vv:=$(call set,LMSBW_configuration,load-configuration-function,load_configuration)
+LMSBW_MTREE_CHECK_MANIFEST	:= $(LMSBW_DIR)/scripts/lmsbw-mtree-check-manifest
+LMSBW_MTREE_GENERATE_MANIFEST	:= $(LMSBW_DIR)/scripts/lmsbw-mtree-generate-manifest

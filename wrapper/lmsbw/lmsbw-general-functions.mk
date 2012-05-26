@@ -1,0 +1,100 @@
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+define lmsbw_expand_modules_hash
+$(call lmsbw_expand_md5sum_text,$(call keys,LMSBW_components))
+endef
+
+define lmsbw_expand_component_hash
+$(call lmsbw_expand_md5sum_text,$(strip $(1)))
+endef
+
+define lmsbw_expand_image_build_root
+$(LMSBW_TARGET_BUILD_ROOT)
+endef
+
+define lmsbw_expand_build_build_root
+$(LMSBW_HOST_BUILD_ROOT)
+endef
+
+# lmsbw_expand_install_directory <build | image>
+#
+#   Expands to the current 'install' directory.
+#
+#   This is a shared directory into which all components will install
+#   shared resources such as executables, libraries and header files.
+#
+#   If a toolchain is not being used, this should just be considered
+#   the 'install' directory -- a place where each module will install
+#   deliverables so that other, depdenent, modules can use them.
+#
+#
+# This can only be done AFTER all the modules are configured.
+#
+define lmsbw_expand_install_directory
+$(call lmsbw_expand_$(strip $(1))_build_root)/install/$(call lmsbw_expand_modules_hash)
+endef
+
+# lmsbw_expand_mtree_guard <component label>,
+#                     	   <mtree manifest pathname>
+#                     	   <directory on which mtree is executed>
+#                     	   <commands-to-execute>
+#                          <optional configuration file>
+#
+#   This function expands into a conditional statement that guards the
+#   '<commands-to-execute>' parameter.  The conditional guard does the
+#   following:
+#
+#     o If the '<optional configuration file>' parameter is supplied,
+#       and is newer than '<mtree manifest pathname>', execute
+#       '<commands-to-execute>'.
+#
+#     o If there is a difference between the '<mtree manifest
+#       pathname>' state and any files in '<directory on which mtree
+#       is executed>', execute '<commands-to-execute>'.
+#
+#     o If '<commands-to-execute>' are executed, the '<mtree manifest
+#       pathname>' will be updated to contain the current state of the
+#       files in '<directory on which mtree is executed>'
+#
+#   This effectively makes guarding any sub-process based on file
+#   attributes very simple: if the files in a subdirectory have not
+#   changed since the last time the command was executed, do not
+#   execute the commands.
+#
+define lmsbw_expand_mtree_command_guard
+	set -e;									\
+	if $(if $(5),[ $(2) -nt $(5) ] &&)					\
+	    $(LMSBW_MTREE_CHECK_MANIFEST)					\
+		$(if $(CB_VERBOSE),--verbose)					\
+		--component $(strip $(1))					\
+		--mtree $(MTREE)						\
+		--manifest "$(strip $(2))"					\
+		--directory-tree "$(strip $(3))"; then				\
+		$(PROGRESS) "$$@: No files changed";				\
+		exit 0;								\
+	fi;									\
+	$(4)									\
+	if [ $$$$? -eq 0 ] ; then						\
+		$(PROGRESS) "$(strip $(1)): Updating manifest";			\
+		$(LMSBW_MTREE_GENERATE_MANIFEST)				\
+			$(if $(CB_VERBOSE),--verbose)				\
+			--component $(strip $(1))				\
+			--mtree $(MTREE)					\
+			--manifest "$(strip $(2))"				\
+			--directory-tree "$(strip $(3))";			\
+	fi;
+endef
