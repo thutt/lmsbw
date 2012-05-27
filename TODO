@@ -20,3 +20,4 @@
    module.makefile?
  o Add ability to set build-targets.
  o Add ability to set install-targets.
+ o Add ability to set no-parallel.
