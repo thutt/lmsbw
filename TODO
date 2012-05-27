@@ -12,4 +12,11 @@
  o Add required 'description' to components.
  o document that module.makefile is run in the directory where the
    configuration file is stored.
- o If debugging enabled, module.make should warn on undefined variables.
+ o If debugging enabled, module.make should warn on undefined
+   variables.
+ o Need to be able to configure 'build' targets for a module.
+ o Could Make command line options in lmsbw_expand_build_module() be
+   put into a text file in the build directory and included by
+   module.makefile?
+ o Add ability to set build-targets.
+ o Add ability to set install-targets.
