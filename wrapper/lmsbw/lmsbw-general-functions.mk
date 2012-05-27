@@ -98,3 +98,20 @@ define lmsbw_expand_mtree_command_guard
 			--directory-tree "$(strip $(3))";			\
 	fi;
 endef
+
+# lmsbw_makeflags
+#
+#  Set MAKEFLAGS in a form that suitable for use on a recursive
+#  invocation of Make.
+#
+#  Gnu Make normally manages this an passes options set on the command
+#  line to subordinate invocations of Make, but this is objectionable
+#  because we specifically want our subordinate makes to be as verbose
+#  as possible -- for the log file system.
+#
+#  The MAKEFLAGS is set to nothing so that it would appear like the
+#  subordinate Make was started with a simple command line.
+#
+define lmsbw_makeflags
+MAKEFLAGS=""
+endef

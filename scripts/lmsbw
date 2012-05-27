@@ -18,9 +18,14 @@
 
 function main ()
 {
+    local verbosity="";
     local lmsbw_error_file="/tmp/lmsbw-errors.${BASHPID}";
-    local makeopts="--silent --no-builtin-rules -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
+    local makeopts="--no-builtin-rules -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
     local debug;
+
+    if [ -z "${LMSBW_VERBOSE}" ] ; then
+        verbosity="--silent";   # verbose not enabled => make should be silent.
+    fi;
 
     if [ ! -z "${LMSBW_DEBUG}" ] ; then
         debug="--warn-undefined-variables";
@@ -28,13 +33,7 @@ function main ()
     start_seconds=$(date +%s)
     build_system_dir=$(readlink -f $(dirname ${0})/..);
     makefile=${build_system_dir}/wrapper/Makefile
-
-    # Adding silent to this command line will affect all submakes.
-    # Specifically, submakes for packages will not have commands
-    # printed, and this is *not* desired.  Instead, all submakes
-    # should be fully expanded in their respective log files.
-    #
-    cmd="make ${makeopts} ${debug} -f ${makefile} ${@}";
+    cmd="make ${makeopts} ${verbosity} ${debug} -f ${makefile} ${@}";
 
     echo "${cmd}";
     success="yes";

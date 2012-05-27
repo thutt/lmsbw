@@ -42,6 +42,23 @@ $(call get,LMSBW_$(strip $(1)),build-directory)			\
 
 endef
 
+define lmsbw_expand_build_module
+	$(MESSAGE) "$(1): Invoking '$(1)' build system"; \
+	$(TIME)											\
+	-f "$(foreach v,$(shell seq $(MAKELEVEL))," ") [$(MAKELEVEL)]  $(1): elapsed time: %E"	\
+	--output="$(call get,LMSBW_$(strip $(1)),build-directory)/build-time.text"		\
+	$(MAKE)											\
+		-f $(LMSBW_DIR)/wrapper/module/module.makefile					\
+		-C $(call get,LMSBW_$(strip $(1)),build-directory)				\
+		$(call lmsbw_makeflags)								\
+		LMSBW_VERBOSE=1									\
+		LMSBW_COMPONENT=$(1)								\
+		install										\
+		>$(call get,LMSBW_$(strip $(1)),build-directory)/lmsbw-build.log 2>&1;		\
+	$(if $(LMSBW_VERBOSE)$(LMSBW_ELAPSED_TIME),$(CAT)					\
+		$(call get,LMSBW_$(strip $(1)),build-directory)/build-time.text;)
+endef
+
 # generate_component_install <component>
 #
 define generate_component_install
@@ -50,8 +67,9 @@ define generate_component_install
 install:: install.$(strip $(1))
 
 install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
-	$(call lmsbw_component_mtree_command_guard,$(1), \
-		$(MESSAGE) "$(1): installing $$@";)
+	$(call lmsbw_component_mtree_command_guard,$(1), 	\
+		$(call lmsbw_expand_build_module,$(1))		\
+	)
 
 endef
 
