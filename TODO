@@ -6,3 +6,7 @@
    include directories should not intersect.
  o Remove LMSBW_MTREE_ROOT
  o Add new target which reports on build space used per component
+ o Provide module.makefile a mechanism to select a toolchain, and to
+   get it installed.
+ o implement $(call _gnu_make_j_option,$(1))
+ o Add command line argument processing to lmsbw
