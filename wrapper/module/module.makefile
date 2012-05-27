@@ -13,17 +13,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+.DEFAULT_GOAL := install
+
 include $(LMSBW_DIR)/wrapper/gmsl/gmsl
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
 
-.PHONY:	install
-install:
-	$(ATSIGN)$(MESSAGE) "$(LMSBW_COMPONENT)";
-	$(ATSIGN)$(MESSAGE) "$(LMSBW_KIND)";
-	$(ATSIGN)$(MESSAGE) "$(LMSBW_SOURCE_DIRECTORY)";
-	$(ATSIGN)$(MESSAGE) "$(LMSBW_BUILD_DIRECTORY)";
-	$(ATSIGN)$(MESSAGE) "$(LMSBW_DESDIR_DIRECTORY)";
-	$(ATSIGN)$(MESSAGE) "$(LMSBW_CONFIGURATION_FILE)";
-	$(ATSIGN)$(TRUE);
+.PHONY:	install build configure sync
+
+sync:
+	$(MESSAGE) "Syncing source directory to build directory";
+	$(RSYNC) --archive --verbose --compress --recursive \
+		$(LMSBW_SOURCE_DIRECTORY) $(LMSBW_BUILD_DIRECTORY)
+
+configure:	module.configure.$(LMSBW_COMPONENT)
+
+build:		module.build.$(LMSBW_COMPONENT)
 
 
+# The install rule is the only rule invoked by the LMSBW.  It then
+# drives the other aspects of building a component.
+#
+install:	module.install.$(LMSBW_COMPONENT)
+	$(ATSIGN)$(MESSAGE) "$@: installed"
+	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_COMPONENT)";
+	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_KIND)";
+	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_SOURCE_DIRECTORY)";
+	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_BUILD_DIRECTORY)";
+	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_DESDIR_DIRECTORY)";
+	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_CONFIGURATION_FILE)";
+
+include $(LMSBW_DIR)/wrapper/module/last-resort-rules-$(LMSBW_KIND)-module.mk

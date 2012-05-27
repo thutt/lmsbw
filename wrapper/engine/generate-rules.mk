@@ -64,7 +64,8 @@ define lmsbw_expand_build_module
 		LMSBW_BUILD_DIRECTORY="$(call get,LMSBW_$(strip $(1)),build-directory)"		\
 		LMSBW_DESDIR_DIRECTORY="$(call get,LMSBW_$(strip $(1)),destdir-directory)"	\
 		LMSBW_CONFIGURATION_FILE="$(call get,LMSBW_$(strip $(1)),configuration-file)"	\
-		install										\
+		LMSBW_BUILD_TARGET="$(call get,LMSBW_$(strip $(1)),build-target)"		\
+		LMSBW_NO_PARALLEL="$(call get,LMSBW_$(strip $(1)),no-parallel)"			\
 		>$(call get,LMSBW_$(strip $(1)),build-directory)/lmsbw-build.log 2>&1;		\
 	$(if $(LMSBW_VERBOSE)$(LMSBW_ELAPSED_TIME),$(CAT)					\
 		$(call get,LMSBW_$(strip $(1)),build-directory)/build-time.text;)
