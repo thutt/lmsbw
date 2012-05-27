@@ -75,3 +75,4 @@ export LMSBW_TARBALL_SOURCE_ROOT	:=		\
 
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-general-functions.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system-utilities.mk
+include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-scripts.mk

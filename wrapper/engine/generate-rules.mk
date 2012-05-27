@@ -42,6 +42,11 @@ $(call get,LMSBW_$(strip $(1)),build-directory)			\
 
 endef
 
+# lmsbw_expand_build_module <component>
+#
+#   Expands to the commands which invoke a subordinate make on the
+#   provided module sources.
+#
 define lmsbw_expand_build_module
 	$(MESSAGE) "$(1): Invoking '$(1)' build system"; \
 	$(TIME)											\
@@ -49,10 +54,16 @@ define lmsbw_expand_build_module
 	--output="$(call get,LMSBW_$(strip $(1)),build-directory)/build-time.text"		\
 	$(MAKE)											\
 		-f $(LMSBW_DIR)/wrapper/module/module.makefile					\
-		-C $(call get,LMSBW_$(strip $(1)),build-directory)				\
+		-C $(dir $(call get,LMSBW_$(strip $(1)),configuration-file))			\
 		$(call lmsbw_makeflags)								\
 		LMSBW_VERBOSE=1									\
+		LMSBW_DIR="$(LMSBW_DIR)"							\
 		LMSBW_COMPONENT=$(1)								\
+		LMSBW_KIND="$(call get,LMSBW_$(strip $(1)),kind)"				\
+		LMSBW_SOURCE_DIRECTORY="$(call get,LMSBW_$(strip $(1)),source-directory)"	\
+		LMSBW_BUILD_DIRECTORY="$(call get,LMSBW_$(strip $(1)),build-directory)"		\
+		LMSBW_DESDIR_DIRECTORY="$(call get,LMSBW_$(strip $(1)),destdir-directory)"	\
+		LMSBW_CONFIGURATION_FILE="$(call get,LMSBW_$(strip $(1)),configuration-file)"	\
 		install										\
 		>$(call get,LMSBW_$(strip $(1)),build-directory)/lmsbw-build.log 2>&1;		\
 	$(if $(LMSBW_VERBOSE)$(LMSBW_ELAPSED_TIME),$(CAT)					\
@@ -61,15 +72,17 @@ endef
 
 # generate_component_install <component>
 #
+#   Generates an 'install.<component>' target.  This is used to invoke
+#   a subordinate make on the module's sources.
+#
 define generate_component_install
 .PHONY:	install.$(strip $(1))
 
 install:: install.$(strip $(1))
 
 install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
-	$(call lmsbw_component_mtree_command_guard,$(1), 	\
-		$(call lmsbw_expand_build_module,$(1))		\
-	)
+	$(call lmsbw_component_mtree_command_guard,$(1),	\
+		$(call lmsbw_expand_build_module,$(1)))
 
 endef
 

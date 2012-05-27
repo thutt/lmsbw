@@ -20,7 +20,6 @@ export LMSBW_DIR := $(realpath $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST)
 include $(LMSBW_DIR)/wrapper/gmsl/gmsl
 include $(LMSBW_DIR)/wrapper/engine/md5sum.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
-include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-scripts.mk
 include $(LMSBW_DIR)/wrapper/engine/component-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/declare-source-module-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/declare-targets.mk

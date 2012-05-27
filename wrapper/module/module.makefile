@@ -13,9 +13,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+include $(LMSBW_DIR)/wrapper/gmsl/gmsl
+include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
 
-
+.PHONY:	install
 install:
-	echo "reached install rule";
-	true
+	$(ATSIGN)$(MESSAGE) "$(LMSBW_COMPONENT)";
+	$(ATSIGN)$(MESSAGE) "$(LMSBW_KIND)";
+	$(ATSIGN)$(MESSAGE) "$(LMSBW_SOURCE_DIRECTORY)";
+	$(ATSIGN)$(MESSAGE) "$(LMSBW_BUILD_DIRECTORY)";
+	$(ATSIGN)$(MESSAGE) "$(LMSBW_DESDIR_DIRECTORY)";
+	$(ATSIGN)$(MESSAGE) "$(LMSBW_CONFIGURATION_FILE)";
+	$(ATSIGN)$(TRUE);
+
 

@@ -10,3 +10,6 @@
    get it installed.
  o implement $(call _gnu_make_j_option,$(1))
  o Add required 'description' to components.
+ o document that module.makefile is run in the directory where the
+   configuration file is stored.
+ o If debugging enabled, module.make should warn on undefined variables.
