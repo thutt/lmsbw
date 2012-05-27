@@ -40,6 +40,8 @@ log::
 
 report::
 
+components::
+
 prerequisite-report::
 
 dependent-report::

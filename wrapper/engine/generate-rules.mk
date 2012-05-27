@@ -109,6 +109,21 @@ log.$(strip $(1)):
 
 endef
 
+# generate_component_component <component>
+#
+#   This generates a rule which will cause the component name to be
+#   displayed.
+#
+define generate_component_component
+.PHONY:	component.$(strip $(1))
+
+components:: component.$(strip $(1))
+
+component.$(strip $(1)):
+	$(ATSIGN)$(PRINTF) "%25s : %s\n" "$(1)" "$(call get,LMSBW_$(strip $(1)),description)";
+
+endef
+
 # generate_component_rules_source <component>
 #
 #   Generate build rules for a 'source' module.
@@ -116,6 +131,7 @@ endef
 define generate_component_rules_source
 $(call generate_component_directory_rules,$(1))
 $(call generate_component_install,$(1))
+$(call generate_component_component,$(1))
 $(call generate_component_clean,$(1))
 $(call generate_component_report,$(1))
 $(call generate_component_build_log,$(1))

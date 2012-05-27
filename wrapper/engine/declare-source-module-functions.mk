@@ -39,6 +39,7 @@ endef
 
 # declare_source_module <module-name>,
 #			<component-name>,
+#                       <description>
 #                       <build | image>,
 #                       <configuration-file>
 #                       <full path to source directory>
@@ -48,27 +49,28 @@ define declare_source_module
 $(call assert,$(call not,$(call defined,LMSBW_components,$(strip $(2)))),			\
 	Component '$(strip $(2))' is already declared by module					\
 	'$(call get,LMSBW_components,$(strip $(2)))')						\
-$(call assert,$(call or,$(call seq,$(strip $(3)),build),$(call seq,$(strip $(3)),image)),	\
-	Reason '$(strip $(3))' is not 'build' nor 'image')					\
-$(call assert,$(call seq,$(wildcard $(strip $(5))),)						\
-	Source directory '$(strip $(5))' does not exist)					\
-$(call assert_exists,$(strip $(5)));								\
+$(call assert,$(call or,$(call seq,$(strip $(4)),build),$(call seq,$(strip $(4)),image)),	\
+	Reason '$(strip $(4))' is not 'build' nor 'image')					\
+$(call assert,$(call seq,$(wildcard $(strip $(6))),)						\
+	Source directory '$(strip $(6))' does not exist)					\
+$(call assert_exists,$(strip $(6)));								\
 $(call set,LMSBW_components,$(strip $(2)),$(strip $(1)))					\
 $(call __msk,$(2),kind,source)									\
-$(call __msk,$(2),reason,$(3))									\
+$(call __msk,$(2),description,$(strip $(3)))							\
+$(call __msk,$(2),reason,$(4))									\
 $(call __msk,$(2),module,$(1))									\
 $(call __msk,$(2),component,$(2))								\
-$(call __msk,$(2),prerequisite,$(6))								\
-$(call __msk,$(2),source-directory,$(5))							\
-$(call __msk,$(2),configuration-file,$(4))							\
+$(call __msk,$(2),prerequisite,$(7))								\
+$(call __msk,$(2),source-directory,$(6))							\
+$(call __msk,$(2),configuration-file,$(5))							\
 $(call __msk,$(2),build-root-directory,$(call __expand_build_root,$(2)))			\
 $(call __msk,$(2),build-directory,$(call __mgk,$(2),build-root-directory)/build)		\
 $(call __msk,$(2),mtree-manifest,$(call __mgk,$(2),build-root-directory)/$(strip $(2)).mtree)	\
 $(call __msk,$(2),destdir-directory,$(call __mgk,$(2),build-root-directory)/destdir)		\
 $(call __msk,$(2),build-log,$(call __mgk,$(2),build-directory)/lmsbw-build.log)			\
-$(call assert,$(call not,$(filter $(2),$(6))),							\
+$(call assert,$(call not,$(filter $(2),$(7))),							\
 	Component '$(2)' cannot have itself as a prerequisite)					\
-$(foreach p,$(6),$(call assert,$(call not,$(filter $(2),					\
+$(foreach p,$(7),$(call assert,$(call not,$(filter $(2),					\
 	$(call get,LMSBW_$(strip $(p)),prerequisite))),						\
 		Component '$(2)' and '$(p)' are mutually dependent))
 endef
