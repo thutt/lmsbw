@@ -9,4 +9,4 @@
  o Provide module.makefile a mechanism to select a toolchain, and to
    get it installed.
  o implement $(call _gnu_make_j_option,$(1))
- o Add command line argument processing to lmsbw
+ o Add required 'description' to components.

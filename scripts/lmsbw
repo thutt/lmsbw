@@ -15,27 +15,104 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+function display_help ()
+{
+    cat <<EOF
+${program}                                                 \\
+   [--help | --debug | --verbose | --progress | --time]... \\
+   [make-options]...
+
+  Builds a set of software based on a configuration.
+
+  The non-option arguments to this program are passed directly to Gnu
+  Make.
+
+  To see the available targets: lmsbw targets
+  To see available components : lmsbw components
+
+  --help | -h                  : Show this help and exit
+  --debug                      : Enable debugging LMSBW system
+  --verbose                    : Enable more verbosity from build
+  --progress                   : Produce more progress messages during build
+  --time                       : Show elapsed time for module builds
+
+EOF
+}
 
 function main ()
 {
-    local verbosity="";
+    local verbose="--silent";   # verbose not enabled => make should be silent.
     local lmsbw_error_file="/tmp/lmsbw-errors.${BASHPID}";
     local makeopts="--no-builtin-rules -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
     local debug;
 
-    if [ -z "${LMSBW_VERBOSE}" ] ; then
-        verbosity="--silent";   # verbose not enabled => make should be silent.
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long progress                         \
+        --long time                             \
+        --long verbose                          \
+        --long debug                            \
+        -n "${program}"                         \
+        -- "$@");
+
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
     fi;
 
-    if [ ! -z "${LMSBW_DEBUG}" ] ; then
-        debug="--warn-undefined-variables";
-    fi;
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --verbose)
+                unset verbose;
+                export LMSBW_VERBOSE=1
+                shift 1 ;;
+
+            --progress)
+                export LMSBW_PROGRESS=1
+                shift 1 ;;
+
+            --time)
+                export LMSBW_ELAPSED_TIME=1
+                shift 1 ;;
+
+            --debug)
+                export LMSBW_DEBUG=1
+                debug="--warn-undefined-variables";
+                shift 1 ;;
+
+            --) shift ;
+                break ;;
+
+            *) echo "Internal error: ${1}!" ;
+                argument_failure="yes" ;
+        esac
+    done
+
+####
+
+
     start_seconds=$(date +%s)
     build_system_dir=$(readlink -f $(dirname ${0})/..);
     makefile=${build_system_dir}/wrapper/Makefile
-    cmd="make ${makeopts} ${verbosity} ${debug} -f ${makefile} ${@}";
+    cmd="make ${makeopts} ${verbose} ${debug} -f ${makefile} ${@}";
 
-    echo "${cmd}";
+    if [ ! -z "${LMSBW_VERBOSE}" ] ; then
+        echo "${cmd}";
+    fi;
     success="yes";
     ${cmd} "$@" 2>"${lmsbw_error_file}" || unset success;
     end_seconds=$(date +%s)
@@ -48,7 +125,9 @@ function main ()
     #
     elapsed_seconds=$((${end_seconds} - ${start_seconds}));
     elapsed_time=$(date -u -d "1970-01-01 ${elapsed_seconds} seconds" +"%H:%M:%S");
-    echo -e  "\n++++ Build time: ${elapsed_time}  (seconds: ${elapsed_seconds})";
+    if [ ! -z "${LMSBW_ELAPSED_TIME}" ] ; then
+        echo -e  "\n++++ Build time: ${elapsed_time}  (seconds: ${elapsed_seconds})";
+    fi;
 
     if [ -z "${success}" ] ; then
         echo -e "\n*****\n***** Failed; subdirectory failures:\n*****\n";
