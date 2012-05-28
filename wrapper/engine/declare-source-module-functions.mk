@@ -74,14 +74,3 @@ $(foreach p,$(7),$(call assert,$(call not,$(filter $(2),					\
 	$(call get,LMSBW_$(strip $(p)),prerequisite))),						\
 		Component '$(2)' and '$(p)' are mutually dependent))
 endef
-
-# fixup_component_fields <component>
-#
-#   Sets the component fields which cannot be assigned until the full
-#   set of components is known.
-#
-define fixup_component_fields
-$(call __msk,$(1),install-directory,				\
-	$(call lmsbw_expand_install_directory,			\
-		$(call get,LMSBW_$(strip $(1)),reason)))
-endef

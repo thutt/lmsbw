@@ -32,6 +32,10 @@ __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-directory)";
 	@$(ECHO) "$(1)|  destdir   : $(call get,LMSBW_$(strip $(1)),destdir-directory)";
 	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),install-directory)";
+	@$(ECHO) "$(1)|Targets     :";
+	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),install-target)";
+	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-target)";
+
 endef
 
 # generate_component_prerequisite_report <component>
