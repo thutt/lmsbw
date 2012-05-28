@@ -23,7 +23,7 @@
 define lmsbw_component_mtree_command_guard
 $(ATSIGN)$(call lmsbw_expand_mtree_command_guard,		\
 	$(1),							\
-	$(call get,LMSBW_$(strip $(1)),mtree-manifest),		\
+	$(call get,LMSBW_$(strip $(1)),source-mtree-manifest),	\
 	$(call get,LMSBW_$(strip $(1)),source-directory),	\
 	$(2),							\
 	$(call get,LMSBW_$(strip $(1)),configuration-file))

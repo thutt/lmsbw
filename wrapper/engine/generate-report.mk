@@ -28,10 +28,13 @@ __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|  Prereq    : $(call get,LMSBW_$(strip $(1)),prerequisite)";
 	@$(ECHO) "$(1)|  config    : $(call get,LMSBW_$(strip $(1)),configuration-file)";
 	@$(ECHO) "$(1)|Build Root  : $(call get,LMSBW_$(strip $(1)),build-root-directory)";
-	@$(ECHO) "$(1)|  mtree     : $(call get,LMSBW_$(strip $(1)),mtree-manifest)";
 	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-directory)";
 	@$(ECHO) "$(1)|  destdir   : $(call get,LMSBW_$(strip $(1)),destdir-directory)";
-	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),install-directory)";
+	@$(ECHO) "$(1)|mtree       :";
+	@$(ECHO) "$(1)|  src mtree : $(call get,LMSBW_$(strip $(1)),source-mtree-manifest)";
+	@$(ECHO) "$(1)|  api mtree : $(call get,LMSBW_$(strip $(1)),api-mtree-manifest)";
+	@$(ECHO) "$(1)|Install     : $(call get,LMSBW_$(strip $(1)),install-directory)";
+	@$(ECHO) "$(1)|  api       : $(call get,LMSBW_$(strip $(1)),exported-api)";
 	@$(ECHO) "$(1)|Targets     :";
 	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),install-target)";
 	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-target)";
