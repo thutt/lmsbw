@@ -22,4 +22,20 @@
    of dependent modules; if they are different, then rebuild
    dependents after cleaning them.  A full rebuild on API changes is
    caused by rsync not preserving the timestamps.  Replace '--times'
-   with '--ignore-times' on the rsync command line.
+   with '--ignore-times' on the rsync command line.  Do not know how
+   to determine if the API has changed; mtree works on pathnames, not
+   files.  Perhaps automatically anything in $(DESTDIR)/include?  This
+   would be C-specific and is objectionable.  static libraries should
+   be considered part of an API, too.
+ o Need toolchain capability.  What about Windows toolchains?  A
+   component field 'toolchain' can be set.  If not set, the host
+   toolchain will be used.  If set, it indicates the toolchain
+   configuration to use.  The toolchain can be built, or simply
+   installed.
+ o Add lmsbw_ prefix to module functions
+ o document declare_source_module
+ o document declare_component_install_target
+ o document declare_component_build_target
+ o document declare_component_api
+ o document each file of LMSBW_<component>
+ o document LMSBW_<component>[exported-api]
