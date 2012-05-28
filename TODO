@@ -4,17 +4,20 @@
  o Sharing interfaces between between 'build' and 'image' modules out
    to be disallowed.  The compilers may be different, and their set of
    include directories should not intersect.
- o Remove LMSBW_MTREE_ROOT
  o Add new target which reports on build space used per component
  o Provide module.makefile a mechanism to select a toolchain, and to
    get it installed.
- o implement $(call _gnu_make_j_option,$(1))
- o Add required 'description' to components.
  o document that module.makefile is run in the directory where the
    configuration file is stored.
  o If debugging enabled, module.make should warn on undefined
    variables.
- o Need to be able to configure 'build' targets for a module.
  o Could Make command line options in lmsbw_expand_build_module() be
    put into a text file in the build directory and included by
    module.makefile?
+ o Need to be able to specify include directories in the install
+   directory so that modules can use them.  Or, should this be in the
+   module Makefile?
+ o Need to be able to specify an API to be exported from a module.
+   This API will be checked in the install directory during building
+   of dependent modules; if they are different, then rebuild
+   dependents after cleaning them.
