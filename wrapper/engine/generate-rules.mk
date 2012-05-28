@@ -63,6 +63,7 @@ define lmsbw_expand_build_module
 		LMSBW_SOURCE_DIRECTORY="$(call get,LMSBW_$(strip $(1)),source-directory)"	\
 		LMSBW_BUILD_DIRECTORY="$(call get,LMSBW_$(strip $(1)),build-directory)"		\
 		LMSBW_DESDIR_DIRECTORY="$(call get,LMSBW_$(strip $(1)),destdir-directory)"	\
+		LMSBW_INSTALL_DIRECTORY="$(call get,LMSBW_$(strip $(1)),install-directory)"	\
 		LMSBW_CONFIGURATION_FILE="$(call get,LMSBW_$(strip $(1)),configuration-file)"	\
 		LMSBW_BUILD_TARGET="$(call get,LMSBW_$(strip $(1)),build-target)"		\
 		LMSBW_INSTALL_TARGET="$(call get,LMSBW_$(strip $(1)),install-target)"		\
