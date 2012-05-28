@@ -59,16 +59,9 @@ export LMSBW_BUILD_SYSTEM_FILES		:=		\
 export LMSBW_COMMON_BUILD_SYSTEM_FILES 	:=		\
 	$(LMSBW_BUILD_SYSTEM_FILES)/common-build-system-files
 
-# LMSBW_MTREE_ROOT is a directory which can be used to store mtree
-# manifests.
-#
-export LMSBW_MTREE_ROOT			:=		\
-	$(LMSBW_BUILD_SYSTEM_FILES)/mtree
-
 export LMSBW_DIRECTORIES		:=		\
 	$(LMSBW_BUILD_SYSTEM_FILES)			\
-	$(LMSBW_COMMON_BUILD_SYSTEM_FILES)		\
-	$(LMSBW_MTREE_ROOT)
+	$(LMSBW_COMMON_BUILD_SYSTEM_FILES)
 
 export LMSBW_TARBALL_SOURCE_ROOT	:=		\
 	$(BW_BUILD_ROOT)
