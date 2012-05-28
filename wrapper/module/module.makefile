@@ -21,9 +21,9 @@ include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
 .PHONY:	install build configure sync
 
 sync:
-	$(MESSAGE) "Syncing source directory to build directory";
-	$(RSYNC) --archive --verbose --compress --recursive \
-		$(LMSBW_SOURCE_DIRECTORY) $(LMSBW_BUILD_DIRECTORY)
+	$(MESSAGE) "Syncing '$(LMSBW_SOURCE_DIRECTORY)' to '$(LMSBW_BUILD_DIRECTORY)'";
+	$(RSYNC) --archive --verbose --compress --recursive		\
+		$(LMSBW_SOURCE_DIRECTORY) $(LMSBW_BUILD_DIRECTORY);
 
 configure:	module.configure.$(LMSBW_COMPONENT)
 
@@ -34,12 +34,8 @@ build:		module.build.$(LMSBW_COMPONENT)
 # drives the other aspects of building a component.
 #
 install:	module.install.$(LMSBW_COMPONENT)
-	$(ATSIGN)$(MESSAGE) "$@: installed"
-	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_COMPONENT)";
-	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_KIND)";
-	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_SOURCE_DIRECTORY)";
-	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_BUILD_DIRECTORY)";
-	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_DESDIR_DIRECTORY)";
-	$(ATSIGN)$(MESSAGE) "$@: $(LMSBW_CONFIGURATION_FILE)";
+	$(MESSAGE) "Installing '$(LMSBW_COMPONENT)' to '$(LMSBW_INSTALL_DIRECTORY)'";
+	$(RSYNC) --archive --verbose --compress --recursive		\
+		$(LMSBW_DESDIR_DIRECTORY)/ $(LMSBW_INSTALL_DIRECTORY);
 
 include $(LMSBW_DIR)/wrapper/module/last-resort-rules-$(LMSBW_KIND)-module.mk
