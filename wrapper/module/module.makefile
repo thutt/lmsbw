@@ -22,7 +22,16 @@ include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
 
 sync:
 	$(MESSAGE) "Syncing '$(LMSBW_SOURCE_DIRECTORY)' to '$(LMSBW_BUILD_DIRECTORY)'";
-	$(RSYNC) --archive --verbose --compress --recursive		\
+	$(RSYNC)							\
+		--compress						\
+		--executability						\
+		--group							\
+		--owner							\
+		--perms							\
+		--recursive						\
+		--times							\
+		--update						\
+		--verbose						\
 		$(LMSBW_SOURCE_DIRECTORY) $(LMSBW_BUILD_DIRECTORY);
 
 configure:	module.configure.$(LMSBW_COMPONENT)
@@ -35,7 +44,16 @@ build:		module.build.$(LMSBW_COMPONENT)
 #
 install:	module.install.$(LMSBW_COMPONENT)
 	$(MESSAGE) "Installing '$(LMSBW_COMPONENT)' to '$(LMSBW_INSTALL_DIRECTORY)'";
-	$(RSYNC) --archive --verbose --compress --recursive		\
+	$(RSYNC)							\
+		--compress						\
+		--executability						\
+		--group							\
+		--owner							\
+		--perms							\
+		--recursive						\
+		--times							\
+		--update						\
+		--verbose						\
 		$(LMSBW_DESDIR_DIRECTORY)/ $(LMSBW_INSTALL_DIRECTORY);
 
 include $(LMSBW_DIR)/wrapper/module/last-resort-rules-$(LMSBW_KIND)-module.mk
