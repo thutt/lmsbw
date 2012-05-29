@@ -151,7 +151,7 @@ define lmsbw_generate_api_changed
 
 api-changed.$(strip $(1)):						\
 	clean.$(strip $(1))						\
-	$(foreach d,$(call lmsbw_direct_dependents,$(1)),clean.$(d))
+	$(addprefix clean.,$(call get,LMSBW_$(strip $(1)),direct-dependents))
 	$(ATSIGN)$(TRUE);
 endef
 

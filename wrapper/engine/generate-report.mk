@@ -21,11 +21,12 @@
 define generate_component_report_source
 __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|Module      : $(call get,LMSBW_$(strip $(1)),module)";
-	@$(ECHO) "$(1)|  Component : $(call get,LMSBW_$(strip $(1)),component)";
-	@$(ECHO) "$(1)|  Kind      : $(call get,LMSBW_$(strip $(1)),kind)";
-	@$(ECHO) "$(1)|  Reason    : $(call get,LMSBW_$(strip $(1)),reason)";
-	@$(ECHO) "$(1)|  Source    : $(call get,LMSBW_$(strip $(1)),source-directory)";
-	@$(ECHO) "$(1)|  Prereq    : $(call get,LMSBW_$(strip $(1)),prerequisite)";
+	@$(ECHO) "$(1)|  component : $(call get,LMSBW_$(strip $(1)),component)";
+	@$(ECHO) "$(1)|  kind      : $(call get,LMSBW_$(strip $(1)),kind)";
+	@$(ECHO) "$(1)|  reason    : $(call get,LMSBW_$(strip $(1)),reason)";
+	@$(ECHO) "$(1)|  source    : $(call get,LMSBW_$(strip $(1)),source-directory)";
+	@$(ECHO) "$(1)|  prereq    : $(call get,LMSBW_$(strip $(1)),prerequisite)";
+	@$(ECHO) "$(1)|  direct dep: $(call get,LMSBW_$(strip $(1)),direct-dependents)";
 	@$(ECHO) "$(1)|  config    : $(call get,LMSBW_$(strip $(1)),configuration-file)";
 	@$(ECHO) "$(1)|Build Root  : $(call get,LMSBW_$(strip $(1)),build-root-directory)";
 	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-directory)";
@@ -65,7 +66,7 @@ define generate_component_dependent_report
 dependent-report::	dependent.$(strip $(1))
 
 dependent.$(strip $(1)):
-	$(ATSIGN)$(ECHO) "$(1): $(call lmsbw_direct_dependents,$(1))";
+	$(ATSIGN)$(ECHO) "$(1): $(call get,LMSBW_$(strip $(1)),direct-dependents)";
 
 endef
 

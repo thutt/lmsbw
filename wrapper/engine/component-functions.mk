@@ -29,3 +29,38 @@ $(ATSIGN)$(call lmsbw_expand_mtree_command_guard,		\
 	$(call get,LMSBW_$(strip $(1)),configuration-file))
 endef
 
+# lmsbw_direct_dependents <component>
+#
+#   Returns a list of modules which are directly dependent upon the
+#   input component.
+#
+define lmsbw_direct_dependents
+$(strip $(foreach c,$(call keys,LMSBW_components),
+	$(if $(filter $(strip $(1)),$(call get,LMSBW_$(c),prerequisite)),$(c))))
+endef
+
+# lmsbw_api_changed_failure <component>
+#
+#   This rule is executed when it has been determined that the
+#   exported API of a module has chagned.  It prints a message,
+#   provides instructions on how to proceed, and then fails the build.
+#
+define lmsbw_api_changed_failure
+	if [ ! -z "$(call get,LMSBW_$(strip $(1)),direct-dependents)" ] ; then			\
+		$(MESSAGE) "The public API for '$(1)' has changed.  ";				\
+		$(MESSAGE) "This can directly affect the build of the following modules: ";	\
+		$(MESSAGE) "";									\
+		$(foreach d,$(call get,LMSBW_$(strip $(1)),direct-dependents),			\
+			$(MESSAGE) "  $(d)";)							\
+		$(MESSAGE) "";									\
+		$(MESSAGE) "A 'clean' build of involved modules must be performed.";		\
+		$(MESSAGE) "To clean all dependent modules, execute the following ";		\
+		$(MESSAGE) "and then rebuild:";							\
+		$(MESSAGE) "";									\
+		$(MESSAGE) "  lmsbw api-changed.$(strip $(1))";					\
+		$(FALSE);									\
+	else											\
+		$(RM) "$(call get,LMSBW_$(strip $(1)),api-changed)";				\
+		$(TRUE);									\
+	fi;
+endef

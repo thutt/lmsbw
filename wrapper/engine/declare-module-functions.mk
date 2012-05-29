@@ -77,6 +77,8 @@ define fixup_component_fields
 $(call __msk,$(1),install-directory,						\
 	$(call lmsbw_expand_install_directory,					\
 		$(call get,LMSBW_$(strip $(1)),reason)))			\
+	$(call set,LMSBW_$(strip $(1)),direct-dependents,			\
+		$(call lmsbw_direct_dependents,$(1)))				\
 	$(if $(call seq,$(call get,LMSBW_$(strip $(1)),install-target),),	\
 		$(call declare_component_install_target,$(strip $(1)),install))
 endef
