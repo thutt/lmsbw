@@ -79,14 +79,18 @@ endef
 #   a subordinate make on the module's sources.
 #
 define generate_component_install
-.PHONY:	install.$(strip $(1))
+.PHONY:	install.$(strip $(1)) install.$(strip $(1))_api_check
 
-install:: install.$(strip $(1))
+install:: install.$(strip $(1)) install.$(strip $(1))_api_check
 
 install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
 	$(call lmsbw_component_mtree_command_guard,$(1),	\
 		$(call lmsbw_expand_build_module,$(1)))
 
+install.$(strip $(1))_api_check:
+	$(ATSIGN)if [ -e "$(call get,LMSBW_$(strip $(1)),api-changed)" ] ; then	\
+		$(call lmsbw_api_changed_failure,$(1))				\
+	fi;
 endef
 
 # generate_component_clean <component>
@@ -102,9 +106,7 @@ clean:: clean.$(strip $(1))
 
 clean.$(strip $(1)):
 	$(ATSIGN)$(MESSAGE) "$(1): Cleaning $(1)";
-	$(ATSIGN)$(RM) -rf						\
-		$(call get,LMSBW_$(strip $(1)),build-directory)		\
-		$(call get,LMSBW_$(strip $(1)),destdir-directory)
+	$(ATSIGN)$(RM) -rf $(call get,LMSBW_$(strip $(1)),build-root-directory);
 
 endef
 
@@ -140,6 +142,20 @@ component.$(strip $(1)):
 
 endef
 
+# lmsbw_generate_api_changed <component>
+#
+#   Generates a rule which can be used to clean all modules directly
+#   dependent upon the provided module.
+define lmsbw_generate_api_changed
+.PHONY:	api-changed.$(strip $(1))
+
+api-changed.$(strip $(1)):						\
+	clean.$(strip $(1))						\
+	$(foreach d,$(call lmsbw_direct_dependents,$(1)),clean.$(d))
+	$(ATSIGN)$(TRUE);
+endef
+
+
 # generate_component_rules_source <component>
 #
 #   Generate build rules for a 'source' module.
@@ -153,6 +169,7 @@ $(call generate_component_report,$(1))
 $(call generate_component_build_log,$(1))
 $(call generate_component_prerequisite_report,$(1))
 $(call generate_component_dependent_report,$(1))
+$(call lmsbw_generate_api_changed,$(1))
 endef
 
 $(foreach c,$(call keys,LMSBW_components),							   \

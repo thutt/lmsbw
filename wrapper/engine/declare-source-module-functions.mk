@@ -67,6 +67,7 @@ $(call __msk,$(2),build-root-directory,$(call __expand_build_root,$(2)))			\
 $(call __msk,$(2),build-directory,$(call __mgk,$(2),build-root-directory)/build)		\
 $(call __msk,$(2),source-mtree-manifest,$(call __mgk,$(2),build-root-directory)/source.mtree)	\
 $(call __msk,$(2),api-mtree-manifest,$(call __mgk,$(2),build-root-directory)/api.mtree)		\
+$(call __msk,$(2),api-changed,$(call __mgk,$(2),build-root-directory)/api-changed.text)		\
 $(call __msk,$(2),destdir-directory,$(call __mgk,$(2),build-root-directory)/destdir)		\
 $(call __msk,$(2),build-log,$(call __mgk,$(2),build-directory)/lmsbw-build.log)			\
 $(call assert,$(call not,$(filter $(2),$(7))),							\

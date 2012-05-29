@@ -65,8 +65,7 @@ define generate_component_dependent_report
 dependent-report::	dependent.$(strip $(1))
 
 dependent.$(strip $(1)):
-	$(ATSIGN)$(ECHO) "$(1): $(strip $(foreach c,$(call keys,LMSBW_components),		\
-	$(if $(filter $(1),$(call get,LMSBW_$(c),prerequisite)),$(c))))";
+	$(ATSIGN)$(ECHO) "$(1): $(call lmsbw_direct_dependents,$(1))";
 
 endef
 

@@ -25,6 +25,7 @@ include $(LMSBW_DIR)/wrapper/engine/declare-module-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/declare-targets.mk
 include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
+include $(LMSBW_DIR)/wrapper/engine/general-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-rules.mk
 include $(LMSBW_DIR)/wrapper/engine/mtree.mk
 include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk
