@@ -42,3 +42,4 @@
    lmsbw_api_changed_failure to incorporate it.
  o When indirect dependencies code is written, update
    lmsbw_api_changed_failure to incorporate it.
+ o Add 'indirect-dependencies' list to LMSBW_<component>
