@@ -25,8 +25,16 @@ source "${__include_file}";
 function display_help ()
 {
     cat <<EOF
-${program}                                                 \\
-   [--help | --debug | --verbose | --progress | --time]... \\
+${program} \\
+   [--help               | \\
+    --build-root         | \\
+    --configuration      | \\
+    --debug              | \\
+    --parallel           | \\
+    --progress           | \\
+    --tarball-repository | \\
+    --verbose            | \\
+    --time]...             \\
    [make-options]...
 
   Builds a set of software based on a configuration.
@@ -38,9 +46,13 @@ ${program}                                                 \\
   To see available components : lmsbw components
 
   --help | -h                  : Show this help and exit
+  --build-root                 : Specify BW_BUILD_ROOT
+  --configuration              : Full path to LMSBW configuration file
   --debug                      : Enable debugging LMSBW system
-  --verbose                    : Enable more verbosity from build
   --progress                   : Produce more progress messages during build
+  --parallel                   : Specify BW_PARALLEL_LEVEL (-j to Make)
+  --tarball-repository         : Specify BW_TARBALL_REPOSITORY
+  --verbose                    : Enable more verbosity from build
   --time                       : Show elapsed time for module builds
 
 EOF
@@ -55,10 +67,14 @@ function main ()
 
     args=$(getopt -o h                          \
         --long help                             \
+        --long build-root:                      \
+        --long configuration:                   \
+        --long debug                            \
+        --long parallel:                        \
         --long progress                         \
+        --long tarball-repository:              \
         --long time                             \
         --long verbose                          \
-        --long debug                            \
         -n "${program}"                         \
         -- "$@");
 
@@ -81,17 +97,33 @@ function main ()
                 export LMSBW_VERBOSE=1
                 shift 1 ;;
 
-            --progress)
-                export LMSBW_PROGRESS=1
-                shift 1 ;;
+            --build-root)
+                BW_BUILD_ROOT="${2}";
+                shift 2 ;;
 
-            --time)
-                export LMSBW_ELAPSED_TIME=1
-                shift 1 ;;
+            --configuration)
+                export LMSBW_CONFIGURATION_FILE="${2}";
+                shift 2 ;;
 
             --debug)
                 export LMSBW_DEBUG=1
                 debug="--warn-undefined-variables";
+                shift 1 ;;
+
+            --parallel)
+                BW_PARALLEL_LEVEL="${2}";
+                shift 2 ;;
+
+            --progress)
+                export LMSBW_PROGRESS=1
+                shift 1 ;;
+
+            --tarball-repository)
+                BW_TARBALL_REPOSITORY="${2}";
+                shift 2 ;;
+
+            --time)
+                export LMSBW_ELAPSED_TIME=1
                 shift 1 ;;
 
             --) shift ;
