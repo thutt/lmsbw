@@ -1,0 +1,124 @@
+#!/bin/bash
+#
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# 
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+LMSBW_BUILD_ROOT="/tmp/lmsbw-run-tests-${BASHPID}";
+
+function display_help ()
+{
+    cat <<EOF
+${program}
+
+  Executes tests for the LMS 'build wrapper' system.
+
+  --help | -h                  : Show this help and exit
+  --configuration              : Full path to LMSBW configuration file
+  --parallel                   : Set BW_PARALLEL_LEVEL
+  --time                       : Show elapsed time for module builds
+
+EOF
+}
+
+function main ()
+{
+    local success="yes";
+
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long configuration:                   \
+        --long parallel:                        \
+        --long verbose                          \
+        -n "${program}"                         \
+        -- "$@");
+
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --verbose)
+                unset LMSBW_VERBOSE;
+                export LMSBW_VERBOSE="--verbose";
+                shift 1 ;;
+
+            --configuration)
+                export LMSBW_CONFIGURATION_FILE="${2}";
+                shift 2 ;;
+
+            --parallel)
+                BW_PARALLEL_LEVEL="${2}";
+                shift 2 ;;
+
+            --) shift ;
+                break ;;
+
+            *) echo "Internal error: ${1}!" ;
+                argument_failure="yes" ;
+        esac
+    done
+
+    # Find all 'lmsbw-test.sh' scripts 'tests' directory.
+    #
+    # Each script will be executed, and it should either return 'zero'
+    # to indicate the test passed, or 'non-zero' to indicate the test
+    # failed.
+    #
+    # Each test should use the variable '--build-root
+    # ${LMSBW_TEST_BUILD_ROOT}' when executing 'lmsbw'.
+
+    test_dir="$(readlink -f $(dirname ${program})/../tests)";
+    test_scripts=$(find "${test_dir}" -name "lmsbw-test.sh" -print);
+    for ts in ${test_scripts} ; do
+        export LMSBW_TEST_BUILD_ROOT="${LMSBW_BUILD_ROOT}$(dirname ${ts})";
+        
+        if [ -x "${ts}" ] ; then
+            mkdir --parents "${LMSBW_TEST_BUILD_ROOT}";
+            echo "${ts}: executing";
+            if ${ts} &>"${LMSBW_TEST_BUILD_ROOT}/lmsbw-build.log" ; then
+                echo "${ts}: success";
+                rm -rf "${LMSBW_TEST_BUILD_ROOT}";
+            else
+                echo "${ts}: failure (${LMSBW_TEST_BUILD_ROOT})";
+                unset success;
+            fi;
+        else
+            echo "Test script '${ts}' is not executable.";
+        fi;
+    done;
+
+    if [ ! -z "${success}" ] ; then
+        rm -rf "${LMSBW_BUILD_ROOT}"; # No error -> remove build output
+    fi;
+    [ ! -z "${success}" ] ;
+}
+
+main ${@};
