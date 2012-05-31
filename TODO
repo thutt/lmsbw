@@ -43,3 +43,5 @@
  o When indirect dependencies code is written, update
    lmsbw_api_changed_failure to incorporate it.
  o Add 'indirect-dependencies' list to LMSBW_<component>
+ o declare_component_build_target should error if component does not exist.
+ o lmsbw-run-tests should verify the expected error, if there is one.

@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
@@ -14,22 +15,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# load_configuration <pathname of configuration file declaring this function>
-#
-define load_configuration
-$(call declare_source_module,			\
-       lmsbw-test,                              \
-       lmsbw-test,				\
-       Single Source Test,			\
-       image,					\
-       $(1),					\
-       $(subst lmsbw-test.cfg,src,$(1)))
+directory=$(dirname "${0}");
+cfg="${directory}/lmsbw-test.cfg";
 
+if [ -z "${LMSBW_TEST_BUILD_ROOT}" ] ; then
+    echo "'LMSBW_TEST_BUILD_ROOT' is not set";
+    exit -1;
+fi;
 
-$(call declare_component_build_target,lmsbw-test,build)
-endef
-
-
-# Set up the LMSBW_configuration associative array.
-#
-vv:=$(call set,LMSBW_configuration,load-configuration-function,load_configuration)
+! lmsbw                                                         \
+    ${LMSBW_VERBOSE}                                            \
+    --build-root "${LMSBW_TEST_BUILD_ROOT}"                     \
+    --tarball-repository "${LMSBW_TEST_BUILD_ROOT}/tarballs"    \
+    --configuration "${cfg}";

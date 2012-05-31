@@ -14,22 +14,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# load_configuration <pathname of configuration file declaring this function>
-#
-define load_configuration
-$(call declare_source_module,			\
-       lmsbw-test,                              \
-       lmsbw-test,				\
-       Single Source Test,			\
-       image,					\
-       $(1),					\
-       $(subst lmsbw-test.cfg,src,$(1)))
+SRC	=	main.c
 
 
-$(call declare_component_build_target,lmsbw-test,build)
-endef
+build:
+	$(CC) -o executable $(SRC)
 
-
-# Set up the LMSBW_configuration associative array.
-#
-vv:=$(call set,LMSBW_configuration,load-configuration-function,load_configuration)
+install:
+	/usr/bin/install -D executable $(DESTDIR)/usr/bin/executable
