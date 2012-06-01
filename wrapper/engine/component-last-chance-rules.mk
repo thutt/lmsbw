@@ -17,7 +17,7 @@
 # This file contains 'last chance' rules for verb actions on
 # components.  If a component does not have a rule generated for the
 # verb, then the last chance rule will be used, and a comprehensible
-# error message will be output.
+# diagnostic message will be output.
 
 # lmsbw_generate_component_last_change_rule <verb>, <optional message>
 define lmsbw_generate_component_last_change_rule

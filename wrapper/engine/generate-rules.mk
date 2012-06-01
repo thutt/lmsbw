@@ -172,11 +172,7 @@ $(call generate_component_dependent_report,$(1))
 $(call lmsbw_generate_api_changed,$(1))
 endef
 
-$(foreach c,$(call keys,LMSBW_components),							   \
-	$(call assert,										   \
-		$(call or,									   \
-			$(call seq,$(call get,LMSBW_$(strip $(c)),kind),source),		   \
-			$(call seq,$(call get,LMSBW_$(strip $(c)),kind),download)),		   \
-		Module kind '$(call get,LMSBW_$(strip $(c)),kind)' is not 'source' nor 'download') \
-	$(eval $(call generate_component_rules_$(call get,LMSBW_$(strip $(c)),kind),$(c)))	   \
+$(foreach c,$(call keys,LMSBW_components),							\
+	$(call lmsbw_assert_source_or_download,$(c))						\
+	$(eval $(call generate_component_rules_$(call get,LMSBW_$(strip $(c)),kind),$(c)))	\
 )

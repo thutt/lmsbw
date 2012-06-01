@@ -28,11 +28,10 @@ endef
 #  o Function to load configuration files
 #
 ifndef LMSBW_CONFIGURATION_FILE
-$(error LMSBW_CONFIGURATION_FILE is not defined; no wrapped build system)
+$(call lmsbw_error,E1006,LMSBW_CONFIGURATION_FILE is not defined; no wrapped build system)
 endif
 
-$(if $(wildcard $(LMSBW_CONFIGURATION_FILE)),,						\
-	$(error Configuration file, '$(LMSBW_CONFIGURATION_FILE)', does not exist))
+$(call assert_exists,$(LMSBW_CONFIGURATION_FILE))
 
 include $(LMSBW_CONFIGURATION_FILE)
 
@@ -54,13 +53,11 @@ include $(LMSBW_CONFIGURATION_FILE)
 # If the function returns, all 'packages' declarations have been
 # processed.  The build wrapper will proceed to validate them.
 #
-$(call assert,$(call sne,$(origin $(call __gcv,load-configuration-function)),undefined),Invalid configuration: 'load-configuration-function' not set)
-$(call assert,$(call seq,$(origin $(call __gcv,load-configuration-function)),file),Invalid configuration: 'load-configuration-function' must be defined in an included Makefile)
-
+$(call lmsbw_check_load_configuration_function)
 
 # Load component configuration files.
 #
-$(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FILE))
+$(eval $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FILE)))
 
 $(foreach c,$(call keys,LMSBW_components),		\
 	$(eval $(call fixup_component_fields,$(c)))	\

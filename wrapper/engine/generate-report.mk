@@ -75,11 +75,7 @@ endef
 #   Generates a report for any type of module.
 #
 define generate_component_report
-$(call assert,											\
-	$(call or,										\
-		$(call seq,$(call get,LMSBW_$(strip $(1)),kind),source),			\
-		$(call seq,$(call get,LMSBW_$(strip $(1)),kind),download)),			\
-	Module kind '$(call get,LMSBW_$(strip $(1)),kind)' is not 'source' nor 'download')
+$(call lmsbw_assert_source_or_download,$(1))
 
 report:: report.$(strip $(1))
 .PHONY:	report.$(strip $(1)) __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind)
