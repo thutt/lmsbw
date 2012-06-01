@@ -17,11 +17,10 @@
 # This test simply verifies that a single source component will easily
 # build.
 
-directory=$(dirname "${0}");
-cfg="${directory}/lmsbw-test.cfg";
-
-if [ -z "${LMSBW_TEST_BUILD_ROOT}" ] ; then
-    echo "'LMSBW_TEST_BUILD_ROOT' is not set";
+if [ ! -z "${LMSBW_TEST_COMMON}" ] ; then
+    source "${LMSBW_TEST_COMMON}";
+else
+    echo "LMSBW_TEST_COMMON is not set; unable to proceed with test";
     exit -1;
 fi;
 
@@ -30,3 +29,4 @@ lmsbw                                                           \
     --build-root "${LMSBW_TEST_BUILD_ROOT}"                     \
     --tarball-repository "${LMSBW_TEST_BUILD_ROOT}/tarballs"    \
     --configuration "${cfg}";
+expect_command_success;

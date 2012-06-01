@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
@@ -14,16 +15,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-if [ ! -z "${LMSBW_TEST_COMMON}" ] ; then
-    source "${LMSBW_TEST_COMMON}";
-else
-    echo "LMSBW_TEST_COMMON is not set; unable to proceed with test";
+
+#  Functions & variables common to all tests.
+#
+program="${0}"
+directory=$(dirname "${0}");
+cfg="${directory}/lmsbw-test.cfg";
+
+if [ -z "${LMSBW_TEST_BUILD_ROOT}" ] ; then
+    echo "'LMSBW_TEST_BUILD_ROOT' is not set";
     exit -1;
 fi;
 
-lmsbw                                                           \
-    ${LMSBW_VERBOSE}                                            \
-    --build-root "${LMSBW_TEST_BUILD_ROOT}"                     \
-    --tarball-repository "${LMSBW_TEST_BUILD_ROOT}/tarballs"    \
-    --configuration "${cfg}";
-expect_command_failure;
+function expect_command_failure ()
+{
+    if [ $? == "0" ] ; then
+        echo "Previous command succeeded when it was expected to fail.";
+        exit -1;
+    fi;
+}
+
+function expect_command_success ()
+{
+    if [ $? != "0" ] ; then
+        echo "Previous command failed when it was expected to succeed.";
+        exit -1;
+    fi;
+}
