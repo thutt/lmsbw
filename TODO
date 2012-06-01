@@ -45,3 +45,5 @@
  o Add 'indirect-dependencies' list to LMSBW_<component>
  o declare_component_build_target should error if component does not exist.
  o lmsbw-run-tests should verify the expected error, if there is one.
+ o disallow multiple versions of same component
+ o disallow self prerequisite
