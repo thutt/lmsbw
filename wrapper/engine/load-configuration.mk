@@ -59,6 +59,9 @@ $(call lmsbw_check_load_configuration_function)
 #
 $(eval $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FILE)))
 
-$(foreach c,$(call keys,LMSBW_components),		\
-	$(eval $(call fixup_component_fields,$(c)))	\
+$(foreach c,$(call keys,LMSBW_components),			\
+	$(call lmsbw_assert_not_self_prerequisite,$(c))		\
+	$(call lmsbw_assert_no_mutual_dependence,$(c),		\
+		$(call get,LMSBW_$(strip $(c)),prerequisite))	\
+	$(eval $(call fixup_component_fields,$(c)))		\
 )

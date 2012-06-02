@@ -65,6 +65,4 @@ $(call __msk,$(2),api-mtree-manifest,$(call __mgk,$(2),build-root-directory)/api
 $(call __msk,$(2),api-changed,$(call __mgk,$(2),build-root-directory)/api-changed.text)		
 $(call __msk,$(2),destdir-directory,$(call __mgk,$(2),build-root-directory)/destdir)		
 $(call __msk,$(2),build-log,$(call __mgk,$(2),build-directory)/lmsbw-build.log)			
-$(call lmsbw_assert_not_self_prerequisite,$(2))
-$(call lmsbw_assert_no_mutual_dependence,$(2),$(call get,LMSBW_$(strip $(2)),prerequisite))
 endef
