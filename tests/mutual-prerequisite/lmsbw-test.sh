@@ -27,3 +27,4 @@ lmsbw                                                           \
     --tarball-repository "${LMSBW_TEST_BUILD_ROOT}/tarballs"    \
     --configuration "${cfg}";
 expect_command_failure;
+expect_error "${LMSBW_TEST_BUILD_ROOT}" "E1005";
