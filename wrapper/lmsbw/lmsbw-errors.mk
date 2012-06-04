@@ -75,14 +75,7 @@ $(call lmsbw_assert,E1004,								\
 	Component '$(strip $(1))' cannot have itself as a prerequisite)
 endef
 
-# lmsbw_assert_no_mutual_dependence <component>, <prerequisites>
-define lmsbw_assert_no_mutual_dependence
-$(foreach p,$(2),										\
-	$(call lmsbw_assert,E1005,								\
-		$(call not,$(filter $(1),$(call get,LMSBW_$(strip $(p)),prerequisite))),	\
-		Components '$(strip $(1))' and '$(strip $(p))' are mutually dependent))
-endef
-
+# E1005 is not used.
 
 # lmsbw_assert_source_or_download <component-name>
 #
@@ -94,3 +87,9 @@ $(call lmsbw_assert,E1006,									\
 	Module kind '$(call get,LMSBW_$(strip $(1)),kind)' is not 'source' nor 'download')
 endef
 
+# lmsbw_components_not_dag <main component>,
+#                          <component cycle path>
+define lmsbw_modules_not_dag
+$(call lmsbw_assert,E1007,$(false),				\
+	Module prerequisite path '$(strip $(subst $(lmsbw_space), -> ,$(2)) -> $(1))' produces a cycle)
+endef

@@ -1,4 +1,3 @@
-#!/bin/bash
 # Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
@@ -14,17 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-if [ ! -z "${LMSBW_TEST_COMMON}" ] ; then
-    source "${LMSBW_TEST_COMMON}";
-else
-    echo "LMSBW_TEST_COMMON is not set; unable to proceed with test";
-    exit -1;
-fi;
 
-lmsbw                                                           \
-    ${LMSBW_VERBOSE}                                            \
-    --build-root "${LMSBW_TEST_BUILD_ROOT}"                     \
-    --tarball-repository "${LMSBW_TEST_BUILD_ROOT}/tarballs"    \
-    --configuration "${cfg}";
-expect_command_failure;
-expect_error "${LMSBW_TEST_BUILD_ROOT}" "E1007";
+SRC	=	main.c
+
+
+build:
+	$(CC) -o executable $(SRC)
+
+install:
+	/usr/bin/install -D executable $(DESTDIR)/usr/bin/executable

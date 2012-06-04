@@ -59,9 +59,59 @@ $(call lmsbw_check_load_configuration_function)
 #
 $(eval $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FILE)))
 
+
+# check_modules_form_dag_work <main component>,
+# 			      <checking component>,
+#       		      <prerequisites of checking component>
+#
+#  Ensures that the set of loaded modules forms a DAG.  This is
+#  accomplished by keeping a set of modules that have been visited,
+#  and a path from the original module to the current module in a
+#  list.
+#
+#  Upon each recursion, if the new '<checking component>' has not been
+#  visited, its prerequisites are checked.  If any of the
+#  prerequisites match '<main component>', a cycle has been found and
+#  an error is reported.
+#
+#  After all the prerequisites are processed, the current '<checking
+#  component>' is removed from the list of compnents.  This ensures
+#  that if an error is reported, it will show only the prerequisite
+#  path that is a cycle.
+#    
+#  This process is repeated for each component that is loaded.
+#    
+define check_modules_form_dag_work
+$(if $(call not,$(call set_is_member,$(2),$(lmsbw_dag_set))),				\
+	$(eval lmsbw_dag_set:=$(call set_insert,$(2),$(lmsbw_dag_set)))			\
+	$(if $(filter $(1),$(3)),$(call lmsbw_modules_not_dag,$(1),$(lmsbw_dag_list)))	\
+	$(foreach p,$(3),								\
+		$(eval lmsbw_dag_list:=$(lmsbw_dag_list) $(p))				\
+		$(call check_modules_form_dag_work,$(1),$(p),				\
+			$(call get,LMSBW_$(strip $(p)),prerequisite))			\
+		$(eval lmsbw_dag_list:=$(call reverse,$(call rest,$(call reverse,$(lmsbw_dag_list)))))	\
+	)										\
+)
+endef
+
+# check_modules_form_dag <main component>,
+#       		 <checking component>,
+#       		 <prerequisites of checking component>
+#
+#  Checks that the set of loaded components has a dependency graph
+#  that forms a DAG.
+#
+define check_modules_form_dag
+$(eval lmsbw_dag_list:=$(1))
+$(eval lmsbw_dag_set:=$(empty_set))
+$(call check_modules_form_dag_work,$(1),$(2),$(3))
+$(eval lmsbw_dag_list:=)
+$(eval lmsbw_dag_set:=$(empty_set))
+endef
+
 $(foreach c,$(call keys,LMSBW_components),			\
 	$(call lmsbw_assert_not_self_prerequisite,$(c))		\
-	$(call lmsbw_assert_no_mutual_dependence,$(c),		\
-		$(call get,LMSBW_$(strip $(c)),prerequisite))	\
+	$(eval $(call check_modules_form_dag,$(c),$(c),		\
+		$(call get,LMSBW_$(strip $(c)),prerequisite)))	\
 	$(eval $(call fixup_component_fields,$(c)))		\
 )

@@ -49,3 +49,4 @@
  o disallow self prerequisite
  o Make module rules file & building dependent on the configuration file.
  o lmsbw_assert_build_or_image should take a component.
+ o test that unresolved modules produce error.

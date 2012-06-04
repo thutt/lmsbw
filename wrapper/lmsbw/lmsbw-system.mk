@@ -14,6 +14,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+lmsbw_empty	=
+
+define lmsbw_space
+$(lmsbw_empty) $(lmsbw_empty)
+endef
+
+define lmsbw_newline
+
+
+endef
+
 ifndef LMSBW_VERBOSE
 export LMSBW_SILENT		:= --silent
 export ATSIGN			:= @
