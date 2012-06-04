@@ -95,3 +95,14 @@ define lmsbw_modules_not_dag
 $(call lmsbw_assert,E1007,$(false),				\
 	Module prerequisite path '$(strip $(subst $(lmsbw_space), -> ,$(2)) -> $(1))' produces a cycle)
 endef
+
+
+# lmsbw_assert_known_component <component>
+#
+#    Asserts that the named component is already known to the system.
+#
+define lmsbw_assert_known_component
+$(info $(1) - $(LMSBW_components))
+$(call lmsbw_assert,E1008,$(filter $(strip $(1)),$(call keys,LMSBW_components)), \
+	Unknown component '$(strip $(1))')
+endef

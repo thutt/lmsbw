@@ -40,8 +40,6 @@
    a -> b -> c.  c is indirectly dependent on a.
  o When indirect dependencies code is written, update
    lmsbw_api_changed_failure to incorporate it.
- o When indirect dependencies code is written, update
-   lmsbw_api_changed_failure to incorporate it.
  o Add 'indirect-dependencies' list to LMSBW_<component>
  o declare_component_build_target should error if component does not exist.
  o disallow multiple versions of same component

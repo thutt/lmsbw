@@ -21,6 +21,7 @@ include $(LMSBW_DIR)/wrapper/engine/declare-source-module-functions.mk
 #   It will always be built with '-j 1'.
 #
 define declare_component_no_parallel_build
+$(call lmsbw_assert_known_component,$(1))
 lmsbw_dcnpb:=$(call set,LMSBW_$(strip $(1)),no-parallel,-j 1)
 endef
 
@@ -34,6 +35,7 @@ endef
 #  'build' phase.
 #
 define declare_component_build_target
+$(call lmsbw_assert_known_component,$(1))
 lmsbw_dcbt:=$(call set,LMSBW_$(strip $(1)),build-target,$(2))
 endef
 
@@ -45,6 +47,7 @@ endef
 #  If not set, LMSBW will set it to 'install'.
 #
 define declare_component_install_target
+$(call lmsbw_assert_known_component,$(1))
 lmsbw_dcbt:=$(call set,LMSBW_$(strip $(1)),install-target,$(2))
 endef
 
@@ -65,6 +68,7 @@ endef
 #  present in dependent modules.
 #
 define declare_component_api
+$(call lmsbw_assert_known_component,$(1))
 lmsbw_dca:=$(call set,LMSBW_$(strip $(1)),exported-api,$(strip $(2)))
 endef
 
