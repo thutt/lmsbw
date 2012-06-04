@@ -80,15 +80,9 @@ $(call lmsbw_assert,E1004,								\
 	Component '$(strip $(1))' cannot have itself as a prerequisite)
 endef
 
-# lmsbw_assert_source_or_download <component-name>
 #
-define lmsbw_assert_source_or_download
-$(call lmsbw_assert,E1006,									\
-	$(call or,										\
-		$(call seq,$(call get,LMSBW_$(strip $(1)),kind),source),			\
-		$(call seq,$(call get,LMSBW_$(strip $(1)),kind),download)),			\
-	Module kind '$(call get,LMSBW_$(strip $(1)),kind)' is not 'source' nor 'download')
-endef
+# E1006 is unused
+#
 
 # lmsbw_components_not_dag <main component>,
 #                          <component cycle path>
@@ -103,7 +97,20 @@ endef
 #    Asserts that the named component is already known to the system.
 #
 define lmsbw_assert_known_component
-$(info $(1) - $(LMSBW_components))
 $(call lmsbw_assert,E1008,$(filter $(strip $(1)),$(call keys,LMSBW_components)), \
 	Unknown component '$(strip $(1))')
 endef
+
+
+# lmsbw_assert_known_function <component>,
+#                             <expected function name>
+#
+#    Produces error if the specified function is not defind by LMSBW.
+#    This error will be produced when each new component 'kind' is
+#    created (until the function is written).
+#
+define lmsbw_assert_known_function
+$(call lmsbw_assert,E1009,$(call sne,undefined,$(origin $(strip $(2)))),		\
+		Function '$(strip $(2))' for component '$(strip $(1))' not written)
+endef
+

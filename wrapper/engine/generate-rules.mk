@@ -173,6 +173,7 @@ $(call lmsbw_generate_api_changed,$(1))
 endef
 
 $(foreach c,$(call keys,LMSBW_components),							\
-	$(call lmsbw_assert_source_or_download,$(c))						\
+	$(call lmsbw_assert_known_function,$(c),						\
+		generate_component_rules_$(call get,LMSBW_$(strip $(c)),kind)) 			\
 	$(eval $(call generate_component_rules_$(call get,LMSBW_$(strip $(c)),kind),$(c)))	\
 )
