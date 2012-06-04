@@ -75,8 +75,6 @@ $(call lmsbw_assert,E1004,								\
 	Component '$(strip $(1))' cannot have itself as a prerequisite)
 endef
 
-# E1005 is not used.
-
 # lmsbw_assert_source_or_download <component-name>
 #
 define lmsbw_assert_source_or_download
