@@ -47,7 +47,6 @@ endef
 #
 define declare_source_module
 $(call lmsbw_assert_component_undefined,$(2))
-$(call lmsbw_assert_build_or_image,$(4))
 $(call lmsbw_assert_source_directory_exists,$(6))
 __dsm:=$(call set,LMSBW_components,$(strip $(2)),$(strip $(1)))
 $(call __msk,$(2),kind,source)
@@ -65,4 +64,5 @@ $(call __msk,$(2),api-mtree-manifest,$(call __mgk,$(2),build-root-directory)/api
 $(call __msk,$(2),api-changed,$(call __mgk,$(2),build-root-directory)/api-changed.text)		
 $(call __msk,$(2),destdir-directory,$(call __mgk,$(2),build-root-directory)/destdir)		
 $(call __msk,$(2),build-log,$(call __mgk,$(2),build-directory)/lmsbw-build.log)			
+$(call lmsbw_assert_build_or_image,$(2))
 endef

@@ -42,5 +42,4 @@
    lmsbw_api_changed_failure to incorporate it.
  o Add 'indirect-dependencies' list to LMSBW_<component>
  o Make module rules file & building dependent on the configuration file.
- o lmsbw_assert_build_or_image should take a component.
  o Document all errors

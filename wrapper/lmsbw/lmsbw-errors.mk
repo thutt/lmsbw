@@ -58,12 +58,13 @@ $(call lmsbw_assert,E1002,						\
 	'$(call get,LMSBW_components,$(strip $(1)))')
 endef
 
-# lmsbw_assert_build_or_image <component build reason>
+# lmsbw_assert_build_or_image <component>
 #
 define lmsbw_assert_build_or_image
-$(call lmsbw_assert,E1003,								\
-	$(call or,$(call seq,$(strip $(1)),build),$(call seq,$(strip $(1)),image)),	\
-	Reason '$(strip $(1))' is not 'build' nor 'image')
+$(call lmsbw_assert,E1003,							\
+	$(call or,$(call seq,$(call get,LMSBW_$(strip $(1)),reason),build),	\
+		  $(call seq,$(call get,LMSBW_$(strip $(1)),reason),image)),	\
+	Reason '$(call get,LMSBW_$(strip $(1)),reason)' is not 'build' nor 'image')
 endef
 
 # lmsbw_assert_source_directory_exists <source directory pathname>
