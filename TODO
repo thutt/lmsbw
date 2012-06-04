@@ -41,8 +41,6 @@
  o When indirect dependencies code is written, update
    lmsbw_api_changed_failure to incorporate it.
  o Add 'indirect-dependencies' list to LMSBW_<component>
- o declare_component_build_target should error if component does not exist.
- o disallow multiple versions of same component
  o Make module rules file & building dependent on the configuration file.
  o lmsbw_assert_build_or_image should take a component.
  o Document all errors
