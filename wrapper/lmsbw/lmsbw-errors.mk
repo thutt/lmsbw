@@ -36,6 +36,10 @@ define lmsbw_assert
 $(call assert,$(strip $(2)),$(strip $(1)): $(strip $(3)))
 endef
 
+# Note: E1001 is not tested because it relies upon the encoding of the
+#       associative array variable names created by 'gmsl'.  The test
+#       would be fragile and fail is the internal encoding by 'gmsl'
+#       changed.
 define lmsbw_check_load_configuration_function
 $(call lmsbw_assert,E1000,								\
 	$(call sne,$(origin $(call __gcv,load-configuration-function)),undefined),	\
