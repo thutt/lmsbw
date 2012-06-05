@@ -43,3 +43,8 @@
  o Add 'indirect-dependencies' list to LMSBW_<component>
  o Make module rules file & building dependent on the configuration file.
  o Document all errors
+ o Need document on adding a new 'kind' of module.
+ o Need to have a source API & a binary API.  Changes to the binary
+   API will cause dependent modules to be rebuilt w/o clean.  The
+   binary API is for static linking.
+ o Document binary API.
