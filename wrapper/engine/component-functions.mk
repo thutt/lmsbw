@@ -20,6 +20,15 @@
 # lmsbw_component_mtree_command_guard <component>,
 #                                     <commands-to-execute>
 #
+#   This expands to '<commands-to-execute>' guarded by a use of the
+#   'mtree' utility to check if the source tree has changed.
+#
+#   If any file in the 'source-directory' has changed,
+#   '<commands-to-execute>' will be executed.
+#
+#   If no files in the 'source-directory' hav changed,
+#   '<commands-to-execute>' will not be executed.
+#
 define lmsbw_component_mtree_command_guard
 $(ATSIGN)$(call lmsbw_expand_mtree_command_guard,		\
 	$(1),							\
