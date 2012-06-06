@@ -21,6 +21,7 @@
 define generate_component_report_source
 __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|Module      : $(call get,LMSBW_$(strip $(1)),module)";
+	@$(ECHO) "$(1)|  desc      : $(call get,LMSBW_$(strip $(1)),description)";
 	@$(ECHO) "$(1)|  component : $(call get,LMSBW_$(strip $(1)),component)";
 	@$(ECHO) "$(1)|  kind      : $(call get,LMSBW_$(strip $(1)),kind)";
 	@$(ECHO) "$(1)|  reason    : $(call get,LMSBW_$(strip $(1)),reason)";
