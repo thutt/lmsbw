@@ -16,7 +16,10 @@
 
 # generate_component_report_source <component>
 #
-#   Generates a report for a 'source' module.
+#   Generates a report for a 'source' component.
+#
+#   This function is called only for component with 'kind' set to
+#   'source'
 #
 define generate_component_report_source
 __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):

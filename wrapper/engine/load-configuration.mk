@@ -50,8 +50,9 @@ include $(LMSBW_CONFIGURATION_FILE)
 # disk.  This facilitates loading the definition files relative to the
 # configuration file.
 #
-# If the function returns, all 'packages' declarations have been
-# processed.  The build wrapper will proceed to validate them.
+# If the function returns (rather than exiting with an error), all
+# 'component' declarations have been processed.  The build wrapper
+# will proceed to validate them.
 #
 $(call lmsbw_check_load_configuration_function)
 

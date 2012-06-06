@@ -34,6 +34,9 @@ endef
 
 # generate_component_directory_rules <component>
 #
+#   Generate rules to ensure that the necessary component directories
+#   are created.
+#
 define generate_component_directory_rules
 $(call get,LMSBW_$(strip $(1)),build-directory)			\
 	$(call get,LMSBW_$(strip $(1)),destdir-directory):

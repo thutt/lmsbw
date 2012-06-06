@@ -56,3 +56,4 @@
    not both.
  o Add component field which is a list of binary output.
  o Add 'gdb' verb to load a component's binary output in gdb.
+ o Remove TARBALL repository.

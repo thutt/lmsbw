@@ -18,6 +18,13 @@
 
 # declare_target <target-name>, <[.<component> text>, <target-description>
 #
+#   This is a convenient way to include top-level targets in the
+#   output of the top-level target called 'targets'.
+#
+#
+#   The 'targets' target will show all top-level targets with a brief
+#   description of its purpose.
+#
 define declare_target
 targets::	lmbw_target_description_$(strip $(1))
 
