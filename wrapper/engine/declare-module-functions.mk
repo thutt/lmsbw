@@ -17,8 +17,12 @@ include $(LMSBW_DIR)/wrapper/engine/declare-source-module-functions.mk
 
 # declare_component_no_parallel_build <component>
 #
-#   Ensures that a individual component will not be built in parallel.
-#   It will always be built with '-j 1'.
+#   Ensures that the individual component bearing this attribute will
+#   not be built in parallel.
+#
+#   This attribute, if present, is assigned to LMSBW_NO_PARALLEL when
+#   invoking 'module.makefile'.  If not present, LMSBW_NO_PARALLEL is
+#   defined, but will have no value.
 #
 define declare_component_no_parallel_build
 $(call lmsbw_assert_known_component,$(1))
@@ -32,12 +36,14 @@ endef
 #  the preliminary targets for the 'bulid' phase.
 #
 #  If not set, LMSBW will not use a specific set of targets for the
-#  'build' phase.
+#  'build' phase, and will end up using the default (or first) rule in
+#  the component's Makefile.
 #
 define declare_component_build_target
 $(call lmsbw_assert_known_component,$(1))
 lmsbw_dcbt:=$(call set,LMSBW_$(strip $(1)),build-target,$(2))
 endef
+
 
 # declare_component_install_target <component> <list of targets>
 #
@@ -51,26 +57,53 @@ $(call lmsbw_assert_known_component,$(1))
 lmsbw_dcbt:=$(call set,LMSBW_$(strip $(1)),install-target,$(2))
 endef
 
-# declare_component_api <compnent>, <list of directories>
+
+# declare_component_source_api <component>, <list of directories>
 #
 #  This function declares a list of directories which contain the
-#  public API of the component.  When checking if the API has changed,
-#  the files in DESTDIR are used.
+#  public API, at the source level, of the component.
 #
-#  If the API has changed, then all dependent modules will be fully
-#  built.
+#  This is be used to cause dependent modules to be rebuilt *only*
+#  when the source API has been changed.  In other words, changes
+#  internal to a component normally do not cause a recompile of
+#  dependent components.
 #
-#  If no API is defined for a component, then dependent packages will
-#  not be automatically rebuilt.
+#  API changes must recompile all directly dependent components; this
+#  is strictly enforced by LMSBW.
 #
-#  If your component is statically linked by dependent modules, you
-#  should set the libraries as part of the API, or changes will not be
-#  present in dependent modules.
+#  The files installed in $(DESTDIR) are used when checking if the API
+#  has changed.
 #
-define declare_component_api
+#  See 'declare_component_binary_api' if you want to recompile
+#  dependent components when a produced binary is changed.
+#
+define declare_component_source_api
 $(call lmsbw_assert_known_component,$(1))
-lmsbw_dca:=$(call set,LMSBW_$(strip $(1)),exported-api,$(strip $(2)))
+lmsbw_dca:=$(call set,LMSBW_$(strip $(1)),source-api,$(strip $(2)))
 endef
+
+
+# declare_component_binary_api <component>, <list of directories>
+#
+#  This function declares a list of directories which contain the
+#  public API, at the binary level, of the component.
+#
+#  This is be used to cause dependent modules to be rebuilt *only*
+#  when the a binary has been changed.  If your component produces a
+#  library which is linked statically, or which is otherwise included
+#  into another component, then you want to declare them with this function.
+#
+#  The files installed in $(DESTDIR) are used when checking if the API
+#  has changed.
+#
+#  See 'declare_component_source_api' if you want to recompile
+#  dependent components when the public source API is changed.
+#
+define declare_component_binary_api
+$(call lmsbw_assert_known_component,$(1))
+lmsbw_dca:=$(call set,LMSBW_$(strip $(1)),source-api,$(strip $(2)))
+endef
+
 
 # fixup_component_fields <component>
 #

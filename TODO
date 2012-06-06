@@ -32,7 +32,8 @@
  o document declare_component_build_target
  o document declare_component_api
  o document each file of LMSBW_<component>
- o document LMSBW_<component>[exported-api]
+ o document LMSBW_<component>[source-api]
+ o document LMSBW_<component>[binary-api]
  o document LMSBW_<component>[changed-api]
  o declare_source_module checks for mutual module dependence, but does
    not check for cycles.  a->b->c->a.
@@ -48,3 +49,8 @@
    API will cause dependent modules to be rebuilt w/o clean.  The
    binary API is for static linking.
  o Document binary API.
+ o Test source API changes.
+ o Test binary API changes.
+ o Must be able to ignore binary-api or source-api changes for
+   dependent modules.  Some might be dependent one or the other, but
+   not both.

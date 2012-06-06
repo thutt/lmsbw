@@ -19,8 +19,37 @@
 # verb, then the last chance rule will be used, and a comprehensible
 # diagnostic message will be output.
 
-# lmsbw_generate_component_last_change_rule <verb>, <optional message>
-define lmsbw_generate_component_last_change_rule
+# lmsbw_generate_component_last_chance_rule <verb>, <optional message>
+#
+#   This function generates a last change rule for each 'verb'
+#   (install, report, etc.) that should be executable on a component.
+#
+#   If LMSBW has not generated rules for such 'verbs', it means one of 
+#   three things:
+#
+#      o There is an unknown internal error in LMSBW
+#
+#        This is possible, but unlikely.  If you suspect this, contact
+#        the author and let him decipher the problem.
+#
+#      o The component does not exist
+#
+#        Run the global 'report' target.  If you cannot find the
+#        component named in the error, then it's missing.  To resolve
+#        the error, you must supply a definition of the component.
+#
+#      o A new component 'kind' has been created and all the proper
+#        rules have not been generated.
+#        
+#        If you add a new component 'kind' to LMSBW, it's your
+#        responsibility to ensure that all existing 'verbs' are
+#        handled when generating the rules.
+#
+#        If you add new verbs, then you must also update the rest of
+#        the component 'kind' code to handle those new verbs, and you
+#        should also create last chance rules for them here.
+#
+define lmsbw_generate_component_last_chance_rule
 $(1).%:
 	$(ATSIGN)$(MESSAGE) "$$(patsubst $(1).%,%,$$@): " \
 		"E1005: No verb '$(1)' for component '$$(patsubst $(1).%,%,$$@)'.";
@@ -36,8 +65,8 @@ endef
 # rules for the component.  This is most likely to occur if a new
 # component 'kind' is created.
 #
-$(eval $(call lmsbw_generate_component_last_change_rule,install))
-$(eval $(call lmsbw_generate_component_last_change_rule,report))
-$(eval $(call lmsbw_generate_component_last_change_rule,clean))
-$(eval $(call lmsbw_generate_component_last_change_rule,log))
+$(eval $(call lmsbw_generate_component_last_chance_rule,install))
+$(eval $(call lmsbw_generate_component_last_chance_rule,report))
+$(eval $(call lmsbw_generate_component_last_chance_rule,clean))
+$(eval $(call lmsbw_generate_component_last_chance_rule,log))
 

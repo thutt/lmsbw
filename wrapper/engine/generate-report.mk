@@ -35,7 +35,8 @@ __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
 	@$(ECHO) "$(1)|  src mtree : $(call get,LMSBW_$(strip $(1)),source-mtree-manifest)";
 	@$(ECHO) "$(1)|  api mtree : $(call get,LMSBW_$(strip $(1)),api-mtree-manifest)";
 	@$(ECHO) "$(1)|Install     : $(call get,LMSBW_$(strip $(1)),install-directory)";
-	@$(ECHO) "$(1)|  api       : $(call get,LMSBW_$(strip $(1)),exported-api)";
+	@$(ECHO) "$(1)|  src api   : $(call get,LMSBW_$(strip $(1)),source-api)";
+	@$(ECHO) "$(1)|  bin api   : $(call get,LMSBW_$(strip $(1)),binary-api)";
 	@$(ECHO) "$(1)|Targets     :";
 	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),install-target)";
 	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-target)";

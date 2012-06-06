@@ -40,7 +40,7 @@ endef
 
 # lmsbw_direct_dependents <component>
 #
-#   Returns a list of modules which are directly dependent upon the
+#   Expands to a list of modules which are directly dependent upon the
 #   input component.
 #
 define lmsbw_direct_dependents
@@ -50,9 +50,33 @@ endef
 
 # lmsbw_api_changed_failure <component>
 #
-#   This rule is executed when it has been determined that the
+#   This code is executed when it has been determined that the
 #   exported API of a module has chagned.  It prints a message,
-#   provides instructions on how to proceed, and then fails the build.
+#   provides instructions on how to proceed, and then causes the build
+#   to fail.
+#
+#   The reasons to fail the build instead of attempting to cope & move
+#   foward are:
+#
+#     o An API change has downstream ramifications beyond just
+#       changing the API.  Any dependent module must be recompiled,
+#       and perhaps further changed.  This has a cost in at least
+#       development, and further testing.
+#
+#       This failure is intended to make people think about API
+#       changes more carefully, and to force them to see the impact of
+#       their actions before attempting to build them.
+#
+#     o Once Make is running with the entire product configuration,
+#       it's difficult, if not impossible, to change the set of
+#       targets to rebuild.  An API change is only detected during the
+#       build phase, and automatically cleaning dependent components,
+#       and then scheduling them to be rebuilt is not something that
+#       Make does well.
+#
+#   So, the reason for failure is partially because it's hard to do it
+#   with Make, but the more important reason is to force the developer
+#   to know that their change has further ramifications.
 #
 define lmsbw_api_changed_failure
 	if [ ! -z "$(call get,LMSBW_$(strip $(1)),direct-dependents)" ] ; then			\
