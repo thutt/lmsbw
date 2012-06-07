@@ -14,6 +14,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# This file contains the targets & rules to build & install mtree.
+
 $(MTREE): $(LMSBW_DIR)/utilities/mtree/mtree
 	@$(MESSAGE) "Installing mtree";
 	@$(MKDIR) --parents $(dir $@)
