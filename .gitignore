@@ -2,3 +2,8 @@ TODO~
 tmp
 .emacs*
 *~
+*.aux
+*.log
+*.ps
+*.dvi
+*.toc
