@@ -1,0 +1,113 @@
+\chapter{Introduction}
+
+Recursive use of \make has fallen out of favor after the publication
+of \emph{Recursive Make Considered Harmful}
+(\texttt{http://aegis.sourceforge.net/auug97.pdf}), but in real-world
+situations, it's still dominant because \make provides little support
+towards actually creating a non-recursive build system.  The biggest
+stumbling block to implementing a non-recursive using \make is the
+complete lack of scoping; scoping is affected in a traditional
+recursive use of \make, but non-existent in a non-recursive
+implementation.  This is a problem because you've got to be very
+careful to not accidentally end up with macro, target or implicit rule
+collisions.
+
+Rather than trying to change the world by convincing people to
+increase the complexity of their build system, the software described
+in this document aims to simplify the world by implementing a wrapper
+system -- implemented entirely in \gnumake -- which allows you to
+continue to use a recursive \make system, but provides you with
+dramatic performance improvements by only recursing when something in
+the source tree has changed and without requiring you to make
+widespread changes to your existing build process.
+
+The following tenets guided the implementation of \lmsbw:
+
+\begin{itemize}
+\item Incremental Builds
+
+  \lmsbw was developed with a team of developers in mind and from that
+  perspective the day of a developer involves many small changes and
+  rebuilds of the software.  The key focus of \lmsbw is to ensure that
+  incremental builds are as fast as possible.
+
+  To achieve such speed, \lmsbw never recurses into a subdirectory if
+  nothing in the corresponding source tree has changed.  This is
+  accomplished by using the \mtree utility.  DESCRIBE what it does
+
+  \todo{Define NULL build in glossary} A logical conclusion from this
+  is this: if your current \nullbuild takes more than the total time
+  of executing \mtree on each source directory, you can benefit from
+  \lmsbw.
+
+\item Disk Space
+
+  Disk space is \emph{free} relative to the cost of a developer.  The
+  amount of time wasted when developers have to \texttt{make clean}
+  because tool options have changed is an unnecessary waste of time,
+  particularly if changing those options are to make a \emph{debug}
+  buid, or to perform some special one-off test.
+
+  \lmsbw saves time by compromising on space.  Because developers
+  rarely need to know where their intermediate build output resides --
+  a report is provided which shows where all files are placed, if you
+  \emph{need to know} -- \lmsbw will place build output into
+  directories based on many global options.  For example, \lmsbw can
+  be configured to use the revision control system's branch name when
+  determining the build output directories; this means that builds,
+  regardless the revision control branch being used, would always be
+  incremental.
+
+  Trading off increased disk space with improved developer
+  productivity is definitely the right choice if you've got market
+  constraints.
+
+\item Source Is Immutable
+
+  \lmsbw is a general wrapper for build systems, and in-general, build
+  systems perform differently; some write all data into the source
+  directory, while others write to a different output directory
+  altogether.
+
+  Because of this, because \lmsbw considers the source directory tree
+  to be immutable, and because always having speedy incremental builds
+  is very important, \lmsbw has been written to copy the original
+  source directory into the build directory.
+
+  The upshot of this is that the original source directory will never
+  be sullied by \lmsbw, nor your own wrapped build process.  Another
+  benefit of this is that you can easily use different toolchains --
+  perhaps for cross compiling to another operating system or
+  architecture -- without having to retool your own build process.
+
+\item Uniform Interface
+
+  \lmsbw has been designed to make it easy to wrap an existing build
+  process, and to access portions of the wrapped build.  In concept,
+  you will declare each one of your \emph{components} -- usually a source
+  directory containing a \texttt{Makefile}.  Declaration includes
+  information about the directory and options for building it,
+  including which other directories must be built first.
+
+  \lmsbw compiles this information and produces a set of \make rules
+  and targets which allow your wrapped build process to be executed.
+
+  Included in this is a uniform interface: if you want to produce a
+  build report for all components, you simply execute \texttt{lmsbw
+    report}, but if you want to specifically get a report on the
+  \emph{dailyprocessing} component, you would execute \texttt{lmsbw
+    report.dailyprocessing}.
+
+  Similarly, all other \emph{verbs} which are exported by \lmsbw can
+  be executed globally or on an individual component.
+
+  With the extensibility of \lmsbw, it's also quite simple to add your
+  own verbs to the build process.
+
+\item Extensible
+
+  \lmsbw may not have all the features you need, but it uses the
+  \emph{Gnu Make Standard Library} (gmsl), it's fully documented and
+  it's easy to add new features.
+
+\end{itemize}
