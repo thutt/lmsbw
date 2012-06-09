@@ -57,3 +57,7 @@
  o Add component field which is a list of binary output.
  o Add 'gdb' verb to load a component's binary output in gdb.
  o Remove TARBALL repository.
+ o Document overriding component rules, such as 'install' for cases
+   when the component does not have an 'install' rule.
+ o LMSBW should pass unrecognized arguments directly to Make.  Maybe '--'?
+  
