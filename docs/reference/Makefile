@@ -17,14 +17,13 @@
 %.ps: %.dvi
 	dvips  -D 600 -Z $(LATEX_PAGELIST) -o $@ $<
 
-TEX		=				\
-		macros.tex			\
-		introduction.tex
-
-PACKAGES	= $(TEXINPUTS)
-
 THIS_DOC	= lmsbw
 
+
+
+TEX		= $(filter-out $(addsuffix .tex,$(THIS_DOC)),$(wildcard *.tex))
+
+PACKAGES	= $(TEXINPUTS)
 
 all:		$(THIS_DOC).ps
 
