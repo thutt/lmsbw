@@ -105,12 +105,18 @@ function main ()
     start_seconds=$(date +%s)
 
     while [ ! -z ${1} ] ; do
+        local time_file="/tmp/time.${BASHPID}";
         cmd="${mtree} -c -p ${1}";
         if [ ! -z "${LMSBW_VERBOSE}" ] ; then
             echo "${cmd}";
         fi;
-        echo "Checking '${1}'";
-        ${cmd} &>/dev/null;
+        if [ -x /usr/bin/time ] ; then
+            /usr/bin/time --quiet --format "%U" -o ${time_file} ${cmd} &>/dev/null;
+            printf  "Checked %15s: $(cat ${time_file}) seconds\n" ${1};
+        else
+            ${cmd} &>/dev/null;
+            printf  "Checked %15s\n" ${1};
+        fi;
         shift;
     done;
     end_seconds=$(date +%s)
