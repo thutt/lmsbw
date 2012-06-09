@@ -6,11 +6,11 @@ of \emph{Recursive Make Considered Harmful}
 situations, it's still dominant because \make provides little support
 towards actually creating a maintainable non-recursive build system.
 The biggest stumbling block to implementing a non-recursive using
-\make is the complete lack of scoping; scoping is affected in a
-traditional recursive use of \make, but non-existent in a
-non-recursive implementation.  This is a problem because you've got to
-be very careful to not accidentally end up with macro, target or
-implicit rule collisions.
+\make is the complete lack of scoping; scoping is accomplished in a
+traditional recursive use of \make, and is all but non-existent in a
+non-recursive implementation.  This is creates a maintenance issue
+because the developers have to be very careful to end up with no macro,
+target or implicit rule collisions.
 
 Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
