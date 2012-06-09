@@ -35,7 +35,7 @@ ${program} \\
     --tarball-repository | \\
     --verbose            | \\
     --time]...             \\
-   [make-options]...
+   -- [make-options]...
 
   Builds a set of software based on a configuration.
 
@@ -53,7 +53,7 @@ ${program} \\
   --parallel                   : Specify BW_PARALLEL_LEVEL (-j to Make)
   --tarball-repository         : Specify BW_TARBALL_REPOSITORY
   --verbose                    : Enable more verbosity from build
-  --time                       : Show elapsed time for module builds
+  --time                       : Show elapsed time for component builds
 
 EOF
 }
