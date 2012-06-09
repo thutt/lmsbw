@@ -22,28 +22,28 @@
 #   'source'
 #
 define generate_component_report_source
-__$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind):
-	@$(ECHO) "$(1)|Module      : $(call get,LMSBW_$(strip $(1)),module)";
-	@$(ECHO) "$(1)|  desc      : $(call get,LMSBW_$(strip $(1)),description)";
-	@$(ECHO) "$(1)|  component : $(call get,LMSBW_$(strip $(1)),component)";
-	@$(ECHO) "$(1)|  kind      : $(call get,LMSBW_$(strip $(1)),kind)";
-	@$(ECHO) "$(1)|  reason    : $(call get,LMSBW_$(strip $(1)),reason)";
-	@$(ECHO) "$(1)|  source    : $(call get,LMSBW_$(strip $(1)),source-directory)";
-	@$(ECHO) "$(1)|  prereq    : $(call get,LMSBW_$(strip $(1)),prerequisite)";
-	@$(ECHO) "$(1)|  direct dep: $(call get,LMSBW_$(strip $(1)),direct-dependents)";
-	@$(ECHO) "$(1)|  config    : $(call get,LMSBW_$(strip $(1)),configuration-file)";
-	@$(ECHO) "$(1)|Build Root  : $(call get,LMSBW_$(strip $(1)),build-root-directory)";
-	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-directory)";
-	@$(ECHO) "$(1)|  destdir   : $(call get,LMSBW_$(strip $(1)),destdir-directory)";
+__$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind):
+	@$(ECHO) "$(1)|Module      : $(call lmsbw_gcf,$(1),module)";
+	@$(ECHO) "$(1)|  desc      : $(call lmsbw_gcf,$(1),description)";
+	@$(ECHO) "$(1)|  component : $(call lmsbw_gcf,$(1),component)";
+	@$(ECHO) "$(1)|  kind      : $(call lmsbw_gcf,$(1),kind)";
+	@$(ECHO) "$(1)|  reason    : $(call lmsbw_gcf,$(1),reason)";
+	@$(ECHO) "$(1)|  source    : $(call lmsbw_gcf,$(1),source-directory)";
+	@$(ECHO) "$(1)|  prereq    : $(call lmsbw_gcf,$(1),prerequisite)";
+	@$(ECHO) "$(1)|  direct dep: $(call lmsbw_gcf,$(1),direct-dependents)";
+	@$(ECHO) "$(1)|  config    : $(call lmsbw_gcf,$(1),configuration-file)";
+	@$(ECHO) "$(1)|Build Root  : $(call lmsbw_gcf,$(1),build-root-directory)";
+	@$(ECHO) "$(1)|  build     : $(call lmsbw_gcf,$(1),build-directory)";
+	@$(ECHO) "$(1)|  destdir   : $(call lmsbw_gcf,$(1),destdir-directory)";
 	@$(ECHO) "$(1)|mtree       :";
-	@$(ECHO) "$(1)|  src mtree : $(call get,LMSBW_$(strip $(1)),source-mtree-manifest)";
-	@$(ECHO) "$(1)|  api mtree : $(call get,LMSBW_$(strip $(1)),api-mtree-manifest)";
-	@$(ECHO) "$(1)|Install     : $(call get,LMSBW_$(strip $(1)),install-directory)";
-	@$(ECHO) "$(1)|  src api   : $(call get,LMSBW_$(strip $(1)),source-api)";
-	@$(ECHO) "$(1)|  bin api   : $(call get,LMSBW_$(strip $(1)),binary-api)";
+	@$(ECHO) "$(1)|  src mtree : $(call lmsbw_gcf,$(1),source-mtree-manifest)";
+	@$(ECHO) "$(1)|  api mtree : $(call lmsbw_gcf,$(1),api-mtree-manifest)";
+	@$(ECHO) "$(1)|Install     : $(call lmsbw_gcf,$(1),install-directory)";
+	@$(ECHO) "$(1)|  src api   : $(call lmsbw_gcf,$(1),source-api)";
+	@$(ECHO) "$(1)|  bin api   : $(call lmsbw_gcf,$(1),binary-api)";
 	@$(ECHO) "$(1)|Targets     :";
-	@$(ECHO) "$(1)|  install   : $(call get,LMSBW_$(strip $(1)),install-target)";
-	@$(ECHO) "$(1)|  build     : $(call get,LMSBW_$(strip $(1)),build-target)";
+	@$(ECHO) "$(1)|  install   : $(call lmsbw_gcf,$(1),install-target)";
+	@$(ECHO) "$(1)|  build     : $(call lmsbw_gcf,$(1),build-target)";
 
 endef
 
@@ -57,7 +57,7 @@ define generate_component_prerequisite_report
 prerequisite-report::	prerequisite.$(strip $(1))
 
 prerequisite.$(strip $(1)):
-	$(ATSIGN)$(ECHO) "$(1): $(call get,LMSBW_$(strip $(1)),prerequisite)";
+	$(ATSIGN)$(ECHO) "$(1): $(call lmsbw_gcf,$(1),prerequisite)";
 
 endef
 
@@ -71,7 +71,7 @@ define generate_component_dependent_report
 dependent-report::	dependent.$(strip $(1))
 
 dependent.$(strip $(1)):
-	$(ATSIGN)$(ECHO) "$(1): $(call get,LMSBW_$(strip $(1)),direct-dependents)";
+	$(ATSIGN)$(ECHO) "$(1): $(call lmsbw_gcf,$(1),direct-dependents)";
 
 endef
 
@@ -81,14 +81,14 @@ endef
 #
 define generate_component_report
 $(call lmsbw_assert_known_function,$(1),				\
-	generate_component_report_$(call get,LMSBW_$(strip $(1)),kind))
+	generate_component_report_$(call lmsbw_gcf,$(1),kind))
 
 report:: report.$(strip $(1))
-.PHONY:	report.$(strip $(1)) __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind)
+.PHONY:	report.$(strip $(1)) __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind)
 
-$(call generate_component_report_$(call get,LMSBW_$(strip $(1)),kind),$(1))
+$(call generate_component_report_$(call lmsbw_gcf,$(1),kind),$(1))
 
-report.$(strip $(1)): __$(strip $(1)).report.$(call get,LMSBW_$(strip $(1)),kind)
+report.$(strip $(1)): __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind)
 
 endef
 

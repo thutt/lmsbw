@@ -24,12 +24,12 @@
 #  transformed into the 'install.' target name.
 #
 define expand_prerequisites
-$(BW_TARBALL_REPOSITORY)						\
-$(LMSBW_DIRECTORIES)							\
-$(call get,LMSBW_$(strip $(1)),build-directory)				\
-$(call get,LMSBW_$(strip $(1)),destdir-directory)			\
-$(call get,LMSBW_$(strip $(1)),install-directory)			\
-$(patsubst %,install.%,$(call get,LMSBW_$(strip $(1)),prerequisite))
+$(BW_TARBALL_REPOSITORY)				\
+$(LMSBW_DIRECTORIES)					\
+$(call lmsbw_gcf,$(1),build-directory)			\
+$(call lmsbw_gcf,$(1),destdir-directory)			\
+$(call lmsbw_gcf,$(1),install-directory)			\
+$(patsubst %,install.%,$(call lmsbw_gcf,$(1),prerequisite))
 endef
 
 # generate_component_directory_rules <component>
@@ -38,8 +38,7 @@ endef
 #   are created.
 #
 define generate_component_directory_rules
-$(call get,LMSBW_$(strip $(1)),build-directory)			\
-	$(call get,LMSBW_$(strip $(1)),destdir-directory):
+$(call lmsbw_gcf,$(1),build-directory) $(call lmsbw_gcf,$(1),destdir-directory):
 	$(ATSIGN)$(PROGRESS) "$(1): Creating directory: '$$@'";
 	$(ATSIGN)$(MKDIR) --parents $$@;
 
@@ -51,29 +50,29 @@ endef
 #   provided module sources.
 #
 define lmsbw_expand_build_module
-	$(MESSAGE) "$(1): Invoking '$(1)' build system"; \
+	$(MESSAGE) "$(1): Invoking '$(1)' build system";					\
 	$(TIME)											\
 	-f "$(foreach v,$(shell seq $(MAKELEVEL))," ") [$(MAKELEVEL)]  $(1): elapsed time: %E"	\
-	--output="$(call get,LMSBW_$(strip $(1)),build-directory)/build-time.text"		\
+	--output="$(call lmsbw_gcf,$(1),build-directory)/build-time.text"			\
 	$(MAKE)											\
 		-f $(LMSBW_DIR)/wrapper/module/module.makefile					\
-		-C $(dir $(call get,LMSBW_$(strip $(1)),configuration-file))			\
+		-C $(dir $(call lmsbw_gcf,$(1),configuration-file))				\
 		$(call lmsbw_makeflags)								\
 		LMSBW_VERBOSE=1									\
 		LMSBW_DIR="$(LMSBW_DIR)"							\
 		LMSBW_COMPONENT=$(1)								\
-		LMSBW_KIND="$(call get,LMSBW_$(strip $(1)),kind)"				\
-		LMSBW_SOURCE_DIRECTORY="$(call get,LMSBW_$(strip $(1)),source-directory)"	\
-		LMSBW_BUILD_DIRECTORY="$(call get,LMSBW_$(strip $(1)),build-directory)"		\
-		LMSBW_DESDIR_DIRECTORY="$(call get,LMSBW_$(strip $(1)),destdir-directory)"	\
-		LMSBW_INSTALL_DIRECTORY="$(call get,LMSBW_$(strip $(1)),install-directory)"	\
-		LMSBW_CONFIGURATION_FILE="$(call get,LMSBW_$(strip $(1)),configuration-file)"	\
-		LMSBW_BUILD_TARGET="$(call get,LMSBW_$(strip $(1)),build-target)"		\
-		LMSBW_INSTALL_TARGET="$(call get,LMSBW_$(strip $(1)),install-target)"		\
-		LMSBW_NO_PARALLEL="$(call get,LMSBW_$(strip $(1)),no-parallel)"			\
-		>$(call get,LMSBW_$(strip $(1)),build-directory)/lmsbw-build.log 2>&1;		\
+		LMSBW_KIND="$(call lmsbw_gcf,$(1),kind)"					\
+		LMSBW_SOURCE_DIRECTORY="$(call lmsbw_gcf,$(1),source-directory)"		\
+		LMSBW_BUILD_DIRECTORY="$(call lmsbw_gcf,$(1),build-directory)"			\
+		LMSBW_DESDIR_DIRECTORY="$(call lmsbw_gcf,$(1),destdir-directory)"		\
+		LMSBW_INSTALL_DIRECTORY="$(call lmsbw_gcf,$(1),install-directory)"		\
+		LMSBW_CONFIGURATION_FILE="$(call lmsbw_gcf,$(1),configuration-file)"		\
+		LMSBW_BUILD_TARGET="$(call lmsbw_gcf,$(1),build-target)"			\
+		LMSBW_INSTALL_TARGET="$(call lmsbw_gcf,$(1),install-target)"			\
+		LMSBW_NO_PARALLEL="$(call lmsbw_gcf,$(1),no-parallel)"				\
+		>$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log 2>&1;			\
 	$(if $(LMSBW_VERBOSE)$(LMSBW_ELAPSED_TIME),$(CAT)					\
-		$(call get,LMSBW_$(strip $(1)),build-directory)/build-time.text;)
+		$(call lmsbw_gcf,$(1),build-directory)/build-time.text;)
 endef
 
 # generate_component_install <component>
@@ -91,8 +90,8 @@ install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
 		$(call lmsbw_expand_build_module,$(1)))
 
 install.$(strip $(1))_api_check:
-	$(ATSIGN)if [ -e "$(call get,LMSBW_$(strip $(1)),api-changed)" ] ; then	\
-		$(call lmsbw_api_changed_failure,$(1))				\
+	$(ATSIGN)if [ -e "$(call lmsbw_gcf,$(1),api-changed)" ] ; then	\
+		$(call lmsbw_api_changed_failure,$(1))			\
 	fi;
 endef
 
@@ -109,7 +108,7 @@ clean:: clean.$(strip $(1))
 
 clean.$(strip $(1)):
 	$(ATSIGN)$(MESSAGE) "$(1): Cleaning $(1)";
-	$(ATSIGN)$(RM) -rf $(call get,LMSBW_$(strip $(1)),build-root-directory);
+	$(ATSIGN)$(RM) -rf $(call lmsbw_gcf,$(1),build-root-directory);
 
 endef
 
@@ -124,9 +123,9 @@ define generate_component_build_log
 log::	log.$(strip $(1))
 
 log.$(strip $(1)):
-	$(ATSIGN)$(if $(wildcard $(call get,LMSBW_$(strip $(1)),build-log)),			\
-		$(CAT) $(call get,LMSBW_$(strip $(1)),build-log),				\
-		$(MESSAGE) "'$(1): $(call get,LMSBW_$(strip $(1)),build-log)' does not exist")
+	$(ATSIGN)$(if $(wildcard $(call lmsbw_gcf,$(1),build-log)),			\
+		$(CAT) $(call lmsbw_gcf,$(1),build-log),				\
+		$(MESSAGE) "'$(1): $(call lmsbw_gcf,$(1),build-log)' does not exist")
 
 endef
 
@@ -141,7 +140,7 @@ define generate_component_component
 components:: component.$(strip $(1))
 
 component.$(strip $(1)):
-	$(ATSIGN)$(PRINTF) "%25s : %s\n" "$(1)" "$(call get,LMSBW_$(strip $(1)),description)";
+	$(ATSIGN)$(PRINTF) "%25s : %s\n" "$(1)" "$(call lmsbw_gcf,$(1),description)";
 
 endef
 
@@ -154,7 +153,7 @@ define lmsbw_generate_api_changed
 
 api-changed.$(strip $(1)):						\
 	clean.$(strip $(1))						\
-	$(addprefix clean.,$(call get,LMSBW_$(strip $(1)),direct-dependents))
+	$(addprefix clean.,$(call lmsbw_gcf,$(1),direct-dependents))
 	$(ATSIGN)$(TRUE);
 endef
 
@@ -175,8 +174,8 @@ $(call generate_component_dependent_report,$(1))
 $(call lmsbw_generate_api_changed,$(1))
 endef
 
-$(foreach c,$(call keys,LMSBW_components),							\
-	$(call lmsbw_assert_known_function,$(c),						\
-		generate_component_rules_$(call get,LMSBW_$(strip $(c)),kind)) 			\
-	$(eval $(call generate_component_rules_$(call get,LMSBW_$(strip $(c)),kind),$(c)))	\
+$(foreach c,$(call keys,LMSBW_components),						\
+	$(call lmsbw_assert_known_function,$(c),					\
+		generate_component_rules_$(call lmsbw_gcf,$(c),kind))			\
+	$(eval $(call generate_component_rules_$(call lmsbw_gcf,$(c),kind),$(c)))	\
 )

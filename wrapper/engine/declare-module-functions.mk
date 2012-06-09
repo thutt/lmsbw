@@ -13,29 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# __msk <component>, <key>, <value>
-#
-#   __msk: Module Set Key
-#
-define __msk
-__dsm:=$(call set,LMSBW_$(strip $(1)),$(strip $(2)),$(strip $(3)))
-endef
-
-# __mgk <component>, <key>
-#
-#   __mgk: Module Get Key
-#
-define __mgk
-$(call get,LMSBW_$(strip $(1)),$(strip $(2)))
-endef
-
 # __expand_build_root <component>
 #
 #
 define __expand_build_root
 $(call lmsbw_assert_known_component,$(1))
-$(call lmsbw_assert_known_function,$(1),lmsbw_expand_$(call get,LMSBW_$(strip $(1)),reason)_build_root)
-$(call lmsbw_expand_$(call get,LMSBW_$(strip $(1)),reason)_build_root)/$(strip $(1))/$(call lmsbw_expand_component_hash,$(1))
+$(call lmsbw_assert_known_function,$(1),lmsbw_expand_$(call lmsbw_gcf,$(1),reason)_build_root)
+$(call lmsbw_expand_$(call lmsbw_gcf,$(1),reason)_build_root)/$(strip $(1))/$(call lmsbw_expand_component_hash,$(1))
 endef
 
 # declare_component_no_parallel_build <component>
@@ -49,7 +33,7 @@ endef
 #
 define declare_component_no_parallel_build
 $(call lmsbw_assert_known_component,$(1))
-lmsbw_dcnpb:=$(call set,LMSBW_$(strip $(1)),no-parallel,-j 1)
+lmsbw_dcnpb:=$(call lmsbw_scf,$(1),no-parallel,-j 1)
 endef
 
 
@@ -64,7 +48,7 @@ endef
 #
 define declare_component_build_target
 $(call lmsbw_assert_known_component,$(1))
-lmsbw_dcbt:=$(call set,LMSBW_$(strip $(1)),build-target,$(2))
+lmsbw_dcbt:=$(call lmsbw_scf,$(1),build-target,$(2))
 endef
 
 
@@ -77,7 +61,7 @@ endef
 #
 define declare_component_install_target
 $(call lmsbw_assert_known_component,$(1))
-lmsbw_dcbt:=$(call set,LMSBW_$(strip $(1)),install-target,$(2))
+lmsbw_dcbt:=$(call lmsbw_scf,$(1),install-target,$(2))
 endef
 
 
@@ -102,7 +86,7 @@ endef
 #
 define declare_component_source_api
 $(call lmsbw_assert_known_component,$(1))
-lmsbw_dca:=$(call set,LMSBW_$(strip $(1)),source-api,$(strip $(2)))
+lmsbw_dca:=$(call lmsbw_scf,$(1),source-api,$(strip $(2)))
 endef
 
 
@@ -124,7 +108,7 @@ endef
 #
 define declare_component_binary_api
 $(call lmsbw_assert_known_component,$(1))
-lmsbw_dca:=$(call set,LMSBW_$(strip $(1)),source-api,$(strip $(2)))
+lmsbw_dca:=$(call lmsbw_scf,$(1),source-api,$(strip $(2)))
 endef
 
 # declare_component_kind <component>, <kind>
@@ -140,7 +124,7 @@ endef
 #
 define declare_component_kind
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),kind,$(2))
+$(call lmsbw_scf,$(1),kind,$(2))
 endef
 
 # declare_component_description <component>, <description>
@@ -149,7 +133,7 @@ endef
 #
 define declare_component_description
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),description,$(2))
+$(call lmsbw_scf,$(1),description,$(2))
 endef
 
 # declare_component_reason <component>, <reason>
@@ -168,7 +152,7 @@ endef
 #
 define declare_component_reason
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),reason,$(2))
+$(call lmsbw_scf,$(1),reason,$(2))
 endef
 
 # declare_component_module <component>, <module>
@@ -186,7 +170,7 @@ endef
 #
 define declare_component_module
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),module,$(2))
+$(call lmsbw_scf,$(1),module,$(2))
 endef
 
 # declare_component_component <component>, <component>>
@@ -195,7 +179,7 @@ endef
 #
 define declare_component_component
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),component,$(2))
+$(call lmsbw_scf,$(1),component,$(2))
 endef
 
 # declare_component_prerequisite <component>, <prerequisites>>
@@ -210,7 +194,7 @@ endef
 #
 define declare_component_prerequisite
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),prerequisite,$(2))
+$(call lmsbw_scf,$(1),prerequisite,$(2))
 endef
 
 # declare_component_source_directory <component>, <absolute directory>>
@@ -223,7 +207,7 @@ endef
 #
 define declare_component_source_directory
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),source-directory,$(2))
+$(call lmsbw_scf,$(1),source-directory,$(2))
 endef
 
 # declare_component_configuration_file <component>, <configuration file path>>
@@ -237,7 +221,7 @@ endef
 #
 define declare_component_configuration_file
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),configuration-file,$(2))
+$(call lmsbw_scf,$(1),configuration-file,$(2))
 endef
 
 # set_component_internal_data <component>
@@ -248,13 +232,13 @@ endef
 #
 define set_component_internal_data
 $(call lmsbw_assert_known_component,$(1))
-$(call __msk,$(1),build-root-directory,$(call __expand_build_root,$(1)))
-$(call __msk,$(1),build-directory,$(call __mgk,$(1),build-root-directory)/build)
-$(call __msk,$(1),destdir-directory,$(call __mgk,$(1),build-root-directory)/destdir)
-$(call __msk,$(1),source-mtree-manifest,$(call __mgk,$(1),build-root-directory)/source.mtree)
-$(call __msk,$(1),api-mtree-manifest,$(call __mgk,$(1),build-root-directory)/api.mtree)
-$(call __msk,$(1),api-changed,$(call __mgk,$(1),build-root-directory)/api-changed.text)
-$(call __msk,$(1),build-log,$(call __mgk,$(1),build-directory)/lmsbw-build.log)
+$(call lmsbw_scf,$(1),build-root-directory,$(call __expand_build_root,$(1)))
+$(call lmsbw_scf,$(1),build-directory,$(call lmsbw_gcf,$(1),build-root-directory)/build)
+$(call lmsbw_scf,$(1),destdir-directory,$(call lmsbw_gcf,$(1),build-root-directory)/destdir)
+$(call lmsbw_scf,$(1),source-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/source.mtree)
+$(call lmsbw_scf,$(1),api-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/api.mtree)
+$(call lmsbw_scf,$(1),api-changed,$(call lmsbw_gcf,$(1),build-root-directory)/api-changed.text)
+$(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log)
 endef
 
 include $(LMSBW_DIR)/wrapper/engine/declare-source-module-functions.mk
@@ -265,12 +249,12 @@ include $(LMSBW_DIR)/wrapper/engine/declare-source-module-functions.mk
 #   set of components is known.
 #
 define fixup_component_fields
-$(call __msk,$(1),install-directory,						\
+$(call lmsbw_scf,$(1),install-directory,					\
 	$(call lmsbw_expand_install_directory,					\
-		$(call get,LMSBW_$(strip $(1)),reason)))			\
-	$(call set,LMSBW_$(strip $(1)),direct-dependents,			\
+		$(call lmsbw_gcf,$(1),reason)))					\
+	$(call lmsbw_scf,$(1),direct-dependents,				\
 		$(call lmsbw_direct_dependents,$(1)))				\
-	$(if $(call seq,$(call get,LMSBW_$(strip $(1)),install-target),),	\
+	$(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),		\
 		$(call declare_component_install_target,$(strip $(1)),install))
 endef
 

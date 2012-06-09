@@ -89,7 +89,7 @@ $(if $(call not,$(call set_is_member,$(2),$(lmsbw_dag_set))),				\
 	$(foreach p,$(3),								\
 		$(eval lmsbw_dag_list:=$(lmsbw_dag_list) $(p))				\
 		$(call check_modules_form_dag_work,$(1),$(p),				\
-			$(call get,LMSBW_$(strip $(p)),prerequisite))			\
+			$(call lmsbw_gcf,$(p),prerequisite))				\
 		$(eval lmsbw_dag_list:=$(call reverse,$(call rest,$(call reverse,$(lmsbw_dag_list)))))	\
 	)										\
 )
@@ -110,9 +110,9 @@ $(eval lmsbw_dag_list:=)
 $(eval lmsbw_dag_set:=$(empty_set))
 endef
 
-$(foreach c,$(call keys,LMSBW_components),			\
-	$(call lmsbw_assert_not_self_prerequisite,$(c))		\
-	$(eval $(call check_modules_form_dag,$(c),$(c),		\
-		$(call get,LMSBW_$(strip $(c)),prerequisite)))	\
-	$(eval $(call fixup_component_fields,$(c)))		\
+$(foreach c,$(call keys,LMSBW_components),		\
+	$(call lmsbw_assert_not_self_prerequisite,$(c))	\
+	$(eval $(call check_modules_form_dag,$(c),$(c),	\
+		$(call lmsbw_gcf,$(c),prerequisite)))	\
+	$(eval $(call fixup_component_fields,$(c)))	\
 )

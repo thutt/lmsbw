@@ -115,3 +115,22 @@ endef
 define lmsbw_makeflags
 MAKEFLAGS=""
 endef
+
+
+# lmsbw_gcf <component-name>, <field-name>
+#
+#    Get Component Field
+#
+define lmsbw_gcf
+$(call get,LMSBW_component_$(strip $(1)),$(strip $(2)))
+endef
+
+
+# lmsbw_scf <component-name>, <field-name>, <value>
+#
+#    Set Component Field
+#
+define lmsbw_scf
+__scf:=$(call set,LMSBW_component_$(strip $(1)),$(strip $(2)),$(strip $(3)))
+endef
+

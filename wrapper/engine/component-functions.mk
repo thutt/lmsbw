@@ -30,12 +30,12 @@
 #   '<commands-to-execute>' will not be executed.
 #
 define lmsbw_component_mtree_command_guard
-$(ATSIGN)$(call lmsbw_expand_mtree_command_guard,		\
-	$(1),							\
-	$(call get,LMSBW_$(strip $(1)),source-mtree-manifest),	\
-	$(call get,LMSBW_$(strip $(1)),source-directory),	\
-	$(2),							\
-	$(call get,LMSBW_$(strip $(1)),configuration-file))
+$(ATSIGN)$(call lmsbw_expand_mtree_command_guard,	\
+	$(1),						\
+	$(call lmsbw_gcf,$(1),source-mtree-manifest),	\
+	$(call lmsbw_gcf,$(1),source-directory),	\
+	$(2),						\
+	$(call lmsbw_gcf,$(1),configuration-file))
 endef
 
 # lmsbw_direct_dependents <component>
@@ -45,7 +45,7 @@ endef
 #
 define lmsbw_direct_dependents
 $(strip $(foreach c,$(call keys,LMSBW_components),
-	$(if $(filter $(strip $(1)),$(call get,LMSBW_$(c),prerequisite)),$(c))))
+	$(if $(filter $(strip $(1)),$(call lmsbw_gcf,$(c),prerequisite)),$(c))))
 endef
 
 # lmsbw_api_changed_failure <component>
@@ -79,11 +79,11 @@ endef
 #   to know that their change has further ramifications.
 #
 define lmsbw_api_changed_failure
-	if [ ! -z "$(call get,LMSBW_$(strip $(1)),direct-dependents)" ] ; then			\
+	if [ ! -z "$(call lmsbw_gcf,$(1),direct-dependents)" ] ; then				\
 		$(MESSAGE) "The public API for '$(1)' has changed.  ";				\
 		$(MESSAGE) "This can directly affect the build of the following modules: ";	\
 		$(MESSAGE) "";									\
-		$(foreach d,$(call get,LMSBW_$(strip $(1)),direct-dependents),			\
+		$(foreach d,$(call lmsbw_gcf,$(1),direct-dependents),				\
 			$(MESSAGE) "  $(d)";)							\
 		$(MESSAGE) "";									\
 		$(MESSAGE) "A 'clean' build of involved modules must be performed.";		\
@@ -93,7 +93,7 @@ define lmsbw_api_changed_failure
 		$(MESSAGE) "  lmsbw api-changed.$(strip $(1))";					\
 		$(FALSE);									\
 	else											\
-		$(RM) "$(call get,LMSBW_$(strip $(1)),api-changed)";				\
+		$(RM) "$(call lmsbw_gcf,$(1),api-changed)";					\
 		$(TRUE);									\
 	fi;
 endef

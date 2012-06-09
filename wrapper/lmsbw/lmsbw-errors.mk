@@ -62,9 +62,9 @@ endef
 #
 define lmsbw_assert_build_or_image
 $(call lmsbw_assert,E1003,							\
-	$(call or,$(call seq,$(call get,LMSBW_$(strip $(1)),reason),build),	\
-		  $(call seq,$(call get,LMSBW_$(strip $(1)),reason),image)),	\
-	Reason '$(call get,LMSBW_$(strip $(1)),reason)' is not 'build' nor 'image')
+	$(call or,$(call seq,$(call lmsbw_gcf,$(1),reason),build),		\
+		  $(call seq,$(call lmsbw_gcf,$(1),reason),image)),		\
+	Reason '$(call lmsbw_gcf,$(1),reason)' is not 'build' nor 'image')
 endef
 
 # lmsbw_assert_source_directory_exists <source directory pathname>
@@ -75,8 +75,8 @@ endef
 
 # lmsbw_assert_not_self_prerequisite <component-name>
 define lmsbw_assert_not_self_prerequisite
-$(call lmsbw_assert,E1004,								\
-	$(call not,$(filter $(1),$(call get,LMSBW_$(strip $(1)),prerequisite))),	\
+$(call lmsbw_assert,E1004,						\
+	$(call not,$(filter $(1),$(call lmsbw_gcf,$(1),prerequisite))),	\
 	Component '$(strip $(1))' cannot have itself as a prerequisite)
 endef
 
