@@ -1,0 +1,129 @@
+#!/bin/bash
+#
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# 
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+function display_help ()
+{
+    cat <<EOF
+${program} [--help | --verbose]... --mtree <mtree> [directory name]...
+
+  This times the execution of 'mtree' on each directory named on the
+  command line.
+
+  It is meant to be used to show the approximate NULL build time for
+  your project before you begin wrapping your build system with lmsbw.
+
+  The '--mtree' option provides the full path to the 'mtree'
+  executable.
+
+  You can build mtree with an unconfigured lmsbw by executing the
+  following:
+
+     ld=<directory where you have extracted lmsbw>
+     \${ld}/scripts/lmsbw                                      \\
+         --configuration ${ld}/samples/hello-world/hello-world.cfg \\
+         --built-root /tmp/lmsbw-test  -- mtree
+
+  Be sure to run this command twice; the first execution will fill the
+  disk caches and the second run will give a truer representation of
+  how a NULL build will perform.
+
+EOF
+}
+
+function main ()
+{
+    local verbose="--silent";   # verbose not enabled => make should be silent.
+    local lmsbw_error_file="/tmp/lmsbw-errors.${BASHPID}";
+    local makeopts="--no-builtin-rules -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
+    local debug;
+
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long verbose                          \
+        --long mtree:                           \
+        -n "${program}"                         \
+        -- "$@");
+
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --verbose)
+                unset verbose;
+                export LMSBW_VERBOSE=1
+                shift 1 ;;
+
+            --mtree)
+                mtree="${2}";
+                if [ ! -x "${mtree}" ] ; then
+                    echo "'${mtree}' is not an executable file";
+                    exit -1;
+                fi;
+
+                shift 2 ;;
+
+            --) shift ;
+                break ;;
+
+            *) echo "Internal error: ${1}!" ;
+                argument_failure="yes" ;
+        esac
+    done
+
+
+    start_seconds=$(date +%s)
+
+    while [ ! -z ${1} ] ; do
+        cmd="${mtree} -c -p ${1}";
+        if [ ! -z "${LMSBW_VERBOSE}" ] ; then
+            echo "${cmd}";
+        fi;
+        echo "Checking '${1}'";
+        ${cmd} &>/dev/null;
+        shift;
+    done;
+    end_seconds=$(date +%s)
+
+    # When using the 'seconds since epoch' notation (@), the time
+    # printed will be in the local time zone.  We need to normalize
+    # the 'HH:MM:SS' display to be based at GMT.  This is done by
+    # subtracting the numnber of hours offset from GMT for the local
+    # time ('%z').
+    #
+    elapsed_seconds=$((${end_seconds} - ${start_seconds}));
+    elapsed_time=$(date -u -d "1970-01-01 ${elapsed_seconds} seconds" +"%H:%M:%S");
+    echo -e  "\n++++ Total time: ${elapsed_time}  (seconds: ${elapsed_seconds})";
+}
+
+main ${@};
