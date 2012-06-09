@@ -31,6 +31,9 @@ include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk
 
 all:	install
 
+mtree:	$(MTREE)
+	$(ATSIGN)$(MESSAGE) "mtree is installed at '$(MTREE)'";
+
 install::
 
 clean::
