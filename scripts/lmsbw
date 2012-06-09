@@ -98,7 +98,7 @@ function main ()
                 shift 1 ;;
 
             --build-root)
-                BW_BUILD_ROOT="${2}";
+                export BW_BUILD_ROOT="${2}";
                 shift 2 ;;
 
             --configuration)
@@ -133,9 +133,6 @@ function main ()
                 argument_failure="yes" ;
         esac
     done
-
-####
-
 
     start_seconds=$(date +%s)
     build_system_dir=$(readlink -f $(dirname ${0})/..);
