@@ -88,7 +88,7 @@ endef
 #                          <component cycle path>
 define lmsbw_modules_not_dag
 $(call lmsbw_assert,E1007,$(false),				\
-	Module prerequisite path '$(strip $(subst $(lmsbw_space), -> ,$(2)) -> $(1))' produces a cycle)
+	Component prerequisite path '$(strip $(subst $(lmsbw_space), -> ,$(2)) -> $(1))' produces a cycle)
 endef
 
 

@@ -1,15 +1,267 @@
+% Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+%
+% This program is free software: you can redistribute it and/or
+% modify it under the terms of the GNU General Public License as
+% published by the Free Software Foundation, either version 3 of the
+% License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
 \chapter{Using \lmsbw}
 
-\section{Setting \texttt{PATH}}
+Ease-of-use and flexibility were two important design decisions taken
+when buiding \lmsbw.  Besides creating the configuration files to wrap
+your project's build process, you also must be able to execute the
+main tool: \lmsbw.  This chapter only describes how to execute \lmsbw;
+\xref{chap:wrapping} describes how to produce the configuration for
+wrapping your build.
+
+\section{Accessing \lmsbw}
+
+The \lmsbw script resides in the \texttt{scripts} directory of the
+\lmsbw source tree.
+
+Although it is not required, the most convenient way to use \lmsbw is
+to add the \texttt{scripts} directory to your \texttt{PATH}
+environment variable.
+
 \section{\lmsbw script}
-\subsection{\texttt{help}}
-\subsection{\texttt{build-root}}
-\subsection{\texttt{configuration}}
-\subsection{\texttt{debug}}
-\subsection{\texttt{progress}}
-\subsection{\texttt{parallel}}
-\subsection{\texttt{tarball-repository}}
-\subsection{\texttt{verbose}}
-\subsection{\texttt{time}}
+
+The \lmsbw script is a fancy wrapper for \make.  It ensures that the
+preconditions for using the \lmsbw system are met, and once they are
+guaranteed \make is executed with the proper set of environment,
+command line arguments and targets.
+
+When successfully invoked, \lmsbw will begin building your wrapped
+project immediately.
+
+\subsection{\texttt{--help}}
+
+This option causes the script to display a help message and then exit.
+
+\subsection{\texttt{--build-root}}
+
+This option, which is required, allows you to specify the root
+directory where build output should be placed.  Build output for the
+configured project (\xref{lmsbw:configuration}) will be placed
+into the named directory.
+
+This directory should not be shared with other projects wrapped by
+\lmsbw.
+
+\begin{verbatim}
+--build-root /tmp/lmsbw-build-output
+\end{verbatim}
+
+\subsection{\texttt{--configuration}}\label{lmsbw:configuration}
+
+This option, which is required, allows you to specify the file which
+is used to configure \lmsbw to wrap your build process.
+
+\begin{verbatim}
+--configuration ~/lmsbw/samples/hello-world/hello-world.cfg
+\end{verbatim}
+
+
+\subsection{\texttt{--debug}}
+
+This option, which is not required, enables debugging of the \lmsbw
+system.
+
+This option should not be used under normal circumstances.
+
+\begin{verbatim}
+--debug
+\end{verbatim}
+
+\subsection{\texttt{--progress}}
+
+In normal operation, \lmsbw is very silent about the activities it is
+undertaking.  If you want to be presented with more information about
+the progress of the build, add this to the command line.
+
+\begin{verbatim}
+--progress
+\end{verbatim}
+
+\subsection{\texttt{--parallel}}
+
+This option allows you to directly control the number of parallel
+builds that \make is allowed to invoke.  When not specified on the
+command line, the default is one (1).
+
+This value for this argument is directly used with the \gnumake
+\texttt{-j} option.
+
+\begin{verbatim}
+--parallel 3
+\end{verbatim}
+
+
+\subsection{\texttt{--tarball-repository}}
+
+This option, which is not required, allows you to specify the
+directory where downloaded tarballs should be stored.
+
+This option can be shared between all builds wrapped with \lmsbw; if
+the tarball already exists in the repository, it will not be loaded.
+
+\textbf{NOTE: This option is for use with a feature that has not yet
+  been implemented.}
+
+\begin{verbatim}
+--tarball-repository /tmp/lmsbw-tarballs
+\end{verbatim}
+
+\subsection{\texttt{--verbose}}
+
+This option causes \lmsbw to be much more verbose while running.
+
+\begin{verbatim}
+--verbose
+\end{verbatim}
+
+\subsection{\texttt{--time}}
+
+When this option is specified on the command line, \lmsbw will print
+the elapsed time to build each component as each is completed.
+
+\begin{verbatim}
+--time
+\end{verbatim}
+
 
 \section{Using \lmsbw \make targets}
+
+Although \lmsbw is extremely fast, it is sometimes desirable to have
+it operate on only one component, or to provide further information
+about the wrapped build.
+
+\subsection{Supported Targets}
+\subsubsection{\texttt{all}}\label{lmsbw:target:all}
+
+This is the default target, and it will cause your wrapped build to be
+executed in its entirety.
+
+\subsubsection{\texttt{targets}}
+
+The \texttt{targets} target causes \lmsbw to produce a report of all
+top-level targets that are accessible to the user.
+
+The report will have this format:
+
+\begin{verbatim}
+                      all : Perform a full build
+                  targets : Produce this report
+     report[.<component>] : Generate component reports
+    install[.<component>] : Build & install components
+      clean[.<component>] : Clean build output for components
+        log[.<component>] : Display component build logs
+      prerequisite-report : Show declared component prerequisites
+         dependent-report : Show computed component dependencies
+\end{verbatim}
+
+The \texttt{[.<component>]} notation means that this target can also
+be executed on a specific component of the wrapped build.  To
+determine which components exist in the build, see
+\xref{lmsbw:target:components}.
+
+\subsubsection{\texttt{report}}
+
+The \texttt{report} target will produce a report about each wrapped
+component in the build.  The report, for each component, will look
+something like this:
+
+\begin{footnotesize}
+\begin{verbatim}
+hello-world|Module      : hello-world-module
+hello-world|  desc      : Hello World example
+hello-world|  component : hello-world
+hello-world|  kind      : source
+hello-world|  reason    : image
+hello-world|  source    : /lms/build-process/samples/hello-world/src
+hello-world|  prereq    :
+hello-world|  direct dep: goodbye-world
+hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
+hello-world|Build Root  : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2
+hello-world|  build     : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
+hello-world|  destdir   : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
+hello-world|mtree       :
+hello-world|  src mtree : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/source.mtree
+hello-world|  api mtree : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/api.mtree
+hello-world|Install     : /tmp/nb/target/install/f3b792a41a713fcdff0f70603c4d36b4
+hello-world|  src api   : /usr/include/hello-world
+hello-world|  bin api   :
+hello-world|Targets     :
+hello-world|  install   : install
+hello-world|  build     : build
+\end{verbatim}
+\end{footnotesize}
+
+\subsubsection{\texttt{install}}
+
+The \texttt{install} target is used by the default target
+(\xref{lmsbw:target:all}) to build and install each component.
+
+\subsubsection{\texttt{clean}}
+
+The \texttt{clean} target is used to clean out the entire build
+directory, or the build directory of a specific compoment.
+
+\subsubsection{\texttt{log}}
+
+The \texttt{log} target is used to display all the build logs, or the
+build log of a specific component, to the console.
+
+The build log for each component contains all the output produced when
+recursively invoking the build process of that component.
+
+If the build fails, the component that failed to build will be shown
+on the console, and then you can use the \texttt{log} target to view
+the actual output of building that component.
+
+
+\subsubsection{\texttt{prerequisite-report}}
+
+The \texttt{prerequisite-report} target will produce a report showing
+each component and its declared prerequisites.
+
+This output could be used to produce a graph of the project dependencies.
+
+\begin{verbatim}
+goodbye-world: hello-world
+hello-world:
+\end{verbatim}
+
+\subsubsection{\texttt{dependent-report}}
+
+The \texttt{dependent-report} target will produce a report showing
+each component and the components which directly depend on it.
+
+This output could be used to produce a graph of the project
+dependencies.
+
+Another use would be to determine which components will be directly
+affected by API changes.
+
+\begin{verbatim}
+goodbye-world:
+hello-world: goodbye-world
+\end{verbatim}
+
+\subsection{\texttt{components}}\label{lmsbw:target:components}
+
+The \texttt{compnents} target causes \lmsbw to produce a report of all
+the components present in your project build.  The report will take
+this form:
+
+\begin{verbatim}
+            goodbye-world : Goodbye World example
+              hello-world : Hello World example
+\end{verbatim}
