@@ -90,8 +90,8 @@ install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
 		$(call lmsbw_expand_build_module,$(1)))
 
 install.$(strip $(1))_api_check:
-	$(ATSIGN)if [ -e "$(call lmsbw_gcf,$(1),api-changed)" ] ; then	\
-		$(call lmsbw_api_changed_failure,$(1))			\
+	$(ATSIGN)if [ -e "$(call lmsbw_gcf,$(1),source-api-changed)" ] ; then	\
+		$(call lmsbw_source_api_changed_failure,$(1))			\
 	fi;
 endef
 
@@ -149,9 +149,9 @@ endef
 #   Generates a rule which can be used to clean all modules directly
 #   dependent upon the provided module.
 define lmsbw_generate_api_changed
-.PHONY:	api-changed.$(strip $(1))
+.PHONY:	source-api-changed.$(strip $(1))
 
-api-changed.$(strip $(1)):						\
+source-api-changed.$(strip $(1)):					\
 	clean.$(strip $(1))						\
 	$(addprefix clean.,$(call lmsbw_gcf,$(1),direct-dependents))
 	$(ATSIGN)$(TRUE);

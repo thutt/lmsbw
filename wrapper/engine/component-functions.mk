@@ -48,7 +48,7 @@ $(strip $(foreach c,$(call keys,LMSBW_components),
 	$(if $(filter $(strip $(1)),$(call lmsbw_gcf,$(c),prerequisite)),$(c))))
 endef
 
-# lmsbw_api_changed_failure <component>
+# lmsbw_source_api_changed_failure <component>
 #
 #   This code is executed when it has been determined that the
 #   exported API of a module has chagned.  It prints a message,
@@ -78,9 +78,9 @@ endef
 #   with Make, but the more important reason is to force the developer
 #   to know that their change has further ramifications.
 #
-define lmsbw_api_changed_failure
+define lmsbw_source_api_changed_failure
 	if [ ! -z "$(call lmsbw_gcf,$(1),direct-dependents)" ] ; then				\
-		$(MESSAGE) "The public API for '$(1)' has changed.  ";				\
+		$(MESSAGE) "The source API for '$(1)' has changed.  ";				\
 		$(MESSAGE) "This can directly affect the build of the following modules: ";	\
 		$(MESSAGE) "";									\
 		$(foreach d,$(call lmsbw_gcf,$(1),direct-dependents),				\
@@ -88,12 +88,12 @@ define lmsbw_api_changed_failure
 		$(MESSAGE) "";									\
 		$(MESSAGE) "A 'clean' build of involved modules must be performed.";		\
 		$(MESSAGE) "To clean all dependent modules, execute the following ";		\
-		$(MESSAGE) "and then rebuild:";							\
+		$(MESSAGE) "and then rebuild as you normally do:";				\
 		$(MESSAGE) "";									\
-		$(MESSAGE) "  lmsbw api-changed.$(strip $(1))";					\
+		$(MESSAGE) "  lmsbw source-api-changed.$(strip $(1))";				\
 		$(FALSE);									\
 	else											\
-		$(RM) "$(call lmsbw_gcf,$(1),api-changed)";					\
+		$(RM) "$(call lmsbw_gcf,$(1),source-api-changed)";				\
 		$(TRUE);									\
 	fi;
 endef

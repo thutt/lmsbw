@@ -36,8 +36,9 @@ __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind):
 	@$(ECHO) "$(1)|  build     : $(call lmsbw_gcf,$(1),build-directory)";
 	@$(ECHO) "$(1)|  destdir   : $(call lmsbw_gcf,$(1),destdir-directory)";
 	@$(ECHO) "$(1)|mtree       :";
-	@$(ECHO) "$(1)|  src mtree : $(call lmsbw_gcf,$(1),source-mtree-manifest)";
-	@$(ECHO) "$(1)|  api mtree : $(call lmsbw_gcf,$(1),api-mtree-manifest)";
+	@$(ECHO) "$(1)|  src       : $(call lmsbw_gcf,$(1),source-mtree-manifest)";
+	@$(ECHO) "$(1)|  source api: $(call lmsbw_gcf,$(1),source-api-mtree-manifest)";
+	@$(ECHO) "$(1)|  binary api: $(call lmsbw_gcf,$(1),binary-api-mtree-manifest)";
 	@$(ECHO) "$(1)|Install     : $(call lmsbw_gcf,$(1),install-directory)";
 	@$(ECHO) "$(1)|  src api   : $(call lmsbw_gcf,$(1),source-api)";
 	@$(ECHO) "$(1)|  bin api   : $(call lmsbw_gcf,$(1),binary-api)";
