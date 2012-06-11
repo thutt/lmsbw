@@ -33,7 +33,7 @@ o load-configuration-function
 
     LMSBW_modules := [component [' ' component]...]
 
-  + LMSBW_<component>
+  + LMSBW_component_<component>
 
     While loading the configuration, the function is responsible for
     making an associative array for each component that is loaded.
