@@ -61,3 +61,11 @@
    when the component does not have an 'install' rule.
  o LMSBW should pass unrecognized arguments directly to Make.  Maybe '--'?
  o The help message for lmsbw is horrible.
+ o Remove lmsbw-environment-setup
+ o Detecting a source API change has not been written yet.  Must mtree
+   api directories.  Must document.
+ o Implement binary-api-mtree-manifest
+ o Implement binary-api-changed.
+ o Implement binary-api.
+ o Document how to override the build & install & configure rules.
+   Look for 'chap:overriding' in variables.tex
