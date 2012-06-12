@@ -108,7 +108,7 @@ endef
 #
 define declare_component_binary_api
 $(call lmsbw_assert_known_component,$(1))
-lmsbw_dca:=$(call lmsbw_scf,$(1),source-api,$(strip $(2)))
+lmsbw_dca:=$(call lmsbw_scf,$(1),binary-api,$(strip $(2)))
 endef
 
 # declare_component_kind <component>, <kind>
