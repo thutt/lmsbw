@@ -62,8 +62,9 @@ vv:=$(call set,LMSBW_configuration, \
       load_configuration)
 \end{verbatim}
 
-In the example above, the function called \texttt{load\_configuration}\todo{xref this API}
-will be invoked to create the configuration of components.
+In the example above, the function called
+\texttt{load\_configuration}, which must be defined in your \makefile
+code, will be invoked to create the configuration of components.
 
 At exit, the named function must have done the following:
 
@@ -83,7 +84,7 @@ At exit, the named function must have done the following:
 \section{\texttt{LMSBW\_components}}
 
 This variable is a normal \make variable.  After the
-\texttt{load-configuration-function}\todo{xref this API}
+\texttt{load-configuration-function}
 (\xref{aa:load-configuration-function}) has completed initializing the
 build configuration, this variable must contain a list of configured
 components.
@@ -192,7 +193,8 @@ This value should not be used by a client of \lmsbw.
 \subsection{\lmsbwcomponentfield{<component>}{build-target}}
 
 This key holds the value specified with the
-\texttt{declare\_component\_build\_target}\todo{xref this API} API.
+\texttt{declare\_component\_build\_target}
+(\xref{api:declare-component-build-target}) API.
 
 It is used to specify the target to execute inside the component's
 build system to build, but not install, the component.
@@ -208,15 +210,15 @@ the component executes tests using the program that was just build.
 \subsection{\lmsbwcomponentfield{<component>}{component}}
 
 This key holds the value specified with the
-\texttt{declare\_component\_component}\todo{xref this API} API.
+\texttt{declare\_component\_component} (\xref{api:declare-component-component}) API.
 
 This field contains the name of the component.
 
 \subsection{\lmsbwcomponentfield{<component>}{configuration-file}}
 
 This key holds the value specified with the
-\texttt{declare\_component\_configuration\_file}\todo{xref this API}
-API.
+\texttt{declare\_component\_configuration\_file}
+(\xref{api:declare-component-configuration-file}) API.
 
 This value is the name of the configuration file which was used to
 declare the component.  Configuration files can contain \makefile
@@ -233,7 +235,8 @@ proper locations in the \destdir directory.  See
 \subsection{\lmsbwcomponentfield{<component>}{description}}
 
 This key holds the value specified with the
-\texttt{declare\_component\_description}\todo{xref this API} API.
+\texttt{declare\_component\_description}
+(\xref{api:declare-component-description}) API.
 
 It is a brief description of the purpose of the component.
 
@@ -276,7 +279,8 @@ This value should not be used by a client of \lmsbw.
 
 \subsection{\lmsbwcomponentfield{<component>}{install-target}}
 This key holds the value specified with the
-\texttt{declare\_component\_install\_target}\todo{xref this API} API.
+\texttt{declare\_component\_install\_target}
+(\xref{api:declare-component-install-target}) API.
 
 It is used to specify the target to execute inside the component's
 build system to install the component.
@@ -291,7 +295,8 @@ This key represents the \emph{kind} of component, and the value is
 used internally to determine how to handle the component when
 generating rules.
 
-This value is set by \texttt{declare\_component\_kind}.\todo{xref this API}
+This value is set by the \texttt{declare\_component\_kind}
+(\xref{api:declare-component-kind}) API.
 
 The supported values are as follows:
 
@@ -316,8 +321,8 @@ of the underlying source package.\todo{Show how to do this type of
 If an error occurs, the module name will be printed to help you know
 which configuration file is at fault.
 
-This is set through the \texttt{declare\_component\_module}\todo{xref
-  this API} API.
+This is set through the \texttt{declare\_component\_module}
+(\xref{api:declare-component-module}) API.
 
 \subsection{\lmsbwcomponentfield{<component>}{no-parallel}}
 
@@ -326,8 +331,8 @@ component to \emph{never} allow parallel builds; it directly sets the
 \gnumake parallel option to \texttt{-j 1}.
 
 This is set through the
-\texttt{declare\_component\_no\_parallel\_build}\todo{xref this API}
-API.
+\texttt{declare\_component\_no\_parallel\_build}
+(\xref{api:declare-component-no-parallel-build}) API.
 
 
 \subsection{\lmsbwcomponentfield{<component>}{prerequisite}}
@@ -337,16 +342,15 @@ the associated component.  All components contained in this list will
 be successfully build and installed before the associated component is
 built.
 
-This is set through the
-\texttt{declare\_component\_prerequisite}\todo{xref this API}
-API.
+This is set through the \texttt{declare\_component\_prerequisite}
+(\xref{api:declare-component-prerequisite}) API.
 
 \subsection{\lmsbwcomponentfield{<component>}{reason}}
 
 This key holds the \emph{reason} this component is being built.
 
-It is set through the \texttt{declare\_component\_reason}\todo{xref
-  this API} API.
+It is set through the \texttt{declare\_component\_reason}
+(\xref{api:declare-component-reason}) API.
 
 The allowable values for this key are as follows:
 
