@@ -69,3 +69,4 @@
  o Implement binary-api.
  o Document how to override the build & install & configure rules.
    Look for 'chap:overriding' in variables.tex
+ o Error messages should print module & component names for disambiguation.
