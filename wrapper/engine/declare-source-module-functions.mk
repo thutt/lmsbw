@@ -14,15 +14,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# declare_source_module <module-name>,
-#			<component-name>,
-#                       <description>
-#                       <build | image>,
-#                       <configuration-file>
-#                       <full path to source directory>
-#                       <optional list of prerequisite components>
+# declare_source_component <module-name>,
+#			   <component-name>,
+#                          <description>
+#                          <build | image>,
+#                          <configuration-file>
+#                          <full path to source directory>
+#                          <optional list of prerequisite components>
 #
-define declare_source_module
+define declare_source_component
 $(call lmsbw_assert_component_undefined,$(2))
 $(call lmsbw_assert_source_directory_exists,$(6))
 __dsm:=$(call set,LMSBW_components,$(strip $(2)),$(strip $(1)))

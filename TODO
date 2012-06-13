@@ -27,7 +27,7 @@
    configuration to use.  The toolchain can be built, or simply
    installed.
  o Add lmsbw_ prefix to module functions
- o document declare_source_module
+ o document declare_source_component
  o document declare_component_install_target
  o document declare_component_build_target
  o document declare_component_api
@@ -35,7 +35,7 @@
  o document LMSBW_<component>[source-api]
  o document LMSBW_<component>[binary-api]
  o document LMSBW_<component>[changed-api]
- o declare_source_module checks for mutual module dependence, but does
+ o declare_source_component checks for mutual module dependence, but does
    not check for cycles.  a->b->c->a.
  o Make a target which will make a report of indirect dependents.
    a -> b -> c.  c is indirectly dependent on a.
