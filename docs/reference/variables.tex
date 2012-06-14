@@ -49,6 +49,37 @@ readable in a printed document; it is frequently best of have the
 entire function call on a single line in the source file.\todo{This
   should be in a 'display' box}
 
+\subsection{\texttt{component-build-support}}\label{aa:component-build-support}
+
+This variable holds a list of supported components build methods that
+you want to be able to access in your wrapped build.  The following
+values are valid:
+
+\begin{itemize}
+\item source
+
+  The source code is available on the local system.  \lmsbw will
+  manage the invocation of the \make-based build process contained
+  in the source directory.
+
+\item download
+
+  The source code is available at a known URL in some type of
+  tarball-like format.  \lmsbw will manage the downloading, unpacking,
+  configuration using the specified toolchain) and building the
+  download package.\todo{Implement tarball components}
+\end{itemize}
+
+If no component kinds are specified in the configuration, \lmsbw will
+fail with an error.
+
+Only the specified configuration kinds will be loaded and accessible
+when using \lmsbw.  This is the mechanism whereby support for
+additional types of components can be added to \lmsbw.  One could
+imagine, for example a component type which is associated with a
+\emph{branch tag} from a revision control system; such a component
+would facilite being able to easily, and frequently, build any tagged
+revision in the version control system.
 
 \subsection{\texttt{load-configuration-function}}\label{aa:load-configuration-function}
 
@@ -110,7 +141,142 @@ correctly build it.
 The following sections describe the allowable keys, and their allowed
 values.
 
-\subsection{\lmsbwcomponentfield{<component>}{binary-api}}\label{lmsbwcomponent:binary-api}
+\subsection{Component Internal Keys}
+
+\subsubsection{\lmsbwcomponentfield{<component>}{binary-api-changed}}
+
+This key is used internally when it has been determined that the
+binary API (\xref{lmsbwcomponent:binary-api}) has changed.
+
+The value is the name of the file that indicates the binary API has
+changed.
+
+When this particular file exists, the \lmsbw will always rebuild
+dependent components.
+
+This value should not be used by a client of \lmsbw.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{binary-api-mtree-manifest}}
+
+This key holds the absolute pathname of the file which holds the
+binary API \mtree manifest.
+
+This file is created against the files in the binary API directory
+(\xref{lmsbwcomponent:binary-api}).  If there is no declared binary API
+directory, there will be no manifest.
+
+This value should not be used by a client of \lmsbw.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{build-directory}}
+
+This key is used internally; it contains the absolute pathname of the
+directory in which the build will be performed.
+
+This value should not be used by a client of \lmsbw.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{build-log}}
+
+This key is used internally; it contains the absolute pathname of the
+output of the component's bulid process.
+
+If you want to view the log for a component, use the \texttt{log}
+verb, like so:
+
+\begin{verbatim}
+lmbw log.hello-world
+\end{verbatim}
+
+This value should not be used by a client of \lmsbw.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{build-root-directory}}
+
+This key holds the root directory where all build-related output is
+placed for the associated component.
+
+This value should not be used by a client of \lmsbw.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{configuration-file}}
+
+This key holds the value specified with the
+\texttt{declare\_component\_configuration\_file}
+(\xref{api:declare-component-configuration-file}) API.
+
+This value is the name of the configuration file which was used to
+declare the component.  Configuration files can contain \makefile
+rules which will override the default rules for building and
+installing the component.
+
+For example, if the wrapped build system does not have an
+\texttt{install} rule, this can be provided by an overriding rule in
+the configuration file.  This overriding rule would copy files from
+known locations out of the build directory and install them into the
+proper locations in the \destdir directory.  See
+\xref{chap:overriding}.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{destdir-directory}}
+
+This key holds the absolute path of the \destdir directory; after
+building, the components public files will be \emph{installed} to this
+directory via the \texttt{install} target.
+
+Files should be installed to a concatenation of \destdir and the actual
+pathname.  For example, if your file should end up in
+\texttt{/usr/include}, one way to install it would be like:
+
+\begin{verbatim}
+cp include-file.h $(DESTDIR)/usr/include
+\end{verbatim}
+
+This value should not be used by a client of \lmsbw.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{install-directory}}
+
+This key holds the absolute path of the \emph{install} directory.
+After building, \lmsbw will invoke the component's build process with
+the \emph{install} target, and this target will place files into the
+\destdir directory.  Upon successful completion of component
+installation, \lmsbw will copy the files from the \destdir to the
+global \emph{install} directory; the global install directory is
+shared by all components.\todo{AKA 'sysroot'}
+
+This value should not be used by a client of \lmsbw.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{source-api-changed}}
+
+This key is used internally when it has been determined that the
+source API (\xref{lmsbwcomponent:souce-api}) has changed.
+
+The value is the name of the file that indicates the source API has
+changed.
+
+When this particular file exists, the \lmsbw will fail with an error
+indicating that your change affect dependent components, and it shows
+a command to execute which will cause all the dependen components to
+have the verb \texttt{clean} applied to their build.  This ensures
+that a full rebuild of all dependent components will be performed,
+thereby avoiding any dependency issues which would have caused the
+dependent components to not automatically properly rebuild.
+
+This also gives the developer a chance to pause and think about the
+total impact -- other required source-level changes, additional
+testing, etc. -- of their change.
+
+This value should not be used by a client of \lmsbw.
+
+\subsubsection{\lmsbwcomponentfield{<component>}{source-api-mtree-manifest}}
+
+This key holds the absolute pathname of the file which holds the
+source API \mtree manifest.
+
+This file is created against the files in the source API directory
+(\xref{lmsbwcomponent:souce-api}).  If there is no declared source API
+directory, there will be no manifest.
+
+This value should not be used by a client of \lmsbw.
+
+\subsection{Component Source Keys}
+
+\subsubsection{\lmsbwcomponentfield{<component>}{binary-api}}\label{lmsbwcomponent:binary-api}
 
 This key contains the full pathname of the \emph{install} directory
 that contains the binary interface of the component.  \lmsbw will use
@@ -138,59 +304,7 @@ binary API.
 This key is normally set through
 \texttt{declare\_component\_binary\_api} API.
 
-\subsection{\lmsbwcomponentfield{<component>}{binary-api-changed}}
-
-This key is used internally when it has been determined that the
-binary API (\xref{lmsbwcomponent:binary-api}) has changed.
-
-The value is the name of the file that indicates the binary API has
-changed.
-
-When this particular file exists, the \lmsbw will always rebuild
-dependent components.
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{binary-api-mtree-manifest}}
-
-This key holds the absolute pathname of the file which holds the
-binary API \mtree manifest.
-
-This file is created against the files in the binary API directory
-(\xref{lmsbwcomponent:binary-api}).  If there is no declared binary API
-directory, there will be no manifest.
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{build-directory}}
-
-This key is used internally; it contains the absolute pathname of the
-directory in which the build will be performed.
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{build-log}}
-
-This key is used internally; it contains the absolute pathname of the
-output of the component's bulid process.
-
-If you want to view the log for a component, use the \texttt{log}
-verb, like so:
-
-\begin{verbatim}
-lmbw log.hello-world
-\end{verbatim}
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{build-root-directory}}
-
-This key holds the root directory where all build-related output is
-placed for the associated component.
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{build-target}}
+\subsubsection{\lmsbwcomponentfield{<component>}{build-target}}
 
 This key holds the value specified with the
 \texttt{declare\_component\_build\_target}
@@ -207,32 +321,14 @@ This is important because sometimes it is necessary to not execute the
 entire default target -- if you are cross compiling, for example, and
 the component executes tests using the program that was just build.
 
-\subsection{\lmsbwcomponentfield{<component>}{component}}
+\subsubsection{\lmsbwcomponentfield{<component>}{component}}
 
 This key holds the value specified with the
 \texttt{declare\_component\_component} (\xref{api:declare-component-component}) API.
 
 This field contains the name of the component.
 
-\subsection{\lmsbwcomponentfield{<component>}{configuration-file}}
-
-This key holds the value specified with the
-\texttt{declare\_component\_configuration\_file}
-(\xref{api:declare-component-configuration-file}) API.
-
-This value is the name of the configuration file which was used to
-declare the component.  Configuration files can contain \makefile
-rules which will override the default rules for building and
-installing the component.
-
-For example, if the wrapped build system does not have an
-\texttt{install} rule, this can be provided by an overriding rule in
-the configuration file.  This overriding rule would copy files from
-known locations out of the build directory and install them into the
-proper locations in the \destdir directory.  See
-\xref{chap:overriding}.
-
-\subsection{\lmsbwcomponentfield{<component>}{description}}
+\subsubsection{\lmsbwcomponentfield{<component>}{description}}
 
 This key holds the value specified with the
 \texttt{declare\_component\_description}
@@ -242,42 +338,14 @@ It is a brief description of the purpose of the component.
 
 Setting is is optional.
 
-\subsection{\lmsbwcomponentfield{<component>}{destdir-directory}}
-
-This key holds the absolute path of the \destdir directory; after
-building, the components public files will be \emph{installed} to this
-directory via the \texttt{install} target.
-
-Files should be installed to a concatenation of \destdir and the actual
-pathname.  For example, if your file should end up in
-\texttt{/usr/include}, one way to install it would be like:
-
-\begin{verbatim}
-cp include-file.h $(DESTDIR)/usr/include
-\end{verbatim}
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{direct-dependents}}
+\subsubsection{\lmsbwcomponentfield{<component>}{direct-dependents}}
 
 This key, which is used internally, holds a list of components which
 list \texttt{component} as a direct prerequisite.
 
 This value should not be used by a client of \lmsbw.
 
-\subsection{\lmsbwcomponentfield{<component>}{install-directory}}
-
-This key holds the absolute path of the \emph{install} directory.
-After building, \lmsbw will invoke the component's build process with
-the \emph{install} target, and this target will place files into the
-\destdir directory.  Upon successful completion of component
-installation, \lmsbw will copy the files from the \destdir to the
-global \emph{install} directory; the global install directory is
-shared by all components.\todo{AKA 'sysroot'}
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{install-target}}
+\subsubsection{\lmsbwcomponentfield{<component>}{install-target}}
 This key holds the value specified with the
 \texttt{declare\_component\_install\_target}
 (\xref{api:declare-component-install-target}) API.
@@ -289,7 +357,7 @@ If not specified, the component's build system will invoked with
 \texttt{install} as the target when processing the \emph{install}
 phase of the build.
 
-\subsection{\lmsbwcomponentfield{<component>}{kind}}
+\subsubsection{\lmsbwcomponentfield{<component>}{kind}}
 
 This key represents the \emph{kind} of component, and the value is
 used internally to determine how to handle the component when
@@ -304,7 +372,7 @@ The supported values are as follows:
 \item source
 \end{itemize}
 
-\subsection{\lmsbwcomponentfield{<component>}{module}}
+\subsubsection{\lmsbwcomponentfield{<component>}{module}}
 
 This key designates the module which produces the component.  In many
 cases the component and module will have the same name, but when it's
@@ -324,7 +392,7 @@ which configuration file is at fault.
 This is set through the \texttt{declare\_component\_module}
 (\xref{api:declare-component-module}) API.
 
-\subsection{\lmsbwcomponentfield{<component>}{no-parallel}}
+\subsubsection{\lmsbwcomponentfield{<component>}{no-parallel}}
 
 This key, when set, causes the recursive make for the associated
 component to \emph{never} allow parallel builds; it directly sets the
@@ -335,7 +403,7 @@ This is set through the
 (\xref{api:declare-component-no-parallel-build}) API.
 
 
-\subsection{\lmsbwcomponentfield{<component>}{prerequisite}}
+\subsubsection{\lmsbwcomponentfield{<component>}{prerequisite}}
 
 This key holds a list of components declared to be prerequisites of
 the associated component.  All components contained in this list will
@@ -345,7 +413,7 @@ built.
 This is set through the \texttt{declare\_component\_prerequisite}
 (\xref{api:declare-component-prerequisite}) API.
 
-\subsection{\lmsbwcomponentfield{<component>}{reason}}
+\subsubsection{\lmsbwcomponentfield{<component>}{reason}}
 
 This key holds the \emph{reason} this component is being built.
 
@@ -368,7 +436,7 @@ The allowable values for this key are as follows:
   \texttt{sysroot}.
 
 \end{itemize}
-\subsection{\lmsbwcomponentfield{<component>}{source-api}}\label{lmsbwcomponent:souce-api}
+\subsubsection{\lmsbwcomponentfield{<component>}{source-api}}\label{lmsbwcomponent:souce-api}
 
 This key contains the full pathname of the \emph{install} directory
 that contains the source interface of the component.  \lmsbw will use
@@ -388,46 +456,13 @@ This key is normally set through
 \texttt{declare\_component\_source\_api} API.
 
 
-\subsection{\lmsbwcomponentfield{<component>}{source-api-changed}}
-
-This key is used internally when it has been determined that the
-source API (\xref{lmsbwcomponent:souce-api}) has changed.
-
-The value is the name of the file that indicates the source API has
-changed.
-
-When this particular file exists, the \lmsbw will fail with an error
-indicating that your change affect dependent components, and it shows
-a command to execute which will cause all the dependen components to
-have the verb \texttt{clean} applied to their build.  This ensures
-that a full rebuild of all dependent components will be performed,
-thereby avoiding any dependency issues which would have caused the
-dependent components to not automatically properly rebuild.
-
-This also gives the developer a chance to pause and think about the
-total impact -- other required source-level changes, additional
-testing, etc. -- of their change.
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{source-api-mtree-manifest}}
-
-This key holds the absolute pathname of the file which holds the
-source API \mtree manifest.
-
-This file is created against the files in the source API directory
-(\xref{lmsbwcomponent:souce-api}).  If there is no declared source API
-directory, there will be no manifest.
-
-This value should not be used by a client of \lmsbw.
-
-\subsection{\lmsbwcomponentfield{<component>}{source-directory}}
+\subsubsection{\lmsbwcomponentfield{<component>}{source-directory}}
 This key is used internally; it contains the absolute pathname of the
 source directory for the component.
 
 This value should not be used by a client of \lmsbw.
 
-\subsection{\lmsbwcomponentfield{<component>}{source-mtree-manifest}}
+\subsubsection{\lmsbwcomponentfield{<component>}{source-mtree-manifest}}
 
 This key holds the absolute pathname of the file which holds the
 source \mtree manifest.

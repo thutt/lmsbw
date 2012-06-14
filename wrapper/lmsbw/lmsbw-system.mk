@@ -14,6 +14,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+include $(LMSBW_DIR)/wrapper/gmsl/gmsl
+include $(LMSBW_DIR)/wrapper/engine/md5sum.mk
+
 lmsbw_empty	=
 
 define lmsbw_space
@@ -81,3 +84,10 @@ include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-general-functions.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-errors.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system-utilities.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-scripts.mk
+include $(LMSBW_DIR)/wrapper/engine/component-functions.mk
+include $(LMSBW_DIR)/wrapper/engine/declare-module-functions.mk
+include $(LMSBW_DIR)/wrapper/engine/declare-targets.mk
+include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
+include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
+include $(LMSBW_DIR)/wrapper/engine/mtree.mk
+include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk

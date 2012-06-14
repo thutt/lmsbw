@@ -114,3 +114,23 @@ $(call lmsbw_assert,E1009,$(call sne,undefined,$(origin $(strip $(2)))),		\
 		Function '$(strip $(2))' for component '$(strip $(1))' not written)
 endef
 
+
+# lmsbw_no_component_build_support
+#
+#  Produces an error when no component build support has been
+#  configured.
+
+define lmsbw_no_component_build_support
+$(call lmsbw_assert,E1010,$(false),No 'component-build-support' configured)
+endef
+
+
+# lmsbw_invalid_component_build_support <invalid-support>
+#
+# Produces an error when an unsupported component build type is
+# specified.
+#
+define lmsbw_invalid_component_build_support
+$(call lmsbw_assert,E1011,$(false),Component build type '$(1)' is not valid)
+endef
+

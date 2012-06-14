@@ -242,7 +242,7 @@ $(call lmsbw_scf,$(1),source-api-changed,$(call lmsbw_gcf,$(1),build-root-direct
 $(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log)
 endef
 
-include $(LMSBW_DIR)/wrapper/engine/declare-source-module-functions.mk
+include $(LMSBW_DIR)/wrapper/engine/component-build-support-source.mk
 
 # fixup_component_fields <component>
 #

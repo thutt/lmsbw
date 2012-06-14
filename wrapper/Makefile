@@ -17,17 +17,8 @@
 
 export LMSBW_DIR := $(realpath $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))/..)
 
-include $(LMSBW_DIR)/wrapper/gmsl/gmsl
-include $(LMSBW_DIR)/wrapper/engine/md5sum.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
-include $(LMSBW_DIR)/wrapper/engine/component-functions.mk
-include $(LMSBW_DIR)/wrapper/engine/declare-module-functions.mk
-include $(LMSBW_DIR)/wrapper/engine/declare-targets.mk
-include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
-include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-rules.mk
-include $(LMSBW_DIR)/wrapper/engine/mtree.mk
-include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk
 
 all:	install
 
