@@ -14,6 +14,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# This file is the only public interface for building source-based
+# components.
+#
+
 # declare_source_component <module-name>,
 #			   <component-name>,
 #                          <description>
