@@ -70,3 +70,5 @@
  o Document how to override the build & install & configure rules.
    Look for 'chap:overriding' in variables.tex
  o Error messages should print module & component names for disambiguation.
+ o Figure out why generate-rules.mk causes errors when put in
+   lmsbw-system.mk.
