@@ -41,3 +41,21 @@ $(call declare_component_source_directory,$(2),$(6))
 $(call declare_component_configuration_file,$(2),$(5))
 $(call set_component_internal_data,$(2))
 endef
+
+
+# generate_component_rules_source <component>
+#
+#   Generate build rules for a 'source' component.
+#
+define generate_component_rules_source
+$(call generate_component_directory_rules,$(1))
+$(call generate_component_install,$(1))
+$(call generate_component_component,$(1))
+$(call generate_component_clean,$(1))
+$(call generate_component_report,$(1))
+$(call generate_component_build_log,$(1))
+$(call generate_component_prerequisite_report,$(1))
+$(call generate_component_dependent_report,$(1))
+$(call lmsbw_generate_api_changed,$(1))
+endef
+
