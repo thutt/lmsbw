@@ -31,7 +31,7 @@ endef
 define lmsbw_load_component_support
 $(if $(call seq,$(call __gcv,component-build-support),),	\
 	$(call lmsbw_no_component_build_support)) \
-$(foreach f,$(addsuffix .mk,$(addprefix $(LMSBW_DIR)/wrapper/engine/component-build-support-,$(call __gcv,component-build-support))),$(call assert_exists,$(f)) $(eval include $(f)))
+$(foreach f,$(addsuffix -component.mk,$(addprefix $(LMSBW_DIR)/wrapper/engine/build-support-,$(call __gcv,component-build-support))),$(call assert_exists,$(f)) $(eval include $(f)))
 endef
 
 # Include configuration information for wrapped build system:
@@ -67,7 +67,7 @@ include $(LMSBW_CONFIGURATION_FILE)
 # will proceed to validate them.
 #
 $(call lmsbw_check_load_configuration_function)
-#$(call lmsbw_load_component_support)
+$(call lmsbw_load_component_support)
 
 # Load component configuration files.
 #

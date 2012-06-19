@@ -242,7 +242,6 @@ $(call lmsbw_scf,$(1),source-api-changed,$(call lmsbw_gcf,$(1),build-root-direct
 $(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log)
 endef
 
-include $(LMSBW_DIR)/wrapper/engine/component-build-support-source.mk
 
 # fixup_component_fields <component>
 #
@@ -258,4 +257,3 @@ $(call lmsbw_scf,$(1),install-directory,					\
 	$(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),		\
 		$(call declare_component_install_target,$(strip $(1)),install))
 endef
-
