@@ -134,6 +134,10 @@ function main ()
         esac
     done
 
+    if [ -z "${BW_BUILD_ROOT}" ] ; then
+        fatal "${program}: Build output directory not specifid; use '--build-root'.";
+    fi;
+
     start_seconds=$(date +%s)
     build_system_dir=$(readlink -f $(dirname ${0})/..);
     makefile=${build_system_dir}/wrapper/Makefile
