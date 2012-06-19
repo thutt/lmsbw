@@ -50,7 +50,7 @@ endef
 #   provided component sources.
 #
 define lmsbw_expand_build_module
-	$(MESSAGE) "$(1): Invoking '$(1)' build system";					\
+	$(MESSAGE) "$(1): Trampoline to '$(1)' build system";					\
 	$(TIME)											\
 	-f "$(foreach v,$(shell seq $(MAKELEVEL))," ") [$(MAKELEVEL)]  $(1): elapsed time: %E"	\
 	--output="$(call lmsbw_gcf,$(1),build-directory)/build-time.text"			\
