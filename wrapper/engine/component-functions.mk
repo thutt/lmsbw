@@ -51,7 +51,7 @@ endef
 # lmsbw_source_api_changed_failure <component>
 #
 #   This code is executed when it has been determined that the
-#   exported API of a module has chagned.  It prints a message,
+#   exported API of a component has changed.  It prints a message,
 #   provides instructions on how to proceed, and then causes the build
 #   to fail.
 #
@@ -59,7 +59,7 @@ endef
 #   foward are:
 #
 #     o An API change has downstream ramifications beyond just
-#       changing the API.  Any dependent module must be recompiled,
+#       changing the API.  Any dependent component must be recompiled,
 #       and perhaps further changed.  This has a cost in at least
 #       development, and further testing.
 #

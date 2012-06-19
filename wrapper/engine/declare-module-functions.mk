@@ -39,7 +39,7 @@ endef
 
 # declare_component_build_target <component> <list of targets>
 #
-#  Sets the targets that will be passed to the module's Makefile as
+#  Sets the targets that will be passed to the component's Makefile as
 #  the preliminary targets for the 'bulid' phase.
 #
 #  If not set, LMSBW will not use a specific set of targets for the
@@ -54,8 +54,8 @@ endef
 
 # declare_component_install_target <component> <list of targets>
 #
-#  Sets the targets that will be passed to the module's Makefile as
-#  the preliminary targets for the 'install' phase.
+#  Sets the targets that will be passed to the components's Makefile
+#  as the preliminary targets for the 'install' phase.
 #
 #  If not set, LMSBW will set it to 'install'.
 #

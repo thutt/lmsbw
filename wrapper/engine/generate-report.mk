@@ -78,7 +78,7 @@ endef
 
 # generate_component_report <component>
 #
-#   Generates a report for any type of module.
+#   Generates a report for any component 'kind'.
 #
 define generate_component_report
 $(call lmsbw_assert_known_function,$(1),				\

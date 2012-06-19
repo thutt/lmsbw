@@ -47,7 +47,7 @@ endef
 # lmsbw_expand_build_module <component>
 #
 #   Expands to the commands which invoke a subordinate make on the
-#   provided module sources.
+#   provided component sources.
 #
 define lmsbw_expand_build_module
 	$(MESSAGE) "$(1): Invoking '$(1)' build system";					\
@@ -78,7 +78,7 @@ endef
 # generate_component_install <component>
 #
 #   Generates an 'install.<component>' target.  This is used to invoke
-#   a subordinate make on the module's sources.
+#   a subordinate make on the components's sources.
 #
 define generate_component_install
 .PHONY:	install.$(strip $(1)) install.$(strip $(1))_api_check
@@ -147,7 +147,7 @@ endef
 # lmsbw_generate_api_changed <component>
 #
 #   Generates a rule which can be used to clean all modules directly
-#   dependent upon the provided module.
+#   dependent upon the provided component.
 define lmsbw_generate_api_changed
 .PHONY:	source-api-changed.$(strip $(1))
 
@@ -160,7 +160,7 @@ endef
 
 # generate_component_rules_source <component>
 #
-#   Generate build rules for a 'source' module.
+#   Generate build rules for a 'source' component.
 #
 define generate_component_rules_source
 $(call generate_component_directory_rules,$(1))

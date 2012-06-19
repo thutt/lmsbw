@@ -79,9 +79,9 @@ $(eval $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FI
 #       		      <prerequisites of checking component>
 #
 #  Ensures that the set of loaded modules forms a DAG.  This is
-#  accomplished by keeping a set of modules that have been visited,
-#  and a path from the original module to the current module in a
-#  list.
+#  accomplished by keeping a set of components that have been visited,
+#  and a path from the original components to the current component in
+#  a list.
 #
 #  Upon each recursion, if the new '<checking component>' has not been
 #  visited, its prerequisites are checked.  If any of the
