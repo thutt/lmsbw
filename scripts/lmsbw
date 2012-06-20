@@ -50,7 +50,7 @@ ${program} \\
   --configuration              : Full path to LMSBW configuration file
   --debug                      : Enable debugging LMSBW system
   --progress                   : Produce more progress messages during build
-  --parallel                   : Specify BW_PARALLEL_LEVEL (-j to Make)
+  --parallel                   : Specify LMSBW_PARALLEL_LEVEL (-j to Make)
   --tarball-repository         : Specify BW_TARBALL_REPOSITORY
   --verbose                    : Enable more verbosity from build
   --time                       : Show elapsed time for component builds
@@ -111,7 +111,7 @@ function main ()
                 shift 1 ;;
 
             --parallel)
-                BW_PARALLEL_LEVEL="${2}";
+                LMSBW_PARALLEL_LEVEL="${2}";
                 shift 2 ;;
 
             --progress)

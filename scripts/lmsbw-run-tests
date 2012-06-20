@@ -34,7 +34,7 @@ ${program}
 
   --help | -h                  : Show this help and exit
   --configuration              : Full path to LMSBW configuration file
-  --parallel                   : Set BW_PARALLEL_LEVEL
+  --parallel                   : Set LMSBW_PARALLEL_LEVEL
   --time                       : Show elapsed time for module builds
 
 EOF
@@ -76,7 +76,7 @@ function main ()
                 shift 2 ;;
 
             --parallel)
-                BW_PARALLEL_LEVEL="${2}";
+                export LMSBW_PARALLEL_LEVEL="${2}";
                 shift 2 ;;
 
             --) shift ;
