@@ -24,7 +24,7 @@
 # hash in the pathname used in this rule will not match the hash used
 # when all modules are loaded.
 #
-$(BW_TARBALL_REPOSITORY)			\
+$(LMSBW_TARBALL_REPOSITORY)			\
 $(call lmsbw_expand_install_directory,build)	\
 $(call lmsbw_expand_install_directory,image)	\
 $(LMSBW_DIRECTORIES):

@@ -46,12 +46,12 @@ ${program} \\
   To see available components : lmsbw components
 
   --help | -h                  : Show this help and exit
-  --build-root                 : Specify BW_BUILD_ROOT
+  --build-root                 : Specify LMSBW_BUILD_ROOT
   --configuration              : Full path to LMSBW configuration file
   --debug                      : Enable debugging LMSBW system
   --progress                   : Produce more progress messages during build
   --parallel                   : Specify LMSBW_PARALLEL_LEVEL (-j to Make)
-  --tarball-repository         : Specify BW_TARBALL_REPOSITORY
+  --tarball-repository         : Specify LMSBW_TARBALL_REPOSITORY
   --verbose                    : Enable more verbosity from build
   --time                       : Show elapsed time for component builds
 
@@ -98,7 +98,7 @@ function main ()
                 shift 1 ;;
 
             --build-root)
-                export BW_BUILD_ROOT="${2}";
+                export LMSBW_BUILD_ROOT="${2}";
                 shift 2 ;;
 
             --configuration)
@@ -119,7 +119,7 @@ function main ()
                 shift 1 ;;
 
             --tarball-repository)
-                BW_TARBALL_REPOSITORY="${2}";
+                export LMSBW_TARBALL_REPOSITORY="${2}";
                 shift 2 ;;
 
             --time)
@@ -134,7 +134,7 @@ function main ()
         esac
     done
 
-    if [ -z "${BW_BUILD_ROOT}" ] ; then
+    if [ -z "${LMSBW_BUILD_ROOT}" ] ; then
         fatal "${program}: Build output directory not specifid; use '--build-root'.";
     fi;
 

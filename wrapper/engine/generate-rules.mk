@@ -24,7 +24,7 @@
 #  transformed into the 'install.' target name.
 #
 define expand_prerequisites
-$(BW_TARBALL_REPOSITORY)				\
+$(LMSBW_TARBALL_REPOSITORY)				\
 $(LMSBW_DIRECTORIES)					\
 $(call lmsbw_gcf,$(1),build-directory)			\
 $(call lmsbw_gcf,$(1),destdir-directory)			\

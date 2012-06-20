@@ -35,16 +35,15 @@ else
 export ATSIGN			:=
 endif
 
-export BW_SOURCE_ROOT
-export BW_BUILD_ROOT
-export BW_TARBALL_REPOSITORY
+export LMSBW_BUILD_ROOT
+export LMSBW_TARBALL_REPOSITORY
 export LMSBW_VERBOSE
 
 export LMSBW_SCRIPTS			:=		\
 	$(LMSBW_DIR)/scripts
 
 export LMSBW_BUILD_DIR			:=		\
-	$(BW_BUILD_ROOT)
+	$(LMSBW_BUILD_ROOT)
 
 export LMSBW_TARGET_BUILD_ROOT		:=		\
 	$(LMSBW_BUILD_DIR)/target
@@ -78,7 +77,7 @@ export LMSBW_DIRECTORIES		:=		\
 	$(LMSBW_COMMON_BUILD_SYSTEM_FILES)
 
 export LMSBW_TARBALL_SOURCE_ROOT	:=		\
-	$(BW_BUILD_ROOT)
+	$(LMSBW_BUILD_ROOT)
 
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-general-functions.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-errors.mk
