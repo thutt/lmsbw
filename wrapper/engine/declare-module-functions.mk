@@ -27,8 +27,8 @@ endef
 #   Ensures that the individual component bearing this attribute will
 #   not be built in parallel.
 #
-#   This attribute, if present, is assigned to LMSBW_NO_PARALLEL when
-#   invoking 'module.makefile'.  If not present, LMSBW_NO_PARALLEL is
+#   This attribute, if present, is assigned to LMSBW_C_NO_PARALLEL when
+#   invoking 'module.makefile'.  If not present, LMSBW_C_NO_PARALLEL is
 #   defined, but will have no value.
 #
 define declare_component_no_parallel_build
@@ -256,4 +256,13 @@ $(call lmsbw_scf,$(1),install-directory,					\
 		$(call lmsbw_direct_dependents,$(1)))				\
 	$(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),		\
 		$(call declare_component_install_target,$(strip $(1)),install))
+endef
+
+
+# declare_component_toolchain <component>,<toolchain-name>
+#
+#
+define declare_component_toolchain
+$(call lmsbw_assert_known_component,$(1))
+$(call lmsbw_scf,$(1),toolchain,$(2))
 endef

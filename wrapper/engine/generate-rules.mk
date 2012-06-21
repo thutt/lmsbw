@@ -60,16 +60,16 @@ define lmsbw_expand_build_module
 		$(call lmsbw_makeflags)								\
 		LMSBW_VERBOSE=1									\
 		LMSBW_DIR="$(LMSBW_DIR)"							\
-		LMSBW_COMPONENT=$(1)								\
-		LMSBW_KIND="$(call lmsbw_gcf,$(1),kind)"					\
-		LMSBW_SOURCE_DIRECTORY="$(call lmsbw_gcf,$(1),source-directory)"		\
-		LMSBW_BUILD_DIRECTORY="$(call lmsbw_gcf,$(1),build-directory)"			\
-		LMSBW_DESDIR_DIRECTORY="$(call lmsbw_gcf,$(1),destdir-directory)"		\
-		LMSBW_INSTALL_DIRECTORY="$(call lmsbw_gcf,$(1),install-directory)"		\
-		LMSBW_CONFIGURATION_FILE="$(call lmsbw_gcf,$(1),configuration-file)"		\
-		LMSBW_BUILD_TARGET="$(call lmsbw_gcf,$(1),build-target)"			\
-		LMSBW_INSTALL_TARGET="$(call lmsbw_gcf,$(1),install-target)"			\
-		LMSBW_NO_PARALLEL="$(call lmsbw_gcf,$(1),no-parallel)"				\
+		LMSBW_C_COMPONENT=$(1)								\
+		LMSBW_C_KIND="$(call lmsbw_gcf,$(1),kind)"					\
+		LMSBW_C_SOURCE_DIRECTORY="$(call lmsbw_gcf,$(1),source-directory)"		\
+		LMSBW_C_BUILD_DIRECTORY="$(call lmsbw_gcf,$(1),build-directory)"		\
+		LMSBW_C_DESTDIR_DIRECTORY="$(call lmsbw_gcf,$(1),destdir-directory)"		\
+		LMSBW_C_INSTALL_DIRECTORY="$(call lmsbw_gcf,$(1),install-directory)"		\
+		LMSBW_C_CONFIGURATION_FILE="$(call lmsbw_gcf,$(1),configuration-file)"		\
+		LMSBW_C_BUILD_TARGET="$(call lmsbw_gcf,$(1),build-target)"			\
+		LMSBW_C_INSTALL_TARGET="$(call lmsbw_gcf,$(1),install-target)"			\
+		LMSBW_C_NO_PARALLEL="$(call lmsbw_gcf,$(1),no-parallel)"			\
 		>$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log 2>&1;			\
 	$(if $(LMSBW_VERBOSE)$(LMSBW_ELAPSED_TIME),$(CAT)					\
 		$(call lmsbw_gcf,$(1),build-directory)/build-time.text;)

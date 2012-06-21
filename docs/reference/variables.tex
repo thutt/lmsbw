@@ -469,5 +469,10 @@ source \mtree manifest.
 
 This value should not be used by a client of \lmsbw.
 
+\subsubsection{\lmsbwcomponentfield{<component>}{toolchain}}
 
-
+This is the name of the toolchain that will be used to build the
+component.  It can be specified at the component level.  If it is not
+specified at the component level, the globally specified toolchain is
+used.  If no global toolchain is specified, the host toolchain will be
+used.

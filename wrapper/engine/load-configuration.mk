@@ -92,9 +92,9 @@ $(eval $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FI
 #  component>' is removed from the list of compnents.  This ensures
 #  that if an error is reported, it will show only the prerequisite
 #  path that is a cycle.
-#    
+#
 #  This process is repeated for each component that is loaded.
-#    
+#
 define check_modules_form_dag_work
 $(if $(call not,$(call set_is_member,$(2),$(lmsbw_dag_set))),				\
 	$(eval lmsbw_dag_set:=$(call set_insert,$(2),$(lmsbw_dag_set)))			\
@@ -123,9 +123,13 @@ $(eval lmsbw_dag_list:=)
 $(eval lmsbw_dag_set:=$(empty_set))
 endef
 
-$(foreach c,$(call keys,LMSBW_components),		\
-	$(call lmsbw_assert_not_self_prerequisite,$(c))	\
-	$(eval $(call check_modules_form_dag,$(c),$(c),	\
-		$(call lmsbw_gcf,$(c),prerequisite)))	\
-	$(eval $(call fixup_component_fields,$(c)))	\
+$(foreach c,$(call keys,LMSBW_components),					\
+	$(call lmsbw_assert_not_self_prerequisite,$(c))				\
+	$(eval $(call check_modules_form_dag,$(c),$(c),				\
+		$(call lmsbw_gcf,$(c),prerequisite)))				\
+	$(eval $(call fixup_component_fields,$(c)))				\
+	$(eval $(if $(LMSBW_TOOLCHAIN),						\
+		$(if $(call not,$(call lmsbw_gcf,$(c),toolchain)),		\
+		$(call lmsbw_scf,$(c),toolchain,$(LMSBW_TOOLCHAIN)))))		\
+	$(call lmsbw_assert_toolchain_exists,$(call lmsbw_gcf,$(c),toolchain))	\
 )

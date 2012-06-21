@@ -75,3 +75,4 @@
  o Make times fonts work in latex.
  o Make draft watermark work in latex.
  o Selected toolchain should be included in the build output directory hash.
+ o Document component.makefile-specific defines are LMSBW_C_<id>.

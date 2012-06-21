@@ -35,6 +35,7 @@ __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind):
 	@$(ECHO) "$(1)|Build Root  : $(call lmsbw_gcf,$(1),build-root-directory)";
 	@$(ECHO) "$(1)|  build     : $(call lmsbw_gcf,$(1),build-directory)";
 	@$(ECHO) "$(1)|  destdir   : $(call lmsbw_gcf,$(1),destdir-directory)";
+	@$(ECHO) "$(1)|  toolchain : $(call lmsbw_gcf,$(1),toolchain)";
 	@$(ECHO) "$(1)|mtree       :";
 	@$(ECHO) "$(1)|  src       : $(call lmsbw_gcf,$(1),source-mtree-manifest)";
 	@$(ECHO) "$(1)|  source api: $(call lmsbw_gcf,$(1),source-api-mtree-manifest)";
