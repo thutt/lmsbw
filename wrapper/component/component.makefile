@@ -17,6 +17,7 @@
 
 include $(LMSBW_DIR)/wrapper/gmsl/gmsl
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
+include $(LMSBW_DIR)/wrapper/component/toolchain.mk
 
 .PHONY:	install build configure sync
 
