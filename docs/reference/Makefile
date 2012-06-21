@@ -32,3 +32,5 @@ $(THIS_DOC).tex:
 $(THIS_DOC).dvi:	$(THIS_DOC).tex $(TEX)
 	latex $<
 
+clean:
+	rm *.aux *.log *.toc *.ps *.dvi
