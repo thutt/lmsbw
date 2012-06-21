@@ -39,6 +39,10 @@ $(call declare_component_component,$(2),$(2))
 $(call declare_component_prerequisite,$(2),$(7))
 $(call declare_component_source_directory,$(2),$(6))
 $(call declare_component_configuration_file,$(2),$(5))
+$(if $(LMSBW_TOOLCHAIN),						\
+	$(if $(call not,$(call lmsbw_gcf,$(2),toolchain)),		\
+	$(call lmsbw_scf,$(2),toolchain,$(LMSBW_TOOLCHAIN))))
+$(call lmsbw_assert_toolchain_exists,$(call lmsbw_gcf,$(2),toolchain))
 $(call set_component_internal_data,$(2))
 endef
 

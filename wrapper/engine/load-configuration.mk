@@ -128,8 +128,4 @@ $(foreach c,$(call keys,LMSBW_components),					\
 	$(eval $(call check_modules_form_dag,$(c),$(c),				\
 		$(call lmsbw_gcf,$(c),prerequisite)))				\
 	$(eval $(call fixup_component_fields,$(c)))				\
-	$(eval $(if $(LMSBW_TOOLCHAIN),						\
-		$(if $(call not,$(call lmsbw_gcf,$(c),toolchain)),		\
-		$(call lmsbw_scf,$(c),toolchain,$(LMSBW_TOOLCHAIN)))))		\
-	$(call lmsbw_assert_toolchain_exists,$(call lmsbw_gcf,$(c),toolchain))	\
 )

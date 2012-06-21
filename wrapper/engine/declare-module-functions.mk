@@ -13,8 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 # __expand_build_root <component>
 #
+#  Expands to the root of the build directory for the provided
+#  component.  The root will contain an md5sum hash to ensure that
+#  every type of build will receive a unique directory: change an
+#  option, or the toolchain being used, and the build system will
+#  generate a different build directory.
 #
 define __expand_build_root
 $(call lmsbw_assert_known_component,$(1))
