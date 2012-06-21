@@ -34,15 +34,15 @@ sync:
 		--verbose						\
 		$(LMSBW_SOURCE_DIRECTORY) $(LMSBW_BUILD_DIRECTORY);
 
-configure:	module.configure.$(LMSBW_COMPONENT)
+configure:	component.configure.$(LMSBW_COMPONENT)
 
-build:		module.build.$(LMSBW_COMPONENT)
+build:		component.build.$(LMSBW_COMPONENT)
 
 
 # The install rule is the only rule invoked by the LMSBW.  It then
 # drives the other aspects of building a component.
 #
-install:	module.install.$(LMSBW_COMPONENT)
+install:	component.install.$(LMSBW_COMPONENT)
 	$(MESSAGE) "Installing '$(LMSBW_COMPONENT)' to '$(LMSBW_INSTALL_DIRECTORY)'";
 	$(RSYNC)							\
 		--compress						\
@@ -56,4 +56,4 @@ install:	module.install.$(LMSBW_COMPONENT)
 		--verbose						\
 		$(LMSBW_DESDIR_DIRECTORY)/ $(LMSBW_INSTALL_DIRECTORY);
 
-include $(LMSBW_DIR)/wrapper/module/last-resort-rules-$(LMSBW_KIND)-module.mk
+include $(LMSBW_DIR)/wrapper/component/last-resort-rules-$(LMSBW_KIND)-component.mk

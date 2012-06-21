@@ -14,12 +14,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-.PHONY:	default.module.install.$(LMSBW_COMPONENT)	\
-	default.module.build.$(LMSBW_COMPONENT)		\
-	default.module.sync.$(LMSBW_COMPONENT)
+.PHONY:	default.component.install.$(LMSBW_COMPONENT)	\
+	default.component.build.$(LMSBW_COMPONENT)		\
+	default.component.sync.$(LMSBW_COMPONENT)
 
-default.module.build.$(LMSBW_COMPONENT):	sync
-	$(MESSAGE) "[default] Building source module";
+default.component.build.$(LMSBW_COMPONENT):	sync
+	$(MESSAGE) "[default] Building source component";
 	$(MAKE)											\
 		-C $(LMSBW_BUILD_DIRECTORY)/$(notdir $(LMSBW_SOURCE_DIRECTORY))			\
 		-f $(LMSBW_BUILD_DIRECTORY)/$(notdir $(LMSBW_SOURCE_DIRECTORY))/Makefile	\
@@ -29,7 +29,7 @@ default.module.build.$(LMSBW_COMPONENT):	sync
 		LMSBW_SOURCE_DIRECTORY=$(LMSBW_BUILD_DIRECTORY)					\
 		$(LMSBW_BUILD_TARGET)
 
-default.module.install.$(LMSBW_COMPONENT):	build
+default.component.install.$(LMSBW_COMPONENT):	build
 	$(MESSAGE) "[default] Installing component";
 	$(MAKE)											\
 		-C $(LMSBW_BUILD_DIRECTORY)/$(notdir $(LMSBW_SOURCE_DIRECTORY))			\

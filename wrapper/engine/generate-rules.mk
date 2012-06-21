@@ -55,7 +55,7 @@ define lmsbw_expand_build_module
 	-f "$(foreach v,$(shell seq $(MAKELEVEL))," ") [$(MAKELEVEL)]  $(1): elapsed time: %E"	\
 	--output="$(call lmsbw_gcf,$(1),build-directory)/build-time.text"			\
 	$(MAKE)											\
-		-f $(LMSBW_DIR)/wrapper/module/module.makefile					\
+		-f $(LMSBW_DIR)/wrapper/component/component.makefile				\
 		-C $(dir $(call lmsbw_gcf,$(1),configuration-file))				\
 		$(call lmsbw_makeflags)								\
 		LMSBW_VERBOSE=1									\

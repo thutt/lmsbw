@@ -14,4 +14,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-$(call lmsbw_internal_error,Last resort rules for downloaded modules are not yet implemented)
+$(call lmsbw_internal_error,Last resort rules for downloaded components are not yet implemented)
