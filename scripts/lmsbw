@@ -1,17 +1,17 @@
 #!/bin/bash
 #
 # Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
-# 
+#
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -33,8 +33,10 @@ ${program} \\
     --parallel           | \\
     --progress           | \\
     --tarball-repository | \\
-    --verbose            | \\
-    --time]...             \\
+    --time               | \\
+    --toolchain          | \\
+    --toolchains-root    | \\
+    --verbose]...          \\
    -- [make-options]...
 
   Builds a set of software based on a configuration.
@@ -52,8 +54,10 @@ ${program} \\
   --progress                   : Produce more progress messages during build
   --parallel                   : Specify LMSBW_PARALLEL_LEVEL (-j to Make)
   --tarball-repository         : Specify LMSBW_TARBALL_REPOSITORY
-  --verbose                    : Enable more verbosity from build
   --time                       : Show elapsed time for component builds
+  --toolchain                  : Specify LMSBW_TOOLCHAIN
+  --toolchains-root            : Specify LMSBW_TOOLCHAINS_ROOT
+  --verbose                    : Enable more verbosity from build
 
 EOF
 }
@@ -73,6 +77,8 @@ function main ()
         --long parallel:                        \
         --long progress                         \
         --long tarball-repository:              \
+        --long toolchain:                       \
+        --long toolchains-root:                 \
         --long time                             \
         --long verbose                          \
         -n "${program}"                         \
@@ -126,6 +132,14 @@ function main ()
                 export LMSBW_ELAPSED_TIME=1
                 shift 1 ;;
 
+            --toolchain)
+                export LMSBW_TOOLCHAIN="${2}";
+                shift 2 ;;
+
+            --toolchains-root)
+                export LMSBW_TOOLCHAINS_ROOT="${2}";
+                shift 2 ;;
+
             --) shift ;
                 break ;;
 
@@ -136,6 +150,15 @@ function main ()
 
     if [ -z "${LMSBW_BUILD_ROOT}" ] ; then
         fatal "${program}: Build output directory not specifid; use '--build-root'.";
+    fi;
+
+    # If a toolchain has been specified, then --toolchain-root must
+    # have been specified.  Without the '--toolchain-root'
+    # specification, the actual toolchain directory cannot be
+    # location.
+    #
+    if [ ! -z "${LMSBW_TOOLCHAIN}" ] && [ -z "${LMSBW_TOOLCHAINS_ROOT}" ] ; then
+        fatal "'--toolchain' requires '--toolchains-root' to be specified.";
     fi;
 
     start_seconds=$(date +%s)

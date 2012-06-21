@@ -90,3 +90,8 @@ include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
 include $(LMSBW_DIR)/wrapper/engine/mtree.mk
 include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk
+
+# If specified, ensure toolchain exists before proceeding to build
+# anything.
+#
+$(call lmsbw_assert_toolchain_exists,$(LMSBW_TOOLCHAIN))
