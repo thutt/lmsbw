@@ -72,3 +72,6 @@
  o Error messages should print module & component names for disambiguation.
  o Figure out why generate-rules.mk causes errors when put in
    lmsbw-system.mk.
+ o Make times fonts work in latex.
+ o Make draft watermark work in latex.
+ o Selected toolchain should be included in the build output directory hash.
