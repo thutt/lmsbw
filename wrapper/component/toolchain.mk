@@ -13,3 +13,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+# LMSBW guarantees that either both LMSBW_TOOLCHAINS_ROOT and
+# LMSBW_C_TOOLCHAIN will be set, or neither will be set.
+ifdef LMSBW_TOOLCHAINS_ROOT
+LMSBW_TOOL_PREFIX	:= $(LMSBW_TOOLCHAINS_ROOT)/$(LMSBW_C_TOOLCHAIN)/bin/$(LMSBW_C_TOOLCHAIN)-
+endif
+
+export ADDR2LINE	:= $(LMSBW_TOOL_PREFIX)addr2line
+export AR		:= $(LMSBW_TOOL_PREFIX)ar
+export AS		:= $(LMSBW_TOOL_PREFIX)as
+export CC		:= $(LMSBW_TOOL_PREFIX)gcc
+export CPP		:= $(LMSBW_TOOL_PREFIX)cpp
+export CXX		:= $(LMSBW_TOOL_PREFIX)c++
+export GCOV		:= $(LMSBW_TOOL_PREFIX)gcov
+export GXX		:= $(LMSBW_TOOL_PREFIX)g++
+export LD		:= $(LMSBW_TOOL_PREFIX)ld
+export NM		:= $(LMSBW_TOOL_PREFIX)nm
+export OBJCOPY		:= $(LMSBW_TOOL_PREFIX)objcopy
+export OBJDUMP		:= $(LMSBW_TOOL_PREFIX)objdump
+export POPULATE		:= $(LMSBW_TOOL_PREFIX)populate
+export RANLIB		:= $(LMSBW_TOOL_PREFIX)ranlib
+export READELF		:= $(LMSBW_TOOL_PREFIX)readelf
+export SIZE		:= $(LMSBW_TOOL_PREFIX)size
+export SIZE		:= $(LMSBW_TOOL_PREFIX)strings
+export STRIP		:= $(LMSBW_TOOL_PREFIX)strip
+
