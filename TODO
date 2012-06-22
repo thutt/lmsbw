@@ -79,3 +79,6 @@
  o Document that global toolchain settings can be harmful when cross
    compiling.  Components built for use in the build process will be
    built with the global compiler, and thus be unusable.
+ o Document toolchain macros CC, GXX, et al.
+ o Install directory should be unique for toolchain?  If global, yes.
+   If not global, no.
