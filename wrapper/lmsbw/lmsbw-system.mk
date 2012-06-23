@@ -84,7 +84,7 @@ include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-errors.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system-utilities.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-scripts.mk
 include $(LMSBW_DIR)/wrapper/engine/component-functions.mk
-include $(LMSBW_DIR)/wrapper/engine/declare-module-functions.mk
+include $(LMSBW_DIR)/wrapper/engine/declare-component-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/declare-targets.mk
 include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
