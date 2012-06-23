@@ -28,8 +28,8 @@ endef
 #   not be built in parallel.
 #
 #   This attribute, if present, is assigned to LMSBW_NO_PARALLEL when
-#   invoking 'module.makefile'.  If not present, LMSBW_NO_PARALLEL is
-#   defined, but will have no value.
+#   invoking 'component.makefile'.  If not present, LMSBW_NO_PARALLEL
+#   is defined, but will have no value.
 #
 define declare_component_no_parallel_build
 $(call lmsbw_assert_known_component,$(1))
@@ -153,24 +153,6 @@ endef
 define declare_component_reason
 $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),reason,$(2))
-endef
-
-# declare_component_module <component>, <module>
-#
-#   Associate a module with the component.
-#
-#   A module is a set of source code and a component is produced by
-#   building the module.
-#
-#   A single module can be used to produce multiple components, but a
-#   component must be unique in the wrapped build.
-#
-#   For example, a single module, 'true-false' could be used to
-#   produce both the 'true' and 'false' components.
-#
-define declare_component_module
-$(call lmsbw_assert_known_component,$(1))
-$(call lmsbw_scf,$(1),module,$(2))
 endef
 
 # declare_component_component <component>, <component>>

@@ -18,28 +18,26 @@
 # components.
 #
 
-# declare_source_component <module-name>,
-#			   <component-name>,
-#                          <description>
+# declare_source_component <component-name>,
+#                          <description>,
 #                          <build | image>,
-#                          <configuration-file>
-#                          <full path to source directory>
+#                          <configuration-file>,
+#                          <full path to source directory>,
 #                          <optional list of prerequisite components>
 #
 define declare_source_component
-$(call lmsbw_assert_component_undefined,$(2),$(5))
-$(call lmsbw_assert_source_directory_exists,$(6))
-__dsm:=$(call set,LMSBW_components,$(strip $(2)),$(strip $(1)))
-$(call declare_component_kind,$(2),source)
-$(call declare_component_description,$(2),$(strip $(3)))
-$(call declare_component_reason,$(2),$(4))
-$(call lmsbw_assert_build_or_image,$(2))
-$(call declare_component_module,$(2),$(1))
-$(call declare_component_component,$(2),$(2))
-$(call declare_component_prerequisite,$(2),$(7))
-$(call declare_component_source_directory,$(2),$(6))
-$(call declare_component_configuration_file,$(2),$(5))
-$(call set_component_internal_data,$(2))
+$(call lmsbw_assert_component_undefined,$(1),$(4))
+$(call lmsbw_assert_source_directory_exists,$(5))
+__dsm:=$(call set,LMSBW_components,$(strip $(1)),$(strip $(1)))
+$(call declare_component_kind,$(1),source)
+$(call declare_component_description,$(1),$(strip $(2)))
+$(call declare_component_reason,$(1),$(3))
+$(call lmsbw_assert_build_or_image,$(1))
+$(call declare_component_component,$(1),$(1))
+$(call declare_component_prerequisite,$(1),$(6))
+$(call declare_component_source_directory,$(1),$(5))
+$(call declare_component_configuration_file,$(1),$(4))
+$(call set_component_internal_data,$(1))
 endef
 
 

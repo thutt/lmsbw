@@ -22,7 +22,7 @@ variables in a uniform way that makes using \lmsbw simple.
 
 This chapter provides a reference for the variables that are used
 internally by \lmsbw, and that provide the low-level interface used to
-declare and define components\todo{glossary:component, module}.
+declare and define components\todo{glossary:component}.
 
 \section{\lmsbwconfiguration}
 
@@ -371,26 +371,6 @@ The supported values are as follows:
 \begin{itemize}
 \item source
 \end{itemize}
-
-\subsubsection{\lmsbwcomponentfield{<component>}{module}}
-
-This key designates the module which produces the component.  In many
-cases the component and module will have the same name, but when it's
-desirable to have different configurations for the same component,
-they will generally have different modules.
-
-For example, you may have a configuration which will build
-\texttt{Emacs 23.1.0}, and one that produces \texttt{Emacs 23.1.1}.
-Because both will produce the component \texttt{Emacs}, you can have
-only one configuration included into a wrapped build at a time.  The
-easy solution to this is to provide module names based on the version
-of the underlying source package.\todo{Show how to do this type of
-  duplicte component.  Want to have two emacs installed; show how to?}
-If an error occurs, the module name will be printed to help you know
-which configuration file is at fault.
-
-This is set through the \texttt{declare\_component\_module}
-(\xref{api:declare-component-module}) API.
 
 \subsubsection{\lmsbwcomponentfield{<component>}{no-parallel}}
 
