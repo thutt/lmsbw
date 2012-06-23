@@ -27,7 +27,7 @@
 #                          <optional list of prerequisite components>
 #
 define declare_source_component
-$(call lmsbw_assert_component_undefined,$(2))
+$(call lmsbw_assert_component_undefined,$(2),$(5))
 $(call lmsbw_assert_source_directory_exists,$(6))
 __dsm:=$(call set,LMSBW_components,$(strip $(2)),$(strip $(1)))
 $(call declare_component_kind,$(2),source)

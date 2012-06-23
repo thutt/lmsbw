@@ -49,13 +49,14 @@ $(call lmsbw_assert,E1001,								\
 	Invalid configuration: 'load-configuration-function' must be defined in an included Makefile)
 endef
 
-# lmsbw_assert_component_undefined <component-name>
+# lmsbw_assert_component_undefined <component-name>, <current config file path>
 #
 define lmsbw_assert_component_undefined
-$(call lmsbw_assert,E1002,						\
-	$(call not,$(call defined,LMSBW_components,$(strip $(1)))),	\
-	Component '$(strip $(1))' is already declared by module		\
-	'$(call get,LMSBW_components,$(strip $(1)))')
+$(call lmsbw_assert,E1002,							\
+	$(call not,$(call defined,LMSBW_components,$(strip $(1)))),		\
+	Configuration file '$(strip $(2))' redefines component '$(strip $(1))'	\
+	that is already declared in 						\
+	'$(call get,LMSBW_component_$(strip $(1)),configuration-file)')
 endef
 
 # lmsbw_assert_build_or_image <component>
