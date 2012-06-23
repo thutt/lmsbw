@@ -17,12 +17,13 @@
 
 include $(LMSBW_DIR)/wrapper/gmsl/gmsl
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
+include $(LMSBW_DIR)/wrapper/component/toolchain.mk
 
 .PHONY:	install build configure sync
 
 # Sync source code into build directory.
 sync:
-	$(MESSAGE) "Syncing '$(LMSBW_SOURCE_DIRECTORY)' to '$(LMSBW_BUILD_DIRECTORY)'";
+	$(MESSAGE) "Syncing '$(LMSBW_C_SOURCE_DIRECTORY)' to '$(LMSBW_C_BUILD_DIRECTORY)'";
 	$(RSYNC)							\
 		--compress						\
 		--executability						\
@@ -33,18 +34,18 @@ sync:
 		--times							\
 		--update						\
 		--verbose						\
-		$(LMSBW_SOURCE_DIRECTORY) $(LMSBW_BUILD_DIRECTORY);
+		$(LMSBW_C_SOURCE_DIRECTORY) $(LMSBW_C_BUILD_DIRECTORY);
 
-configure:	component.configure.$(LMSBW_COMPONENT)
+configure:	component.configure.$(LMSBW_C_COMPONENT)
 
-build:		component.build.$(LMSBW_COMPONENT)
+build:		component.build.$(LMSBW_C_COMPONENT)
 
 
 # The install rule is the only rule invoked by the LMSBW.  It then
 # drives the other aspects of building a component.
 #
-install:	component.install.$(LMSBW_COMPONENT)
-	$(MESSAGE) "Installing '$(LMSBW_COMPONENT)' to '$(LMSBW_INSTALL_DIRECTORY)'";
+install:	component.install.$(LMSBW_C_COMPONENT)
+	$(MESSAGE) "Installing '$(LMSBW_C_COMPONENT)' to '$(LMSBW_C_INSTALL_DIRECTORY)'";
 	$(RSYNC)							\
 		--compress						\
 		--executability						\
@@ -55,6 +56,6 @@ install:	component.install.$(LMSBW_COMPONENT)
 		--times							\
 		--update						\
 		--verbose						\
-		$(LMSBW_DESDIR_DIRECTORY)/ $(LMSBW_INSTALL_DIRECTORY);
+		$(LMSBW_C_DESTDIR_DIRECTORY)/ $(LMSBW_C_INSTALL_DIRECTORY);
 
-include $(LMSBW_DIR)/wrapper/component/last-resort-rules-$(LMSBW_KIND)-component.mk
+include $(LMSBW_DIR)/wrapper/component/last-resort-rules-$(LMSBW_C_KIND)-component.mk

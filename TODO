@@ -75,3 +75,10 @@
  o Make times fonts work in latex.
  o Make draft watermark work in latex.
  o Selected toolchain should be included in the build output directory hash.
+ o Document component.makefile-specific defines are LMSBW_C_<id>.
+ o Document that global toolchain settings can be harmful when cross
+   compiling.  Components built for use in the build process will be
+   built with the global compiler, and thus be unusable.
+ o Document toolchain macros CC, GXX, et al.
+ o Install directory should be unique for toolchain?  If global, yes.
+   If not global, no.
