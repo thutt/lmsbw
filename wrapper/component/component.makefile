@@ -20,6 +20,7 @@ include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
 
 .PHONY:	install build configure sync
 
+# Sync source code into build directory.
 sync:
 	$(MESSAGE) "Syncing '$(LMSBW_SOURCE_DIRECTORY)' to '$(LMSBW_BUILD_DIRECTORY)'";
 	$(RSYNC)							\

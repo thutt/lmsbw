@@ -38,8 +38,9 @@ endef
 #   shared resources such as executables, libraries and header files.
 #
 #   If a toolchain is not being used, this should just be considered
-#   the 'install' directory -- a place where each module will install
-#   deliverables so that other, depdenent, modules can use them.
+#   the 'install' directory -- a place where each component will
+#   install deliverables so that other, depdenent, modules can use
+#   them.
 #
 #
 # This can only be done AFTER all the modules are configured.
