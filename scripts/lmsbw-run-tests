@@ -105,7 +105,7 @@ function main ()
             local test_directory=$(basename $(dirname "${ts}"));
             mkdir --parents "${LMSBW_TEST_BUILD_ROOT}";
             echo "${test_directory}: executing";
-            if ${ts} &>"${LMSBW_TEST_BUILD_ROOT}/lmsbw-build.log" ; then
+            if ${ts} &>"${LMSBW_TEST_BUILD_ROOT}/lmsbw-test-run.log" ; then
                 echo "${test_directory}: success";
                 rm -rf "${LMSBW_TEST_BUILD_ROOT}";
             else

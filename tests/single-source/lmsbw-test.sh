@@ -24,9 +24,9 @@ else
     exit -1;
 fi;
 
-lmsbw                                                           \
-    ${LMSBW_VERBOSE}                                            \
-    --build-root "${LMSBW_TEST_BUILD_ROOT}"                     \
-    --tarball-repository "${LMSBW_TEST_BUILD_ROOT}/tarballs"    \
-    --configuration "${cfg}";
+lmsbw                                                                           \
+    ${LMSBW_VERBOSE}                                                            \
+    --build-root "${LMSBW_TEST_BUILD_ROOT}"                                     \
+    --tarball-repository "${LMSBW_TEST_BUILD_ROOT}/tarballs"                    \
+    --configuration "${cfg}" >"${LMSBW_TEST_BUILD_ROOT}/lmsbw-build.log";
 expect_command_success;
