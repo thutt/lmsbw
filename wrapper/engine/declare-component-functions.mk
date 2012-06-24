@@ -238,12 +238,10 @@ endef
 #
 define fixup_component_fields
 $(call lmsbw_scf,$(1),install-directory,					\
-	$(call lmsbw_expand_install_directory,					\
-		$(call lmsbw_gcf,$(1),reason)))					\
-	$(call lmsbw_scf,$(1),direct-dependents,				\
-		$(call lmsbw_direct_dependents,$(1)))				\
-	$(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),		\
-		$(call declare_component_install_target,$(strip $(1)),install))
+	$(call lmsbw_expand_install_directory,$(call lmsbw_gcf,$(1),reason)))	\
+$(call lmsbw_scf,$(1),direct-dependents,$(call lmsbw_direct_dependents,$(1)))	\
+$(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),			\
+	$(call declare_component_install_target,$(strip $(1)),install))
 endef
 
 
