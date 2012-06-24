@@ -30,6 +30,38 @@ define lmsbw_expand_build_build_root
 $(LMSBW_HOST_BUILD_ROOT)
 endef
 
+# lmsbw_expand_install_directory_hash
+#
+#  This functions ensures that the install directory is globally
+#  unique, based on a set of global attributes.  If a global attribute
+#  changes, for example:
+#
+#    o adding a component
+#    o removing a component
+#    o changing the global toolchain
+#
+#  then the install directory should be different because the
+#  generated product will be different.
+#
+#  Consider:
+#
+#    o Removing a component
+#
+#      It should not be in the 'install' directory, but can already be
+#      present.  Using different install directory will ensure that
+#      the removed component is not delivered.
+#
+#    o Changing global toolchain
+#
+#      This implies that different code will be generated, and a new
+#      different install directory should be used.  The toolchain
+#      chosen for each component affects their output directories,
+#      too.
+#
+define lmsbw_expand_install_directory_hash
+$(call lmsbw_expand_md5sum_text,$(call keys,LMSBW_components)$(LMSBW_TOOLCHAIN))
+endef
+
 # lmsbw_expand_install_directory <build | image>
 #
 #   Expands to the current 'install' directory.
@@ -46,7 +78,7 @@ endef
 # This can only be done AFTER all the modules are configured.
 #
 define lmsbw_expand_install_directory
-$(call lmsbw_expand_$(strip $(1))_build_root)/install/$(call lmsbw_expand_modules_hash)
+$(call lmsbw_expand_$(strip $(1))_build_root)/install/$(call lmsbw_expand_install_directory_hash)
 endef
 
 # lmsbw_expand_mtree_guard <component label>,
