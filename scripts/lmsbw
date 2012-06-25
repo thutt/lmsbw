@@ -62,13 +62,35 @@ ${program} \\
 EOF
 }
 
+function add_lmsbw_env ()
+{
+    local new_var="${1}";
+    lmsbw_env="${lmsbw_env} ${new_var}='${!new_var}'";
+}
+
+# Generate a string which represents all the LMSBW environment variables.
+function generate_lmsbw_env ()
+{
+    lmsbw_env="";
+    add_lmsbw_env LMSBW_VERBOSE;
+    add_lmsbw_env LMSBW_BUILD_ROOT;
+    add_lmsbw_env LMSBW_CONFIGURATION_FILE;
+    add_lmsbw_env LMSBW_DEBUG;
+    add_lmsbw_env LMSBW_PARALLEL_LEVEL;
+    add_lmsbw_env LMSBW_PROGRESS;
+    add_lmsbw_env LMSBW_TARBALL_REPOSITORY;
+    add_lmsbw_env LMSBW_ELAPSED_TIME;
+    add_lmsbw_env LMSBW_TOOLCHAIN;
+    add_lmsbw_env LMSBW_TOOLCHAINS_ROOT;
+}
+
 function main ()
 {
     local verbose="--silent";   # verbose not enabled => make should be silent.
     local lmsbw_error_file="/tmp/lmsbw-errors.${BASHPID}";
     local makeopts="--no-builtin-rules -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
     local debug;
-
+    
     args=$(getopt -o h                          \
         --long help                             \
         --long build-root:                      \
@@ -166,8 +188,9 @@ function main ()
     makefile=${build_system_dir}/wrapper/Makefile
     cmd="make ${makeopts} ${verbose} ${debug} -f ${makefile} ${@}";
 
+    generate_lmsbw_env;
     if [ ! -z "${LMSBW_VERBOSE}" ] ; then
-        echo "${cmd}";
+        echo "${lmsbw_env} ${cmd}";
     fi;
     success="yes";
     ${cmd} "$@" 2>"${lmsbw_error_file}" || unset success;
@@ -186,7 +209,7 @@ function main ()
     fi;
 
     if [ -z "${success}" ] ; then
-        echo -e "\n*****\n***** Failed; subdirectory failures:\n*****\n";
+        echo -e "\n*****\n***** Failed; component failures:\n*****\n";
         cat "${lmsbw_error_file}";
         echo -e "\n";
     fi;

@@ -83,5 +83,4 @@
  o Install directory should be unique for toolchain?  If global, yes.
    If not global, no.
  o LMSBW_components does not need to be an associative array any longer; module has been removed.
- o Update command line printing of lmsbw to also prefix environment variables.
  o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
