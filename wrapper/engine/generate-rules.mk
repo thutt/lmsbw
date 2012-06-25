@@ -57,6 +57,7 @@ $(if $(call lmsbw_gcf,$(1),toolchain),				\
 	LMSBW_C_TOOLCHAINS_ROOT=$(LMSBW_TOOLCHAINS_ROOT)	\
 	LMSBW_C_TOOLCHAIN="$(call lmsbw_gcf,$(1),toolchain)")
 endef
+
 # lmsbw_expand_build_module <component>
 #
 #   Expands to the commands which invoke a subordinate make on the
