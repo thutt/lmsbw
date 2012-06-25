@@ -40,3 +40,5 @@ $(call declare_source_component,		\
 	image,					\
 	$(CURRENT_CONFIGURATION_FILE),		\
 	$(subst product.cfg,src/lite,$(1)))
+
+$(call declare_component_cflags,lite,-DPRODUCT=$(PRODUCT))
