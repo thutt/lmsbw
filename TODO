@@ -5,27 +5,22 @@
    to be disallowed.  The compilers may be different, and their set of
    include directories should not intersect.
  o Add new target which reports on build space used per component
- o Provide module.makefile a mechanism to select a toolchain, and to
-   get it installed.
  o document that module.makefile is run in the directory where the
    configuration file is stored.
  o If debugging enabled, module.make should warn on undefined
    variables.
- o Could Make command line options in lmsbw_expand_build_module() be
-   put into a text file in the build directory and included by
-   module.makefile?
  o Need to be able to specify include directories in the install
-   directory so that modules can use them.  Or, should this be in the
-   module Makefile?
+   directory so that components can use them.  Or, should this be in
+   the component.makefile?  This boils down being able to install
+   things in a standard directory structure that is automatically
+   accessible to all components.  CFLAGS could be pre-populated with
+   "-I<install-sysroot>/usr/include".
  o Need to be able to specify an API to be exported from a module.
    This API will be checked in the install directory during building
    of dependent modules; if they are different, then rebuild
    dependents after cleaning them.
- o Need toolchain capability.  What about Windows toolchains?  A
-   component field 'toolchain' can be set.  If not set, the host
-   toolchain will be used.  If set, it indicates the toolchain
-   configuration to use.  The toolchain can be built, or simply
-   installed.
+ o What about Windows toolchains?
+ o Document that if no toolchain is set, the host toolchain is used.
  o Add lmsbw_ prefix to module functions
  o document declare_source_component
  o document declare_component_install_target
@@ -35,16 +30,13 @@
  o document LMSBW_<component>[source-api]
  o document LMSBW_<component>[binary-api]
  o document LMSBW_<component>[changed-api]
- o declare_source_component checks for mutual dependence, but does
-   not check for cycles.  a->b->c->a.
  o Make a target which will make a report of indirect dependents.
    a -> b -> c.  c is indirectly dependent on a.
  o When indirect dependencies code is written, update
    lmsbw_api_changed_failure to incorporate it.
  o Add 'indirect-dependencies' list to LMSBW_<component>
- o Make module rules file & building dependent on the configuration file.
  o Document all errors
- o Need document on adding a new 'kind' of module.
+ o Need document on adding a new 'kind' of component.
  o Need to have a source API & a binary API.  Changes to the binary
    API will cause dependent modules to be rebuilt w/o clean.  The
    binary API is for static linking.
@@ -54,14 +46,12 @@
  o Must be able to ignore binary-api or source-api changes for
    dependent modules.  Some might be dependent one or the other, but
    not both.
- o Add component field which is a list of binary output.
  o Add 'gdb' verb to load a component's binary output in gdb.
  o Remove TARBALL repository.
  o Document overriding component rules, such as 'install' for cases
    when the component does not have an 'install' rule.
  o LMSBW should pass unrecognized arguments directly to Make.  Maybe '--'?
  o The help message for lmsbw is horrible.
- o Remove lmsbw-environment-setup
  o Detecting a source API change has not been written yet.  Must mtree
    api directories.  Must document.
  o Implement binary-api-mtree-manifest
@@ -72,9 +62,6 @@
  o Error messages should print module & component names for disambiguation.
  o Figure out why generate-rules.mk causes errors when put in
    lmsbw-system.mk.
- o Make times fonts work in latex.
- o Make draft watermark work in latex.
- o Selected toolchain should be included in the build output directory hash.
  o Document component.makefile-specific defines are LMSBW_C_<id>.
  o Document that global toolchain settings can be harmful when cross
    compiling.  Components built for use in the build process will be
@@ -84,3 +71,5 @@
    If not global, no.
  o LMSBW_components does not need to be an associative array any longer; module has been removed.
  o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
+ o Support LDFLAGS wrapping per-component.
+ o Make module rules file & building dependent on the configuration file.
