@@ -1,0 +1,1 @@
+../../components/consumer.mk
