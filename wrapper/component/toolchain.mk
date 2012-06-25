@@ -16,10 +16,9 @@
 
 # LMSBW guarantees that either both LMSBW_TOOLCHAINS_ROOT and
 # LMSBW_C_TOOLCHAIN will be set, or neither will be set.
-ifdef LMSBW_TOOLCHAINS_ROOT
+ifdef LMSBW_C_TOOLCHAINS_ROOT
 LMSBW_TOOL_PREFIX	:= $(LMSBW_TOOLCHAINS_ROOT)/$(LMSBW_C_TOOLCHAIN)/bin/$(LMSBW_C_TOOLCHAIN)-
 endif
-
 export ADDR2LINE	:= $(LMSBW_TOOL_PREFIX)addr2line
 export AR		:= $(LMSBW_TOOL_PREFIX)ar
 export AS		:= $(LMSBW_TOOL_PREFIX)as
@@ -39,3 +38,4 @@ export SIZE		:= $(LMSBW_TOOL_PREFIX)size
 export SIZE		:= $(LMSBW_TOOL_PREFIX)strings
 export STRIP		:= $(LMSBW_TOOL_PREFIX)strip
 
+export INSTALL		:= /usr/bin/install
