@@ -53,7 +53,7 @@ endef
 #
 define lmsbw_assert_component_undefined
 $(call lmsbw_assert,E1002,							\
-	$(call not,$(call defined,LMSBW_components,$(strip $(1)))),		\
+	$(call not,$(filter $(strip $(1)),$(LMSBW_components))),		\
 	Configuration file '$(strip $(2))' redefines component '$(strip $(1))'	\
 	that is already declared in 						\
 	'$(call get,LMSBW_component_$(strip $(1)),configuration-file)')
@@ -98,7 +98,7 @@ endef
 #    Asserts that the named component is already known to the system.
 #
 define lmsbw_assert_known_component
-$(call lmsbw_assert,E1008,$(filter $(strip $(1)),$(call keys,LMSBW_components)), \
+$(call lmsbw_assert,E1008,$(filter $(strip $(1)),$(LMSBW_components)), \
 	Unknown component '$(strip $(1))')
 endef
 

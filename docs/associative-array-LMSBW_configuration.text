@@ -28,10 +28,7 @@ o load-configuration-function
 
   + LMSBW_components
 
-    This is an associative array.  The key is the 'component', and the
-    value for each key is the name of the implementing module.
-
-    LMSBW_modules := [component [' ' component]...]
+    This is a standard Make list of loaded component names.
 
   + LMSBW_component_<component>
 

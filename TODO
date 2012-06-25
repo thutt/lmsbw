@@ -69,7 +69,7 @@
  o Document toolchain macros CC, GXX, et al.
  o Install directory should be unique for toolchain?  If global, yes.
    If not global, no.
- o LMSBW_components does not need to be an associative array any longer; module has been removed.
  o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
  o Support LDFLAGS wrapping per-component.
  o Make module rules file & building dependent on the configuration file.
+ o Figure out why error occurs if assignment to __dsm in declare_source_component() is removed.

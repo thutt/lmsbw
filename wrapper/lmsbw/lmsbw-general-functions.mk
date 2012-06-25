@@ -15,7 +15,7 @@
 #
 
 define lmsbw_expand_modules_hash
-$(call lmsbw_expand_md5sum_text,$(call keys,LMSBW_components))
+$(call lmsbw_expand_md5sum_text,$(LMSBW_components))
 endef
 
 define lmsbw_expand_component_hash
@@ -59,7 +59,7 @@ endef
 #      too.
 #
 define lmsbw_expand_install_directory_hash
-$(call lmsbw_expand_md5sum_text,$(call keys,LMSBW_components)$(LMSBW_TOOLCHAIN))
+$(call lmsbw_expand_md5sum_text,$(LMSBW_components)$(LMSBW_TOOLCHAIN))
 endef
 
 # lmsbw_expand_install_directory <build | image>

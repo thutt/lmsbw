@@ -44,7 +44,7 @@ endef
 #   input component.
 #
 define lmsbw_direct_dependents
-$(strip $(foreach c,$(call keys,LMSBW_components),
+$(strip $(foreach c,$(LMSBW_components),
 	$(if $(filter $(strip $(1)),$(call lmsbw_gcf,$(c),prerequisite)),$(c))))
 endef
 

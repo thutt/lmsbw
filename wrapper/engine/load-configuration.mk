@@ -123,9 +123,9 @@ $(eval lmsbw_dag_list:=)
 $(eval lmsbw_dag_set:=$(empty_set))
 endef
 
-$(foreach c,$(call keys,LMSBW_components),					\
-	$(call lmsbw_assert_not_self_prerequisite,$(c))				\
-	$(eval $(call check_modules_form_dag,$(c),$(c),				\
-		$(call lmsbw_gcf,$(c),prerequisite)))				\
-	$(eval $(call fixup_component_fields,$(c)))				\
+$(foreach c,$(LMSBW_components),			\
+	$(call lmsbw_assert_not_self_prerequisite,$(c))	\
+	$(eval $(call check_modules_form_dag,$(c),$(c),	\
+		$(call lmsbw_gcf,$(c),prerequisite)))	\
+	$(eval $(call fixup_component_fields,$(c)))	\
 )

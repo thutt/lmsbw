@@ -26,9 +26,10 @@
 #                          <optional list of prerequisite components>
 #
 define declare_source_component
+__dsm:="without this assignment, missing separator error"
 $(call lmsbw_assert_component_undefined,$(1),$(4))
 $(call lmsbw_assert_source_directory_exists,$(5))
-__dsm:=$(call set,LMSBW_components,$(strip $(1)),$(strip $(1)))
+$(eval LMSBW_components:=$(LMSBW_components) $(strip $(1)))
 $(call declare_component_kind,$(1),source)
 $(call declare_component_description,$(1),$(strip $(2)))
 $(call declare_component_reason,$(1),$(3))
