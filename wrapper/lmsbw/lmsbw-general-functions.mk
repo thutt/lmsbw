@@ -117,7 +117,7 @@ define lmsbw_expand_mtree_command_guard
 		--mtree $(MTREE)						\
 		--manifest "$(strip $(2))"					\
 		--directory-tree "$(strip $(3))"; then				\
-		$(PROGRESS) "$$@: No files changed";				\
+		$(PROGRESS) "$(strip $(1)): No files changed";			\
 		exit 0;								\
 	fi;									\
 	$(4)									\
@@ -164,6 +164,6 @@ endef
 #    Set Component Field
 #
 define lmsbw_scf
-__scf:=$(call set,LMSBW_component_$(strip $(1)),$(strip $(2)),$(strip $(3)))
+$(eval __scf:=$(call set,LMSBW_component_$(strip $(1)),$(strip $(2)),$(strip $(3))))
 endef
 
