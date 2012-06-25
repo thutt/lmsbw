@@ -44,18 +44,21 @@ build:		component.build.$(LMSBW_C_COMPONENT)
 # The install rule is the only rule invoked by the LMSBW.  It then
 # drives the other aspects of building a component.
 #
+# component.makefile drives the building of the component, and the
+# installation into $(DESTDIR).  Copying from $(DESTDIR) to the actual
+# install directory is handled by LMSBW proper.
+#
+# Consider, for example, the 'lite-consumer-pro' sample provided with
+# LMSBW.  This sample has three different deliverable 'products':
+# 'lite', 'consumer' and 'pro'.  The lite version only delivers the
+# 'lite' executable, but consumer delivers 'lite' & 'consumer' and the
+# pro version delivers 'lite', 'consumer', and 'pro'.  Each product
+# has a different install directory, but shares the build directories
+# since the individual components are built the same regardless the
+# product being built.  Since the copying of the build happens at a
+# higher level, the data will always be copied, even if the component
+# does not actually need to be built & installed into the DESTDIR.
+#
 install:	component.install.$(LMSBW_C_COMPONENT)
-	$(MESSAGE) "Installing '$(LMSBW_C_COMPONENT)' to '$(LMSBW_C_INSTALL_DIRECTORY)'";
-	$(RSYNC)							\
-		--compress						\
-		--executability						\
-		--group							\
-		--owner							\
-		--perms							\
-		--recursive						\
-		--times							\
-		--update						\
-		--verbose						\
-		$(LMSBW_C_DESTDIR_DIRECTORY)/ $(LMSBW_C_INSTALL_DIRECTORY);
 
 include $(LMSBW_DIR)/wrapper/component/last-resort-rules-$(LMSBW_C_KIND)-component.mk

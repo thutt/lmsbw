@@ -54,7 +54,7 @@ endef
 #
 define lmsbw_expand_toolchain
 $(if $(call lmsbw_gcf,$(1),toolchain),				\
-	LMSBW_TOOLCHAINS_ROOT=$(LMSBW_TOOLCHAINS_ROOT)		\
+	LMSBW_C_TOOLCHAINS_ROOT=$(LMSBW_TOOLCHAINS_ROOT)	\
 	LMSBW_C_TOOLCHAIN="$(call lmsbw_gcf,$(1),toolchain)")
 endef
 # lmsbw_expand_build_module <component>
@@ -99,9 +99,24 @@ define generate_component_install
 
 install:: install.$(strip $(1)) install.$(strip $(1))_api_check
 
-install.$(strip $(1)):	$(MTREE) $(call expand_prerequisites,$(1))
+install.$(strip $(1)).submake:	$(MTREE) $(call expand_prerequisites,$(1))
 	$(call lmsbw_component_mtree_command_guard,$(1),	\
 		$(call lmsbw_expand_build_module,$(1)))
+
+install.$(strip $(1)):	install.$(strip $(1)).submake
+	$(ATSIGN)$(PROGRESS) "$(1): Install";
+	$(ATSIGN)$(RSYNC)						\
+		--quiet							\
+		--compress						\
+		--executability						\
+		--group							\
+		--owner							\
+		--perms							\
+		--recursive						\
+		--times							\
+		--update						\
+		$(call lmsbw_gcf,$(strip $(1)),destdir-directory)/	\
+		$(call lmsbw_gcf,$(strip $(1)),install-directory);
 
 install.$(strip $(1))_api_check:
 	$(ATSIGN)if [ -e "$(call lmsbw_gcf,$(1),source-api-changed)" ] ; then	\
