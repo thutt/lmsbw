@@ -220,14 +220,6 @@ endef
 #
 define set_component_internal_data
 $(call lmsbw_assert_known_component,$(1))
-$(call lmsbw_scf,$(1),build-root-directory,$(call __expand_build_root,$(1)))
-$(call lmsbw_scf,$(1),build-directory,$(call lmsbw_gcf,$(1),build-root-directory)/build)
-$(call lmsbw_scf,$(1),destdir-directory,$(call lmsbw_gcf,$(1),build-root-directory)/destdir)
-$(call lmsbw_scf,$(1),source-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/source.mtree)
-$(call lmsbw_scf,$(1),source-api-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/source-api.mtree)
-$(call lmsbw_scf,$(1),binary-api-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/binary-api.mtree)
-$(call lmsbw_scf,$(1),source-api-changed,$(call lmsbw_gcf,$(1),build-root-directory)/source-api-changed.text)
-$(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log)
 endef
 
 
@@ -237,6 +229,14 @@ endef
 #   set of components is known.
 #
 define fixup_component_fields
+$(call lmsbw_scf,$(1),build-root-directory,$(call __expand_build_root,$(1)))
+$(call lmsbw_scf,$(1),build-directory,$(call lmsbw_gcf,$(1),build-root-directory)/build)
+$(call lmsbw_scf,$(1),destdir-directory,$(call lmsbw_gcf,$(1),build-root-directory)/destdir)
+$(call lmsbw_scf,$(1),source-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/source.mtree)
+$(call lmsbw_scf,$(1),source-api-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/source-api.mtree)
+$(call lmsbw_scf,$(1),binary-api-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/binary-api.mtree)
+$(call lmsbw_scf,$(1),source-api-changed,$(call lmsbw_gcf,$(1),build-root-directory)/source-api-changed.text)
+$(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log)
 $(call lmsbw_scf,$(1),install-directory,					\
 	$(call lmsbw_expand_install_directory,$(call lmsbw_gcf,$(1),reason)))	\
 $(call lmsbw_scf,$(1),direct-dependents,$(call lmsbw_direct_dependents,$(1)))	\
@@ -249,6 +249,14 @@ endef
 #
 #
 define declare_component_toolchain
-$(call lmsbw_assert_known_component,$(1))
+$(call lmsbw_assert_known_component,$(1))	\
 $(call lmsbw_scf,$(1),toolchain,$(2))
+endef
+
+# declare_component_cflags <component>,<cflags value>
+#
+#
+define declare_component_cflags
+$(call lmsbw_assert_known_component,$(1))	\
+$(call lmsbw_scf,$(1),cflags,$(2))
 endef

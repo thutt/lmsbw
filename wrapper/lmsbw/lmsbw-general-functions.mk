@@ -19,7 +19,7 @@ $(call lmsbw_expand_md5sum_text,$(call keys,LMSBW_components))
 endef
 
 define lmsbw_expand_component_hash
-$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain))
+$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain)$(call lmsbw_gcf,$(strip $(1)),cflags))
 endef
 
 define lmsbw_expand_image_build_root

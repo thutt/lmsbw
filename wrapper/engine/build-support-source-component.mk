@@ -37,7 +37,6 @@ $(call declare_component_component,$(1),$(1))
 $(call declare_component_prerequisite,$(1),$(6))
 $(call declare_component_source_directory,$(1),$(5))
 $(call declare_component_configuration_file,$(1),$(4))
-$(call set_component_internal_data,$(1))
 $(if $(LMSBW_TOOLCHAIN),						\
 	$(if $(call not,$(call lmsbw_gcf,$(1),toolchain)),		\
 	$(call lmsbw_scf,$(1),toolchain,$(LMSBW_TOOLCHAIN))))
