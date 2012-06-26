@@ -71,5 +71,4 @@
    If not global, no.
  o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
  o Support LDFLAGS wrapping per-component.
- o Make module rules file & building dependent on the configuration file.
  o Figure out why error occurs if assignment to __dsm in declare_source_component() is removed.
