@@ -73,8 +73,8 @@ endef
 
 # declare_component_source_api <component>, <list of directories>
 #
-#  This function declares a list of directories which contain the
-#  public API, at the source level, of the component.
+#  This function declares a list of DESTDIR directories which contain
+#  the public API, at the source level, of the component.
 #
 #  This is be used to cause dependent modules to be rebuilt *only*
 #  when the source API has been changed.  In other words, changes
