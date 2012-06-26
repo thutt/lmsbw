@@ -23,8 +23,9 @@
 #   This expands to '<commands-to-execute>' guarded by a use of the
 #   'mtree' utility to check if the source tree has changed.
 #
-#   If any file in the 'source-directory' has changed,
-#   '<commands-to-execute>' will be executed.
+#   If any file in the 'source-directory' has changed, or if the
+#   component configuration file has changed, '<commands-to-execute>'
+#   will be executed.
 #
 #   If no files in the 'source-directory' hav changed,
 #   '<commands-to-execute>' will not be executed.
