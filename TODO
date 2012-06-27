@@ -77,3 +77,4 @@
    (No way to change API, and change it back and *not* rebuild
    everything; must clean dependent components...)
  o Document 'source-api' sample.
+ o Implement binary-api checking.
