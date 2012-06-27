@@ -112,7 +112,7 @@ define lmsbw_expand_mtree_command_guard
 	set -e;									\
 	if $(if $(5),[ $(2) -nt $(5) ] &&)					\
 	    $(LMSBW_MTREE_CHECK_MANIFEST)					\
-		$(if $(CB_VERBOSE),--verbose)					\
+		$(if $(LMSBW_VERBOSE),--verbose)				\
 		--component $(strip $(1))					\
 		--mtree $(MTREE)						\
 		--manifest "$(strip $(2))"					\
@@ -124,7 +124,7 @@ define lmsbw_expand_mtree_command_guard
 	if [ $$$$? -eq 0 ] ; then						\
 		$(PROGRESS) "$(strip $(1)): Updating manifest";			\
 		$(LMSBW_MTREE_GENERATE_MANIFEST)				\
-			$(if $(CB_VERBOSE),--verbose)				\
+			$(if $(LMSBW_VERBOSE),--verbose)			\
 			--component $(strip $(1))				\
 			--mtree $(MTREE)					\
 			--manifest "$(strip $(2))"				\

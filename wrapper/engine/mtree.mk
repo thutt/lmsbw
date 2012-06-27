@@ -23,6 +23,6 @@ $(MTREE): $(LMSBW_DIR)/utilities/mtree/mtree
 
 $(LMSBW_DIR)/utilities/mtree/mtree:
 	@$(MESSAGE) "Building mtree";
-	@$(MAKE) $(CB_VERBOSE)					\
+	@$(MAKE) $(LMSBW_VERBOSE)				\
 		-C $(LMSBW_DIR)/utilities/mtree			\
 		-f $(LMSBW_DIR)/utilities/mtree/Makefile mtree;
