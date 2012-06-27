@@ -76,3 +76,4 @@
  o Would using a SHA  the source-api-mtree-manifest make it more robust?
    (No way to change API, and change it back and *not* rebuild
    everything; must clean dependent components...)
+ o Document 'source-api' sample.
