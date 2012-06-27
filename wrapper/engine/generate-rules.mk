@@ -58,12 +58,12 @@ $(if $(call lmsbw_gcf,$(1),toolchain),				\
 	LMSBW_C_TOOLCHAIN="$(call lmsbw_gcf,$(1),toolchain)")
 endef
 
-# lmsbw_expand_build_module <component>
+# lmsbw_expand_build_component <component>
 #
 #   Expands to the commands which invoke a subordinate make on the
 #   provided component sources.
 #
-define lmsbw_expand_build_module
+define lmsbw_expand_build_component
 	$(MESSAGE) "$(1): Trampoline to '$(1)' build system";					\
 	$(TIME)											\
 	-f "$(foreach v,$(shell seq $(MAKELEVEL))," ") [$(MAKELEVEL)]  $(1): elapsed time: %E"	\
@@ -103,7 +103,7 @@ install:: install.$(strip $(1)) install.$(strip $(1))_api_check
 
 install.$(strip $(1)).submake:	$(MTREE) $(call expand_prerequisites,$(1))
 	$(call lmsbw_component_mtree_command_guard,$(1),	\
-		$(call lmsbw_expand_build_module,$(1)))
+		$(call lmsbw_expand_build_component,$(1)))
 
 #
 # If the component has declared a source API directory, a check is

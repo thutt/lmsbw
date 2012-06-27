@@ -1,13 +1,13 @@
  o Need way to indicate where the install mtree manifest is located
    via lmsbwe.  Or, LMSBW_configuration associative array.
  o Allow multiple configuration files.
- o Sharing interfaces between between 'build' and 'image' modules out
+ o Sharing interfaces between between 'build' and 'image' components must
    to be disallowed.  The compilers may be different, and their set of
    include directories should not intersect.
  o Add new target which reports on build space used per component
- o document that module.makefile is run in the directory where the
+ o document that component.makefile is run in the directory where the
    configuration file is stored.
- o If debugging enabled, module.make should warn on undefined
+ o If debugging enabled, component.makefile should warn on undefined
    variables.
  o Need to be able to specify include directories in the install
    directory so that components can use them.  Or, should this be in
@@ -15,13 +15,9 @@
    things in a standard directory structure that is automatically
    accessible to all components.  CFLAGS could be pre-populated with
    "-I<install-sysroot>/usr/include".
- o Need to be able to specify an API to be exported from a module.
-   This API will be checked in the install directory during building
-   of dependent modules; if they are different, then rebuild
-   dependents after cleaning them.
  o What about Windows toolchains?
  o Document that if no toolchain is set, the host toolchain is used.
- o Add lmsbw_ prefix to module functions
+ o Add lmsbw_ prefix to functions
  o document declare_source_component
  o document declare_component_install_target
  o document declare_component_build_target
@@ -37,14 +33,14 @@
  o Add 'indirect-dependencies' list to LMSBW_<component>
  o Document all errors
  o Need document on adding a new 'kind' of component.
- o Need to have a source API & a binary API.  Changes to the binary
-   API will cause dependent modules to be rebuilt w/o clean.  The
+ o Need to have a binary API.  Changes to the binary
+   API will cause dependent components to be rebuilt w/o clean.  The
    binary API is for static linking.
  o Document binary API.
  o Test source API changes.
  o Test binary API changes.
  o Must be able to ignore binary-api or source-api changes for
-   dependent modules.  Some might be dependent one or the other, but
+   dependent components.  Some might be dependent on one or the other, but
    not both.
  o Add 'gdb' verb to load a component's binary output in gdb.
  o Remove TARBALL repository.
@@ -59,7 +55,7 @@
  o Implement binary-api.
  o Document how to override the build & install & configure rules.
    Look for 'chap:overriding' in variables.tex
- o Error messages should print module & component names for disambiguation.
+ o Error messages should print component names for disambiguation.
  o Figure out why generate-rules.mk causes errors when put in
    lmsbw-system.mk.
  o Document component.makefile-specific defines are LMSBW_C_<id>.
@@ -72,7 +68,6 @@
  o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
  o Support LDFLAGS wrapping per-component.
  o Figure out why error occurs if assignment to __dsm in declare_source_component() is removed.
- o Finish up converting 'module' to 'component'.
  o Would using a SHA  the source-api-mtree-manifest make it more robust?
    (No way to change API, and change it back and *not* rebuild
    everything; must clean dependent components...)

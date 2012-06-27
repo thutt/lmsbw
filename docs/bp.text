@@ -1,6 +1,0 @@
-The process used to build software is generally overlooked, and not
-paid much attention.  It's almost universally reviled, too.  I've
-worked at many places, and one common thread of disgust has been the
-build process.  Common complaints include things like: "It's so slow",
-"It's hard to understand", "Dependencies are wrong, so incremental
-builds don't work correctly."
