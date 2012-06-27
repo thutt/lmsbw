@@ -51,7 +51,7 @@ endef
 
 # generate_component_prerequisite_report <component>
 #
-#   This function generates a rule to dump the prerequisite modules.
+#   This function generates a rule to dump the prerequisite components.
 #
 define generate_component_prerequisite_report
 .PHONY:	prerequisite.$(strip $(1))
@@ -65,7 +65,7 @@ endef
 
 # generate_component_dependent_report <component>
 #
-#   This function generates a rule to dump the dependent modules.
+#   This function generates a rule to dump the dependent components.
 #
 define generate_component_dependent_report
 .PHONY:	dependent.$(strip $(1))

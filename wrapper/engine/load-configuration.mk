@@ -78,7 +78,7 @@ $(eval $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FI
 # 			      <checking component>,
 #       		      <prerequisites of checking component>
 #
-#  Ensures that the set of loaded modules forms a DAG.  This is
+#  Ensures that the set of loaded components forms a DAG.  This is
 #  accomplished by keeping a set of components that have been visited,
 #  and a path from the original components to the current component in
 #  a list.

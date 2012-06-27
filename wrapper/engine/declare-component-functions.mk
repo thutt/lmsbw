@@ -33,9 +33,9 @@ endef
 #   Ensures that the individual component bearing this attribute will
 #   not be built in parallel.
 #
-#   This attribute, if present, is assigned to LMSBW_C_NO_PARALLEL when
-#   invoking 'module.makefile'.  If not present, LMSBW_C_NO_PARALLEL is
-#   defined, but will have no value.
+#   This attribute, if present, is assigned to LMSBW_C_NO_PARALLEL
+#   when invoking 'component.makefile'.  If not present,
+#   LMSBW_C_NO_PARALLEL is defined, but will have no value.
 #
 define declare_component_no_parallel_build
 $(call lmsbw_assert_known_component,$(1))
@@ -76,7 +76,7 @@ endef
 #  This function declares a list of DESTDIR directories which contain
 #  the public API, at the source level, of the component.
 #
-#  This is be used to cause dependent modules to be rebuilt *only*
+#  This is be used to cause dependent components to be rebuilt *only*
 #  when the source API has been changed.  In other words, changes
 #  internal to a component normally do not cause a recompile of
 #  dependent components.
@@ -101,7 +101,7 @@ endef
 #  This function declares a list of directories which contain the
 #  public API, at the binary level, of the component.
 #
-#  This is be used to cause dependent modules to be rebuilt *only*
+#  This is be used to cause dependent components to be rebuilt *only*
 #  when the a binary has been changed.  If your component produces a
 #  library which is linked statically, or which is otherwise included
 #  into another component, then you want to declare them with this function.

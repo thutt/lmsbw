@@ -177,7 +177,7 @@ endef
 
 # lmsbw_generate_api_changed <component>
 #
-#   Generates a rule which can be used to clean all modules directly
+#   Generates a rule which can be used to clean all components directly
 #   dependent upon the provided component.
 define lmsbw_generate_api_changed
 .PHONY:	source-api-changed.$(strip $(1))

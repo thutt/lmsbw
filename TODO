@@ -72,3 +72,4 @@
  o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
  o Support LDFLAGS wrapping per-component.
  o Figure out why error occurs if assignment to __dsm in declare_source_component() is removed.
+ o Finish up converting 'module' to 'component'.

@@ -71,11 +71,11 @@ endef
 #
 #   If a toolchain is not being used, this should just be considered
 #   the 'install' directory -- a place where each component will
-#   install deliverables so that other, depdenent, modules can use
+#   install deliverables so that other, depdenent, components can use
 #   them.
 #
 #
-# This can only be done AFTER all the modules are configured.
+# This can only be done AFTER all the components are configured.
 #
 define lmsbw_expand_install_directory
 $(call lmsbw_expand_$(strip $(1))_build_root)/install/$(call lmsbw_expand_install_directory_hash)

@@ -15,14 +15,14 @@
 #
 
 
-# This file contains rules that must appear after all modules have
+# This file contains rules that must appear after all components have
 # been loaded and configured.
 #
-# In particular the rule to make the 'install' directory because
-# the full pathname is based on the set of modules that are loaded.
-# If this rule is executed before all modules have been loaded, the
-# hash in the pathname used in this rule will not match the hash used
-# when all modules are loaded.
+# In particular the rule to make the 'install' directory because the
+# full pathname is based on the set of components that are loaded.  If
+# this rule is executed before all components have been loaded, the hash
+# in the pathname used in this rule will not match the hash used when
+# all components are loaded.
 #
 $(LMSBW_TARBALL_REPOSITORY)			\
 $(call lmsbw_expand_install_directory,build)	\

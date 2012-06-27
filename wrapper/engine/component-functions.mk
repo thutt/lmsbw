@@ -41,7 +41,7 @@ endef
 
 # lmsbw_direct_dependents <component>
 #
-#   Expands to a list of modules which are directly dependent upon the
+#   Expands to a list of components which are directly dependent upon the
 #   input component.
 #
 define lmsbw_direct_dependents
@@ -82,16 +82,16 @@ endef
 define lmsbw_source_api_changed_failure
 	if [ ! -z "$(call lmsbw_gcf,$(1),direct-dependents)" ] ; then				\
 		$(MESSAGE) "The source API for '$(1)' has changed.  ";				\
-		$(MESSAGE) "This can directly affect the build of the following modules: ";	\
+		$(MESSAGE) "This can directly affect the build of the following components: ";	\
 		$(MESSAGE) "";									\
 		$(foreach d,$(call lmsbw_gcf,$(1),direct-dependents),				\
 			$(MESSAGE) "  $(d)";)							\
 		$(MESSAGE) "";									\
-		$(MESSAGE) "A 'clean' build of involved modules must be performed.";		\
-		$(MESSAGE) "To clean all dependent modules, execute the following ";		\
+		$(MESSAGE) "A 'clean' build of the involved components must be performed.";	\
+		$(MESSAGE) "To clean all dependent components, execute the LMSBW target ";	\
 		$(MESSAGE) "and then rebuild as you normally do:";				\
 		$(MESSAGE) "";									\
-		$(MESSAGE) "  lmsbw source-api-changed.$(strip $(1))";				\
+		$(MESSAGE) "  source-api-changed.$(strip $(1))";				\
 		$(FALSE);									\
 	else											\
 		$(RM) "$(call lmsbw_gcf,$(1),source-api-changed)";				\
