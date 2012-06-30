@@ -1,0 +1,167 @@
+#!/bin/bash
+#
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# This uses mtree to check to check if a component's declared source
+# API has changed.
+#
+# It returns 0 if directory tree is the same as the manifest, and
+# non-zero if the API differs at all.
+#
+# It is used to guard the building of components that are directly
+# depenent upon the component which exports the API.
+#
+# If they API has changed, there are essentially two options:
+#
+#  o Assume the dependent component has the proper dependencies to
+#    detect the API has been changed and simply rebuild the dependent
+#    component.
+#
+#  o Assume the dependent component does not have the proper
+#    dependencies to detect the API has been changed and simply
+#    rebuild the dependent component.
+#
+# LMSBW was written to assume that the dependent component will not
+# properly detect the API change.  As such, it forces the directly
+# dependent components to be fully rebuilt.  There are two reasons for this:
+#
+#   o discourage API changes
+#
+#     Changing an exported API should be a little bit of a pain,
+#     because it's not something that you should be continually doing.
+#
+#   o build correctness
+#
+#     It's better to make sure that dependent builds are correct than
+#     to be able to produce bad builds.  Forcing dependent components
+#     to be built cleanly when an imported API has changed ensures
+#     that they will always be built correctly.
+#
+#
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+set +x;
+
+function display_help ()
+{
+    cat <<EOF
+${program}: Checks component 'source-api' for changes
+
+  --help | -h                  : Show this help and exit
+  --verbose                    : Enable more verbosity
+  --component <component name> : Name of the component [optional]
+  --directory-tree <directory> : Tree on which mtree should be executed
+  --manifest <pathname>        : The pathname of the produced manifest
+  --mtree <path to mtree>      : Pathname of mtree executable
+
+A result of zero indicates that the API has not changed.
+
+A non-zero result indicates the API has changed or the manifest has
+just been created.
+
+EOF
+}
+
+function main ()
+{
+    local directory_tree;
+    local component;
+    local mtree;
+    local manifest
+    local verbose;
+
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long component:                       \
+        --long directory-tree:                  \
+        --long manifest:                        \
+        --long mtree:                           \
+        --long verbose                          \
+        -n "${program}"                         \
+        -- "$@");
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --directory-tree)
+                directory_tree="${2}";
+                shift 2 ;;
+
+            --component)
+                component="${2}";
+                shift 2 ;;
+
+            --manifest)
+                manifest="${2}";
+                shift 2 ;;
+
+            --mtree)
+                mtree="${2}";
+                shift 2 ;;
+
+            --verbose)
+                verbose="--verbose";
+                shift 1 ;;
+
+            --) shift ;
+                break ;;
+
+            *) fatal "Internal error: ${1}!" ;
+        esac
+    done
+
+    if [ ! -x "${mtree}" ] || [ -z "${mtree}" ] ; then
+        fatal \
+            "${program}: '--mtree' argument, '${mtree}', is not the pathname of the mtree executable";
+    fi;
+
+    if [ -z "${directory_tree}" ] ; then
+        fatal "${program} --directory-tree must specify the tree to check.";
+    fi;
+
+    if [ ! -d "${directory_tree}" ] ; then
+        fatal "${program}: --directory-tree value, '${directory_tree}' is not a directory.";
+    fi;
+
+    if [ ! -f "${manifest}" ] ; then
+	! ${mtree} -c -k flags,mode,size,cksum -p "${directory_tree}" >"${manifest}";
+    else
+        "$(dirname "${program}")/lmsbw-mtree-check-manifest"    \
+            ${verbose}                                          \
+	    --component ${component}                            \
+	    --manifest "${manifest}"                            \
+	    --mtree ${mtree}                                    \
+	    --directory-tree "${directory_tree}";
+    fi;
+}
+
+main "$@";
