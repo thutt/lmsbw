@@ -51,6 +51,10 @@ ${program}: Generates a manifest for a directory tree
   --directory-tree <directory> : Tree on which mtree should be executed
   --manifest <pathname>        : The pathname of the produced manifest
 
+
+Returns zero if the manifest has not changed.
+Returns non-zero if the manifest has chagned.
+
 EOF
 }
 
