@@ -59,6 +59,5 @@ $(call generate_component_report,$(1))
 $(call generate_component_build_log,$(1))
 $(call generate_component_prerequisite_report,$(1))
 $(call generate_component_dependent_report,$(1))
-$(call lmsbw_generate_api_changed,$(1))
 endef
 

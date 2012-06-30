@@ -155,12 +155,24 @@ function main ()
     if [ ! -f "${manifest}" ] ; then
 	! ${mtree} -c -k flags,mode,size,cksum -p "${directory_tree}" >"${manifest}";
     else
-        "$(dirname "${program}")/lmsbw-mtree-check-manifest"    \
-            ${verbose}                                          \
-	    --component ${component}                            \
-	    --manifest "${manifest}"                            \
-	    --mtree ${mtree}                                    \
+        if ! "$(dirname "${program}")/lmsbw-mtree-check-manifest"       \
+            ${verbose}                                                  \
+	    --component ${component}                                    \
+	    --manifest "${manifest}"                                    \
+	    --mtree ${mtree}                                            \
+	    --directory-tree "${directory_tree}"; then
+
+            # The API has changed.  A new manifest must be generated.
+            "$(dirname "${program}")/lmsbw-mtree-generate-manifest"     \
+            ${verbose}                                                  \
+	    --component ${component}                                    \
+	    --manifest "${manifest}"                                    \
+	    --mtree ${mtree}                                            \
 	    --directory-tree "${directory_tree}";
+            false;
+        else
+            true;
+        fi;
     fi;
 }
 

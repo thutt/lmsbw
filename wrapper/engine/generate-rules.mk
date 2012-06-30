@@ -91,77 +91,88 @@ define lmsbw_expand_build_component
 		$(call lmsbw_gcf,$(1),build-directory)/build-time.text;)
 endef
 
+# lmsbw_check_api <component>, <binary | source>, <directly dependent component>
+#
+#   Check the source or binary API of <component> to see if it has
+#   changed.  The manifest of the API for <component> is stored in the
+#   <directly dependent component>.
+#
+#   Result:
+#
+#      Sets $(2)_api_changed to "yes" if the API has changed.
+#
+define lmsbw_check_api
+$(LMSBW_MTREE_CHECK_API) 						\
+	$(if $(LMSBW_VERBOSE),--verbose)				\
+	--component $(strip $(1))					\
+	--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(call lmsbw_gcf,$(strip $(1)),$(2)-api)" \
+	--manifest "$(call lmsbw_gcf,$(strip $(3)),build-root-directory)/$(strip $(1)).$(2)-api-mtree-manifest"	\
+	--mtree $(MTREE) || $(2)_api_changed="yes";
+endef
+
+# lmsbw_expand_binary_api_check <component>
+#
+#  Checks that if source API & binary API directories of prerequisite
+#  components have changed.
+#
+#  This function generates bash code which is part of an 'if' guard.
+#  The generated code should produce TRUE when <component> should NOT
+#  be built, and it should generate FALSE when <component> should be
+#  built.
+#
+define lmsbw_expand_api_checks
+binary_api_changed="no";						\
+source_api_changed="no";						\
+$(if $(call lmsbw_gcf,$(1),prerequisite),				\
+	$(foreach p,$(call lmsbw_gcf,$(1),prerequisite),		\
+		$(if $(call lmsbw_gcf,$(p),binary-api),			\
+			$(call lmsbw_check_api,$(p),binary,$(1)))	\
+		$(if $(call lmsbw_gcf,$(p),source-api),			\
+			$(call lmsbw_check_api,$(p),source,$(1)))	\
+))
+endef
+
 # generate_component_install <component>
 #
 #   Generates an 'install.<component>' target.  This is used to invoke
 #   a subordinate make on the components's sources.
 #
 define generate_component_install
-.PHONY:	install.$(strip $(1)) install.$(strip $(1))_api_check
+.PHONY:	install.$(strip $(1))				\
+	install.$(strip $(1))_submake			\
+	install.$(strip $(1))_create_binary_api		\
+	install.$(strip $(1))_update-install-directory
 
-install:: install.$(strip $(1)) install.$(strip $(1))_api_check
+install:: install.$(strip $(1))
 
-install.$(strip $(1)).submake:	$(MTREE) $(call expand_prerequisites,$(1))
-	$(call lmsbw_component_mtree_command_guard,$(1),	\
-		$(call lmsbw_expand_build_component,$(1)))
+install.$(strip $(1))_submake:	$(MTREE) $(call expand_prerequisites,$(1))
+	$(ATSIGN)set -e;							\
+	$(call lmsbw_expand_api_checks,$(1))					\
+	if [ "$$$${binary_api_changed}" = "no" ] &&				\
+	   [ "$$$${source_api_changed}" = "no" ] &&				\
+	   [ $(call lmsbw_gcf,$(1),source-mtree-manifest) -nt			\
+		$(call lmsbw_gcf,$(1),configuration-file) ] &&			\
+	   $(LMSBW_MTREE_CHECK_MANIFEST)					\
+		$(if $(LMSBW_VERBOSE),--verbose)				\
+		--component $(strip $(1))					\
+		--mtree $(MTREE)						\
+		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
+		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";	\
+	then									\
+		$(PROGRESS) "$(strip $(1)): No files changed";			\
+		exit 0;								\
+	fi;									\
+	$(call lmsbw_expand_build_component,$(1))				\
+	$(PROGRESS) "$(strip $(1)): Updating manifest";				\
+	$(LMSBW_MTREE_GENERATE_MANIFEST)					\
+		$(if $(LMSBW_VERBOSE),--verbose)				\
+		--component $(strip $(1))					\
+		--mtree $(MTREE)						\
+		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
+		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";	\
 
-#
-# If the component has declared a source API directory, a check is
-# performed to see if it has changed.  If it has changed, a file is
-# placed on-disk to indicate the API has changed, and LMSBW will
-# present the user with the proper course of action to ensure all
-# directly dependent components are fully built.
-#
-# They must be fully built because it too optimisitic to believe that
-# the build process of each component has correct dependencies --
-# consider how many build processes have dependencies correctly set up
-# on included header files -- and will detect that the API has
-# changed; by forcing a full build, it is gauranteed that the changed
-# API will be used.
-#
-#  o If the 'api modified' files exists, do no other work.  Once the
-#    file is created, the path forward is to 'clean' the affected
-#    components, so the mtree manifest becomes irrelevant.
-#
-#  o If the mtree manifest does not exist, build one.
-#
-#  o If the mtree manifest exists, check it.  If the manifest doesn't
-#    match the current set of files, create the 'api modified' file.
-#
-# XXX mtree is used directly here because the modification time for
-# XXX the source API directory, and for the files in it, was being
-# XXX updated.
-#
-# XXX should this use $(wildcard) for the 'source-api-changed' file test?
-#
-install.$(strip $(1)).check-source-api:	install.$(strip $(1)).submake
-	$(ATSIGN)if [ -f "$(call lmsbw_gcf,$(1),source-api-changed)" ] ; then			\
-		$(TRUE);									\
-	elif [ ! -f "$(call lmsbw_gcf,$(1),source-api-mtree-manifest)" ] ; then			\
-		$(MTREE)									\
-			-c									\
-			-k flags,mode,size,cksum						\
-			-p "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(call lmsbw_gcf,$(strip $(1)),source-api)" >"$(call lmsbw_gcf,$(strip $(1)),source-api-mtree-manifest)";	\
-	else											\
-		if ! $(LMSBW_MTREE_CHECK_MANIFEST)						\
-			$(if $(LMSBW_VERBOSE),--verbose)					\
-			--component $(strip $(1))						\
-			--manifest "$(call lmsbw_gcf,$(strip $(1)),source-api-mtree-manifest)"	\
-			--mtree $(MTREE)							\
-			--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(call lmsbw_gcf,$(strip $(1)),source-api)"; then \
-			$(TOUCH) "$(call lmsbw_gcf,$(1),source-api-changed)";			\
-		fi;										\
-	fi;
 
-install.$(strip $(1))_api_check:	install.$(strip $(1)).check-source-api
-	$(ATSIGN)if [ -e "$(call lmsbw_gcf,$(1),source-api-changed)" ] ; then	\
-		$(call lmsbw_source_api_changed_failure,$(1))			\
-	fi;
-
-install.$(strip $(1)).update-install-directory:				\
-	$(if $(call lmsbw_gcf,$(strip $(1)),source-api),		\
-				install.$(strip $(1))_api_check,	\
-				install.$(strip $(1)).submake)
+install.$(strip $(1))_update-install-directory:	install.$(strip $(1))_submake
 	$(ATSIGN)$(PROGRESS) "$(1): Install";
 	$(ATSIGN)$(RSYNC)						\
 		--quiet							\
@@ -176,7 +187,7 @@ install.$(strip $(1)).update-install-directory:				\
 		$(call lmsbw_gcf,$(strip $(1)),destdir-directory)/	\
 		$(call lmsbw_gcf,$(strip $(1)),install-directory);
 
-install.$(strip $(1)):	install.$(strip $(1)).update-install-directory
+install.$(strip $(1)):	install.$(strip $(1))_update-install-directory
 endef
 
 # generate_component_clean <component>
@@ -227,20 +238,6 @@ component.$(strip $(1)):
 	$(ATSIGN)$(PRINTF) "%25s : %s\n" "$(1)" "$(call lmsbw_gcf,$(1),description)";
 
 endef
-
-# lmsbw_generate_api_changed <component>
-#
-#   Generates a rule which can be used to clean all components directly
-#   dependent upon the provided component.
-define lmsbw_generate_api_changed
-.PHONY:	source-api-changed.$(strip $(1))
-
-source-api-changed.$(strip $(1)):					\
-	clean.$(strip $(1))						\
-	$(addprefix clean.,$(call lmsbw_gcf,$(1),direct-dependents))
-	$(ATSIGN)$(TRUE);
-endef
-
 
 # Generate the rules necessary to build each 'kind' of component.  The
 # function to call for each kind is generated by the value of the

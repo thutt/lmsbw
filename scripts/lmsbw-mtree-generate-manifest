@@ -33,10 +33,10 @@ ${program}: Generates a manifest for a directory tree
 
   --help | -h                  : Show this help and exit
   --verbose                    : Enable more verbosity
-  --mtree <path to mtree>      : Pathname of mtree executable
   --component <component name> : The component name [optional]
   --directory-tree <directory> : Tree on which mtree should be executed
   --manifest <pathname>        : The pathname of the produced manifest
+  --mtree <path to mtree>      : Pathname of mtree executable
 
 EOF
 }
