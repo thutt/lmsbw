@@ -43,4 +43,3 @@ $(call declare_source_component,		\
 	$(subst sample.cfg,src/producer,$(1)))
 
 $(call declare_component_source_api,producer,/usr/include/producer)
-$(call declare_component_binary_api,producer,/usr/lib/producer)

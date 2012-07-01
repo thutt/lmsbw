@@ -21,7 +21,6 @@ all:	libproducer.so.1 libproducer.a
 
 install:	libproducer.so.1 libproducer.a
 	$(INSTALL) -D --mode=555 api.h $(DESTDIR)/usr/include/producer/api.h;
-	$(INSTALL) -D --mode=555 libproducer.a $(DESTDIR)/usr/lib/producer/libproducer.a;
 	$(INSTALL) -D --mode=555 libproducer.so.1 $(DESTDIR)/usr/lib/producer/libproducer.so.1;
 	cd $(DESTDIR)/usr/lib/producer && ln -fs libproducer.so.1 libproducer.so && ln -fs libproducer.so.1 libproducer.so.1.0;
 
