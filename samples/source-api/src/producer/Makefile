@@ -13,10 +13,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+C_SOURCES	:= source.c
+CFLAGS		+= -fPIC
 
-all:
+all:	libproducer.so.1 libproducer.a
 	echo "everything built";
 
+install:	libproducer.so.1 libproducer.a
+	$(INSTALL) -D --mode=555 api.h $(DESTDIR)/usr/include/producer/api.h;
+	$(INSTALL) -D --mode=555 libproducer.a $(DESTDIR)/usr/lib/producer/libproducer.a;
+	$(INSTALL) -D --mode=555 libproducer.so.1 $(DESTDIR)/usr/lib/producer/libproducer.so.1;
+	cd $(DESTDIR)/usr/lib/producer && ln -fs libproducer.so.1 libproducer.so && ln -fs libproducer.so.1 libproducer.so.1.0;
 
-install:
-	$(INSTALL) -D --mode=555 api.h $(DESTDIR)/usr/include/producer/api.h
+
+source.o:	source.c
+
+libproducer.a:	source.o
+	ar r $@ $<
+
+libproducer.so.1:	source.o
+	gcc -shared -Wl,-soname,libproducer.so.1 -o $@ $<
+
+-include $(C_SOURCES:.c=.d)

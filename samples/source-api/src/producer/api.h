@@ -26,8 +26,8 @@
 typedef struct sample_struct_t {
     unsigned a;
     float    b;
+    char     ch;
 } sample_struct_t;
 
+void public_api(sample_struct_t *s);
 #endif
-
-

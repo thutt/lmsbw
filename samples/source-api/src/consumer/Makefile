@@ -13,11 +13,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-CFLAGS += -I$(LMSBW_C_INSTALL_DIRECTORY)/usr/include
+LIBDIR		:= $(LMSBW_C_INSTALL_DIRECTORY)/usr/lib/
+IMPORTED_LIBS	:= producer
+C_SOURCES	:= consumer.c
 
-all:	consumer
+LIB_SEARCH_DIRS	:= $(addprefix $(LIBDIR),$(IMPORTED_LIBS))
 
-consumer:	consumer.c | $(LMSBW_C_INSTALL_DIRECTORY)/usr/include/producer/api.h
+CFLAGS		+= -I$(LMSBW_C_INSTALL_DIRECTORY)/usr/include
+
+all:		consumer
+
+consumer.o:	consumer.c
+
+consumer:	consumer.o
+	$(CC) $(addprefix -L,$(LIB_SEARCH_DIRS)) -o $@ $< -lproducer
 
 install:
-	$(INSTALL) -D --mode=555 consumer $(DESTDIR)/usr/bin/consumer
+	$(INSTALL) -D --mode=555 consumer $(DESTDIR)/usr/bin/consumer.elf
+	$(INSTALL) -D --mode=555 consumer.sh $(DESTDIR)/usr/bin/consumer
+
+-include $(C_SOURCES:.c=.d)

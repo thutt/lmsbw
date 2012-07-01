@@ -25,5 +25,7 @@ int main(void)
     ss.a = 0;
     ss.b = 0.1;
     printf("Size of sample_struct_t: %zu\n", sizeof(sample_struct_t));
+    public_api(&ss);
+
     return 0;
 }
