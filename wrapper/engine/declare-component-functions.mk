@@ -96,6 +96,28 @@ lmsbw_dca:=$(call lmsbw_scf,$(1),source-api,$(strip $(2)))
 endef
 
 
+# declare_component_api <component>, <list of directories>
+#
+#  This function declares a list of directories which contain the
+#  public API of the component.  The directories can contain the
+#  source API (header files) and/or the binary API (static libs).
+#
+#  This is be used to cause dependent components to be rebuilt *only*
+#  when the API has been changed.
+#
+#  The files installed in $(DESTDIR) are used when checking if the API
+#  has changed.
+#
+#  If you are using dynamic libraries, the directories in which they
+#  are installed should not be included in the API directories; this
+#  is because internal changes to dynamic libraries do not affect
+#  components which are simply linked to them.
+#
+define declare_component_api
+$(call lmsbw_assert_known_component,$(1))
+lmsbw_dca:=$(call lmsbw_scf,$(1),api,$(strip $(2)))
+endef
+
 # declare_component_binary_api <component>, <list of directories>
 #
 #  This function declares a list of directories which contain the
