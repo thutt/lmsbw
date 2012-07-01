@@ -110,7 +110,7 @@ $(LMSBW_MTREE_CHECK_API) 						\
 	--mtree $(MTREE) || $(2)_api_changed="yes";
 endef
 
-# lmsbw_expand_binary_api_check <component>
+# lmsbw_expand_api_checks <component>
 #
 #  Checks that if source API & binary API directories of prerequisite
 #  components have changed.
@@ -179,6 +179,7 @@ install.$(strip $(1))_update-install-directory:	install.$(strip $(1))_submake
 		--compress						\
 		--executability						\
 		--group							\
+		--links							\
 		--owner							\
 		--perms							\
 		--recursive						\

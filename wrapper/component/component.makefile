@@ -28,6 +28,7 @@ sync:
 		--compress						\
 		--executability						\
 		--group							\
+		--links							\
 		--owner							\
 		--perms							\
 		--recursive						\
