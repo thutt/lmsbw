@@ -28,6 +28,10 @@ mtree:	$(MTREE)
 install::
 
 clean::
+	$(ATSIGN)$(MESSAGE) "Cleaning 'for build' install directory";
+	$(ATSIGN)$(RM) -rf $(call lmsbw_expand_install_directory,build);
+	$(ATSIGN)$(MESSAGE) "Cleaning 'for image' install directory";
+	$(ATSIGN)$(RM) -rf $(call lmsbw_expand_install_directory,image);
 
 log::
 
