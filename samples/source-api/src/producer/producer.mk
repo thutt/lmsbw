@@ -42,4 +42,4 @@ $(call declare_source_component,		\
 	$(CURRENT_CONFIGURATION_FILE),		\
 	$(subst sample.cfg,src/producer,$(1)))
 
-$(call declare_component_source_api,producer,/usr/include/producer)
+$(call declare_component_api,producer,/usr/include/producer)

@@ -71,31 +71,6 @@ lmsbw_dcbt:=$(call lmsbw_scf,$(1),install-target,$(2))
 endef
 
 
-# declare_component_source_api <component>, <list of directories>
-#
-#  This function declares a list of DESTDIR directories which contain
-#  the public API, at the source level, of the component.
-#
-#  This is be used to cause dependent components to be rebuilt *only*
-#  when the source API has been changed.  In other words, changes
-#  internal to a component normally do not cause a recompile of
-#  dependent components.
-#
-#  API changes must recompile all directly dependent components; this
-#  is strictly enforced by LMSBW.
-#
-#  The files installed in $(DESTDIR) are used when checking if the API
-#  has changed.
-#
-#  See 'declare_component_binary_api' if you want to recompile
-#  dependent components when a produced binary is changed.
-#
-define declare_component_source_api
-$(call lmsbw_assert_known_component,$(1))
-lmsbw_dca:=$(call lmsbw_scf,$(1),source-api,$(strip $(2)))
-endef
-
-
 # declare_component_api <component>, <list of directories>
 #
 #  This function declares a list of directories which contain the
@@ -116,27 +91,6 @@ endef
 define declare_component_api
 $(call lmsbw_assert_known_component,$(1))
 lmsbw_dca:=$(call lmsbw_scf,$(1),api,$(strip $(2)))
-endef
-
-# declare_component_binary_api <component>, <list of directories>
-#
-#  This function declares a list of directories which contain the
-#  public API, at the binary level, of the component.
-#
-#  This is be used to cause dependent components to be rebuilt *only*
-#  when the a binary has been changed.  If your component produces a
-#  library which is linked statically, or which is otherwise included
-#  into another component, then you want to declare them with this function.
-#
-#  The files installed in $(DESTDIR) are used when checking if the API
-#  has changed.
-#
-#  See 'declare_component_source_api' if you want to recompile
-#  dependent components when the public source API is changed.
-#
-define declare_component_binary_api
-$(call lmsbw_assert_known_component,$(1))
-lmsbw_dca:=$(call lmsbw_scf,$(1),binary-api,$(strip $(2)))
 endef
 
 # declare_component_kind <component>, <kind>
@@ -255,8 +209,6 @@ $(call lmsbw_scf,$(1),build-root-directory,$(call __expand_build_root,$(1)))
 $(call lmsbw_scf,$(1),build-directory,$(call lmsbw_gcf,$(1),build-root-directory)/build)
 $(call lmsbw_scf,$(1),destdir-directory,$(call lmsbw_gcf,$(1),build-root-directory)/destdir)
 $(call lmsbw_scf,$(1),source-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/source.mtree)
-$(call lmsbw_scf,$(1),source-api-mtree-manifest,$(1)-source-api.mtree)
-$(call lmsbw_scf,$(1),binary-api-mtree-manifest,$(1)-binary-api.mtree)
 $(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log)
 $(call lmsbw_scf,$(1),install-directory,					\
 	$(call lmsbw_expand_install_directory,$(call lmsbw_gcf,$(1),reason)))	\

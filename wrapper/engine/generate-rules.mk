@@ -91,7 +91,7 @@ define lmsbw_expand_build_component
 		$(call lmsbw_gcf,$(1),build-directory)/build-time.text;)
 endef
 
-# lmsbw_check_api <component>, <binary | source>, <directly dependent component>
+# lmsbw_check_api <component>, <directly dependent component>
 #
 #   Check the source or binary API of <component> to see if it has
 #   changed.  The manifest of the API for <component> is stored in the
@@ -99,15 +99,16 @@ endef
 #
 #   Result:
 #
-#      Sets $(2)_api_changed to "yes" if the API has changed.
+#      Sets 'api_changed' to "yes" if the API has changed.
 #
 define lmsbw_check_api
-$(LMSBW_MTREE_CHECK_API) 						\
-	$(if $(LMSBW_VERBOSE),--verbose)				\
-	--component $(strip $(1))					\
-	--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(call lmsbw_gcf,$(strip $(1)),$(2)-api)" \
-	--manifest "$(call lmsbw_gcf,$(strip $(3)),build-root-directory)/$(strip $(1)).$(2)-api-mtree-manifest"	\
-	--mtree $(MTREE) || $(2)_api_changed="yes";
+$(foreach api_dir,$(call lmsbw_gcf,$(1),api),							\
+	$(LMSBW_MTREE_CHECK_API) 								\
+		$(if $(LMSBW_VERBOSE),--verbose)						\
+		--component $(strip $(1))							\
+		--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(api_dir)"	\
+		--manifest "$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree"	\
+		--mtree $(MTREE) || api_changed="yes";)
 endef
 
 # lmsbw_expand_api_checks <component>
@@ -121,15 +122,9 @@ endef
 #  built.
 #
 define lmsbw_expand_api_checks
-binary_api_changed="no";						\
-source_api_changed="no";						\
-$(if $(call lmsbw_gcf,$(1),prerequisite),				\
-	$(foreach p,$(call lmsbw_gcf,$(1),prerequisite),		\
-		$(if $(call lmsbw_gcf,$(p),binary-api),			\
-			$(call lmsbw_check_api,$(p),binary,$(1)))	\
-		$(if $(call lmsbw_gcf,$(p),source-api),			\
-			$(call lmsbw_check_api,$(p),source,$(1)))	\
-))
+api_changed="no";					\
+$(foreach p,$(call lmsbw_gcf,$(1),prerequisite),	\
+	$(call lmsbw_check_api,$(p),$(1))))
 endef
 
 # generate_component_install <component>
@@ -148,8 +143,7 @@ install:: install.$(strip $(1))
 install.$(strip $(1))_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 	$(ATSIGN)set -e;							\
 	$(call lmsbw_expand_api_checks,$(1))					\
-	if [ "$$$${binary_api_changed}" = "no" ] &&				\
-	   [ "$$$${source_api_changed}" = "no" ] &&				\
+	if [ "$$$${api_changed}" = "no" ] &&					\
 	   [ $(call lmsbw_gcf,$(1),source-mtree-manifest) -nt			\
 		$(call lmsbw_gcf,$(1),configuration-file) ] &&			\
 	   $(LMSBW_MTREE_CHECK_MANIFEST)					\
