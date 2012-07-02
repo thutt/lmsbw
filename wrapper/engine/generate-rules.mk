@@ -166,6 +166,16 @@ install.$(strip $(1))_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";	\
 
 
+# install.$(strip $(1))_update-install-directory: Install from DESTDIR to sysroot
+#
+#  This command is a separate target because build output can be
+#  shared between different build types.  It will be executed each
+#  time lmsbw is executed, as this ensures that the sysroot for the
+#  current build product will be up-to-date with the latest build.
+#
+#  If it were, instead, done as part of the submake, or guarded by
+#  mtree, the sysroot would not always be up-to-date with the latest
+#  build images.
 install.$(strip $(1))_update-install-directory:	install.$(strip $(1))_submake
 	$(ATSIGN)$(PROGRESS) "$(1): Install";
 	$(ATSIGN)$(RSYNC)						\
