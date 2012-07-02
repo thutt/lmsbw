@@ -8,8 +8,12 @@ EXEC	=	generate
 all:		$(EXEC)
 
 $(EXEC):	$(OBJS) $(STATIC_C_AR)
-	echo "**** Linking $@";
 	$(CC) -o $@ $< -L$(STATIC_C_LIB_DIR) -l$(STATIC_C_LIB)
 
 $(OBJS):	$(CSRC)
+
+
+clean:
+	rm -f $(OBJS) $(EXEC)
+
 -include $(DEPS)
