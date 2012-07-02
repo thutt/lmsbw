@@ -47,9 +47,9 @@ validate_arguments(void)
         fprintf(stderr, "Maximum subdirectories per level must be > 0.\n");
     }
 
-    if (arg_depth <= 0) {
+    if (arg_depth <= 2) {
         ++error;
-        fprintf(stderr, "Maximum subdirectory depth must be > 0.\n");
+        fprintf(stderr, "Maximum subdirectory depth must be > 2.\n");
     }
 
     if (arg_sources <= 0) {
