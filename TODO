@@ -23,36 +23,13 @@
  o document declare_component_build_target
  o document declare_component_api
  o document each file of LMSBW_<component>
- o document LMSBW_<component>[source-api]
- o document LMSBW_<component>[binary-api]
- o document LMSBW_<component>[changed-api]
- o Make a target which will make a report of indirect dependents.
-   a -> b -> c.  c is indirectly dependent on a.
- o When indirect dependencies code is written, update
-   lmsbw_api_changed_failure to incorporate it.
- o Add 'indirect-dependencies' list to LMSBW_<component>
  o Document all errors
  o Need document on adding a new 'kind' of component.
- o Need to have a binary API.  Changes to the binary
-   API will cause dependent components to be rebuilt w/o clean.  The
-   binary API is for static linking.
- o Document binary API.
- o Test source API changes.
- o Test binary API changes.
- o Must be able to ignore binary-api or source-api changes for
-   dependent components.  Some might be dependent on one or the other, but
-   not both.
  o Add 'gdb' verb to load a component's binary output in gdb.
  o Remove TARBALL repository.
  o Document overriding component rules, such as 'install' for cases
    when the component does not have an 'install' rule.
- o LMSBW should pass unrecognized arguments directly to Make.  Maybe '--'?
  o The help message for lmsbw is horrible.
- o Detecting a source API change has not been written yet.  Must mtree
-   api directories.  Must document.
- o Implement binary-api-mtree-manifest
- o Implement binary-api-changed.
- o Implement binary-api.
  o Document how to override the build & install & configure rules.
    Look for 'chap:overriding' in variables.tex
  o Error messages should print component names for disambiguation.
@@ -71,7 +48,4 @@
  o Would using a SHA  the source-api-mtree-manifest make it more robust?
    (No way to change API, and change it back and *not* rebuild
    everything; must clean dependent components...)
- o Document 'source-api' sample.
- o Implement binary-api checking.
  o Remove documentation for component 'source-api-changed' field.
- o 'clean' target must remove install directory too.
