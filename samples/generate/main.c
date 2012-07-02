@@ -432,11 +432,11 @@ process_arguments(int argc, char *argv[])
 {
     static struct option long_options[] = {
         { "verbose",   no_argument      , NULL, 256 },
+        { "depth",     required_argument, NULL, 260 },
         { "dry-run",   no_argument      , NULL, 257 },
         { "root",      required_argument, NULL, 258 },
-        { "subdirs",   required_argument, NULL, 259 },
-        { "depth",     required_argument, NULL, 260 },
         { "sources",   required_argument, NULL, 261 },
+        { "subdirs",   required_argument, NULL, 259 },
         { NULL    ,    no_argument      , NULL, 0   }
     };
 
@@ -493,4 +493,6 @@ main(int argc, char *argv[])
 
     root = create_structure(0, arg_root);
     create_source_tree(root);
+
+    return 0;
 }
