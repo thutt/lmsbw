@@ -30,6 +30,7 @@ struct directory_t {
     directory_t *directories;   /* [0..n_directories) */
 };
 
+static const char makefile_recursive_name[] = "Makefile.recursive";
 unsigned  arg_verbose;
 unsigned  arg_dry_run;
 int       arg_subdirs;
@@ -204,36 +205,48 @@ static void makefile_generate_all(FILE *fp, const directory_t *dir)
     fprintf(fp, "all:\t$(SUBDIRS) $(EXECUTABLES)\n\n");
 }
 
+static void makefile_generate_clean(FILE *fp, const directory_t *dir)
+{
+    fprintf(fp, "clean:\t$(SUBDIRS)\n"
+            "\trm -f $(EXECUTABLES)"
+            "\n\n");
+}
+
 static void makefile_generate_executables(FILE *fp, const directory_t *dir)
 {
     fprintf(fp, "$(EXECUTABLES):\t| $(SUBDIRS)\n\n");
 }
 
-static void makefile_generate_subdirs(FILE *fp, const directory_t *dir)
+static void makefile_generate_subdirs(FILE *fp,
+                                      const directory_t *dir,
+                                      const char *makefile_name)
 {
     fprintf(fp,
             "$(SUBDIRS):\n"
-            "\t$(MAKE) --silent -C $@ all\n\n");
+            "\t$(MAKE) -f %s --silent -C $@ $(MAKECMDGOALS)\n\n",
+            makefile_name);
 }
 
-static void create_makefile(const directory_t *dir)
+static void create_recursive_makefile(const directory_t *dir,
+                                      const char *makefile_name)
 {
     FILE *fp;
-    char mname[] = "Makefile";
-    char *makefile = malloc(strlen(dir->pathname) +
-                            1                     + /* / */
-                            strlen(mname)         +
-                            1);                     /* '\0' */
-    assert(makefile != NULL);
-    sprintf(makefile, "%s/%s", dir->pathname, mname);
+    char *mname = malloc(strlen(dir->pathname) +
+                         1                     + /* / */
+                         strlen(makefile_name) +
+                         1);                     /* '\0' */
+    assert(mname != NULL);
+    sprintf(mname, "%s/%s", dir->pathname, makefile_name);
     printf("Create Makefile for '%s'\n", dir->pathname);
-    fp = fopen(makefile, "w");
+    fp = fopen(mname, "w");
+    assert(fp != NULL);
     makefile_generate_header(fp);
     makefile_generate_phony(fp, dir);
     makefile_generate_subdirs_macro(fp, dir);
     makefile_generate_executables_macro(fp, dir);
     makefile_generate_all(fp, dir);
-    makefile_generate_subdirs(fp, dir);
+    makefile_generate_clean(fp, dir);
+    makefile_generate_subdirs(fp, dir, makefile_name);
     makefile_generate_executables(fp, dir);
     fclose(fp);
 }
@@ -257,7 +270,7 @@ static void directory_create(const directory_t *dir)
         perror("mkdir failed");
         exit(-1);
     }
-    create_makefile(dir);
+    create_recursive_makefile(dir, makefile_recursive_name);
 }
 
 static void source_create(const source_t *src)
@@ -318,7 +331,7 @@ static void dump_structure(const directory_t *dir)
 static void create_source_tree(const directory_t *dir)
 {
     traverse_structure(dir, directory_create, source_create);
-    create_makefile(dir);
+    create_recursive_makefile(dir, makefile_recursive_name);
 }
 
 static void
