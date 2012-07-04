@@ -124,7 +124,7 @@ endef
 define lmsbw_expand_api_checks
 api_changed="no";					\
 $(foreach p,$(call lmsbw_gcf,$(1),prerequisite),	\
-	$(call lmsbw_check_api,$(p),$(1))))
+	$(call lmsbw_check_api,$(p),$(1)))
 endef
 
 # generate_component_install <component>
