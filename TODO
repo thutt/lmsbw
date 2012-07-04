@@ -49,3 +49,6 @@
    (No way to change API, and change it back and *not* rebuild
    everything; must clean dependent components...)
  o Remove documentation for component 'source-api-changed' field.
+ o Document that subordinate Makefiles must not refer to absolute pathnames.
+   This will violate the rule that the source is inviolable, and messes up
+   all checking of source directory changes using mtree.
