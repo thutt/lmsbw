@@ -71,7 +71,6 @@ define lmsbw_expand_build_component
 	$(MAKE)											\
 		-f $(LMSBW_DIR)/wrapper/component/component.makefile				\
 		-C $(dir $(call lmsbw_gcf,$(1),configuration-file))				\
-		$(call lmsbw_makeflags)								\
 		LMSBW_VERBOSE=1									\
 		LMSBW_DIR="$(LMSBW_DIR)"							\
 		LMSBW_C_COMPONENT=$(1)								\
@@ -141,7 +140,7 @@ define generate_component_install
 install:: install.$(strip $(1))
 
 install.$(strip $(1))_submake:	$(MTREE) $(call expand_prerequisites,$(1))
-	$(ATSIGN)set -e;							\
+	+$(ATSIGN)set -e;							\
 	$(call lmsbw_expand_api_checks,$(1))					\
 	if [ "$$$${api_changed}" = "no" ] &&					\
 	   [ $(call lmsbw_gcf,$(1),source-mtree-manifest) -nt			\

@@ -86,7 +86,6 @@ function generate_lmsbw_env ()
 
 function main ()
 {
-    local verbose="--silent";   # verbose not enabled => make should be silent.
     local lmsbw_error_file="/tmp/lmsbw-errors.${BASHPID}";
     local makeopts;
     local debug;
@@ -121,7 +120,6 @@ function main ()
                 exit 0 ;;
 
             --verbose)
-                unset verbose;
                 export LMSBW_VERBOSE=1
                 shift 1 ;;
 
@@ -171,7 +169,7 @@ function main ()
     done
 
     # Not intialized at decl so LMSBW_PARALLEL_LEVEL is not empty.
-    makeopts="--no-builtin-rules -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
+    makeopts="-j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
 
     if [ -z "${LMSBW_BUILD_ROOT}" ] ; then
         fatal "${program}: Build output directory not specifid; use '--build-root'.";
@@ -189,7 +187,7 @@ function main ()
     start_seconds=$(date +%s)
     build_system_dir=$(readlink -f $(dirname ${0})/..);
     makefile=${build_system_dir}/wrapper/Makefile
-    cmd="make ${makeopts} ${verbose} ${debug} -f ${makefile} ${@}";
+    cmd="make ${makeopts} ${debug} -f ${makefile} ${@}";
 
     generate_lmsbw_env;
     if [ ! -z "${LMSBW_VERBOSE}" ] ; then
