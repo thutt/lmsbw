@@ -1,0 +1,128 @@
+This sample will create an entire source tree with recursive
+Makefiles, and LMSBW configuration files, all so you can actually test
+the difference between recursive Makefiles, and the LMSBW system.
+
+Follow these steps to use it.
+
+o Create sources
+
+  + make
+  + Execute 'generate' program
+
+     ./generate --depth 5 --root /tmp/generate --sources 100 --subdirs 20
+
+    This command will create a source tree with the following attributes:
+
+      > Directory tree depth will be 5 levels.
+      > Each level of the directory tree will have [0..20] subdirectories.
+      > Each subdirectory will have [0..100] source files.
+
+    The program will also generate a full build system for Make and
+    for lmsbw.
+
+o Determine desired level of parallelization
+
+    export PARALLEL=4
+
+o Time make-based build system
+
+  + Build the system using Make, and note the number of seconds it
+    takes to build the entire system.
+
+      cd /tmp/generate
+      time -p make -j ${PARALLEL}
+
+  + Build it again to exercise the NULL-build:
+
+      time -p make -j ${PARALLEL}
+
+  + Perform an incremental build
+
+      The generated makefile system does not have proper dependencies,
+      so instead of simply modifying a source file, you'll have to
+      remove an executable.
+
+      <remove random executable file in the directory hierarchy>
+      time -p make -j ${PARALLEL}
+
+  + Perform a non-parallel incremental build
+
+      <touch some random source file in the directory hierarchy>
+      time -p make -j 1
+
+  + Clean everything up
+
+      time -p make -j ${PARALLEL} clean
+
+o Use LMSBW
+
+  + Make sure you have executed the 'clean' target
+
+    The Make-based build system leaves its output in the source
+    directories.  You must execute the 'clean' target to ensure that
+    lmsbw isn't presented with files it does not need.
+
+      lmsbw                                        \
+        --time                                     \
+        --configuration /tmp/generate/generate.cfg \
+        --build-root /tmp/generate-output          \
+        --parallel ${PARALLEL}
+
+  + Build it again to exercise the NULL-build:
+
+      lmsbw                                        \
+        --time                                     \
+        --configuration /tmp/generate/generate.cfg \
+        --build-root /tmp/generate-output          \
+        --parallel ${PARALLEL}
+
+  + Perform an incremental build
+
+      <touch some random source file in the directory hierarchy>
+      lmsbw                                        \
+        --time                                     \
+        --configuration /tmp/generate/generate.cfg \
+        --build-root /tmp/generate-output          \
+        --parallel ${PARALLEL}
+
+  + Perform a non-parallel incremental build
+
+      <touch some random source file in the directory hierarchy>
+      lmsbw                                        \
+        --time                                     \
+        --configuration /tmp/generate/generate.cfg \
+        --build-root /tmp/generate-output          \
+        --parallel 1
+
+  + Clean everything up
+
+      rm -rf /tmp/generate-output
+
+Here are the things you should observe:
+
+  1. The full build with LMSBW should be just about the same time as
+     the full build for Make.
+
+  2. The parallel NULL build for LMSBW should be significantly faster
+     than the parallel Make version.
+
+  3. The parallel incremental build for LMSBW may be slightly slower
+     than the Make version.
+
+     Since the 'generate' program randomly creates a directory
+     structure, it may turn out that the parallel Make can begin
+     processing all directories at the same time.  If this is the
+     case, it is possible for the Make-based version to barely
+     outperform lmsbw.
+
+     On a larger project, with real Makefiles, not the sample
+     makefiles created by 'generate', this is unlikely to occur.
+
+     Comparing the non-parallel incremental build to the parallel
+     version will strikingly show the benefit of not recursing into
+     subdirectories if no files have changed.
+
+     LMSBW is written to not process component directories if nothing
+     has been changed, while Make must recurse through each
+     subdirectory and perform all dependency analysis; dramatic time
+     saving can be had if you don't even recurse into subdirectories.
