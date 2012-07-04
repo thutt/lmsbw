@@ -88,7 +88,7 @@ function main ()
 {
     local verbose="--silent";   # verbose not enabled => make should be silent.
     local lmsbw_error_file="/tmp/lmsbw-errors.${BASHPID}";
-    local makeopts="--no-builtin-rules -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
+    local makeopts;
     local debug;
     
     args=$(getopt -o h                          \
@@ -139,7 +139,7 @@ function main ()
                 shift 1 ;;
 
             --parallel)
-                LMSBW_PARALLEL_LEVEL="${2}";
+                export LMSBW_PARALLEL_LEVEL="${2}";
                 shift 2 ;;
 
             --progress)
@@ -170,6 +170,9 @@ function main ()
         esac
     done
 
+    # Not intialized at decl so LMSBW_PARALLEL_LEVEL is not empty.
+    makeopts="--no-builtin-rules -j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
+
     if [ -z "${LMSBW_BUILD_ROOT}" ] ; then
         fatal "${program}: Build output directory not specifid; use '--build-root'.";
     fi;
@@ -193,7 +196,7 @@ function main ()
         echo "${lmsbw_env} ${cmd}";
     fi;
     success="yes";
-    ${cmd} "$@" 2>"${lmsbw_error_file}" || unset success;
+    ${cmd} 2>"${lmsbw_error_file}" || unset success;
     end_seconds=$(date +%s)
 
     # When using the 'seconds since epoch' notation (@), the time
