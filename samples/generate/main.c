@@ -30,7 +30,7 @@ struct directory_t {
     directory_t *directories;   /* [0..n_directories) */
 };
 
-static const char makefile_recursive_name[] = "Makefile.recursive";
+static const char makefile_recursive_name[] = "Makefile";
 unsigned  arg_verbose;
 unsigned  arg_dry_run;
 int       arg_subdirs;
@@ -92,6 +92,34 @@ static source_t *allocate_source(unsigned n)
 
     memset(s, '\0', n_bytes);
     return s;
+}
+
+static char *
+create_lmsbw_config_name(const char *pathname, unsigned number)
+{
+    const char suffix[]    = ".cfg";
+    int           r;
+    char         *result;
+    char          buf[32];
+    size_t        allocation_size;
+    const size_t  buf_size = sizeof(buf) / sizeof(buf[0]);
+
+    r = snprintf(buf, buf_size, "%u", number);
+    assert(r < buf_size - 1);
+
+    allocation_size = (strlen(pathname) +
+                       1              +   /* / */
+                       strlen(buf)    +   /* number */
+                       strlen(suffix) +   /* suffix */
+                       1);                /* '\0' */
+    result = malloc(allocation_size);
+
+    assert(result);
+    r = snprintf(result, allocation_size, "%s/%u%s",
+                 pathname, number, suffix);
+    result[allocation_size - 1] = '\0';
+    assert(r <= allocation_size);
+    return result;
 }
 
 static char *
@@ -158,7 +186,7 @@ static void makefile_generate_list_of_subdirectories(FILE *fp,
     unsigned i;
 
     for (i = 0; i < dir->n_directories; ++i) {
-        fprintf(fp, "%s ", dir->directories[i].pathname);
+        fprintf(fp, "$(notdir %s) ", dir->directories[i].pathname);
     }
 }
 
@@ -208,8 +236,22 @@ static void makefile_generate_all(FILE *fp, const directory_t *dir)
 static void makefile_generate_clean(FILE *fp, const directory_t *dir)
 {
     fprintf(fp, "clean:\t$(SUBDIRS)\n"
-            "\trm -f $(EXECUTABLES)"
+            "\trm -f $(EXECUTABLES) *.d"
             "\n\n");
+}
+
+static void makefile_generate_install(FILE *fp, const directory_t *dir)
+{
+    const int perform_real_install = 0;
+    if (perform_real_install) {
+        fprintf(fp, "install:\t$(SUBDIRS)\n"
+                "\t$(if $(EXECUTABLES),"
+                "mkdir --parents $(DESTDIR)/usr/bin/%s; "
+                "cp $(EXECUTABLES) $(DESTDIR)/usr/bin/%s)\n\n",
+                dir->pathname + 1, dir->pathname + 1);
+    } else {
+        fprintf(fp, "install:\n\n");
+    }
 }
 
 static void makefile_generate_executables(FILE *fp, const directory_t *dir)
@@ -245,6 +287,7 @@ static void create_recursive_makefile(const directory_t *dir,
     makefile_generate_subdirs_macro(fp, dir);
     makefile_generate_executables_macro(fp, dir);
     makefile_generate_all(fp, dir);
+    makefile_generate_install(fp, dir);
     makefile_generate_clean(fp, dir);
     makefile_generate_subdirs(fp, dir, makefile_name);
     makefile_generate_executables(fp, dir);
@@ -328,10 +371,61 @@ static void dump_structure(const directory_t *dir)
     traverse_structure(dir, directory_dump, source_dump);
 }
 
+static void create_lmsbw_main_configuration(const directory_t *dir)
+{
+    const int len = (strlen(dir->pathname)  +
+                     1                      + /* '/'  */
+                     strlen("generate.cfg") +
+                     1);                      /* '\0' */
+    char *fname = malloc(len);
+    FILE *fp;
+    unsigned i;
+
+    assert(fname);
+    sprintf(fname, "%s/generate.cfg", dir->pathname);
+    fname[len - 1] = '\0';
+    fp = fopen(fname, "w");
+
+    fprintf(fp, "define load_configuration\n");
+    for (i = 0; i < dir->n_directories; ++i) {
+        fprintf(fp, "$(eval include %s/%u.cfg)\n", dir->pathname, i);
+    }
+    fprintf(fp, "endef\n\n\n");
+    fprintf(fp,
+            "vv:=$(call set,LMSBW_configuration,load-configuration-function,"
+            "load_configuration)\n"
+            "vv:=$(call set,LMSBW_configuration,"
+            "component-build-support,source)\n\n");
+
+    fclose(fp);
+    free(fname);
+}
+
+static void create_lmsbw_configuration(const directory_t *dir)
+{
+    unsigned i;
+
+    for (i = 0; i < dir->n_directories; ++i) {
+        char *name = create_lmsbw_config_name(dir->pathname, i);
+        FILE *fp = fopen(name, "w");
+
+        assert(fp);
+        fprintf(fp,
+                "$(call declare_source_component,"
+                "d%u,directory %u,image,%s,%s)\n",
+                i, i, name, dir->directories[i].pathname);
+        free(name);
+        fclose(fp);
+    }
+
+    create_lmsbw_main_configuration(dir);
+}
+
 static void create_source_tree(const directory_t *dir)
 {
     traverse_structure(dir, directory_create, source_create);
     create_recursive_makefile(dir, makefile_recursive_name);
+    create_lmsbw_configuration(dir);
 }
 
 static void
@@ -427,7 +521,8 @@ create_structure(int depth, char *pathname)
     dir->pathname    = strdup(pathname);
 
     allocate_directories(dir, 0);
-    allocate_sources(dir);
+    dir->n_sources = 0;         /* top level directory never has sources */
+    dir->sources   = NULL;
 
     initialize_sources(dir, depth);
     initialize_directories(dir, depth + 1);
