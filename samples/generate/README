@@ -4,23 +4,13 @@ the difference between recursive Makefiles, and the LMSBW system.
 
 Follow these steps to use it.
 
-o Create sources
+o Execute the 'run-generate' script in the sample directory
 
-  + make
-  + Execute 'generate' program
+  This script will generate a source directory tree in /tmp/generate
+  with 90955 source files.
 
-     ./generate --depth 5 --root /tmp/generate --sources 100 --subdirs 20
-
-    This command will create a source tree with the following attributes:
-
-      > Directory tree depth will be 5 levels.
-      > Each level of the directory tree will have [0..20] subdirectories.
-      > Each subdirectory will have [0..100] source files.
-
-    The program will also generate a full build system for Make and
-    for lmsbw.
-
-o Determine desired level of parallelization
+o Decide desired level of parallelization.  Choose an integer which
+  will suit your hardware.
 
     export PARALLEL=4
 
@@ -32,9 +22,14 @@ o Time make-based build system
       cd /tmp/generate
       time -p make -j ${PARALLEL}
 
+    On the system used for testing, a 4-way parallel build of the
+    default configuration takes about 17 minutes.
+
   + Build it again to exercise the NULL-build:
 
       time -p make -j ${PARALLEL}
+
+    On the test system, this take 1.88 seconds.
 
   + Perform an incremental build
 
@@ -42,13 +37,23 @@ o Time make-based build system
       so instead of simply modifying a source file, you'll have to
       remove an executable.
 
-      <remove random executable file in the directory hierarchy>
-      time -p make -j ${PARALLEL}
+        /tmp/generate/d15/d12/d3/s50
+        rm /tmp/generate/d15/d12/d3/s50
+        /tmp/generate/d15/d12/d3/s50
+        time -p make -j ${PARALLEL}
+
+      On the test machine, this takes 1.90 seconds.
 
   + Perform a non-parallel incremental build
 
-      <touch some random source file in the directory hierarchy>
-      time -p make -j 1
+      Repeat the incremental build steps, but this time with a '-j' setting of 1.
+
+        /tmp/generate/d15/d12/d3/s50
+        rm /tmp/generate/d15/d12/d3/s50
+        /tmp/generate/d15/d12/d3/s50
+        time -p make -j 1
+
+      On the test machine, this takes 12.98 seconds.
 
   + Clean everything up
 
@@ -68,6 +73,8 @@ o Use LMSBW
         --build-root /tmp/generate-output          \
         --parallel ${PARALLEL}
 
+    On the test machine, this takes 18:26.
+
   + Build it again to exercise the NULL-build:
 
       lmsbw                                        \
@@ -76,14 +83,18 @@ o Use LMSBW
         --build-root /tmp/generate-output          \
         --parallel ${PARALLEL}
 
+    On the test machine, this takes 0.80 seconds.
+
   + Perform an incremental build
 
-      <touch some random source file in the directory hierarchy>
+      touch /tmp/generate/d15/d12/d3/s50.c
       lmsbw                                        \
         --time                                     \
         --configuration /tmp/generate/generate.cfg \
         --build-root /tmp/generate-output          \
         --parallel ${PARALLEL}
+
+    On the test machine, this takes about 1 second.
 
   + Perform a non-parallel incremental build
 
@@ -93,6 +104,8 @@ o Use LMSBW
         --configuration /tmp/generate/generate.cfg \
         --build-root /tmp/generate-output          \
         --parallel 1
+
+    On the test machine, this takes 4.10 seconds.
 
   + Clean everything up
 
@@ -107,7 +120,7 @@ Here are the things you should observe:
      than the parallel Make version.
 
   3. The parallel incremental build for LMSBW may be slightly slower
-     than the Make version.
+     than the Make version (but is usually not).
 
      Since the 'generate' program randomly creates a directory
      structure, it may turn out that the parallel Make can begin

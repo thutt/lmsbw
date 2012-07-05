@@ -1,3 +1,20 @@
+/* Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+ *
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 #include <assert.h>
 #include <ctype.h>
 #include <getopt.h>
@@ -37,6 +54,8 @@ int       arg_subdirs;
 int       arg_depth;
 int       arg_sources;
 char     *arg_root;
+unsigned int arg_seed;
+unsigned int arg_seed_set = 0;
 
 static void
 validate_arguments(void)
@@ -540,11 +559,12 @@ process_arguments(int argc, char *argv[])
 {
     static struct option long_options[] = {
         { "verbose",   no_argument      , NULL, 256 },
-        { "depth",     required_argument, NULL, 260 },
         { "dry-run",   no_argument      , NULL, 257 },
         { "root",      required_argument, NULL, 258 },
-        { "sources",   required_argument, NULL, 261 },
         { "subdirs",   required_argument, NULL, 259 },
+        { "depth",     required_argument, NULL, 260 },
+        { "sources",   required_argument, NULL, 261 },
+        { "seed",      required_argument, NULL, 262 },
         { NULL    ,    no_argument      , NULL, 0   }
     };
 
@@ -583,6 +603,11 @@ process_arguments(int argc, char *argv[])
             arg_sources = atoi(optarg);
             break;
 
+        case 262:
+            arg_seed_set = 1;
+            arg_seed     = atoi(optarg);
+            break;
+
         default:
             printf("?? getopt returned character code 0%o ??\n", c);
         }
@@ -594,13 +619,18 @@ int
 main(int argc, char *argv[])
 {
     directory_t *root;
+    unsigned int seed = (unsigned int)time(NULL);
 
-    srand(time(NULL));
     process_arguments(argc, argv);
     validate_arguments();
 
+    if (arg_seed_set) {
+        seed = arg_seed;
+    }
+    srand(seed);
+
     root = create_structure(0, arg_root);
     create_source_tree(root);
-
+    printf("Random Number Seed: %u\n", seed);
     return 0;
 }
