@@ -204,11 +204,12 @@ endef
 #   Sets the component fields which cannot be assigned until the full
 #   set of components is known.
 #
+#$(call lmsbw_scf,$(1),build-root-directory,$(call __expand_build_root,$(1)))
 define fixup_component_fields
-$(call lmsbw_scf,$(1),build-root-directory,$(call __expand_build_root,$(1)))
-$(call lmsbw_scf,$(1),build-directory,$(call lmsbw_gcf,$(1),build-root-directory)/build)
-$(call lmsbw_scf,$(1),destdir-directory,$(call lmsbw_gcf,$(1),build-root-directory)/destdir)
-$(call lmsbw_scf,$(1),source-mtree-manifest,$(call lmsbw_gcf,$(1),build-root-directory)/source.mtree)
+$(eval __brd:=$(call set,LMSBW_component_$(strip $(1)),build-root-directory,$(strip $(call __expand_build_root,$(1)))))
+$(call lmsbw_scf,$(1),build-directory,$(__brd)/build)
+$(call lmsbw_scf,$(1),destdir-directory,$(__brd)/destdir)
+$(call lmsbw_scf,$(1),source-mtree-manifest,$(__brd)/source.mtree)
 $(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log)
 $(call lmsbw_scf,$(1),install-directory,					\
 	$(call lmsbw_expand_install_directory,$(call lmsbw_gcf,$(1),reason)))
