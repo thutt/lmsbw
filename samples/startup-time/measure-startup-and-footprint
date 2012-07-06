@@ -1,0 +1,177 @@
+#!/bin/bash
+#
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# This script allows you to do two things:
+#
+#    1. Test LMSBW startup time with an arbitrary number of
+#       configuration files:  lmsbw measure-startup-time
+#
+#    2. Test LMSBW proper memory usage with an arbitrary number of
+#       configuration files:  lmsbw measure-memory-footprint
+
+
+function display_help ()
+{
+    cat <<EOF
+measure-startup-and-footprint --file-count [count]
+                              (--startup-time | --memory-footprint)
+
+This script allows you to easily measure two behavioral apsects of
+LMSBW with a varying count of component configuration files.
+
+   o Startup time
+   o Memory usage
+
+The '--file-count' option allows you to specify any number of
+component configuration files, which this script will automatically
+create.
+
+If you specify '--startup-time', the script will invoke LMSBW with a
+special target that will exit after all component configuration files
+are loaded, and all build rules are generated.  This allows you to
+have a rough estimate of the startup time required before LMSBW will
+begin building your project.
+
+If you specify '--memory-footprint', the script will invoke LMSBW with
+a special target that load all configuration files, generate all rules
+and then loop until 'ctrl-c' is pressed.  This allows you, using tools
+such as 'top', and 'ps' to measure the memory footprint required by
+lmsbw to begin building your project.  Note, that the memory measured
+does not include the memory to recursively build your project; it's
+just the memory required to represent the your project in
+LMSBW-proper.
+
+EOF
+}
+
+function create_component_config
+{
+    local dir=${1};
+    local name=${2};
+    local cfg="${dir}/${name}.cfg";
+    cat >"${cfg}" <<EOF
+\$(call declare_source_component,               \\
+       component${2},                           \\
+       component${2} example,                   \\
+       image,                                   \\
+       ${cfg},                                  \\
+       ${dir})
+EOF
+}
+
+function create_configuration
+{
+    local dir=${1};
+    cat >"${dir}/startup-time.mk" <<EOF
+define load_configuration
+\$(foreach cf,\$(wildcard ${dir}/*.cfg),                \\
+          \$(eval CURRENT_CONFIGURATION_FILE:=\$(cf))   \\
+          \$(eval include \$(cf)))
+endef
+
+vv:=\$(call set,LMSBW_configuration,load-configuration-function,load_configuration)
+vv:=\$(call set,LMSBW_configuration,component-build-support,source)
+EOF
+}
+
+function main ()
+{
+    local success="yes";
+
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long file-count:                      \
+        --long memory-footprint                 \
+        --long startup-time                     \
+        -n "${program}"                         \
+        -- "$@");
+
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --file-count)
+                file_count="${2}";
+                shift 2 ;;
+
+            --memory-footprint)
+                target="measure-memory-footprint";
+                shift 1 ;;
+
+            --startup-time)
+                target="measure-startup-time";
+                shift 1 ;;
+
+            --) shift ;
+                break ;;
+
+            *) echo "Internal error: ${1}!" ;
+                argument_failure="yes" ;
+        esac
+    done
+
+    if [ -z "${target}" ] ; then
+        echo "You must specify '--memory-footprint' or '--startup-time'";
+        exit -1;
+    fi;
+
+    if [ -z "${file_count}" ] ; then
+        echo "You must specify the number of configuration files with '--file-count'";
+        exit -1;
+    fi;
+
+    if ! which lmsbw >/dev/null ; then
+        echo "lmsbw is not in your path.  "
+        echo "Please put it in your path and reexecute this script."
+        exit -1;
+    fi;
+
+    this_dir=$(readlink -f $(dirname "${0}"));
+
+    echo "Creating configuration files";
+    local configs="${this_dir}/configs";
+    if [ -e "${configs}" ] ; then
+        rm -rf "${configs}";
+    fi;
+    mkdir --parents "${configs}";
+    for i in $(seq 0 ${file_count}) ; do
+        create_component_config "${configs}" "${i}";
+    done;
+
+    create_configuration  "${configs}";
+
+    echo "Invoking lmsbw";
+    lmsbw                                                       \
+        --configuration $(dirname ${0})/configs/startup-time.mk \
+        --build-root /tmp/lmsbw-measure-startup-time            \
+        --parallel 1                                            \
+        --time                                                  \
+        ${target}
+}
+
+main ${@};
