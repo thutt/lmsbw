@@ -44,6 +44,14 @@ prerequisite-report::
 
 dependent-report::
 
+measure-startup-time:
+	$(ATSIGN) $(MESSAGE) "Loaded $(words $(LMSBW_components)) configuration files"
+
+
+measure-memory-footprint:
+	$(ATSIGN) $(MESSAGE) "Measure memory footprint.  Press Ctrl-C to quit."
+	@while true ; do true; done;
+
 .PHONY:		all install clean report prerequisite-report dependent-report
 
 $(eval $(call declare_target,all,,Perform a full build))
@@ -54,6 +62,8 @@ $(eval $(call declare_target,clean,[.<component>],Clean build output for compone
 $(eval $(call declare_target,log,[.<component>],Display component build logs))
 $(eval $(call declare_target,prerequisite-report,,Show declared component prerequisites))
 $(eval $(call declare_target,dependent-report,,Show computed component dependencies))
+$(eval $(call declare_target,measure-startup-time,,Measure time to load configruation files))
+$(eval $(call declare_target,measure-memory-footprint,,Measure amount of memory needed))
 
 include $(LMSBW_DIR)/wrapper/engine/component-last-chance-rules.mk
 
