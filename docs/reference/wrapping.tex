@@ -15,9 +15,72 @@
 %
 \chapter{Wrapping Your Build}\label{chap:wrapping}
 
+Determining the best way to wrap your project's build is important to
+the maintainability and speed of the build process as a whole.  This
+chapter will guide you with some suggestions for setting up and
+creating your component configuration files.
+
 \section{Configuration Techniques}
+
+\lmsbw provides its greatest benefits when wrapping large projects
+consisting of many different sub-projects and possibly many different
+product configurations.  The uncertainty that aries about component
+configuration from situations like these is understandable; \lmsbw is
+a new tool for you.
+
+Here are a few tenets to help guide you to the right configuration
+choices:
+
+\begin{itemize}
+  \item \makefile maintenance is for the \emph{development} teams.
+
+    Since \lmsbw strictly defines an interface -- an API -- for
+    \makefile implementation, it easily follows that the developers
+    responsible for a sub-project should be responsible for writing a
+    conformant \makefile for that sub-project.  After all, they are
+    the ones familiar with the interrelationships between the source
+    modules.
+
+    If needed, the \bni team can become involved to help with
+    performance or conformance issues.
+
+  \item Overall build \emph{process} maintainance is for the
+    \emph{\bni} team.
+
+    The \bni team is not responsible for sub-project \makefile
+    maintenance, but they are responsible for the overall
+    infrastructure of the build process as a whole.
+
+    They will be responsible for the automated build machines,
+    delivery of build output, and to a large part, the overall
+    structure and maintenance of the output produced by the build
+    process.
+
+  \item High-level product configuration is for \emph{product
+    management}.
+
+    The product configuration -- which sub-projects are included into
+    each SKU produced by your company -- is a task owned by the
+    product management team.  Their input for configuration of \lmsbw
+    is if your project is big enough to have multiple SKUs.
+
+  \item Build process configuration is an amalgam
+
+    The configuration of the build process requires the cooperation of
+    the product management team (to determine what is included and
+    what is excluded), the development team (to create \& maintain a
+    \makefile for their sub-project) and the \bni team (to create the
+    actual configuration that \lmsbw will use).
+\end{itemize}
+
+Cooperation is important in all of this; no one likes change,
+especially when the final results are nebulous until everything is
+finalized and working.
+
 \subsection{Symlinks}
 \subsection{Excluding}
+
+\section{Converting a Build}
 
 \section{Source Components}
 \subsection{\texttt{declare\_source\_component}}
