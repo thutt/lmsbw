@@ -30,7 +30,7 @@ __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind):
 	@$(ECHO) "$(1)|  reason    : $(call lmsbw_gcf,$(1),reason)";
 	@$(ECHO) "$(1)|  source    : $(call lmsbw_gcf,$(1),source-directory)";
 	@$(ECHO) "$(1)|  prereq    : $(call lmsbw_gcf,$(1),prerequisite)";
-	@$(ECHO) "$(1)|  direct dep: $(call lmsbw_gcf,$(1),direct-dependents)";
+	@$(ECHO) "$(1)|  direct dep: $$(call lmsbw_direct_dependents,$(1))";
 	@$(ECHO) "$(1)|  config    : $(call lmsbw_gcf,$(1),configuration-file)";
 	@$(ECHO) "$(1)|  toolchain : $(call lmsbw_gcf,$(1),toolchain)";
 	@$(ECHO) "$(1)|  api       : $(call lmsbw_gcf,$(1),api)";
@@ -68,7 +68,7 @@ define generate_component_dependent_report
 dependent-report::	dependent.$(strip $(1))
 
 dependent.$(strip $(1)):
-	$(ATSIGN)$(ECHO) "$(1): $(call lmsbw_gcf,$(1),direct-dependents)";
+	$(ATSIGN)$(ECHO) "$(1): $$(call lmsbw_direct_dependents,$(1))";
 
 endef
 
