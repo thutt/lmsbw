@@ -28,12 +28,11 @@ The \lmsbw script resides in the \texttt{scripts} directory of the
 \lmsbw source tree.
 
 Although it is not required, the most convenient way to use \lmsbw is
-to add the \texttt{scripts} directory to your \texttt{PATH}
-environment variable.
+to add the \texttt{scripts} directory to your \texttt{PATH}.
 
 \section{\lmsbw script}
 
-The \lmsbw script is a fancy wrapper for \make.  It ensures that the
+The \lmsbw script is a wrapper for \make.  It ensures that the
 preconditions for using the \lmsbw system are met, and once they are
 guaranteed \make is executed with the proper set of environment,
 command line arguments and targets.
@@ -104,7 +103,8 @@ This value for this argument is directly used with the \gnumake
 \end{verbatim}
 
 
-\subsection{\texttt{--tarball-repository}}
+\subsection{\texttt{--tarball-repository}}\texttt{Remove this
+  documentation, and remove references in the source.}
 
 This option, which is not required, allows you to specify the
 directory where downloaded tarballs should be stored.
@@ -126,6 +126,9 @@ This option causes \lmsbw to be much more verbose while running.
 \begin{verbatim}
 --verbose
 \end{verbatim}
+
+This option causes every command executed by the main \makefile to be
+printed to the console.
 
 \subsection{\texttt{--time}}
 
@@ -154,7 +157,7 @@ executed in its entirety.
 The \texttt{targets} target causes \lmsbw to produce a report of all
 top-level targets that are accessible to the user.
 
-The report will have this format:
+The \texttt{target} report will have this format:
 
 \begin{verbatim}
                       all : Perform a full build
@@ -172,7 +175,8 @@ be executed on a specific component of the wrapped build.  To
 determine which components exist in the build, see
 \xref{lmsbw:target:components}.
 
-\subsubsection{\texttt{report}}
+\subsubsection{\texttt{report}}\texttt{This report is totally
+  obsolete.  Update.}
 
 The \texttt{report} target will produce a report about each wrapped
 component in the build.  The report, for each component, will look
