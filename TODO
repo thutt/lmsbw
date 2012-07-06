@@ -52,3 +52,5 @@
  o Document that subordinate Makefiles must not refer to absolute pathnames.
    This will violate the rule that the source is inviolable, and messes up
    all checking of source directory changes using mtree.
+ o Document 'measure-startup-time' target.  Useful for measuring startup time.
+ o Remove 'direct-dependents' component key.  It is calculated on-the-fly, as needed.
