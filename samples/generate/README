@@ -85,6 +85,9 @@ o Use LMSBW
 
     On the test machine, this takes 0.80 seconds.
 
+    (Running 'mtree' on the source directories, with no parallelism
+    takes 0.70 seconds.)
+
   + Perform an incremental build
 
       touch /tmp/generate/d15/d12/d3/s50.c
