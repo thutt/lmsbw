@@ -64,7 +64,7 @@ choices:
     product management team.  Their input for configuration of \lmsbw
     is if your project is big enough to have multiple SKUs.
 
-  \item Build process configuration is an amalgam
+  \item Build process configuration is an amalgam of roles
 
     The configuration of the build process requires the cooperation of
     the product management team (to determine what is included and
@@ -77,8 +77,34 @@ Cooperation is important in all of this; no one likes change,
 especially when the final results are nebulous until everything is
 finalized and working.
 
-\subsection{Symlinks}
-\subsection{Excluding}
+\subsection{Configuration File Directory}
+
+The basic recommendation for \lmsbw component configuration is to
+place all your configuration files into the same directory.  This
+centralizes all the work and makes global changes easier.  Your
+\texttt{load-configuration} function can simply load all the component
+configuration files from the common directory.
+
+\subsection{Symlink to Configuration File}
+
+With a more complicated product structure, perhaps one with multiple
+SKUs and different componetns in each SKU, you can still keep all your
+configuration files in a single directory, but on top of that you will
+have \emph{configuration} directories for each distinct product.
+These \emph{configuration} directories will be populated with relative
+symlinks to the original configuration file; see the
+\texttt{lite-consumer-pro} sample for an example of how this is
+performed.\todo{What if the OS does not support symlinks?}
+
+\subsection{Conditional Declaration}
+
+If your operating system does not support symbolic links, you can
+export an environment variable from your shell, include \emph{all}
+your component configuration files, and use the facilities of \gnumake
+to conditionally include only the desired components.
+
+See the \texttt{sports} sample for an example of this configuration
+strategy.
 
 \section{Converting a Build}
 
