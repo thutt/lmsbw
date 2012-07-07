@@ -21,7 +21,7 @@
 
 # lmsbw_generate_component_last_chance_rule <verb>, <optional message>
 #
-#   This function generates a last change rule for each 'verb'
+#   This function generates a last chance rule for each 'verb'
 #   (install, report, etc.) that should be executable on a component.
 #
 #   If LMSBW has not generated rules for such 'verbs', it means one of 
@@ -60,7 +60,7 @@ $(1).%:
 endef
 
 
-# The following last change rules are likely internal errors.  They
+# The following last chance rules are likely internal errors.  They
 # should only be encountered if LMSBW does not generate the target
 # rules for the component.  This is most likely to occur if a new
 # component 'kind' is created.
