@@ -54,3 +54,5 @@
    all checking of source directory changes using mtree.
  o Document 'measure-startup-time' target.  Useful for measuring startup time.
  o Remove 'direct-dependents' component key.  It is calculated on-the-fly, as needed.
+ o Sample for Linux kernel.
+ o GMSL should be passed to each component Makefile.  This should be documented.
