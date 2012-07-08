@@ -146,13 +146,12 @@ Although \lmsbw is extremely fast, it is sometimes desirable to have
 it operate on only one component, or to provide further information
 about the wrapped build.
 
-\subsection{Supported Targets}
-\subsubsection{\texttt{all}}\label{lmsbw:target:all}
+\subsection{\texttt{all}}\label{lmsbw:target:all}
 
 This is the default target, and it will cause your wrapped build to be
 executed in its entirety.
 
-\subsubsection{\texttt{targets}}
+\subsection{\texttt{targets}}
 
 The \texttt{targets} target causes \lmsbw to produce a report of all
 top-level targets that are accessible to the user.
@@ -175,7 +174,7 @@ be executed on a specific component of the wrapped build.  To
 determine which components exist in the build, see
 \xref{lmsbw:target:components}.
 
-\subsubsection{\texttt{report}}
+\subsection{\texttt{report}}
 
 The \texttt{report} target will produce a report about each wrapped
 component in the build.  The report, for each component, will look
@@ -204,17 +203,17 @@ hello-world|  build     : build
 \end{verbatim}
 \end{footnotesize}
 
-\subsubsection{\texttt{install}}
+\subsection{\texttt{install}}
 
 The \texttt{install} target is used by the default target
 (\xref{lmsbw:target:all}) to build and install each component.
 
-\subsubsection{\texttt{clean}}
+\subsection{\texttt{clean}}
 
 The \texttt{clean} target is used to clean out the entire build
 directory, or the build directory of a specific compoment.
 
-\subsubsection{\texttt{log}}
+\subsection{\texttt{log}}
 
 The \texttt{log} target is used to display all the build logs, or the
 build log of a specific component, to the console.
@@ -227,7 +226,7 @@ on the console, and then you can use the \texttt{log} target to view
 the actual output of building that component.
 
 
-\subsubsection{\texttt{prerequisite-report}}
+\subsection{\texttt{prerequisite-report}}
 
 The \texttt{prerequisite-report} target will produce a report showing
 each component and its declared prerequisites.
@@ -239,7 +238,7 @@ goodbye-world: hello-world
 hello-world:
 \end{verbatim}
 
-\subsubsection{\texttt{dependent-report}}
+\subsection{\texttt{dependent-report}}
 
 The \texttt{dependent-report} target will produce a report showing
 each component and the components which directly depend on it.
