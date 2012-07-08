@@ -19,9 +19,9 @@
  o Document that if no toolchain is set, the host toolchain is used.
  o Add lmsbw_ prefix to functions
  o document declare_source_component
- o document declare_component_install_target
- o document declare_component_build_target
- o document declare_component_api
+ o document component_attribute_install_target
+ o document component_attribute_build_target
+ o document component_attribute_api
  o document each file of LMSBW_<component>
  o Document all errors
  o Need document on adding a new 'kind' of component.
@@ -63,6 +63,4 @@
    you can force different install directories by having different
    configuration files.
  o Document all lmsbw verbs.
- o Rename component attribute functions.  Doc, too. For example:
-   declare_component_build_target -> component_attribute_build_target.
  o document how tools that are part of the build are found & run

@@ -303,13 +303,13 @@ component to have the proper dependencies to correctly utilize the new
 binary API.
 
 This key is normally set through
-\texttt{declare\_component\_binary\_api} API.
+\texttt{component\_attribute\_api} API.
 
 \subsubsection{\lmsbwcomponentfield{<component>}{build-target}}
 
 This key holds the value specified with the
-\texttt{declare\_component\_build\_target}
-(\xref{api:declare-component-build-target}) API.
+\texttt{component\_attribute\_build\_target}
+(\xref{api:component-attribute-build-target}) API.
 
 It is used to specify the target to execute inside the component's
 build system to build, but not install, the component.
@@ -352,7 +352,7 @@ This value should not be used by a client of \lmsbw.
 
 \subsubsection{\lmsbwcomponentfield{<component>}{install-target}}
 This key holds the value specified with the
-\texttt{declare\_component\_install\_target}
+\texttt{component\_attribute\_install\_target}
 (\xref{api:declare-component-install-target}) API.
 
 It is used to specify the target to execute inside the component's
@@ -384,8 +384,8 @@ component to \emph{never} allow parallel builds; it directly sets the
 \gnumake parallel option to \texttt{-j 1}.
 
 This is set through the
-\texttt{declare\_component\_no\_parallel\_build}
-(\xref{api:declare-component-no-parallel-build}) API.
+\texttt{component\_attribute\_no\_parallel\_build}
+(\xref{api:component-attribute-no-parallel-build}) API.
 
 
 \subsubsection{\lmsbwcomponentfield{<component>}{prerequisite}}
@@ -437,8 +437,8 @@ rebuild the sources affected by the API change.
 \lmsbw will print an error and the command which will cause \lmsbw to
 force a full rebuild of the dependent components.
 
-This key is normally set through
-\texttt{declare\_component\_source\_api} API.
+This key is normally set through \texttt{component\_attribute\_api}
+API.
 
 
 \subsubsection{\lmsbwcomponentfield{<component>}{source-directory}}
