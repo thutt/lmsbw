@@ -14,3 +14,77 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %
 \chapter{Overriding Default Rules via Configuration} \label{chap:overriding}
+
+\subsection{Overriding Component \makefile
+  Invocation}\label{wrap:override-target}
+
+In some cases, you'll have a component \makefile that cannot be edited
+for various reasons (office politics, code maintained elsewhere,
+etc.), and it doesn't conform to the \lmsbw requirements.
+
+In practice, this will be an issue with the \texttt{install} target
+much more often than the \texttt{build} target, but \lmsbw provides a
+facility for you to override both targets without modifying the final
+\texttt{makefile}.
+
+This override technique works because of the two-step nature of
+\lmsbw.  \lmsbw proper reads configuration files, and generates \make
+rules, and then standard \make rule processing takes over.  When it is
+determined that a component needs to be built, \lmsbw proper invokes a
+second \makefile to trampoline into the actual component \makefile.
+This trampoline deals with setting up the toolchain, and handles the
+building \& installtion of the component through its own set of \make
+rules.  The \make rules in the tramoline \makefile are where the
+actual component build process is invoked -- and it is these rules
+that you can override in your component configuration file.
+
+You can see the \texttt{sports} sample for an example of how this
+works.
+
+\subsubsection{build}\label{wrap:override-target-build}
+
+If you add a \makefile target to your component configuration file
+with the following name:
+\texttt{component.build.}\texttt{<component-name>}, then it will be
+used by the trampoline \makefile to build your component.
+
+If your component configuration file does \emph{not} have this target,
+the trampoline \makefile will invoke the compnent \makefile to create
+the \texttt{build} target.
+
+If you provide this target, it will be your responsibility to invoke
+the component \makefile to build the component.
+
+For example, if your component was named \texttt{alpha}, you could do
+something like this:
+
+\begin{verbatim}
+component.build.alpha:
+        echo "Overriding trampoline and not building alpha";
+
+\end{verbatim}
+
+Overriding this rule is seldom needed, and should not be done unless
+there is an absolute need.
+
+\subsubsection{install}\label{wrap:override-target-install}
+
+If you add a \makefile target to your component configuration file
+with the following name:
+\texttt{component.install.}\texttt{<component-name>}, then it will be
+used by the trampoline \makefile to install your component.
+
+This can be useful if the component build process cannot be modified
+and it does not install public build output.
+
+For example, a component named \texttt{alpha} might have the install
+rule overriden with something like this:
+
+\begin{verbatim}
+component.install.alpha:
+        $(MKDIR) --parents $(DESTDIR)/usr/include/alpha
+        $(CP) --recursive \
+             $(LMSBW_C_BUILD_DIRECTORY)/include/* \
+             $(DESTDIR)/usr/include/alpha
+\end{verbatim}
+

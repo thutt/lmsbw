@@ -175,8 +175,7 @@ be executed on a specific component of the wrapped build.  To
 determine which components exist in the build, see
 \xref{lmsbw:target:components}.
 
-\subsubsection{\texttt{report}}\texttt{This report is totally
-  obsolete.  Update.}
+\subsubsection{\texttt{report}}
 
 The \texttt{report} target will produce a report about each wrapped
 component in the build.  The report, for each component, will look
@@ -184,24 +183,21 @@ something like this:
 
 \begin{footnotesize}
 \begin{verbatim}
-hello-world|Module      : hello-world-module
+hello-world|Component   : hello-world
+hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
 hello-world|  desc      : Hello World example
-hello-world|  component : hello-world
 hello-world|  kind      : source
 hello-world|  reason    : image
 hello-world|  source    : /lms/build-process/samples/hello-world/src
 hello-world|  prereq    :
 hello-world|  direct dep: goodbye-world
 hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
-hello-world|Build Root  : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2
-hello-world|  build     : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
-hello-world|  destdir   : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
-hello-world|mtree       :
-hello-world|  src mtree : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/source.mtree
-hello-world|  api mtree : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/api.mtree
-hello-world|Install     : /tmp/nb/target/install/f3b792a41a713fcdff0f70603c4d36b4
-hello-world|  src api   : /usr/include/hello-world
-hello-world|  bin api   :
+hello-world|  toolchain :
+hello-world|  api       : /usr/include/hello-world
+hello-world|Install Root: /tmp/hello/target/install/35f228d9be0694a19de8666fbcdbd80d
+hello-world|Build Root  : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2
+hello-world|  build     : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
+hello-world|  destdir   : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
 hello-world|Targets     :
 hello-world|  install   : install
 hello-world|  build     : build

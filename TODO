@@ -62,3 +62,7 @@
    components, only with compile-time differences in the components,
    you can force different install directories by having different
    configuration files.
+ o Document all lmsbw verbs.
+ o Rename component attribute functions.  Doc, too. For example:
+   declare_component_build_target -> component_attribute_build_target.
+ o document how tools that are part of the build are found & run
