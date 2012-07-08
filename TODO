@@ -56,3 +56,9 @@
  o Remove 'direct-dependents' component key.  It is calculated on-the-fly, as needed.
  o Sample for Linux kernel.
  o GMSL should be passed to each component Makefile.  This should be documented.
+ o Document that the install directory for a project uses the full
+   pathname of the configuration file in the hash.  If you have
+   projects with different SKUs, but the SKUs have exactly the same
+   components, only with compile-time differences in the components,
+   you can force different install directories by having different
+   configuration files.
