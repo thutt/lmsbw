@@ -15,12 +15,90 @@
 %
 \chapter{Overriding Default Rules via Configuration} \label{chap:overriding}
 
-\subsection{Overriding Component \makefile
-  Invocation}\label{wrap:override-target}
-
 In some cases, you'll have a component \makefile that cannot be edited
 for various reasons (office politics, code maintained elsewhere,
 etc.), and it doesn't conform to the \lmsbw requirements.
+
+When \lmsbw's default for producing a component is insufficient or
+when you cannot modify the component's build process, it is possible
+to override the built-in method for building \& installing.  \lmsbw
+provides the ability to alter the behavior of both the \makefile
+target for building and the target for installing the component by
+adding particularly named targets to the component's configuration
+file.
+
+\todo{Note that it is possible to override \emph{other} components,
+  too.  But, never do that!}
+
+This chapter describes the process needed to override these apsects of
+building a component.
+
+\todo{Need a sample build which does both overrides}
+
+\section{Overriding Build}
+
+In normal practice, it should be exceedingly rare for a\todo{Need to
+  put actual makefile invocation into a function which can be used.}
+component's actual build process to be overriding; even though it
+should be rare, \lmsbw still provides a method of doing just that.
+Here are a few of the reasons why you might want to override the build
+phase of a component:
+
+\begin{itemize}
+\item Test \bni Infrastructure by not building a component
+
+  How does your \bni system function if a required component is not
+  actually built?
+
+  Will it fail during \emph{install}, or while integrating into a
+  production deliverable?  Will it fail with an easy-to-diagnose
+  error?
+
+  The simle test would be to add a build override target, and then do
+  nothing.
+
+\item Test \bni Infrastructure by corrupting component build
+
+  Will your \bni system recognize if a build has been corrupted?
+  Perhaps only some files are built, or maybe the executables are
+  corrupt?
+
+  You could override the build target, build the entire component
+  (using the \lmsbw infrastructure) and then corrupt the build output
+  in-situ.
+
+\item Apply a patch in-situ
+
+  The component's source tree cannot be changed in the source tree,
+  but you can apply a patch\todo{Applying patches should be part of
+    \lmsbw} to the sources after they have been copied to the build
+  directory.
+
+  To do this, you'd override the build rule to apply the patches, then
+  use the \lmsbw infrastructure to invoke the component's build
+  process.
+
+\item Component may not need a build; only install static files
+
+  Perhaps the component doesn't have a build; maybe only static files
+  are installed.  In this case, you could override the build to do
+  nothing, and save a minute amount of time.
+
+\item Other unknown reasons
+\end{itemize}
+
+\section{Overriding Install}
+
+\begin{itemize}
+\item Test \bni Infrastructure by not installing component
+\item Component \makefile has no install rule, and cannot be modified
+\item Component \makefile does not use \destdir
+\item Component does not install all needed files
+\item Other unknown reasons
+\end{itemize}
+
+\subsection{Overriding Component \makefile
+  Invocation}\label{wrap:override-target}
 
 In practice, this will be an issue with the \texttt{install} target
 much more often than the \texttt{build} target, but \lmsbw provides a

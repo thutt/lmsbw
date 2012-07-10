@@ -20,12 +20,12 @@ of \emph{Recursive Make Considered Harmful}
 (\texttt{http://aegis.sourceforge.net/auug97.pdf}), but in real-world
 situations, it's still dominant because \make provides little support
 towards actually creating a maintainable non-recursive build system.
-The biggest stumbling block to implementing a non-recursive using
-\make is the complete lack of scoping; symbol scoping is accomplished by
-traditional recursive use of \make, and is all but non-existent in a
-non-recursive implementation.  This is creates a maintenance issue
-because the developers have to be very careful to end up with no
-macro, target or implicit rule collisions.
+The biggest stumbling block to implementing a non-recursive build
+system using \make is the complete lack of scoping; symbol scoping is
+accomplished by traditional recursive use of \make, and is all but
+non-existent in a non-recursive implementation.  This creates a
+maintenance issue because the developers have to be very careful to
+end up with no macro, target or implicit rule collisions.
 
 Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
@@ -37,9 +37,9 @@ performance improvements by only recursing when something in the
 source tree has changed and without requiring you to make widespread
 changes to your existing build process.
 
-In short, if your \nullbuild takes more time than the \mtree utility
-takes to execute on all your source directories, then you can benefit
-from \lmsbw.
+In short, if your \nullbuild takes considerably more time than the
+\mtree utility takes to execute on all your source directories, then
+you can benefit from \lmsbw.
 
 The following tenets guided the implementation of \lmsbw:
 
@@ -65,7 +65,7 @@ The following tenets guided the implementation of \lmsbw:
   Disk space is free relative to the cost of a developer.  The amount
   of time wasted when developers have to \texttt{make clean} because
   tool options have changed is a unnecessary, particularly if changing
-  those options are to make a \emph{debug} buid, or to perform some
+  those options are to make a \emph{debug} build, or to perform some
   special one-off test.
 
   \lmsbw saves time by compromising on space.  Because developers
@@ -91,7 +91,7 @@ The following tenets guided the implementation of \lmsbw:
 
   Partially due to the unknown behavior of wrapped builds, \lmsbw has
   been designed to consider the source directory tree to be immutable.
-  Further, to reduce the complexity of the implementation of LMSBW as
+  Further, to reduce the complexity of the implementation of \lmsbw as
   well as to guarantee correctness, \lmsbw has been written to clone
   the original source directory into the build directory.
 
@@ -106,9 +106,9 @@ The following tenets guided the implementation of \lmsbw:
   \lmsbw has been designed to make it easy to wrap an existing build
   process, and to access portions of the wrapped build.  In concept,
   you will declare each one of your \emph{components} -- usually a
-  source directory containing a \texttt{Makefile}.  Declaration
-  includes information about the directory and options for building
-  it, including which other component are prerequisites.
+  source directory containing a \makefile.  Declaration includes
+  information about the directory and options for building it,
+  including which other component are prerequisites.
 
   \lmsbw compiles this information and generates, on-the-fly, a set of
   \make rules and targets which allow your wrapped build process to be
@@ -195,6 +195,72 @@ will take.  Developers performing incremental builds will greatly
 benefit by never recursively building source directories that have not
 changed.
 
+\section{How \lmsbw Works}
+
+\lmsbw is not a system which will actually build your software.
+Rather, it is a wrapper for your own build system that, in most cases,
+will improve the performance of your build system.  You're probably
+wondering how adding a layer on top of an existing build system will
+improve the original -- the simple answer is that many build processes
+perform altogether too much work when no work needs to be performed,
+and \lmsbw cuts out this unnecessary work by never invoking the build
+process when no work needs to be done.
+
+Let's examine the \lmsbw process:
+
+\begin{description}
+\item Define Build Process API
+
+  To facilitate rebuilding dependent components when necessary --
+  especially when the exported API of a prerequisite component changes
+  -- \lmsbw defines an API that wrapped builds must follow.  This API
+  requires that each component install its public build product into a
+  \texttt{DESTDIR} directory.
+
+\item Declare Components
+
+  \lmsbw always automatically generates rules that are used by \make
+  to build your product, but to be able to generate these rules, you
+  must declare every component that is in your project.
+
+  Once declared, \lmsbw takes control of all aspects of each
+  component's build: the build directory, the \texttt{DESTDIR}, the
+  install directory, and the toolchain to use.  When your component's
+  build process is invoked, it only needs to focus on producing a
+  build for itself, and, when requested, installing it into the
+  \texttt{DESTDIR} directory.
+
+\item Recurse only when needed
+
+  \lmsbw only maintains the inter-component dependencies that are
+  explicitly defined by virtue of the way that the set of components
+  included in your project have been declared.
+
+  The general determination for building components is this:
+
+  \begin{itemize}
+  \item If the component is not built
+  \item If \emph{any} file has been changed in the source tree
+  \item If \emph{any} file in a prerequisite's declared API has
+    changed
+  \item If the component's configuration file has changed
+  \end{itemize}
+
+  Any of the above conditions being true causes \lmsbw to recurse into
+  the component's build process.  Conversely, if \emph{all} of the
+  conditions are false, then \lmsbw will \emph{not} recurse into the
+  component's build process; not recursing for components that are
+  already built saves an amount of time that is proportional to the
+  number and complexity of \make rules present.
+
+\item Share Build Output
+
+  If your project contains different SKUs, and those SKUs share
+  components, \lmsbw is able to share the build output from one SKU
+  with another, if the components are compiled exactly the same.
+
+\end{description}
+
 \section{Steps To Wrap Your Build}
 
 The work needed to wrap your build with \lmsbw is directly
@@ -248,14 +314,14 @@ of data:
 \item \lmsbwcomponent{<component-name>}
 
   Each component loaded is assigned a \gmsl associative array to
-  hold all the data relevent to building the software.
+  hold all the data relevant to building the software.
 
   The keys that are defined for the component's associative array are
   dependent upon the \emph{type} of the component.  For example, a
   \emph{source} component will define a set of keys which would
-  include information such as the source directorry.  A
+  include information such as the source directory.  A
   \emph{download} component would have different keys, such as the
-  \texttt{URL} from which the compoenent can be downloaded.
+  \texttt{URL} from which the component can be downloaded.
 
   This flexibility allows new component types to be created without
   affecting existing component types.
@@ -290,14 +356,14 @@ During the execution of the build process, \lmsbw recursively runs
 three different \makefile processes:
 
 \begin{itemize}
-\item \lmsbw Makefile
+\item \lmsbw \makefile
 
   The first is the main \lmsbw \makefile which handles all the
-  configuration and interdependencies between high-level components.
+  configuration and inter-dependencies between high-level components.
 
-\item Component Wrapper \makefile
+\item Component Trampoline \makefile
 
-  The second is a subserviant \makefile, yet still part of \lmsbw,
+  The second is a subservient \makefile, yet still part of \lmsbw,
   which performs component-specific configuration such as configuring
   standard \makefile macros like \texttt{CC} and \texttt{LD} to
   correspond to the toolchain which will be used to actually build the
