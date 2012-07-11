@@ -14,6 +14,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# This configuration file creates a component called
+# 'override-and-build'.  It provides an override for the default
+# 'build' target, but the override has the exact same prerequisites &
+# commands as the default target that was overridden.
+#
+
 $(call declare_source_component,					\
        override-and-build,						\
        override and build example,					\

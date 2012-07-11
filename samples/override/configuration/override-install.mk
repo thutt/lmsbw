@@ -14,6 +14,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# This configuration file creates a component called
+# 'override-install'.
+#
+# It overrides the default 'install' target with one dependent upon
+# the default 'build' target.  This causes the normal build to be
+# invoked, and this build will create a C-based executable program.
+# However, since the install target has been overridden, and it
+# specifically does not install the executable.
+#
+# You can see that this overridden rule is executed by executing the
+# verb 'log.override-install'.
+#
+
 $(call declare_source_component,					\
        override-install,						\
        override install example,					\
