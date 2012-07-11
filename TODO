@@ -71,3 +71,10 @@
  o Document that overriding the default rules does not impose any
    dependencies.  You need to provide depdnecies to get a sync done on
    the source.
+ o One could imagine an extension to the component system.  A plugin
+   for subdirectory makefiles which would has CFLAGS, the relative
+   pathname and the contents of the source file.  The hash would be
+   sent to an official build server asking if an object file for that
+   configuration exists on the build server.  If it does, the object
+   file is returned.  If it does not exist, then it should be built
+   locally.
