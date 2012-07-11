@@ -40,6 +40,8 @@ report::
 
 components::
 
+destdir::
+
 prerequisite-report::
 
 dependent-report::
@@ -60,6 +62,7 @@ $(eval $(call declare_target,report,[.<component>],Generate component reports))
 $(eval $(call declare_target,install,[.<component>],Build & install components))
 $(eval $(call declare_target,clean,[.<component>],Clean build output for components))
 $(eval $(call declare_target,log,[.<component>],Display component build logs))
+$(eval $(call declare_target,destdir,[.<component>],Shows the intermediate install directory))
 $(eval $(call declare_target,prerequisite-report,,Show declared component prerequisites))
 $(eval $(call declare_target,dependent-report,,Show computed component dependencies))
 $(eval $(call declare_target,measure-startup-time,,Measure time to load configruation files))

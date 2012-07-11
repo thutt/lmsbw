@@ -59,5 +59,6 @@ $(call generate_component_report,$(1))
 $(call generate_component_build_log,$(1))
 $(call generate_component_prerequisite_report,$(1))
 $(call generate_component_dependent_report,$(1))
+$(call generate_component_destdir,$(1))
 endef
 
