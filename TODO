@@ -78,3 +78,5 @@
    configuration exists on the build server.  If it does, the object
    file is returned.  If it does not exist, then it should be built
    locally.
+ o Does 'clean.component' delete the install directory?  It should not.
+ o Besides 'destdir.component', add 'install', build', 
