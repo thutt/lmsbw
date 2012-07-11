@@ -13,7 +13,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %
-\chapter{Overriding Default Rules via Configuration} \label{chap:overriding}
+\chapter{Overriding Default Rules} \label{chap:overriding}
 
 In some cases, you'll have a component \makefile that cannot be edited
 for various reasons (office politics, code maintained elsewhere,
@@ -99,6 +99,19 @@ component.build.alpha:
         echo "Overriding trampoline and not building alpha";
 \end{verbatim}
 
+If your component configuration file does \emph{not} have this
+specific target, then the default build rules of \lmsbw will take
+effect, and your component's \makefile will be invoked to build the
+component.
+
+If you ultimately want to execute the component's actual build
+process, you can use the same code of \lmsbw proper to instigate this
+by executing:
+
+\begin{verbatim}
+$(call default_$(LMSBW_C_KIND)_component_build)
+\end{verbatim}
+
 
 \section{Overriding Install}
 
@@ -110,66 +123,14 @@ component.build.alpha:
 \item Other unknown reasons
 \end{itemize}
 
-\subsection{Overriding Component \makefile
-  Invocation}\label{wrap:override-target}
 
-In practice, this will be an issue with the \texttt{install} target
-much more often than the \texttt{build} target, but \lmsbw provides a
-facility for you to override both targets without modifying the final
-\texttt{makefile}.
+Once you have determined that you need to override the automatic rules
+to perform a component install, the actual work is quite trivial; all
+you need to do is add a \makefile target to your component
+configuration file, and supply the new commands to associated with the
+target.  The name of the target is based on the component name; if the
+component name is \texttt{alpha}, you would do the following:
 
-This override technique works because of the two-step nature of
-\lmsbw.  \lmsbw proper reads configuration files, and generates \make
-rules, and then standard \make rule processing takes over.  When it is
-determined that a component needs to be built, \lmsbw proper invokes a
-second \makefile to trampoline into the actual component \makefile.
-This trampoline deals with setting up the toolchain, and handles the
-building \& installtion of the component through its own set of \make
-rules.  The \make rules in the tramoline \makefile are where the
-actual component build process is invoked -- and it is these rules
-that you can override in your component configuration file.
-
-You can see the \texttt{sports} sample for an example of how this
-works.
-
-\subsubsection{build}\label{wrap:override-target-build}
-
-If you add a \makefile target to your component configuration file
-with the following name:
-\texttt{component.build.}\texttt{<component-name>}, then it will be
-used by the trampoline \makefile to build your component.
-
-If your component configuration file does \emph{not} have this target,
-the trampoline \makefile will invoke the compnent \makefile to create
-the \texttt{build} target.
-
-If you provide this target, it will be your responsibility to invoke
-the component \makefile to build the component.
-
-For example, if your component was named \texttt{alpha}, you could do
-something like this:
-
-\begin{verbatim}
-component.build.alpha:
-        echo "Overriding trampoline and not building alpha";
-
-\end{verbatim}
-
-Overriding this rule is seldom needed, and should not be done unless
-there is an absolute need.
-
-\subsubsection{install}\label{wrap:override-target-install}
-
-If you add a \makefile target to your component configuration file
-with the following name:
-\texttt{component.install.}\texttt{<component-name>}, then it will be
-used by the trampoline \makefile to install your component.
-
-This can be useful if the component build process cannot be modified
-and it does not install public build output.
-
-For example, a component named \texttt{alpha} might have the install
-rule overriden with something like this:
 
 \begin{verbatim}
 component.install.alpha:
@@ -178,4 +139,18 @@ component.install.alpha:
              $(LMSBW_C_BUILD_DIRECTORY)/include/* \
              $(DESTDIR)/usr/include/alpha
 \end{verbatim}
+
+If your component configuration file does \emph{not} have this
+specific target, then the default install rules of \lmsbw will take
+effect, and your component's \makefile will be invoked to install the
+component.
+
+If you ultimately want to execute the component's actual build
+process, you can use the same code of \lmsbw proper to instigate this
+by executing:
+
+\begin{verbatim}
+$(call default_$(LMSBW_C_KIND)_component_install)
+\end{verbatim}
+
 
