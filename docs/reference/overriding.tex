@@ -87,6 +87,19 @@ phase of a component:
 \item Other unknown reasons
 \end{itemize}
 
+Once you have determined that you need to override the automatic rules
+to perform a component build, the actual work is quite trivial; all
+you need to do is add a \makefile target to your component
+configuration file, and supply the new commands to associated with the
+target.  The name of the target is based on the component name; if the
+component name is \texttt{alpha}, you would do the following:
+
+\begin{verbatim}
+component.build.alpha:
+        echo "Overriding trampoline and not building alpha";
+\end{verbatim}
+
+
 \section{Overriding Install}
 
 \begin{itemize}
