@@ -68,3 +68,6 @@
  o document 'default_source_component_(build|install).  This should be
    invoked using LMSBW_C_KIND to ensure the correct functin is invoked.
    Also document how to make new functions when extending lmsbw.
+ o Document that overriding the default rules does not impose any
+   dependencies.  You need to provide depdnecies to get a sync done on
+   the source.
