@@ -18,27 +18,35 @@
 	default.component.build.$(LMSBW_C_COMPONENT)	\
 	default.component.sync.$(LMSBW_C_COMPONENT)
 
+define default_source_component_build
+$(MAKE)											\
+	-f $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))/Makefile	\
+	-C $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))		\
+	$(LMSBW_C_NO_PARALLEL)								\
+	DESTDIR=$(LMSBW_C_DESTDIR_DIRECTORY)						\
+	LMSBW_C_BUILD_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
+	LMSBW_C_SOURCE_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
+	$(LMSBW_C_BUILD_TARGET)
+endef
+
 default.component.build.$(LMSBW_C_COMPONENT):	sync
 	$(MESSAGE) "[default] Building source component";
-	$(MAKE)											\
-		-f $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))/Makefile	\
-		-C $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))		\
-		$(LMSBW_C_NO_PARALLEL)								\
-		DESTDIR=$(LMSBW_C_DESTDIR_DIRECTORY)						\
-		LMSBW_C_BUILD_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
-		LMSBW_C_SOURCE_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
-		$(LMSBW_C_BUILD_TARGET)
+	$(call default_source_component_build)
+
+define default_source_component_install
+$(MAKE)											\
+	-f $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))/Makefile	\
+	-C $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))		\
+	$(LMSBW_C_NO_PARALLEL)								\
+	DESTDIR=$(LMSBW_C_DESTDIR_DIRECTORY)						\
+	LMSBW_C_BUILD_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
+	LMSBW_C_SOURCE_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
+	$(LMSBW_C_INSTALL_TARGET);
+endef
 
 default.component.install.$(LMSBW_C_COMPONENT):	build
 	$(MESSAGE) "[default] Installing component";
-	$(MAKE)											\
-		-f $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))/Makefile	\
-		-C $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))		\
-		$(LMSBW_C_NO_PARALLEL)								\
-		DESTDIR=$(LMSBW_C_DESTDIR_DIRECTORY)						\
-		LMSBW_C_BUILD_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
-		LMSBW_C_SOURCE_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
-		$(LMSBW_C_INSTALL_TARGET);
+	$(call default_source_component_install)
 
 %::	default.%
 	$(MESSAGE) "$@:";
