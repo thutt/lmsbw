@@ -27,13 +27,23 @@ target for building and the target for installing the component by
 adding particularly named targets to the component's configuration
 file.
 
-\todo{Note that it is possible to override \emph{other} components,
-  too.  But, never do that!}
-
 This chapter describes the process needed to override these apsects of
 building a component.
 
-\todo{Need a sample build which does both overrides}
+\begin{quote}
+  The astute reader will notice, after reading this chapter, that
+  there is seemingly nothing preventing you from overriding the rules
+  for component $\alpha$ in the configuration file for $\beta$.
+
+  In fact, there is soemthing which prevents you from doing that: the
+  configuration file itself.  When component $\alpha$ is built, only
+  the configuration file for $\alpha$ is loaded; no overriding rules
+  for $\alpha$ will be present.
+
+  At the other end of the system, when the $\beta$ component is built,
+  the overriding rules for $\alpha$ are present, but will not be
+  referenced and can cause no damage.
+\end{quote}
 
 \section{Overriding Build}
 
@@ -112,6 +122,13 @@ by executing:
 $(call default_$(LMSBW_C_KIND)_component_build)
 \end{verbatim}
 
+You must be aware when overriding default targets that the override
+does not provide any prerequisites.  If you override the build target,
+for example, without the proper prerequisites, you will not be able to
+use the function shown above to build the component.  See the
+\texttt{override} sample for details, and look at
+\texttt{component.makefile} to see the determine the necessary
+prerequisites.
 
 \section{Overriding Install}
 
@@ -153,4 +170,12 @@ by executing:
 $(call default_$(LMSBW_C_KIND)_component_install)
 \end{verbatim}
 
+
+You must be aware when overriding default targets that the override
+does not provide any prerequisites.  If you override the build target,
+for example, without the proper prerequisites, you will not be able to
+use the function shown above to build the component.  See the
+\texttt{override} sample for details, and look at
+\texttt{component.makefile} to see the determine the necessary
+prerequisites.
 
