@@ -65,3 +65,6 @@
  o document how tools that are part of the build are found & run
  o Need test which verifies that the report system does not change WRT
    regexp parsing of the output.
+ o document 'default_source_component_(build|install).  This should be
+   invoked using LMSBW_C_KIND to ensure the correct functin is invoked.
+   Also document how to make new functions when extending lmsbw.
