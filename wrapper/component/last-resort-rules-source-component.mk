@@ -15,8 +15,7 @@
 #
 
 .PHONY:	default.component.install.$(LMSBW_C_COMPONENT)	\
-	default.component.build.$(LMSBW_C_COMPONENT)	\
-	default.component.sync.$(LMSBW_C_COMPONENT)
+	default.component.build.$(LMSBW_C_COMPONENT)
 
 define default_source_component_build
 $(MAKE)											\
@@ -29,7 +28,7 @@ $(MAKE)											\
 	$(LMSBW_C_BUILD_TARGET)
 endef
 
-default.component.build.$(LMSBW_C_COMPONENT):	sync
+default.component.build.$(LMSBW_C_COMPONENT):	sync.$(LMSBW_C_COMPONENT)
 	$(MESSAGE) "[default] Building source component";
 	$(call default_source_component_build)
 
@@ -44,10 +43,11 @@ $(MAKE)											\
 	$(LMSBW_C_INSTALL_TARGET);
 endef
 
-default.component.install.$(LMSBW_C_COMPONENT):	build
+default.component.install.$(LMSBW_C_COMPONENT):	build.$(LMSBW_C_COMPONENT)
 	$(MESSAGE) "[default] Installing component";
 	$(call default_source_component_install)
 
 %::	default.%
 	$(MESSAGE) "$@:";
 	@$(TRUE)
+

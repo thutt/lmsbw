@@ -13,16 +13,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-.DEFAULT_GOAL := install
+.DEFAULT_GOAL := install.$(LMSBW_C_COMPONENT)
 
 include $(LMSBW_DIR)/wrapper/gmsl/gmsl
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system.mk
 include $(LMSBW_DIR)/wrapper/component/toolchain.mk
 
-.PHONY:	install build configure sync
+.PHONY:	install.$(LMSBW_C_COMPONENT)	\
+	build.$(LMSBW_C_COMPONENT)	\
+	sync.$(LMSBW_C_COMPONENT)
 
 # Sync source code into build directory.
-sync:
+sync.$(LMSBW_C_COMPONENT):
 	$(MESSAGE) "Syncing '$(LMSBW_C_SOURCE_DIRECTORY)' to '$(LMSBW_C_BUILD_DIRECTORY)'";
 	$(RSYNC)							\
 		--compress						\
@@ -37,9 +39,7 @@ sync:
 		--verbose						\
 		$(LMSBW_C_SOURCE_DIRECTORY) $(LMSBW_C_BUILD_DIRECTORY);
 
-configure:	component.configure.$(LMSBW_C_COMPONENT)
-
-build:		component.build.$(LMSBW_C_COMPONENT)
+build.$(LMSBW_C_COMPONENT):	component.build.$(LMSBW_C_COMPONENT)
 
 
 # The install rule is the only rule invoked by the LMSBW.  It then
@@ -60,6 +60,13 @@ build:		component.build.$(LMSBW_C_COMPONENT)
 # higher level, the data will always be copied, even if the component
 # does not actually need to be built & installed into the DESTDIR.
 #
-install:	component.install.$(LMSBW_C_COMPONENT)
+install.$(LMSBW_C_COMPONENT):	component.install.$(LMSBW_C_COMPONENT)
 
 include $(LMSBW_DIR)/wrapper/component/last-resort-rules-$(LMSBW_C_KIND)-component.mk
+
+# Check that the functions which can be used when overriding the
+# default rules actually exist.  This check is intended to catch
+# errors when an extension to LMSBW is being written.
+$(call assert,$(call sne,undefined,$(origin default_$(LMSBW_C_KIND)_component_build)),Default componet 'build' function for '$(LMSBW_C_KIND)' not written)
+$(call assert,$(call sne,undefined,$(origin default_$(LMSBW_C_KIND)_component_install)),Default componet 'install' function for '$(LMSBW_C_KIND)' not written)
+
