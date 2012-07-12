@@ -51,14 +51,10 @@ The following tenets guided the implementation of \lmsbw:
   rebuilds of the software.  The key focus of \lmsbw is to ensure that
   incremental builds are as fast as possible.
 
-  To achieve such speed, \lmsbw never recurses into a subdirectory if
-  nothing in the corresponding source tree has changed.  This is
-  accomplished by using the \mtree utility.  \todo{describe what mtree
-    is.}
-
-  A logical conclusion from this is this: if your current \nullbuild
-  takes more than the total time of executing \mtree on each source
-  directory, you can benefit from \lmsbw.
+  To achieve such speed, in simple terms, \lmsbw will never recurse
+  into a subdirectory unless something in the corresponding source
+  tree has changed.  This is accomplished by using the \mtree utility.
+  \todo{describe what mtree is.}
 
 \item Disk Space
 
@@ -72,22 +68,23 @@ The following tenets guided the implementation of \lmsbw:
   rarely need to know where their intermediate build output resides --
   a report is provided which shows where all files are placed, if you
   \emph{need to know} -- \lmsbw will place build output into
-  directories based on many global options.  For example, \lmsbw can
+  directories based on many global options.  For example, \lmsbw could
   be configured to include the revision control system's branch name
   when determining the build output directories; this means that
   builds, regardless the revision control branch being used, would
-  always be incremental.
+  always be incremental.  This is true because switching to an
+  already-used branch will use the already-created build directories.
 
   Trading off increased disk space with improved developer
   productivity is definitely the right choice if you've got market
-  constraints.\todo{I do not like this paragraph.}
+  constraints.
 
 \item Source Is Immutable
 
   \lmsbw is a general wrapper for build systems, and generally
-  speaking, each build systems perform differently: some write all
+  speaking, each build system perform differently: some write all
   output data into the source directory, while others write to a
-  user-specified directory.
+  user-specified build directory.
 
   Partially due to the unknown behavior of wrapped builds, \lmsbw has
   been designed to consider the source directory tree to be immutable.
@@ -120,7 +117,7 @@ The following tenets guided the implementation of \lmsbw:
   \emph{dailyprocessing} component, you would execute \texttt{lmsbw
     report.dailyprocessing}.
 
-  Similarly, all other \emph{verbs} which are exported by \lmsbw can
+  Similarly, many other \emph{verbs} which are exported by \lmsbw can
   be executed globally or on an individual component.
 
   With the designed-in extensibility of \lmsbw, it's also quite simple
@@ -234,7 +231,10 @@ Let's examine the \lmsbw process:
 
   \lmsbw only maintains the inter-component dependencies that are
   explicitly defined by virtue of the way that the set of components
-  included in your project have been declared.
+  included in your project have been declared.  In order to increase
+  speed and decrease memory use, \lmsbw specifically maintains no
+  dependency information about any source file contained in any
+  component of your project.
 
   The general determination for building components is this:
 
@@ -251,7 +251,7 @@ Let's examine the \lmsbw process:
   conditions are false, then \lmsbw will \emph{not} recurse into the
   component's build process; not recursing for components that are
   already built saves an amount of time that is proportional to the
-  number and complexity of \make rules present.
+  number and complexity of \make rules present in that directory.
 
 \item Share Build Output
 
@@ -260,6 +260,10 @@ Let's examine the \lmsbw process:
   with another, if the components are compiled exactly the same.
 
 \end{description}
+
+\lmsbw is a lightweight system that has been designed for speeding up
+incremental builds.  It handily achieves that goal by performing as
+little work as possible from run-to-run.
 
 \section{Steps To Wrap Your Build}
 
@@ -270,37 +274,34 @@ steps are the same.
 
 \subsection{Configuration File}
 
-You must provide a configuration file to \lmsbw.  The main purpose of
-the configuration file is to create and set up the \lmsbwconfiguration
+You must provide a master configuration file to \lmsbw for your
+project.  The main purpose of the configuration file is to create and
+set up the \lmsbwconfiguration (\xref{variables:lmsbw-configuration})
 variable.
 
-Primarily \lmsbwconfigurationfield{load-configuration-function} is set
-to the name of a Gnu \make function which is responsible for setting
-up the configuration for each component that will be included in your
-build.
+Primarily \lmsbwconfigurationfield{load-configuration-function}
+(\xref{aa:load-configuration-function}) is set to the name of a Gnu
+\make function that is responsible for setting up the configuration
+for each component that will be included in your build.
 
 Other fields of \lmsbwconfiguration can be optionally set to further
 control the behavior of \lmsbw.
 
 \subsection{Loading Component Configuration}
 
-After loading the configuration file, \lmsbw will invoke the
-configuration-loading function.  This function is responsible for
-defining all the components that are to be built.  Generally there is
-a one-to-one correspondence of components to component configuration
-files, which you provide, and the called function will load each of
-these files using \gnumake \texttt{\$(include)}
-directive\todo{Describe this is shown in samples?}.
+After loading the master configuration file, \lmsbw will invoke the
+component configuration-loading function
+(\xref{aa:load-configuration-function}).  This function is responsible
+for defining all the components that are to be included in your
+proejct.  Generally there is a one-to-one correspondence of components
+to component configuration files, which you provide, and the called
+function will load each of these files using \gnumake
+\texttt{\$(include)} directive.
 
-The configuration files are, in fact, \makefile portions which can
-have rules that will override the default behavior of \lmsbw.  For
-example, each component's build system is supposed to have a
-\texttt{install} target, but sometimes its not always possible to
-modify the component's build process.  In this case, as the writer of
-the component configuration file, you can override the normal \lmsbw
-behavior of recursively invoking \texttt{make install} on the
-component by providing your own \emph{install} rule in the component's
-configuration file\todo{Have a sample with override rules}.
+The component configuration files are, in fact, \makefile snippets
+which can have rules that will override the default behavior of \lmsbw
+(\xref{chap:overriding}).  There are sevaral samples included with
+\lmsbw that show how rule overriding can be done.
 
 This configuration-loading function must ultimately produce two sets
 of data:
@@ -308,8 +309,8 @@ of data:
 \begin{itemize}
 \item \lmsbwcomponents
 
-  This is a standard \gnumake variable which is a list of all
-  the component names which are to be built.
+  This is a standard \gnumake variable that is a list of all the
+  component names which are to be built.
 
 \item \lmsbwcomponent{<component-name>}
 
@@ -365,13 +366,13 @@ three different \makefile processes:
 
   The second is a subservient \makefile, yet still part of \lmsbw,
   which performs component-specific configuration such as configuring
-  standard \makefile macros like \texttt{CC} and \texttt{LD} to
+  standard \makefile macros such as \texttt{CC} and \texttt{LD} that
   correspond to the toolchain which will be used to actually build the
   component.
 
   It also ensures that each component's build process is completely
-  disjoint from other components; the settings for \emph{component a}
-  cannot interfere with the settings for \emph{component b}.
+  disjoint from other components; the settings for \emph{component $\alpha$}
+  cannot interfere with the settings for \emph{component $\beta$}.
 
 \item Component \makefile
 
@@ -380,5 +381,6 @@ three different \makefile processes:
 
   This \makefile will be entered at most twice for each build.  The
   first invocation will be to \emph{build} the component, and the
-  second time will be to \emph{install} the component.
+  second time will be to \emph{install} the component into the
+  \destdir.
 \end{itemize}

@@ -24,7 +24,7 @@ This chapter provides a reference for the variables that are used
 internally by \lmsbw, and that provide the low-level interface used to
 declare and define components\todo{glossary:component}.
 
-\section{\lmsbwconfiguration}
+\section{\lmsbwconfiguration}\label{variables:lmsbw-configuration}
 
 This variable is the nexus of all global configuration for a wrapped
 build.  It must be initialized by the file referenced via the \lmsbw
@@ -83,6 +83,7 @@ would facilitate being able to easily, and frequently, build any tagged
 revision present in the version control system.
 
 \subsection{\texttt{load-configuration-function}}\label{aa:load-configuration-function}
+\todo{Fix this label to be variables:}
 
 The value of this key must be the name of a \gnumake function which
 will load the component configuration which make up your project.
