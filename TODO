@@ -80,3 +80,8 @@
    locally.
  o Does 'clean.component' delete the install directory?  It should not.
  o Besides 'destdir.component', add 'install', build', 
+ o How does the rest of the build use 'build'-built components?  There
+   is no facility for knowing where they are installed.  Probably
+   component.makefile needs a 'build install directory' variable.
+ o Disallow declaring toolchain attribute on 'build'-reasoned components?
+ o Sample to wrap linux kernel & a small driver.  Cross compile it.
