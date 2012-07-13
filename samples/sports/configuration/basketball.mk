@@ -21,7 +21,7 @@ $(call declare_source_component,					\
        image,								\
        $(CURRENT_CONFIGURATION_FILE),					\
        $(dir $(CURRENT_CONFIGURATION_FILE))../src)			\
-$(call declare_component_cflags,basketball,-D$(BALL_CLASSIFICATION))	\
+$(call component_attribute_cflags,basketball,-D$(BALL_CLASSIFICATION))	\
 )
 
 component.install.basketball:

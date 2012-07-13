@@ -151,20 +151,3 @@ $(call lmsbw_scf,$(1),install-directory,					\
 $(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),			\
 	$(call component_attribute_install_target,$(strip $(1)),install))
 endef
-
-
-# declare_component_toolchain <component>,<toolchain-name>
-#
-#
-define declare_component_toolchain
-$(call lmsbw_assert_known_component,$(1))	\
-$(call lmsbw_scf,$(1),toolchain,$(2))
-endef
-
-# declare_component_cflags <component>,<cflags value>
-#
-#
-define declare_component_cflags
-$(call lmsbw_assert_known_component,$(1))	\
-$(call lmsbw_scf,$(1),cflags,$(2))
-endef
