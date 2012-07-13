@@ -86,3 +86,4 @@
  o Disallow declaring toolchain attribute on 'build'-reasoned components?
  o Sample to wrap linux kernel & a small driver.  Cross compile it.
  o document how to implement a new component kind
+ o document how to use different toolchains
