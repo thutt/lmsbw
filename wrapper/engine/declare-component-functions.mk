@@ -72,7 +72,7 @@ $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),reason,$(2))
 endef
 
-# declare_component_component <component>, <component>>
+# declare_component_component <component>, <component>
 #
 #   Sets the component name.
 #
@@ -81,7 +81,7 @@ $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),component,$(2))
 endef
 
-# declare_component_prerequisite <component>, <prerequisites>>
+# declare_component_prerequisite <component>, <prerequisites>
 #
 #   Sets the list of components which must be built prior to this
 #   component.
@@ -96,7 +96,7 @@ $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),prerequisite,$(2))
 endef
 
-# declare_component_source_directory <component>, <absolute directory>>
+# declare_component_source_directory <component>, <absolute directory>
 #
 #   Associates a source directory with the component.
 #
@@ -109,7 +109,7 @@ $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),source-directory,$(2))
 endef
 
-# declare_component_configuration_file <component>, <configuration file path>>
+# declare_component_configuration_file <component>, <configuration file path>
 #
 #  This file associates the configuration file which declared the
 #  component to the component.  This is done for dependency checking
