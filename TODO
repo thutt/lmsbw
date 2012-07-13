@@ -85,3 +85,4 @@
    component.makefile needs a 'build install directory' variable.
  o Disallow declaring toolchain attribute on 'build'-reasoned components?
  o Sample to wrap linux kernel & a small driver.  Cross compile it.
+ o document how to implement a new component kind
