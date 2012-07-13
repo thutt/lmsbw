@@ -591,113 +591,6 @@ declare_component_configuration_file
 
 \end{itemize}
 
-\section{\texttt{??? build-directory}}\label{api:build-directory}
-
-\subsection{API}
-
-\begin{verbatim}
-
-\end{verbatim}
-
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which ....
-
-  The component must have been declared before this attribute can be
-  set.
-
-\end{itemize}
-
-\section{\texttt{??? build-log}}\label{api:build-log}
-
-\subsection{API}
-
-\begin{verbatim}
-
-\end{verbatim}
-
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which ....
-
-  The component must have been declared before this attribute can be
-  set.
-
-\end{itemize}
-
-\section{\texttt{??? build-root-directory}}\label{api:build-root-directory}
-
-\subsection{API}
-
-\begin{verbatim}
-
-\end{verbatim}
-
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which ....
-
-  The component must have been declared before this attribute can be
-  set.
-
-\end{itemize}
-
-\section{\texttt{??? destdir-directory}}\label{api:destdir-directory}
-
-\subsection{API}
-
-\begin{verbatim}
-
-\end{verbatim}
-
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which ....
-
-  The component must have been declared before this attribute can be
-  set.
-
-\end{itemize}
-
-\section{\texttt{??? install-directory}}\label{api:install-directory}
-
-\subsection{API}
-
-\begin{verbatim}
-
-\end{verbatim}
-
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which ....
-
-  The component must have been declared before this attribute can be
-  set.
-
-\end{itemize}
-
-\section{\texttt{??? source-mtree-manifest}}\label{api:source-mtree-manifest}
-
-\subsection{API}
-
-\begin{verbatim}
-
-\end{verbatim}
-
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which ....
-
-  The component must have been declared before this attribute can be
-  set.
-
-\end{itemize}
 
 \section{\texttt{component\_attribute\_toolchain}}\label{api:toolchain}
 
@@ -717,40 +610,40 @@ component_attribute_toolchain
 
   The component must have been declared before this attribute can be
   set.
+
+\item toolchain
+
+  This is the directory name of the toolchain which should be
+  configured when building and installing this component.
+
+  If the toolchain does not exist, \lmsbw will produce an
+  error.\todo{Need to xref how to use the toolchain}.
+
 \end{itemize}
 
 \section{\texttt{default\_source\_component\_build}}\label{api:default-source-component-build}
 
+This function, which can be used when overriding the default rules for
+building a component (\xref{chap:overriding}) expands to the text used
+by \lmsbw proper to invoke \make using the component's own build
+process, to build.
+
 \subsection{API}
 
 \begin{verbatim}
-
+default_source_component_build
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which ....
-
-  The component must have been declared before this attribute can be
-  set.
-
-\end{itemize}
 
 \section{\texttt{default\_source\_component\_install}}\label{api:default-source-component-install}
 
+This function, which can be used when overriding the default rules for
+installing a component (\xref{chap:overriding}) expands to the text used
+by \lmsbw proper to invoke \make, using the component's own build
+process, to install.
+
 \subsection{API}
 
 \begin{verbatim}
-
+default_source_component_install
 \end{verbatim}
-
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which ....
-
-  The component must have been declared before this attribute can be
-  set.
-
-\end{itemize}
