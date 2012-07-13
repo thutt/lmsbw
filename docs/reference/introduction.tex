@@ -18,14 +18,15 @@
 Recursive use of \make has fallen out of favor after the publication
 of \emph{Recursive Make Considered Harmful}
 (\texttt{http://aegis.sourceforge.net/auug97.pdf}), but in real-world
-situations, it's still dominant because \make provides little support
-towards actually creating a maintainable non-recursive build system.
-The biggest stumbling block to implementing a non-recursive build
-system using \make is the complete lack of scoping; symbol scoping is
-accomplished by traditional recursive use of \make, and is all but
-non-existent in a non-recursive implementation.  This creates a
-maintenance issue because the developers have to be very careful to
-end up with no macro, target or implicit rule collisions.
+situations, recursive \make is still dominant because \make provides
+little support towards actually creating a maintainable non-recursive
+build system.  The biggest stumbling block to implementing a
+non-recursive build system using \make is the complete lack of
+scoping; symbol scoping is accomplished by traditional recursive use
+of \make, and is all but non-existent in a non-recursive
+implementation.  The lack of scoping a maintenance issue because the
+\makefile developers have to be careful to avoid macro, target and
+implicit rule collisions.
 
 Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
@@ -37,16 +38,12 @@ performance improvements by only recursing when something in the
 source tree has changed and without requiring you to make widespread
 changes to your existing build process.
 
-In short, if your \nullbuild takes considerably more time than the
-\mtree utility takes to execute on all your source directories, then
-you can benefit from \lmsbw.
-
 The following tenets guided the implementation of \lmsbw:
 
 \begin{itemize}
 \item Incremental Builds
 
-  \lmsbw was developed with a team of developers in mind and from that
+  \lmsbw was developed with a team of developers in mind, and from that
   perspective the day of a developer involves many small changes and
   rebuilds of the software.  The key focus of \lmsbw is to ensure that
   incremental builds are as fast as possible.
@@ -58,11 +55,9 @@ The following tenets guided the implementation of \lmsbw:
 
 \item Disk Space
 
-  Disk space is free relative to the cost of a developer.  The amount
-  of time wasted when developers have to \texttt{make clean} because
-  tool options have changed is a unnecessary, particularly if changing
-  those options are to make a \emph{debug} build, or to perform some
-  special one-off test.
+  Disk space is free relative to the cost of a developer: the amount
+  of time wasted by developers performing administrative tasks around
+  their build and build output can be a gigantic productivity sink.
 
   \lmsbw saves time by compromising on space.  Because developers
   rarely need to know where their intermediate build output resides --
@@ -75,9 +70,8 @@ The following tenets guided the implementation of \lmsbw:
   always be incremental.  This is true because switching to an
   already-used branch will use the already-created build directories.
 
-  Trading off increased disk space with improved developer
-  productivity is definitely the right choice if you've got market
-  constraints.
+  Trading off increased disk space for improved developer productivity
+  makes perfect sense to reduce product development cost.
 
 \item Source Is Immutable
 
@@ -94,18 +88,19 @@ The following tenets guided the implementation of \lmsbw:
 
   The upshot of this is that the original source directory will never
   be sullied by \lmsbw, nor your own wrapped build process.  Another
-  benefit of this is that you can easily use different toolchains --
-  perhaps for cross compiling to another operating system or
-  architecture -- without having to retool your own build process.
+  benefit of having an immutable source tree is that you can easily
+  use different toolchains -- perhaps for cross compiling to another
+  operating system or architecture -- without having to retool your
+  own build process.
 
 \item Uniform Interface
 
   \lmsbw has been designed to make it easy to wrap an existing build
   process, and to access portions of the wrapped build.  In concept,
-  you will declare each one of your \emph{components} -- usually a
-  source directory containing a \makefile.  Declaration includes
-  information about the directory and options for building it,
-  including which other component are prerequisites.
+  you will declare each one of your \emph{components}, usually a
+  source directory containing a \makefile, to \lmsbw.  Declaration
+  includes information about the directory and options for building
+  it, including which other component are prerequisites.
 
   \lmsbw compiles this information and generates, on-the-fly, a set of
   \make rules and targets which allow your wrapped build process to be
@@ -194,14 +189,14 @@ changed.
 
 \section{How \lmsbw Works}
 
-\lmsbw is not a system which will actually build your software.
-Rather, it is a wrapper for your own build system that, in most cases,
-will improve the performance of your build system.  You're probably
+\lmsbw is not a system that actually builds your software; rather, it
+is a wrapper for your own build system that, in most cases, will
+improve the performance of your build system.  You're probably
 wondering how adding a layer on top of an existing build system will
 improve the original -- the simple answer is that many build processes
 perform altogether too much work when no work needs to be performed,
 and \lmsbw cuts out this unnecessary work by never invoking the build
-process when no work needs to be done.
+process when nothing has changed since the last build.
 
 Let's examine the \lmsbw process:
 
@@ -230,11 +225,10 @@ Let's examine the \lmsbw process:
 \item Recurse only when needed
 
   \lmsbw only maintains the inter-component dependencies that are
-  explicitly defined by virtue of the way that the set of components
-  included in your project have been declared.  In order to increase
-  speed and decrease memory use, \lmsbw specifically maintains no
-  dependency information about any source file contained in any
-  component of your project.
+  explicitly defined your component declarations.  In order to
+  increase speed and decrease memory use, \lmsbw specifically
+  maintains no dependency information about any source file contained
+  in any component of your project.
 
   The general determination for building components is this:
 

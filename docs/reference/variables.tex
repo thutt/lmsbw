@@ -147,10 +147,27 @@ will be used to build the component.
 
 Each component named in \lmsbwcomponents must have a corresponding
 associative array which describes all the attributes needed to
-correctly build it.
+correctly build it.  However, the allowed attributes will vary based
+on the \emph{kind} (\xref{variables:kind}) of the component.
 
-The following sections describe the allowable keys, and their allowed
-values.
+The \make variable for each \emph{kind} of source component will be
+named as shown below; consider that the component name is \texttt{baselib}.
+
+\begin{verbatim}
+LMSBW_component_baselib
+\end{verbatim}
+
+Once key:value pairs are set they should not be changed.
+
+The following sections describe the various kinds of components, their
+allowable associative keys and values.
+
+\section{Source Components}
+
+Source components are declared to \lmsbw through
+\texttt{declare\_source\_component}
+(\xref{api:declare-source-component}) and have the keys which are
+described in the following sections.
 
 \subsection{\lmsbwcomponentfield{<component>}{api}}\label{variables:api}
 \todo{Need an xref to the function which sets the value}
@@ -182,7 +199,7 @@ directory in which the build will be performed.
 
 This value should not be used by a client of \lmsbw.
 
-\apiref{api:build-directory}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{build-log}}\label{variables:build-log}
 
@@ -198,7 +215,7 @@ lmbw log.hello-world
 
 This value should not be used by a client of \lmsbw.
 
-\apiref{api:build-log}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{build-root-directory}}\label{variables:build-root-directory}
 
@@ -207,7 +224,7 @@ placed for the associated component.
 
 This value should not be used by a client of \lmsbw.
 
-\apiref{api:build-root-directory}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{build-target}}\label{variables:build-target}
 
@@ -268,7 +285,7 @@ configuration file rather than in the component \makefile.
 
 This key contains the name of the component.
 
-\apiref{api:component}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{configuration-file}}\label{variables:configuration-file}
 
@@ -295,13 +312,13 @@ component.\todo{xref overriding configuration rules}
 % proper locations in the \destdir directory.  See
 % \xref{chap:overriding}.
 
-\apiref{api:configuration-file}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{description}}\label{variables:description}
 
 This key holds a brief description of the component.
 
-\apiref{api:description}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{destdir-directory}}\label{variables:destdir-directory}
 
@@ -320,7 +337,7 @@ end up in \texttt{/usr/include}, one way to install it would be:
 cp include-file.h $(DESTDIR)/usr/include
 \end{verbatim}
 
-\apiref{api:destdir-directory}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{install-directory}}\label{variables:install-directory}
 
@@ -334,7 +351,7 @@ install directory, \texttt{productroot}, is shared by all components.
 
 This value of this key must not be used by components of \lmsbw.
 
-\apiref{api:install-directory}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{install-target}}\label{variables:install-target}
 
@@ -365,7 +382,7 @@ If adding a new type of component to \lmsbw, you will need to add
 support for new values of this key.\todo{Need a chapter on how to add
   new component types.}
 
-\apiref{api:kind}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{no-parallel}}\label{variables:no-parallel}
 
@@ -387,33 +404,15 @@ even attempted to be built.
 
 An empty value means that there are no prerequisites.
 
-\apiref{api:prerequisite}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{reason}}\label{variables:reason}
 
 This key holds the \emph{reason} this component is being built.
 
-It is set through the \texttt{declare\_component\_reason}
-(\xref{api:declare-component-reason}) API.
+See \xref{api:reason} for the allowable values.
 
-The allowable values for this key are as follows:
-
-\begin{itemize}
-\item build
-
-  Components with a \emph{reason} of \texttt{build} are used in the
-  overall build process, but are not delivered as part of the product.
-  Such components are not installed into the \texttt{sysroot}.
-
-\item image
-
-  Components with a \emph{reason} of \texttt{image} are part of the
-  delivered product.  Such components are installed into the
-  \texttt{sysroot}.
-
-\end{itemize}
-
-\apiref{api:reason}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{source-directory}}\label{variables:source-directory}
 
@@ -422,7 +421,7 @@ the component.
 
 This value should not be used by a client of \lmsbw.
 
-\apiref{api:source-directory}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{source-mtree-manifest}}\label{variables:source-mtree-manifest}
 
@@ -431,7 +430,7 @@ This key holds the absolute pathname of the file which holds the
 
 This value should not be used by a client of \lmsbw.
 
-\apiref{api:source-mtree-manifest}
+\apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{toolchain}}\label{variables:toolchain}
 

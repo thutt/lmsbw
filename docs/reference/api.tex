@@ -14,50 +14,563 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %
 \chapter{Public API Reference}
-\section{\texttt{declare\_source\_component}}
+\section{\texttt{declare\_source\_component}}\label{api:declare-source-component}
+
+This function allows the declaration of \emph{source-based} components
+in a wrapped project.
+
+Source-based means that the entire source for the component is
+available in a directory tree that is currently accessible on the
+machine running the build.  The source tree must have a \makefile at
+the top level that will build the source in an \lmsbw-compliant
+manner.\todo{xref to makefile compliance.}
+
+\subsection{API}
+
+\begin{verbatim}
+declare_source_component
+    <component-name>,
+    <description>,
+    <reason>,
+    <configuration-file>,
+    <full path to source directory>,
+    <optional list of prerequisite components>
+\end{verbatim}
+
+\begin{itemize}
+\item{component-name}
+
+  This is the name by which the component will be referred throughout
+  the \lmsbw-project.  The name must be a valid \make identifier, and
+  it must be globally unique within the project.
+
+  See \xref{api:component}.
+
+\item{description}
+
+  This is a brief description of the purpose of the component.  The
+  description will be printed by various verbs of the \lmsbw system.
+
+  Even though this is a required parameter, the description is purely
+  informational.
+
+  See \xref{api:description}.
+
+\item{reason}
+
+  This is the \emph{reason} the component is being included in the
+  build.
+
+  See \xref{api:reason}.
+
+\item{configuration file}
+
+  This must be the full pathname of the component configuration file
+  which declares the source component.
+
+  See \xref{api:configuration-file}.
+
+\item{source directory}
+
+  The full pathname to the source directory for the component.
+
+  See \xref{api:source-directory}.
+
+\item{optional list of prerequisites}
+
+  If specified, this argument must hold a space-separated list of
+  component names.
+
+  See \xref{api:prerequisite}.
+
+\end{itemize}
 
 \section{\texttt{component\_attribute\_no\_parallel\_build}}\label{api:no-parallel}
 
+This function ensures that the associated component's build is never
+able to further invoke recursive instances of \make in parallel.
+
+This attribute is normally not necessary, but can be handy for
+components which have a poorly-created \makefile; a build system which
+will benefit from this option will intermittently fail when being
+built with high levels of parallelism because of incorrect
+dependencies.
+
+\subsection{API}
+
+\begin{verbatim}
+component_attribute_no_parallel_build
+    <component-name>
+\end{verbatim}
+
+\begin{itemize}
+\item component-name
+
+  This is the name of the component for which parallel builds should
+  not be allowed.
+
+  The component must have been declared before this attribute can be
+  set.
+
+  When this attribute is set, the recursive invocation of \gnumake
+  used to build the component will have \texttt{-j 1} explicitly set
+  on the command line.
+
+\end{itemize}
+
 \section{\texttt{component\_attribute\_build\_target}}\label{api:build-target}
+
+This changes the target for building a component with the component's
+build process from the \emph{default} \make target to the list of
+targets provided.
+
+\subsection{API}
+
+\begin{verbatim}
+component_attribute_build_target
+    <component-name>
+    <list of targets>
+\end{verbatim}
+
+\begin{itemize}
+\item component-name
+
+  This is the name of the component for which the build target value
+  should be set.
+
+  The component must have been declared before this attribute can be
+  set.
+
+\item list-of-targets
+
+  This argument is a space-separated list of targets in the
+  component's \makefile which will be used for the build phase of the
+  component.
+
+\end{itemize}
 
 \section{\texttt{component\_attribute\_install\_target}}\label{api:install-target}
 
+This changes the target for installing a component with the
+component's build process from the \texttt{install} \make target to
+the list of targets provided.
+
+\subsection{API}
+
+\begin{verbatim}
+component_attribute_install_target
+    <component-name>
+    <list of targets>
+\end{verbatim}
+
+\begin{itemize}
+\item component-name
+
+  This is the name of the component for which the install target value
+  should be set.
+
+  The component must have been declared before this attribute can be
+  set.
+
+\item list-of-targets
+
+  This argument is a space-separated list of targets in the
+  component's \makefile which will be used for the install phase of
+  the component.\todo{Make sure the build phase \& install phase are
+    documented ideas.}
+\end{itemize}
+
 \section{\texttt{component\_attribute\_api}}\label{api:api}
+
+This allows the specification of \emph{install} directories that
+contain an exported \emph{API}.
+
+All components that list this component as a prerequisite will
+automatically become dependent upon changes to the directories named;
+if anything changes in those directories, the dependent component is
+rebuilt.
+
+It is incumbent upon the dependent component to have proper rules in
+the \makefile to detect changes in these API directories.  In other
+words, if an API header file or static library changes, it is up to
+the dependent \makefile to have the proper rules to detect this change
+and rebuild or relink as necessary.
+
+\subsection{API}
+
+\begin{verbatim}
+component_attribute_api
+    <component-name>,
+    <list of directories>
+\end{verbatim}
+
+\begin{itemize}
+\item component-name
+
+  This is the name of the component for which a set of \emph{api}
+  directories should be maintained.
+
+  The component must have been declared before this attribute can be
+  set.
+
+\item list-of-directories
+
+  This is a space-separated list of directories which contain files
+  that can be used by other, dependent, components.
+
+  The contents of each directory contained in this list should be
+  filled in \destdir by the \texttt{install} target of the build
+  process.
+
+  The following rules are recommended when creating API directories:
+
+  \begin{itemize}
+    \item Use root-based pathnames
+
+      Because you are going to install everything into \destdir, and
+      \lmsbw proper will install them into the
+      \texttt{productroot}\todo{Make a command for productroot}, you
+      should use root-based API directory names.
+
+    \item Use the name of the component in the directory name.
+
+      This will make it easy for dependent component maintainers to
+      easily find your API locations.\footnote{It is also easy to
+        execute the \emph{report} verb on a component to find out
+        the location of API directories.}
+
+    \item Standardize on install locations locations\todo{Document how
+      dependent components can gain access to headers and libraries.
+      xref here}
+
+      If you have header files, put them in
+      \texttt{/usr/include/\emph{component-name}}.
+
+      If you have libraries, put them in
+      \texttt{/usr/lib/\emph{component-name}}.
+
+      If you have some other type of files, be sure to reach concensus
+      on standardized locations; it will make maintenance much easier.
+
+      Since component names must be unique, the directory names will
+      also be unique.  And, this rule allows dependent components to
+      easily include your header files, and link with your libraries
+      -- because their location will be known.
+
+    \item Install to \destdir
+
+      Install all files into the API directory prefixed with \destdir.
+
+      If you don't prefix with \destdir, your build process will
+      likely fail with permission errors on the root-based pathnames.
+
+  \end{itemize}
+\end{itemize}
 
 \section{\texttt{component\_attribute\_cflags}}\label{api:cflags}
 
+This allows the specification of \texttt{CFLAGS} values which are
+passed ot the component build process.  It is incumbent upon the
+component's \makefile to never directly assign to \texttt{CFLAGS};
+rather it should append values to the \lmsbw-provided value.
+
+\lmsbw uses the declared value of \texttt{CFLAGS} in the assignment of
+the build directory.
+
+Using the \texttt{CFLAGS} value in the assignment of the build
+directory results in being able to have multiple build versions --
+say, debugging \& optimized -- of your component at one time.
+Switching between different \texttt{CFLAGS} values will always result
+in the minimal (from the last build) incremental build for the
+component.
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
+
 \section{\texttt{declare\_component\_kind}}\label{api:kind}
+
+This internal function allows the specification of the \texttt{kind}
+of the component.
+
+This value is used in the creation of function names, and these
+\texttt{kind}-based function names are used to process -- generate
+rules, produce reports, etc. -- components of that specific
+\emph{kind}.
+
+\lmsbw will check that functions used in this manner exist before
+attempting to invoke them\footnote{Invoking a function name which does
+  not exist in \gnumake produces no error, and does nothing.  That's
+  ok; \lmsbw takes advantage of that with component declaration
+  functions.}.  If you implment a new \emph{kind} of component, and
+fail to create all the necessary functions, \lmsbw will produce an
+appropriate error and stop.
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
 
 \section{\texttt{declare\_component\_description}}\label{api:description}
 
+This function allows the specification of a component's description.
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
+
 \section{\texttt{declare\_component\_reason}}\label{api:reason}
+
+This function allows the specification of the reason that a component
+is included in the build.
+
+  Reason can be one of two values:
+
+  \begin{enumerate}
+  \item \texttt{build}
+
+    The component is used in other parts of the build process and is
+    not intended to be part of the delivered product.
+
+    Components declared with this \emph{reason} are always built with
+    the native toolchain present on the host; this ensures that the
+    program will actually run on the machine which is performing the
+    build.
+
+  \item \texttt{image}
+
+    The component is built as part of the overall product, and it is
+    intended to be delivered with the shipping product.
+
+    Components declared with this \emph{reason} will always use the
+    component-defined, globally-defined or host toolchain to build.
+
+    If the component does not declare a specific toolchain, the global
+    toolchain declaration is used.  If there is no global toolchain
+    specified, then the toolchain installed on the host will be used
+    to build the component.
+
+  \end{enumerate}
+
+  \lmsbw maintains separate install and build directories for
+  components of each type.  The impetus for this separation is cross
+  compilation: \texttt{build} components are built with the native
+  toolchain installed on the host computer, and the file format may be
+  different than those of type \texttt{image}.  This separation also
+  reduces the risk of accidentally installing build-only components
+  into a deliverable product.
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
 
 \section{\texttt{declare\_component\_component}}\label{api:component}
 
+This function allows the specification of the name of the component.
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
+
 \section{\texttt{declare\_component\_prerequisite}}\label{api:prerequisite}
 
-unfinished
+This function allows the specification of a list of prerequisite
+components.
+
+\lmsbw will ensure that all the named components are built and
+installed prior to building this component.
+
+The prerequisite components do not need to have been declared before
+they are referenced.
+
+If a component is named as a prerequisite that does not actually
+exist, \make will issue an error when attempting to fulfill the
+targets necessary to produce the build.
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
 
 \section{\texttt{declare\_component\_source\_directory}}\label{api:source-directory}
 
+This function allows the specifcation of the full pathname to the
+source code for the associated component.
+
+This must be the full path of the directory containing the source, and
+importantly, the \makefile which actually builds the component.
+
+\lmsbw will produce an error if the named directory does not exist.
+
+\lmsbw expects that a \makefile will be at the top level of the named
+directory.
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
+
 \section{\texttt{declare\_component\_configuration\_file}}\label{api:configuration-file}
+
+This function allows the specification of the full pathname of the
+configuration file associated with the component.
+
+\lmsbw sets up dependencies so that changes to this file will
+automatically force the component's build process to be invoked.
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
 
 \section{\texttt{??? build-directory}}\label{api:build-directory}
 
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
+
 \section{\texttt{??? build-log}}\label{api:build-log}
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
 
 \section{\texttt{??? build-root-directory}}\label{api:build-root-directory}
 
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
+
 \section{\texttt{??? destdir-directory}}\label{api:destdir-directory}
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
 
 \section{\texttt{??? install-directory}}\label{api:install-directory}
 
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
+
 \section{\texttt{??? source-mtree-manifest}}\label{api:source-mtree-manifest}
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
 
 \section{\texttt{??? toolchain}}\label{api:toolchain}
 
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
+
 \section{\texttt{default\_source\_component\_build}}\label{api:default-source-component-build}
 
-unfinished
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
 
 \section{\texttt{default\_source\_component\_install}}\label{api:default-source-component-install}
+
+\subsection{API}
+
+\begin{verbatim}
+
+\end{verbatim}
+
+\begin{itemize}
+\item Add semantics here
+\end{itemize}
