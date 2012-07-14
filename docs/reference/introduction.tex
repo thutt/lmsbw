@@ -24,9 +24,9 @@ build system.  The biggest stumbling block to implementing a
 non-recursive build system using \make is the complete lack of
 scoping; symbol scoping is accomplished by traditional recursive use
 of \make, and is all but non-existent in a non-recursive
-implementation.  The lack of scoping a maintenance issue because the
-\makefile developers have to be careful to avoid macro, target and
-implicit rule collisions.
+implementation.  The lack of scoping quickly becomes a maintenance
+issue because the \makefile developers have to be careful to avoid
+macro, target and implicit rule collisions.
 
 Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
@@ -149,7 +149,7 @@ ld=$(pwd)
 \begin{verbatim}
 ${ld}/scripts/lmsbw                                          \
    --configuration ${ld}/samples/hello-world/hello-world.cfg \
-   --built-root /tmp/lmsbw-test  -- mtree
+   --build-root /tmp/lmsbw-test  -- mtree
 \end{verbatim}
 
 The command above will output a message indicating where the \mtree
@@ -198,37 +198,38 @@ perform altogether too much work when no work needs to be performed,
 and \lmsbw cuts out this unnecessary work by never invoking the build
 process when nothing has changed since the last build.
 
-Let's examine the \lmsbw process:
+Let's examine the what makes \lmsbw different:
 
 \begin{description}
-\item Define Build Process API
+\item Defined Build Process API
 
   To facilitate rebuilding dependent components when necessary --
   especially when the exported API of a prerequisite component changes
   -- \lmsbw defines an API that wrapped builds must follow.  This API
   requires that each component install its public build product into a
-  \texttt{DESTDIR} directory.
+  \texttt{DESTDIR}\todo{Glossary destdir} directory.
 
-\item Declare Components
+\item Component Declarations
 
-  \lmsbw always automatically generates rules that are used by \make
-  to build your product, but to be able to generate these rules, you
-  must declare every component that is in your project.
+  \lmsbw automatically generates rules that are used by \make to build
+  your product, but to be able to generate these rules you must
+  declare every component that is in your project.
 
   Once declared, \lmsbw takes control of all aspects of each
   component's build: the build directory, the \texttt{DESTDIR}, the
   install directory, and the toolchain to use.  When your component's
   build process is invoked, it only needs to focus on producing a
-  build for itself, and, when requested, installing it into the
-  \texttt{DESTDIR} directory.
+  build, and, when requested, installing it into the \texttt{DESTDIR}
+  directory.
 
 \item Recurse only when needed
 
   \lmsbw only maintains the inter-component dependencies that are
-  explicitly defined your component declarations.  In order to
-  increase speed and decrease memory use, \lmsbw specifically
-  maintains no dependency information about any source file contained
-  in any component of your project.
+  explicitly defined your component declarations.
+
+  Intra-component file dependencies are entirely handled by each
+  component's build process.  Not handling file depdencies reduces
+  memory use and makes the criteria for recursing easier to determine.
 
   The general determination for building components is this:
 
@@ -273,29 +274,32 @@ project.  The main purpose of the configuration file is to create and
 set up the \lmsbwconfiguration (\xref{variables:lmsbw-configuration})
 variable.
 
-Primarily \lmsbwconfigurationfield{load-configuration-function}
-(\xref{aa:load-configuration-function}) is set to the name of a Gnu
-\make function that is responsible for setting up the configuration
-for each component that will be included in your build.
+Primarily, you must declare a \gnumake function that will load your
+component configuration (\xref{aa:load-configuration-function}), and
+you must indicate what \emph{kind} (\xref{variables:kind}) of
+components your pojrect will use
+(\xref{variables:component-build-support}).
 
 Other fields of \lmsbwconfiguration can be optionally set to further
 control the behavior of \lmsbw.
 
 \subsection{Loading Component Configuration}
 
-After loading the master configuration file, \lmsbw will invoke the
-component configuration-loading function
+After loading the command-line-specified master configuration file,
+\lmsbw will invoke the component configuration-loading function
 (\xref{aa:load-configuration-function}).  This function is responsible
 for defining all the components that are to be included in your
-proejct.  Generally there is a one-to-one correspondence of components
-to component configuration files, which you provide, and the called
-function will load each of these files using \gnumake
+project.  Generally there is a one-to-one correspondence of components
+to component configuration files, that you provide.  The called
+function will load each of these files using the \gnumake
 \texttt{\$(include)} directive.
 
 The component configuration files are, in fact, \makefile snippets
-which can have rules that will override the default behavior of \lmsbw
-(\xref{chap:overriding}).  There are sevaral samples included with
-\lmsbw that show how rule overriding can be done.
+which can actually have rules that will override the default behavior
+of \lmsbw.  See \xref{chap:overriding} for more details on overriding
+the default behavior of component building, and there are sevaral
+samples included with \lmsbw that show how rule overriding can be
+done.
 
 This configuration-loading function must ultimately produce two sets
 of data:
@@ -308,15 +312,15 @@ of data:
 
 \item \lmsbwcomponent{<component-name>}
 
-  Each component loaded is assigned a \gmsl associative array to
-  hold all the data relevant to building the software.
+  Each component loaded is assigned a \gmsl\todo{glossary} associative
+  array to hold all the data relevant to building the software.
 
   The keys that are defined for the component's associative array are
-  dependent upon the \emph{type} of the component.  For example, a
-  \emph{source} component will define a set of keys which would
-  include information such as the source directory.  A
-  \emph{download} component would have different keys, such as the
-  \texttt{URL} from which the component can be downloaded.
+  dependent upon the \emph{kind} (\xref{variables:kind}) of the
+  component.  For example, a \emph{source} component will define a set
+  of keys which would include information such as the source
+  directory.  A \emph{download} component would have different keys,
+  such as the \texttt{URL} from which the component can be downloaded.
 
   This flexibility allows new component types to be created without
   affecting existing component types.
@@ -342,8 +346,9 @@ Such user-provided data, for a \emph{source} component, includes:
 \end{itemize}
 
 Conveniently, there are \lmsbw functions, such as
-\texttt{declare\_source\_component}, which simplify the configuration
-of components.
+\texttt{declare\_source\_component}
+(\xref{api:declare-source-component}), which simplify the
+configuration of components.
 
 \subsection{Recursively Invoking \make}
 
@@ -354,15 +359,15 @@ three different \makefile processes:
 \item \lmsbw \makefile
 
   The first is the main \lmsbw \makefile which handles all the
-  configuration and inter-dependencies between high-level components.
+  configuration and inter-dependencies between components.
 
 \item Component Trampoline \makefile
 
   The second is a subservient \makefile, yet still part of \lmsbw,
   which performs component-specific configuration such as configuring
-  standard \makefile macros such as \texttt{CC} and \texttt{LD} that
-  correspond to the toolchain which will be used to actually build the
-  component.
+  standard \makefile macros (\texttt{CC}, \texttt{LD}, etc.) that
+  correspond to the toolchain (\xref{chap:toolchain-usage}) which will
+  be used to actually build the component.
 
   It also ensures that each component's build process is completely
   disjoint from other components; the settings for \emph{component $\alpha$}
