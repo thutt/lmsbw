@@ -190,13 +190,13 @@ static void makefile_generate_list_of_subdirectories(FILE *fp,
     }
 }
 
-static void makefile_generate_list_of_executables(FILE *fp,
-                                                  const directory_t *dir)
+static void makefile_generate_list_of_sources(FILE *fp,
+                                              const directory_t *dir)
 {
     unsigned i;
 
     for (i = 0; i < dir->n_sources; ++i) {
-        fprintf(fp, "s%u ", i);
+        fprintf(fp, "s%u.c ", i);
     }
 }
 
@@ -207,11 +207,25 @@ static void makefile_generate_phony(FILE *fp, const directory_t *dir)
     fprintf(fp, "\n\n");
 }
 
+static void makefile_generate_sources_macro(FILE *fp,
+                                            const directory_t *dir)
+{
+    fprintf(fp, "SOURCES\t=\t");
+    makefile_generate_list_of_sources(fp, dir);
+    fprintf(fp, "\n");
+}
+
+static void makefile_generate_objs_macro(FILE *fp,
+                                         const directory_t *dir)
+{
+    fprintf(fp, "OBJS\t=\t$(SOURCES:.c=.o)");
+    fprintf(fp, "\n");
+}
+
 static void makefile_generate_executables_macro(FILE *fp,
                                                 const directory_t *dir)
 {
-    fprintf(fp, "EXECUTABLES\t=\t");
-    makefile_generate_list_of_executables(fp, dir);
+    fprintf(fp, "EXECUTABLES\t=\t$(SOURCES:.c=)");
     fprintf(fp, "\n\n");
 }
 
@@ -236,7 +250,7 @@ static void makefile_generate_all(FILE *fp, const directory_t *dir)
 static void makefile_generate_clean(FILE *fp, const directory_t *dir)
 {
     fprintf(fp, "clean:\t$(SUBDIRS)\n"
-            "\trm -f $(EXECUTABLES) *.d"
+            "\trm -f $(EXECUTABLES) $(OBJS) *.d"
             "\n\n");
 }
 
@@ -256,7 +270,20 @@ static void makefile_generate_install(FILE *fp, const directory_t *dir)
 
 static void makefile_generate_executables(FILE *fp, const directory_t *dir)
 {
+    unsigned i;
+    for (i = 0; i < dir->n_sources; ++i) {
+        fprintf(fp, "s%u: s%u.o\n", i, i);
+    }
+
     fprintf(fp, "$(EXECUTABLES):\t| $(SUBDIRS)\n\n");
+}
+
+static void makefile_generate_objs(FILE *fp, const directory_t *dir)
+{
+    unsigned i;
+    for (i = 0; i < dir->n_sources; ++i) {
+        fprintf(fp, "s%u.o: s%u.c\n", i, i);
+    }
 }
 
 static void makefile_generate_subdirs(FILE *fp,
@@ -285,11 +312,14 @@ static void create_recursive_makefile(const directory_t *dir,
     makefile_generate_header(fp);
     makefile_generate_phony(fp, dir);
     makefile_generate_subdirs_macro(fp, dir);
+    makefile_generate_sources_macro(fp, dir);
+    makefile_generate_objs_macro(fp, dir);
     makefile_generate_executables_macro(fp, dir);
     makefile_generate_all(fp, dir);
     makefile_generate_install(fp, dir);
     makefile_generate_clean(fp, dir);
     makefile_generate_subdirs(fp, dir, makefile_name);
+    makefile_generate_objs(fp, dir);
     makefile_generate_executables(fp, dir);
     fclose(fp);
 }
