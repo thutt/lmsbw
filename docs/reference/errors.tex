@@ -21,12 +21,20 @@
 E1000: Invalid configuration: 'load-configuration-function' not set
 \end{verbatim}
 
+You have loaded \lmsbw with a configuration file, but you have not set
+the \texttt{load-configuration-function} configuration value.  See
+\xref{aa:load-configuration-function} for details on setting this value.
+
 \section{E1001}
 
 \begin{verbatim}
 E1001: Invalid configuration: 'load-configuration-function' \
        must be defined in an included Makefile
 \end{verbatim}
+
+The function referenced by your \texttt{load-configuration-function}
+value does not exist.  See \xref{aa:load-configuration-function} for
+details on properly setting this value.
 
 \section{E1002}
 
@@ -35,17 +43,40 @@ E1002: Configuration file '<pathname>' redefines component
  '<component>' that is already declared in '<pathname>'
 \end{verbatim}
 
+Each component name must be globally unique to a project.  You have
+two configuration files declaring the same component name.
+
 \section{E1003}
 
 \begin{verbatim}
 E1003: Reason '<reason>' is not 'build' nor 'image'
 \end{verbatim}
 
+You have attempted to use an invalid \texttt{reason}.  See
+\xref{variables:reason} for details on the allowed values for this
+variable.
+
 \section{E1004}
 
 \begin{verbatim}
 E1004: Component '<component>' cannot have itself as a prerequisite
 \end{verbatim}
+
+\begin{quote}
+  \textbf{I am my own grandfather}
+
+  I married a widow who has a grown-up daughter.  My father, who
+  visited us quite often, fell in love with my step-daughter and
+  married her.  Hence, my father became my son-in-law and my
+  step-daughter became my mother.  Some months later, my wife gave
+  birth to a son, who became the brother-in-law of my father, as well
+  as my uncle. The wife of my father, my step-daughter, also had a
+  son.
+
+  \underline{Algorithm's + Data Structures = Programs}
+
+  \emph{Niklaus Wirth}
+\end{quote}
 
 \section{E1005}
 
@@ -54,6 +85,11 @@ E1005: No verb '<verb>' for component '<component>'
 E1005: Does this component exist?  Use 'lmsbw report'
 \end{verbatim}
 
+You have attempted to use a valid \lmsbw verb on a component that does
+not exist.  You have probably misspelled the component name.
+
+If you had used an invalid verb, \lmsbw will report that there is no
+rule to make the target.
 
 \section{E1007}
 
@@ -62,15 +98,36 @@ E1007: Component prerequisite path '<component-0> -> \
        (<component> ->)... <component-0>' produces a cycle
 \end{verbatim}
 
+The set of components and their prerequisites in \lmsbw must be a
+directed acyclic graph (DAG).  The set of components shown in the
+error message produce a graph with a cycle.
+
+You must restructure your componnents so that they form a DAG.
+
 \section{E1008}
 
 \begin{verbatim}
 E1008: Unknown component '<component>'
 \end{verbatim}
 
+You have attempted to use an unknown component.  This will typically
+occur if you try to set an attribute or call a component declaration
+function on a component which has not yet been declared.
+
+To remedy this situation, make sure you always declare components
+before you try to change them.
+
 \section{E1009}
 
 \begin{verbatim}
 E1009: Function '<function>' for component '<component>' not written
 \end{verbatim}
+
+This is an internal error which should only be seen when an extension
+to \lmsbw is incomplete.  Internally, \lmsbw will call functions which
+are written to specifically process a component of a certain
+\emph{kind} (\xref{variables:kind}).  If you have added a new
+component \emph{kind} to \lmsbw, you have missed the implementation of
+a necessary function.  You may use the \emph{source} verion of the
+missing function as a reference on the function semantics.
 

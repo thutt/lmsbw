@@ -1,0 +1,114 @@
+% Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+%
+% This program is free software: you can redistribute it and/or
+% modify it under the terms of the GNU General Public License as
+% published by the Free Software Foundation, either version 3 of the
+% License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+\chapter{Toolchain Configuration}\label{chap:toolchain-configuration}
+
+\section{\texttt{crosstool-ng}}
+
+\subsection{Paths and misc options}
+\begin{itemize}
+\item{Prefix Directory}
+
+  Set to: \texttt{/opt/toolchains/\$\{CT\_TARGET\}}
+
+\item{Render the toolchain read-only}
+
+  If you will need to make changes to the toolchain, or possibly
+  delete it, unselect this option.
+
+\item{Number of parallel jobs}
+
+  This option affects the number of parallel jobs used when building
+  the toolchain.  The system will automatically determine a reasonable
+  number, but you change change it.
+
+\item{Maximum Allowed load}
+
+  This option affects the total load building the toolchain can put on
+  your system.  Adjust for your personal taste.
+\end{itemize}
+
+\subsection{Target Options}
+\begin{itemize}
+\item{Target Architecture}
+
+  Select the desired target architecture.
+
+\item{Endianess}
+
+  If allowed, select the endianess for the selected architecture.
+
+\item{Bitness}
+
+  If allowed, select the bitness for the selected architecture.
+
+\item{ABI}
+
+  If allowed, select the desired ABI for the selected architecture.
+
+\end{itemize}
+
+\subsection{Toolchain Options}
+\begin{itemize}
+\item{Tuple's vendor string}
+
+  This is a string which can be used to further uniquely identify the
+  toolchain.  A tuple is of the form 'arch-vendor-kernel-system' and
+  is used to form the name of the tools in the toolchain, as well as
+  the toolchain directory name.
+
+  If you intend on creating many different toolchains -- perhaps for
+  different compiler versions, or different kernels -- it is
+  recommended to createa vendor string which mnemonically
+  distinguishes toolchains from one another.
+
+  You could use, for example, the gcc version as the vendor string.
+  For a \emph{bare metal} MIPS configuration, you might end up with a
+  tuple like this: \texttt{mipsel-gcc\_4.6.3-elf}.
+
+  You may not use dashes in the vendor string.
+
+\end{itemize}
+
+\subsection{Operating System}
+\begin{itemize}
+\item{Target OS}
+
+Choose the type of OS you wish to target.
+
+If you choose \texttt{linux}, you will have to make several more
+choices about the Linux kernel.
+\end{itemize}
+
+\subsection{Binary Utilities}
+
+The defaults here are normally sufficient.
+
+\subsection{C compiler}
+
+Choose the compiler version and the desired additional language
+support.
+
+\subsection{C-library}
+
+Choose the desired C-library implementation.
+
+\subsection{Debug facilities}
+
+Choose the desired debugging facilities.
+
+\subsection{Companion Libraries}
+
+Choose the desired companion libraries.

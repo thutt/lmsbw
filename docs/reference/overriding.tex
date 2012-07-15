@@ -13,4 +13,169 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %
-\chapter{Overriding Default Rules via Configuration} \label{chap:overriding}
+\chapter{Overriding Default Rules} \label{chap:overriding}
+
+In some cases, you'll have a component \makefile that cannot be edited
+for various reasons (office politics, code maintained elsewhere,
+etc.), and it doesn't conform to the \lmsbw requirements.
+
+When \lmsbw's default for producing a component is insufficient or
+when you cannot modify the component's build process, it is possible
+to override the built-in method for building \& installing.  \lmsbw
+provides the ability to alter the behavior of both the \makefile
+target for building and the target for installing the component by
+adding particularly named targets to the component's configuration
+file.
+
+This chapter describes the process needed to override these apsects of
+building a component.
+
+\begin{quote}
+  The astute reader will notice, after reading this chapter, that
+  there is seemingly nothing preventing you from overriding the rules
+  for component $\alpha$ in the configuration file for $\beta$.
+
+  In fact, there is soemthing which prevents you from doing that: the
+  configuration file itself.  When component $\alpha$ is built, only
+  the configuration file for $\alpha$ is loaded; no overriding rules
+  for $\alpha$ will be present.
+
+  At the other end of the system, when the $\beta$ component is built,
+  the overriding rules for $\alpha$ are present, but will not be
+  referenced and can cause no damage.
+\end{quote}
+
+\section{Overriding Build}
+
+In normal practice, it should be exceedingly rare for a\todo{Need to
+  put actual makefile invocation into a function which can be used.}
+component's actual build process to be overriding; even though it
+should be rare, \lmsbw still provides a method of doing just that.
+Here are a few of the reasons why you might want to override the build
+phase of a component:
+
+\begin{itemize}
+\item Test \bni Infrastructure by not building a component
+
+  How does your \bni system function if a required component is not
+  actually built?
+
+  Will it fail during \emph{install}, or while integrating into a
+  production deliverable?  Will it fail with an easy-to-diagnose
+  error?
+
+  The simle test would be to add a build override target, and then do
+  nothing.
+
+\item Test \bni Infrastructure by corrupting component build
+
+  Will your \bni system recognize if a build has been corrupted?
+  Perhaps only some files are built, or maybe the executables are
+  corrupt?
+
+  You could override the build target, build the entire component
+  (using the \lmsbw infrastructure) and then corrupt the build output
+  in-situ.
+
+\item Apply a patch in-situ
+
+  The component's source tree cannot be changed in the source tree,
+  but you can apply a patch\todo{Applying patches should be part of
+    \lmsbw} to the sources after they have been copied to the build
+  directory.
+
+  To do this, you'd override the build rule to apply the patches, then
+  use the \lmsbw infrastructure to invoke the component's build
+  process.
+
+\item Component may not need a build; only install static files
+
+  Perhaps the component doesn't have a build; maybe only static files
+  are installed.  In this case, you could override the build to do
+  nothing, and save a minute amount of time.
+
+\item Other unknown reasons
+\end{itemize}
+
+Once you have determined that you need to override the automatic rules
+to perform a component build, the actual work is quite trivial; all
+you need to do is add a \makefile target to your component
+configuration file, and supply the new commands to associated with the
+target.  The name of the target is based on the component name; if the
+component name is \texttt{alpha}, you would do the following:
+
+\begin{verbatim}
+component.build.alpha:
+        echo "Overriding trampoline and not building alpha";
+\end{verbatim}
+
+If your component configuration file does \emph{not} have this
+specific target, then the default build rules of \lmsbw will take
+effect, and your component's \makefile will be invoked to build the
+component.
+
+If you ultimately want to execute the component's actual build
+process, you can use the same code of \lmsbw proper to instigate this
+by executing:
+
+\begin{verbatim}
+$(call default_$(LMSBW_C_KIND)_component_build)
+\end{verbatim}
+
+You must be aware when overriding default targets that the override
+does not provide any prerequisites.  If you override the build target,
+for example, without the proper prerequisites, you will not be able to
+use the function shown above to build the component.  See the
+\texttt{override} sample for details, and look at
+\texttt{component.makefile} to see the determine the necessary
+prerequisites.
+
+\section{Overriding Install}
+
+\begin{itemize}
+\item Test \bni Infrastructure by not installing component
+\item Component \makefile has no install rule, and cannot be modified
+\item Component \makefile does not use \destdir
+\item Component does not install all needed files
+\item Other unknown reasons
+\end{itemize}
+
+
+Once you have determined that you need to override the automatic rules
+to perform a component install, the actual work is quite trivial; all
+you need to do is add a \makefile target to your component
+configuration file, and supply the new commands to associated with the
+target.  The name of the target is based on the component name; if the
+component name is \texttt{alpha}, you would do the following:
+
+
+\begin{verbatim}
+component.install.alpha:
+        $(MKDIR) --parents $(DESTDIR)/usr/include/alpha
+        $(CP) --recursive \
+             $(LMSBW_C_BUILD_DIRECTORY)/include/* \
+             $(DESTDIR)/usr/include/alpha
+\end{verbatim}
+
+If your component configuration file does \emph{not} have this
+specific target, then the default install rules of \lmsbw will take
+effect, and your component's \makefile will be invoked to install the
+component.
+
+If you ultimately want to execute the component's actual build
+process, you can use the same code of \lmsbw proper to instigate this
+by executing:
+
+\begin{verbatim}
+$(call default_$(LMSBW_C_KIND)_component_install)
+\end{verbatim}
+
+
+You must be aware when overriding default targets that the override
+does not provide any prerequisites.  If you override the build target,
+for example, without the proper prerequisites, you will not be able to
+use the function shown above to build the component.  See the
+\texttt{override} sample for details, and look at
+\texttt{component.makefile} to see the determine the necessary
+prerequisites.
+

@@ -139,6 +139,14 @@ the elapsed time to build each component as each is completed.
 --time
 \end{verbatim}
 
+\subsection{\texttt{--toolchain}}\label{usinglmsbw:toolchain}
+
+\todo{document toolchain argument}
+
+\subsection{\texttt{--toolchain-root}}\label{usinglmsbw:toolchain-root}
+
+\todo{document toolchain-root argument}
+
 
 \section{Using \lmsbw \make targets}
 
@@ -146,13 +154,12 @@ Although \lmsbw is extremely fast, it is sometimes desirable to have
 it operate on only one component, or to provide further information
 about the wrapped build.
 
-\subsection{Supported Targets}
-\subsubsection{\texttt{all}}\label{lmsbw:target:all}
+\subsection{\texttt{all}}\label{lmsbw:target:all}
 
 This is the default target, and it will cause your wrapped build to be
 executed in its entirety.
 
-\subsubsection{\texttt{targets}}
+\subsection{\texttt{targets}}
 
 The \texttt{targets} target causes \lmsbw to produce a report of all
 top-level targets that are accessible to the user.
@@ -175,8 +182,7 @@ be executed on a specific component of the wrapped build.  To
 determine which components exist in the build, see
 \xref{lmsbw:target:components}.
 
-\subsubsection{\texttt{report}}\texttt{This report is totally
-  obsolete.  Update.}
+\subsection{\texttt{report}}
 
 The \texttt{report} target will produce a report about each wrapped
 component in the build.  The report, for each component, will look
@@ -184,41 +190,38 @@ something like this:
 
 \begin{footnotesize}
 \begin{verbatim}
-hello-world|Module      : hello-world-module
+hello-world|Component   : hello-world
+hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
 hello-world|  desc      : Hello World example
-hello-world|  component : hello-world
 hello-world|  kind      : source
 hello-world|  reason    : image
 hello-world|  source    : /lms/build-process/samples/hello-world/src
 hello-world|  prereq    :
 hello-world|  direct dep: goodbye-world
 hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
-hello-world|Build Root  : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2
-hello-world|  build     : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
-hello-world|  destdir   : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
-hello-world|mtree       :
-hello-world|  src mtree : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/source.mtree
-hello-world|  api mtree : /tmp/nb/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/api.mtree
-hello-world|Install     : /tmp/nb/target/install/f3b792a41a713fcdff0f70603c4d36b4
-hello-world|  src api   : /usr/include/hello-world
-hello-world|  bin api   :
+hello-world|  toolchain :
+hello-world|  api       : /usr/include/hello-world
+hello-world|Install Root: /tmp/hello/target/install/35f228d9be0694a19de8666fbcdbd80d
+hello-world|Build Root  : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2
+hello-world|  build     : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
+hello-world|  destdir   : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
 hello-world|Targets     :
 hello-world|  install   : install
 hello-world|  build     : build
 \end{verbatim}
 \end{footnotesize}
 
-\subsubsection{\texttt{install}}
+\subsection{\texttt{install}}
 
 The \texttt{install} target is used by the default target
 (\xref{lmsbw:target:all}) to build and install each component.
 
-\subsubsection{\texttt{clean}}
+\subsection{\texttt{clean}}
 
 The \texttt{clean} target is used to clean out the entire build
 directory, or the build directory of a specific compoment.
 
-\subsubsection{\texttt{log}}
+\subsection{\texttt{log}}
 
 The \texttt{log} target is used to display all the build logs, or the
 build log of a specific component, to the console.
@@ -231,7 +234,7 @@ on the console, and then you can use the \texttt{log} target to view
 the actual output of building that component.
 
 
-\subsubsection{\texttt{prerequisite-report}}
+\subsection{\texttt{prerequisite-report}}
 
 The \texttt{prerequisite-report} target will produce a report showing
 each component and its declared prerequisites.
@@ -243,7 +246,7 @@ goodbye-world: hello-world
 hello-world:
 \end{verbatim}
 
-\subsubsection{\texttt{dependent-report}}
+\subsection{\texttt{dependent-report}}
 
 The \texttt{dependent-report} target will produce a report showing
 each component and the components which directly depend on it.

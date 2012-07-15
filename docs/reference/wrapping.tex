@@ -18,9 +18,56 @@
 Determining the best way to wrap your project's build is important to
 the maintainability and speed of the build process as a whole.  This
 chapter will guide you with some suggestions for setting up and
-creating your component configuration files.
+creating your component configuration files and the API requirements
+of a component \makefile.
 
-\section{Configuration Techniques}
+Essentially there are several steps which must be taken to wrap your
+build:
+
+\begin{description}
+\item Master Configuration
+
+  This will be discussed in \xref{wrap:master-configuration}.
+
+\item Component Configuration
+
+
+  Besides the labor of creating the component configurations
+  (\xref{wrap:source-components}) and providing the component
+  configurations to \lmsbw (\xref{wrap:techniques}), you also have to
+  decide how to split your build process into individual components.
+
+  One good heuristic is to start with the top-level directories that
+  are entered via \make-recursion with your current build system.  Your
+  overall NULL build times will immediately improve, but if each
+  recursively-invoked \makefile  again recurisvely invokes \make,
+  the incremental builds can quickly reach the top of \emph{it's
+    taking too much time} complaints.
+
+  If this happens, the recommended solution is to \emph{divide \&
+    conquer}: create first-class components from second or third level
+  directories in the build process.  Each subdirectory directly
+  assigned to component will have little impact on the NULL build, but
+  will have a great impact on incremental builds.
+
+  This will be discussed in \xref{wrap:component-configuration}.
+
+\item Component \makefile Compliance
+
+  Each \makefile associated with a component, but meet the compliance
+  requirements (\xref{wrap:component-makefiles}) of \lmsbw.  If a
+  \makefile is not fully compliant, the build will probably fail in
+  some mysterious way.  It could fail, for example, due to header
+  files or executables are not available because the \makefile did not
+  properly install them.
+
+  This will be discussed in \xref{wrap:component-makefile}.
+
+\end{description}
+
+
+\section{Master Configuration}\label{wrap:master-configuration}
+\label{wrap:techniques}\todo{rename this label to match section}
 
 \lmsbw provides its greatest benefits when wrapping large projects
 consisting of many different sub-projects and possibly many different
@@ -77,15 +124,15 @@ Cooperation is important in all of this; no one likes change,
 especially when the final results are nebulous until everything is
 finalized and working.
 
-\subsection{Configuration File Directory}
+\subsection{Directory of Configuration Files}\label{wrap:directory}
 
 The basic recommendation for \lmsbw component configuration is to
 place all your configuration files into the same directory.  This
-centralizes all the work and makes global changes easier.  Your
-\texttt{load-configuration} function can simply load all the component
-configuration files from the common directory.
+centralizes all the maintenance and makes global configuration changes
+much easier.  Your \texttt{load-configuration} function can simply
+load all the component configuration files from the common directory.
 
-\subsection{Symlink to Configuration File}
+\subsection{Symlinks to Configuration Files}
 
 With a more complicated product structure, perhaps one with multiple
 SKUs and different componetns in each SKU, you can still keep all your
@@ -94,19 +141,244 @@ have \emph{configuration} directories for each distinct product.
 These \emph{configuration} directories will be populated with relative
 symlinks to the original configuration file; see the
 \texttt{lite-consumer-pro} sample for an example of how this is
-performed.\todo{What if the OS does not support symlinks?}
+performed.
 
-\subsection{Conditional Declaration}
+\subsection{Conditional Component Declaration}
 
 If your operating system does not support symbolic links, you can
-export an environment variable from your shell, include \emph{all}
-your component configuration files, and use the facilities of \gnumake
-to conditionally include only the desired components.
+export an environment variable from your shell, include all your
+component configuration files, as in \xref{wrap:directory}, and use
+the facilities of \gnumake to conditionally include only the desired
+components.
 
 See the \texttt{sports} sample for an example of this configuration
 strategy.
 
-\section{Converting a Build}
+\section{Component Configuration}\label{wrap:component-configuration}
+\label{wrap:source-components}\todo{Rename up this label to match section}
 
-\section{Source Components}
+A source component is a set of source files that statically reside in
+your project's directory tree, and can be built into a set of
+deliverables by invoking a \makefile residing in its directory.
+
+For each declared source component, \lmsbw will generate target
+\makefile rules that are used to perform the \lmsbw verbs\todo{Need to
+  document the verbs} on the component.
+
 \subsection{\texttt{declare\_source\_component}}
+
+To declare a source component to \lmsbw, you'll need the following
+information:
+
+\begin{enumerate}
+\item Component Name
+
+  You must provide a name that will be used to reference the component
+  through the \lmsbw command line, and as a prerequisite of other
+  components.
+
+  The name supplied must be a valid \makefile variable name.
+
+\item Component Description
+
+  You must supply a brief description of the component.  This
+  description will be shown if the \texttt{components} verb is used to
+  show a list of all the components defined in the build project.
+
+\item Reason for building component
+
+  A component is included in a build for one of two reasons:
+
+  \begin{itemize}
+    \item It's part of the delivered product
+    \item It's used by the build system to help build the delivered
+      product.
+  \end{itemize}
+
+  If the component is part of the product, the reason is
+  \texttt{image}, and if it's part of the build the reason is
+  \texttt{build}.
+
+\item Configuration File
+
+  The full pathname of the configuration file that defines the
+  component is part of the declaration so that changes to the
+  configuration file will force the component to be rebuilt.
+
+  Since the pathname is not known until until the configuration file
+  itself is loaded, it becomes the responsibility of your
+  \texttt{load-configuration-function} to marshall this information to
+  the component configuration file.  See the \texttt{sports} sample
+  for one approach to addressing this issue.
+
+\item Path to Source Directory
+
+  The full pathname to the directory containing the sources of the
+  component is also necessary.  To be flexible and allow any client of
+  your wrapped build to put the software in any location on their
+  disk, it is incumbent upon you to determine the full pathname of the
+  source directory at configuration load time.  There are many ways to
+  accomplish this, here are a few suggestions:
+
+  \begin{itemize}
+    \item Use the \gnumake \texttt{realpath} function and a relative path from
+      the configuration file.
+    \item Use an environment variable to denote the root of the source
+      tree, and append the path to the component.
+  \end{itemize}
+
+\item List of prerequisite components
+
+  If your component requires on one or more other components to have
+  been built and installed prior to this component being built, you
+  must provide that information when declaring your component.  \lmsbw
+  will ensure that all prerequisite components are built and installed
+  before the dependent components are built.
+\end{enumerate}
+
+Once this information has been gathered, you can create a component
+configuration file and declare your component with the
+\texttt{declare\_source\_component} function.  The following are a few
+examples of declaring source components:
+
+\begin{itemize}
+\item A component used in the build
+
+\begin{verbatim}
+$(call declare_source_component,              \
+       compiler,                              \
+       Compiler for gungla language,          \
+       build,                                 \
+       $(CURRENT_CONFIGURATION_FILE),         \
+       $(PROJECT_SOURCE_ROOT)/src/cmpiler)
+\end{verbatim}
+
+\item A component with a prerequisite
+
+\begin{verbatim}
+$(call declare_source_component,              \
+       consumer,                              \
+       Consumes data structure & API,         \
+       image,                                 \
+       $(CURRENT_CONFIGURATION_FILE),         \
+       $(subst sample.cfg,src/consumer,$(1)), \
+       producer)
+\end{verbatim}
+
+An idiom you might see in many component configuration files is the
+handline of parameter number five (5) -- the source directory path.
+This file containing this code is loaded from the declared
+\texttt{load-configuration-function}, and that configuration-loading
+function is passed a single parameter: the full pathname of the
+configuration file itself.
+
+Of course, since the component configuration file is loaded and
+evaluated in the context of the \texttt{load-configuration-function},
+the full path to the configuration file is still available as
+\texttt{\$(1)}.
+
+The idiom in argument five (5) is correct because the project
+configuration file resides in the same directory as the component
+source directory.  The code for this parameter replaces the
+configuration file name -- which is known -- with the name of the
+source directory for the component.
+
+\end{itemize}
+
+
+\subsubsection{Valid Attributes}
+
+The following attributes can be set for source components.
+
+\begin{itemize}
+\item{\texttt{component\_attribute\_no\_parallel\_build}}
+  (\xref{api:component-attribute-no-parallel-build})
+\item{\texttt{component\_attribute\_build\_target}}  (\xref{api:component-attribute-build-target})
+\item{\texttt{component\_attribute\_install\_target}} (\xref{api:component-attribute-install-target})
+\item{\texttt{component\_attribute\_api}} (\xref{api:component-attribute-api})
+\end{itemize}
+
+\section{Component \makefile}\label{wrap:component-makefile}
+
+Each component must have a build process that adheres to the following
+rules:
+
+\begin{itemize}
+\item \makefile
+
+  Each component declares a directory which contains the source code
+  and, implicitly, the build process for it.  The build process must
+  be invoked through a \makefile and the \makefile must be present in
+  the top-level source directory of the component.
+
+\item Toolchain
+
+  \lmsbw manages the toolchain that is used when building a component,
+  and therefore each component's build process should only use the
+  standard macros for accessing toolchain tools; for example, use
+  \texttt{\$(CC)} rather than \texttt{cc} or \texttt{gcc}.
+
+  The \gnumake reference manual describes all the standard macros that
+  are available to access development tools.
+
+\item Test Execution
+
+  Because \lmsbw facilitates easy cross-compilation to a different
+  architecture, no component which is declared to be part of the
+  product\todo{xref to 'build' / 'image' decl} should execute any
+  program that is built by the component build.
+
+  You must be very careful when testing in a cross-compiled
+  environment; the details of this are beyond the scope of this
+  software.
+
+\item \texttt{build} target
+
+  The \makefile must have a target that is invoked to \emph{build} the
+  component.  By default, \lmsbw will invoke the component \makefile
+  with no target; in other words, the default target of the component
+  \makefile is used to build the component.
+
+  The \texttt{component\_attribute\_build\_target} API allows you to
+  change the target used to build a individual component.\todo{Need
+    xref}
+
+  You can also override this behavior by overriding the default
+  rules.  See \xref{wrap:override-target-build}.
+
+\item \texttt{install} target
+
+  The \makefile must have a target that is invoked to \emph{install}
+  the component.  By default, \lmsbw will invoke the component
+  \makefile with the target \texttt{install}.
+
+  The \texttt{component\_attribute\_install\_target} API allows you to
+  change the target used to build a individual component.\todo{Need
+    xref}
+
+  The \texttt{install} target must \emph{install} public output of the
+  build process into the directory denoted by the \makefile variable
+  \texttt{DESTDIR}.  \texttt{DESTDIR} is a standard \make variable
+  used when installing software, and it facilitates installing
+  software when permissions to the root directory are not present.
+
+  To be compliant, a component's build process should be written to
+  assume that the directory into which it installs files is the root
+  directory.  For example, if your component, \texttt{alpha}, is
+  installing header files, it should be written to do something like
+  this:
+
+\begin{verbatim}
+$(MKDIR) --parents $(DESTDIR)/usr/include/alpha
+$(CP) --recursive \
+     $(LMSBW_C_BUILD_DIRECTORY)/include/* \
+     $(DESTDIR)/usr/include/alpha
+\end{verbatim}
+
+  \lmsbw guarantees that \texttt{DESTDIR} will be defined.
+
+  You can also override this behavior by overriding the default rules.
+  See \xref{wrap:override-target-install}.
+
+\end{itemize}
+
