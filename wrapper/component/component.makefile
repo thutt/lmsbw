@@ -37,9 +37,9 @@ sync:
 		--verbose						\
 		$(LMSBW_C_SOURCE_DIRECTORY) $(LMSBW_C_BUILD_DIRECTORY);
 
-configure:	component.configure.$(LMSBW_C_COMPONENT)
+configure:	$(LMSBW_C_COMPONENT).configure
 
-build:		component.build.$(LMSBW_C_COMPONENT)
+build:		$(LMSBW_C_COMPONENT).build
 
 
 # The install rule is the only rule invoked by the LMSBW.  It then
@@ -60,6 +60,6 @@ build:		component.build.$(LMSBW_C_COMPONENT)
 # higher level, the data will always be copied, even if the component
 # does not actually need to be built & installed into the DESTDIR.
 #
-install:	component.install.$(LMSBW_C_COMPONENT)
+install:	$(LMSBW_C_COMPONENT).install
 
 include $(LMSBW_DIR)/wrapper/component/last-resort-rules-$(LMSBW_C_KIND)-component.mk
