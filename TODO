@@ -78,7 +78,6 @@
    configuration exists on the build server.  If it does, the object
    file is returned.  If it does not exist, then it should be built
    locally.
- o Does 'clean.component' delete the install directory?  It should not.
  o Besides 'destdir.component' directory output rule, add 'install', build', 
  o How does the rest of the build use 'build'-built components?  There
    is no facility for knowing where they are installed.  Probably
