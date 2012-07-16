@@ -382,3 +382,36 @@ $(CP) --recursive \
 
 \end{itemize}
 
+\subsection{\lmsbw-supplied Variables}
+
+\lmsbw provides several variables to the component \makefile.  The
+following section describes these variables.
+
+\subsubsection{DESTDIR}
+
+The \destdir variable must be used as a root-directory prefix on the
+component \emph{install} rules.
+
+\lmsbw creates the directory and sets \destdir to the absolute
+pathname.  Your rules may assume the directory exists and that full
+control of the directory is available.
+
+
+\subsubsection{LMSBW\_C\_BUILD\_DIRECTORY}
+
+This is set to the root of the build directory for the associated
+comonent.  The component \makefile can place files into this
+directory.
+
+The actual directory in which the build will take place is the current
+working directory for the \make process.  You can use the \gnumake
+\texttt{shell} command to determine that value.
+
+\subsubsection{CFLAGS}
+
+This is the union of the global \texttt{CFLAGS} value managed by
+\lmsbw and the per-component value set via
+\texttt{\texttt{component\_attribute\_cflags}} (\xref{api:cflags}).
+
+The component \makefile should not assign directly to \texttt{CFLAGS},
+but should append additional options to it.
