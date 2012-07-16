@@ -415,3 +415,13 @@ This is the union of the global \texttt{CFLAGS} value managed by
 
 The component \makefile should not assign directly to \texttt{CFLAGS},
 but should append additional options to it.
+
+\subsubsection{GMSL}
+
+This is the absolute pathname of the directory containing the \gmsl
+library.  If you want to use \gmsl in your component's build process,
+you need to do the following:
+
+\begin{verbatim}
+  include $(GMSL)/gmsl
+\end{verbatim}
