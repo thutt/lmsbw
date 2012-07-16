@@ -87,10 +87,4 @@
  o Sample to wrap linux kernel & a small driver.  Cross compile it.
  o document how to implement a new component kind
  o document how to use different toolchains
- o Document that editing your sources while the system is building can
-   cause incorrect incremental builds.  The mtree manifest is created
-   after a successful build of a component.  This is no different from
-   a traditional build -- editing your files while it is build can
-   lead to bad things.
- o Document use of DEFAULT_$(kind)_COMPONENT_MAKE_OPTIONS for overriding.
- o Document component.(build | install)
+ o document all variables passed to a wrapped build.
