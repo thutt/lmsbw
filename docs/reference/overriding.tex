@@ -27,7 +27,7 @@ target for building and the target for installing the component by
 adding particularly named targets to the component's configuration
 file.
 
-This chapter describes the process needed to override these apsects of
+This chapter describes the process needed to override these aspects of
 building a component.
 
 \begin{quote}
@@ -35,7 +35,7 @@ building a component.
   there is seemingly nothing preventing you from overriding the rules
   for component $\alpha$ in the configuration file for $\beta$.
 
-  In fact, there is soemthing which prevents you from doing that: the
+  In fact, there is something which prevents you from doing that: the
   configuration file itself.  When component $\alpha$ is built, only
   the configuration file for $\alpha$ is loaded; no overriding rules
   for $\alpha$ will be present.
@@ -48,8 +48,8 @@ building a component.
 \section{Overriding Build}
 
 In normal practice, it should be exceedingly rare for a\todo{Need to
-  put actual makefile invocation into a function which can be used.}
-component's actual build process to be overriding; even though it
+  put actual \makefile invocation into a function which can be used.}
+component's actual build process to be overridden; even though it
 should be rare, \lmsbw still provides a method of doing just that.
 Here are a few of the reasons why you might want to override the build
 phase of a component:
@@ -64,7 +64,7 @@ phase of a component:
   production deliverable?  Will it fail with an easy-to-diagnose
   error?
 
-  The simle test would be to add a build override target, and then do
+  The simple test would be to add a build override target, and then do
   nothing.
 
 \item Test \bni Infrastructure by corrupting component build
@@ -88,7 +88,7 @@ phase of a component:
   use the \lmsbw infrastructure to invoke the component's build
   process.
 
-\item Component may not need a build; only install static files
+\item Component may not need a build; only installs static files
 
   Perhaps the component doesn't have a build; maybe only static files
   are installed.  In this case, you could override the build to do
@@ -99,10 +99,11 @@ phase of a component:
 
 Once you have determined that you need to override the automatic rules
 to perform a component build, the actual work is quite trivial; all
-you need to do is add a \makefile target to your component
-configuration file, and supply the new commands to associated with the
-target.  The name of the target is based on the component name; if the
-component name is \texttt{alpha}, you would do the following:
+you need to do is add a specially named \makefile target to your
+component configuration file, and supply the new commands to
+associated with the target.  The name of the target is based on the
+component name; if the component name is \texttt{alpha}, you would do
+the following:
 
 \begin{verbatim}
 component.build.alpha:
@@ -119,7 +120,9 @@ process, you can use the same code of \lmsbw proper to instigate this
 by executing:
 
 \begin{verbatim}
-$(call default_$(LMSBW_C_KIND)_component_build)
+$(MAKE)                                                          \
+    $(DEFAULT_$(call uc,$(LMSBW_C_KIND))_COMPONENT_MAKE_OPTIONS) \
+    $(LMSBW_C_BUILD_TARGET)
 \end{verbatim}
 
 You must be aware when overriding default targets that the override
@@ -167,7 +170,9 @@ process, you can use the same code of \lmsbw proper to instigate this
 by executing:
 
 \begin{verbatim}
-$(call default_$(LMSBW_C_KIND)_component_install)
+$(MAKE)                                                          \
+    $(DEFAULT_$(call uc,$(LMSBW_C_KIND))_COMPONENT_MAKE_OPTIONS) \
+    $(LMSBW_C_INSTALL_TARGET)
 \end{verbatim}
 
 
