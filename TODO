@@ -79,12 +79,13 @@
    file is returned.  If it does not exist, then it should be built
    locally.
  o Does 'clean.component' delete the install directory?  It should not.
- o Besides 'destdir.component', add 'install', build', 
+ o Besides 'destdir.component' directory output rule, add 'install', build', 
  o How does the rest of the build use 'build'-built components?  There
    is no facility for knowing where they are installed.  Probably
    component.makefile needs a 'build install directory' variable.
  o Disallow declaring toolchain attribute on 'build'-reasoned components?
  o Sample to wrap linux kernel & a small driver.  Cross compile it.
  o document how to implement a new component kind
- o document how to use different toolchains
- o document all variables passed to a wrapped build.
+ o Document the variables set on the component.makefile command line.
+ o Document that the 'generate' sample must be run for speed testing
+   before making changes.
