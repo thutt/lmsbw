@@ -93,6 +93,25 @@ The following tenets guided the implementation of \lmsbw:
   operating system or architecture -- without having to retool your
   own build process.
 
+  \begin{quotation}
+    Although \lmsbw considers the source directory immutable, and
+    clones it into the build directory, you must not edit your sources
+    while the build is in progress.
+
+    The reason for this is that upon a successful build of a
+    component, \lmsbw uses \mtree to take a snapshot of the state of
+    the source tree; it uses this snapshot to determine if the source
+    tree has changed.  If you edit the source tree while the component
+    is building -- after the source tree has been cloned into the
+    build tree -- the snapshot of the source tree will reflect your
+    editing, and will \emph{not} be consistent with the sources that
+    were just built.
+
+    You would not expect to edit your source files while your source
+    is compiling with a regular build system; don't do it when using
+    \lmsbw either.
+  \end{quotation}
+
 \item Uniform Interface
 
   \lmsbw has been designed to make it easy to wrap an existing build
