@@ -92,6 +92,5 @@
    after a successful build of a component.  This is no different from
    a traditional build -- editing your files while it is build can
    lead to bad things.
- o Remove MAKELEVEL from MESSAGE.  It's always 0.
  o Document use of DEFAULT_$(kind)_COMPONENT_MAKE_OPTIONS for overriding.
  o Document component.(build | install)
