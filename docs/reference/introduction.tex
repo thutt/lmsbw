@@ -49,7 +49,7 @@ The following tenets guided the implementation of \lmsbw:
   incremental builds are as fast as possible.
 
   To achieve such speed, in simple terms, \lmsbw will never recurse
-  into a subdirectory unless something in the corresponding source
+  into a sub-directory unless something in the corresponding source
   tree has changed.  This is accomplished by using the \mtree utility.
   \todo{describe what mtree is.}
 
@@ -247,7 +247,7 @@ Let's examine the what makes \lmsbw different:
   explicitly defined your component declarations.
 
   Intra-component file dependencies are entirely handled by each
-  component's build process.  Not handling file depdencies reduces
+  component's build process.  Not handling file dependencies reduces
   memory use and makes the criteria for recursing easier to determine.
 
   The general determination for building components is this:
@@ -296,7 +296,7 @@ variable.
 Primarily, you must declare a \gnumake function that will load your
 component configuration (\xref{aa:load-configuration-function}), and
 you must indicate what \emph{kind} (\xref{variables:kind}) of
-components your pojrect will use
+components your project will use
 (\xref{variables:component-build-support}).
 
 Other fields of \lmsbwconfiguration can be optionally set to further
@@ -316,7 +316,7 @@ function will load each of these files using the \gnumake
 The component configuration files are, in fact, \makefile snippets
 which can actually have rules that will override the default behavior
 of \lmsbw.  See \xref{chap:overriding} for more details on overriding
-the default behavior of component building, and there are sevaral
+the default behavior of component building, and there are several
 samples included with \lmsbw that show how rule overriding can be
 done.
 

@@ -176,7 +176,6 @@ Source components are declared to \lmsbw through
 described in the following sections.
 
 \subsection{\lmsbwcomponentfield{<component>}{api}}\label{variables:api}
-\todo{Need an xref to the function which sets the value}
 
 This is a list of install directories that contain the public API of
 the component.  The directories must be installed into the \destdir
@@ -196,7 +195,7 @@ dependent, components to be rebuilt.
 If there is no exported API -- no header files, no static libraries,
 etc. -- then you do not need to set this variable.
 
-\apiref{api:api}
+\apiref{api:component-attribute-api}
 
 \subsection{\lmsbwcomponentfield{<component>}{build-directory}}\label{variables:build-directory}
 
@@ -249,7 +248,7 @@ execute tests that were just built for another machine architecture.
 
 Compare to \xref{variables:install-target}.
 
-\apiref{api:build-target}\label{variables:build-target}
+\apiref{api:component-attribute-build-target}\label{variables:build-target}
 
 \subsection{\lmsbwcomponentfield{<component>}{cflags}}\label{variables:cflags}
 
@@ -271,7 +270,7 @@ the build output directory; the purpose of this several fold:
 \item Incremental builds
 
   Changing the options will result in the build output directory
-  changing, but chaning them back to their original value will also
+  changing, but changing them back to their original value will also
   restore the old build directory; incremental builds between compiler
   options changes remain fast.
 
@@ -369,7 +368,7 @@ If not specified, the component's build system will invoked with
 \texttt{install} as the target when processing the \emph{install}
 phase of the build.
 
-\apiref{api:install-target}\label{variables:install-target}
+\apiref{api:component-attribute-install-target}\label{variables:install-target}
 
 \subsection{\lmsbwcomponentfield{<component>}{kind}}\label{variables:kind}
 
@@ -385,8 +384,7 @@ The supported values are as follows:
 \end{itemize}
 
 If adding a new type of component to \lmsbw, you will need to add
-support for new values of this key.\todo{Need a chapter on how to add
-  new component types.}
+support for new values of this key.
 
 \apiref{api:declare-source-component}
 
@@ -399,7 +397,7 @@ component to \emph{never} allow parallel builds; it directly sets the
 This key is normally only needed to address build issues -- caused by
 bad dependencies -- in a very poorly constructed \makefile.
 
-\apiref{api:no-parallel}
+\apiref{api:component-attribute-no-parallel-build}
 
 \subsection{\lmsbwcomponentfield{<component>}{prerequisite}}\label{variables:prerequisite}
 

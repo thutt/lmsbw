@@ -141,12 +141,26 @@ the elapsed time to build each component as each is completed.
 
 \subsection{\texttt{--toolchain}}\label{usinglmsbw:toolchain}
 
-\todo{document toolchain argument}
+This option globally specifies the toolchain that is to be used to
+compile your project.  All components will be compiled using this
+toolchain, unless they specify a toolchain in their configuration
+file.
+
+If you specify a toolchain with this argument, you must specify the
+toolchain root directory with \texttt{--toolchain-root}.
+
+See \xref{chap:toolchain-using} for details on selecting your
+toolchain and \xref{chap:toolchain-configuration} for information
+about creating toolchains.
 
 \subsection{\texttt{--toolchain-root}}\label{usinglmsbw:toolchain-root}
 
-\todo{document toolchain-root argument}
+This option sets the root directory that contains the toolchains which
+can be used to build your project.
 
+See \xref{chap:toolchain-using} for details on selecting your
+toolchain and \xref{chap:toolchain-configuration} for information
+about creating toolchains.
 
 \section{Using \lmsbw \make targets}
 

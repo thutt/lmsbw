@@ -18,18 +18,38 @@
 Determining the best way to wrap your project's build is important to
 the maintainability and speed of the build process as a whole.  This
 chapter will guide you with some suggestions for setting up and
-creating your component configuration files and the API requirements
-of a component \makefile.
+creating your master configuration, component configuration files and
+the API requirements of a component \makefile.
 
-Essentially there are several steps which must be taken to wrap your
+We can break this down to the steps which must be taken to wrap your
 build:
 
 \begin{description}
+\item Defining Roles
+
+  Maintaining a build process for a large system is a thankless,
+  unwieldy job that transcends just the \bni team; managers and
+  developers must also become involved and be stake owners in the
+  process.
+
+  Definition, and acceptance, of roles for all players is an important
+  part of success.
+
+  This will be discussed in \xref{wrap:build-process-roles}.
+
 \item Master Configuration
 
-  This will be discussed in \xref{wrap:master-configuration}.
+  Your master configuration file -- the one which is provided as a
+  command line argument of \lmsbw -- sets up \lmsbw with a callback
+  that is used to load all component configurations that are part of
+  your project.  If you've got a complicated project -- one with
+  multiple SKUs, and different sets of components delivered with each
+  SKU -- then the loading of the individual component configuration
+  files may seem daunting, but it's really very tractable.
 
-\item Component Configuration
+  This will be discussed in \xref{wrap:component-configuration}.
+
+\item Component Creation
 
 
   Besides the labor of creating the component configurations
@@ -40,38 +60,36 @@ build:
   One good heuristic is to start with the top-level directories that
   are entered via \make-recursion with your current build system.  Your
   overall NULL build times will immediately improve, but if each
-  recursively-invoked \makefile  again recurisvely invokes \make,
+  recursively-invoked \makefile  again recursively invokes \make,
   the incremental builds can quickly reach the top of \emph{it's
     taking too much time} complaints.
 
   If this happens, the recommended solution is to \emph{divide \&
     conquer}: create first-class components from second or third level
-  directories in the build process.  Each subdirectory directly
+  directories in the build process.  Each sub-directory directly
   assigned to component will have little impact on the NULL build, but
   will have a great impact on incremental builds.
 
-  This will be discussed in \xref{wrap:component-configuration}.
+  This will be discussed in \xref{wrap:component-creation}.
 
 \item Component \makefile Compliance
 
   Each \makefile associated with a component, but meet the compliance
-  requirements (\xref{wrap:component-makefiles}) of \lmsbw.  If a
+  requirements (\xref{wrap:component-makefile}) of \lmsbw.  If a
   \makefile is not fully compliant, the build will probably fail in
   some mysterious way.  It could fail, for example, due to header
-  files or executables are not available because the \makefile did not
-  properly install them.
+  files or executables not being available because the \makefile of
+  some component did not properly install them.
 
   This will be discussed in \xref{wrap:component-makefile}.
 
 \end{description}
 
-
-\section{Master Configuration}\label{wrap:master-configuration}
-\label{wrap:techniques}\todo{rename this label to match section}
+\section{Build Process Roles}\label{wrap:build-process-roles}
 
 \lmsbw provides its greatest benefits when wrapping large projects
 consisting of many different sub-projects and possibly many different
-product configurations.  The uncertainty that aries about component
+product configurations.  The uncertainty that arises about component
 configuration from situations like these is understandable; \lmsbw is
 a new tool for you.
 
@@ -91,7 +109,7 @@ choices:
     If needed, the \bni team can become involved to help with
     performance or conformance issues.
 
-  \item Overall build \emph{process} maintainance is for the
+  \item Overall build \emph{process} maintenance is for the
     \emph{\bni} team.
 
     The \bni team is not responsible for sub-project \makefile
@@ -108,8 +126,7 @@ choices:
 
     The product configuration -- which sub-projects are included into
     each SKU produced by your company -- is a task owned by the
-    product management team.  Their input for configuration of \lmsbw
-    is if your project is big enough to have multiple SKUs.
+    product management team.
 
   \item Build process configuration is an amalgam of roles
 
@@ -124,6 +141,15 @@ Cooperation is important in all of this; no one likes change,
 especially when the final results are nebulous until everything is
 finalized and working.
 
+\section{Master Configuration}\label{wrap:master-configuration}
+\label{wrap:techniques}\todo{rename this label to match section}
+
+Different operating systems have different file system capabilities,
+and those capabilities will affect your decisions on how to set up
+your component configuration files.  The follow sections provide some
+suggestions, and some pointers to configurations contained in the
+provided \lmsbw samples.
+
 \subsection{Directory of Configuration Files}\label{wrap:directory}
 
 The basic recommendation for \lmsbw component configuration is to
@@ -132,10 +158,13 @@ centralizes all the maintenance and makes global configuration changes
 much easier.  Your \texttt{load-configuration} function can simply
 load all the component configuration files from the common directory.
 
+This works well for a single SKU, but falls apart quickly if you have
+multiple.
+
 \subsection{Symlinks to Configuration Files}
 
 With a more complicated product structure, perhaps one with multiple
-SKUs and different componetns in each SKU, you can still keep all your
+SKUs and different components in each SKU, you can still keep all your
 configuration files in a single directory, but on top of that you will
 have \emph{configuration} directories for each distinct product.
 These \emph{configuration} directories will be populated with relative
@@ -154,18 +183,25 @@ components.
 See the \texttt{sports} sample for an example of this configuration
 strategy.
 
-\section{Component Configuration}\label{wrap:component-configuration}
+\section{Component Creation}\label{wrap:component-creation}
 \label{wrap:source-components}\todo{Rename up this label to match section}
 
-A source component is a set of source files that statically reside in
-your project's directory tree, and can be built into a set of
-deliverables by invoking a \makefile residing in its directory.
+A component is a set of source files that can be transformed into a
+deliverable for your project.  You must declare components to \lmsbw
+through a simple API that has been provided; once declared, \lmsbw
+takes care of all the administrative details for building.
 
 For each declared source component, \lmsbw will generate target
 \makefile rules that are used to perform the \lmsbw verbs\todo{Need to
   document the verbs} on the component.
 
+The following sections describe how to declare all the types of
+components supported by \lmsbw.
+
 \subsection{\texttt{declare\_source\_component}}
+
+A source component is a set of sources that is directly available in
+your project's source tree.
 
 To declare a source component to \lmsbw, you'll need the following
 information:
@@ -202,12 +238,12 @@ information:
 \item Configuration File
 
   The full pathname of the configuration file that defines the
-  component is part of the declaration so that changes to the
+  component.  It is part of the declaration so that changes to the
   configuration file will force the component to be rebuilt.
 
-  Since the pathname is not known until until the configuration file
-  itself is loaded, it becomes the responsibility of your
-  \texttt{load-configuration-function} to marshall this information to
+  Since the pathname is not known until the configuration file itself
+  is loaded, it becomes the responsibility of your
+  \texttt{load-configuration-function} to marshal this information to
   the component configuration file.  See the \texttt{sports} sample
   for one approach to addressing this issue.
 
@@ -244,16 +280,28 @@ examples of declaring source components:
 \begin{itemize}
 \item A component used in the build
 
+The following declares a component named \texttt{compiler}, which is
+included in the project because it is used as part of the
+\texttt{build}.  It's configuration file is named by a \make variable,
+and the source is relative to a directory named by the variable
+\texttt{PROJECT\_SOURCE\_ROOT}.
+
 \begin{verbatim}
 $(call declare_source_component,              \
        compiler,                              \
-       Compiler for gungla language,          \
+       Compiler for build system,             \
        build,                                 \
        $(CURRENT_CONFIGURATION_FILE),         \
-       $(PROJECT_SOURCE_ROOT)/src/cmpiler)
+       $(PROJECT_SOURCE_ROOT)/src/compiler)
 \end{verbatim}
 
 \item A component with a prerequisite
+
+The following declares a component, named \texttt{consumer}, with a
+prerequisite called \texttt{producer}; \texttt{producer} will always
+be built before \texttt{consumer}.  It is included in the project
+because it is delivered as part of the project \texttt{image}.  It's
+configuration file is named by a \make variable.
 
 \begin{verbatim}
 $(call declare_source_component,              \
@@ -266,7 +314,7 @@ $(call declare_source_component,              \
 \end{verbatim}
 
 An idiom you might see in many component configuration files is the
-handline of parameter number five (5) -- the source directory path.
+handling of parameter number five (5) -- the source directory path.
 This file containing this code is loaded from the declared
 \texttt{load-configuration-function}, and that configuration-loading
 function is passed a single parameter: the full pathname of the
@@ -321,11 +369,16 @@ rules:
   The \gnumake reference manual describes all the standard macros that
   are available to access development tools.
 
+  In other words, a compliant \makefile should not directly reference
+  programs, such as the C compiler with \texttt{cc}, or the linker
+  with \texttt{ld}.  Rather, the compliant \makefile should use macros
+  such as \texttt{\$(CC)} and \texttt{\$(LD)} respectively.
+
 \item Test Execution
 
   Because \lmsbw facilitates easy cross-compilation to a different
   architecture, no component which is declared to be part of the
-  product\todo{xref to 'build' / 'image' decl} should execute any
+  product image (see \xref{variables:reason}) should execute any
   program that is built by the component build.
 
   You must be very careful when testing in a cross-compiled
@@ -340,11 +393,11 @@ rules:
   \makefile is used to build the component.
 
   The \texttt{component\_attribute\_build\_target} API allows you to
-  change the target used to build a individual component.\todo{Need
-    xref}
+  change the target used to build a individual component.  See
+  \xref{api:component-attribute-build-target}.
 
   You can also override this behavior by overriding the default
-  rules.  See \xref{wrap:override-target-build}.
+  rules.  See \xref{overriding:overriding-build}.
 
 \item \texttt{install} target
 
@@ -353,8 +406,8 @@ rules:
   \makefile with the target \texttt{install}.
 
   The \texttt{component\_attribute\_install\_target} API allows you to
-  change the target used to build a individual component.\todo{Need
-    xref}
+  change the target used to build a individual component.  See
+  \xref{api:component-attribute-install-target}.
 
   The \texttt{install} target must \emph{install} public output of the
   build process into the directory denoted by the \makefile variable
@@ -370,15 +423,15 @@ rules:
 
 \begin{verbatim}
 $(MKDIR) --parents $(DESTDIR)/usr/include/alpha
-$(CP) --recursive \
-     $(LMSBW_C_BUILD_DIRECTORY)/include/* \
+$(CP) --recursive                          \
+     $(LMSBW_C_BUILD_DIRECTORY)/include/*  \
      $(DESTDIR)/usr/include/alpha
 \end{verbatim}
 
   \lmsbw guarantees that \texttt{DESTDIR} will be defined.
 
   You can also override this behavior by overriding the default rules.
-  See \xref{wrap:override-target-install}.
+  See \xref{overriding:overriding-install}.
 
 \end{itemize}
 
@@ -387,7 +440,7 @@ $(CP) --recursive \
 \lmsbw provides several variables to the component \makefile.  The
 following section describes these variables.
 
-\subsubsection{DESTDIR}
+\subsubsection{\destdir}
 
 The \destdir variable must be used as a root-directory prefix on the
 component \emph{install} rules.
@@ -397,17 +450,23 @@ pathname.  Your rules may assume the directory exists and that full
 control of the directory is available.
 
 
-\subsubsection{LMSBW\_C\_BUILD\_DIRECTORY}
+\subsubsection{\texttt{LMSBW\_C\_INSTALL\_DIRECTORY}}
+
+This is the root directory where all components are installed.  You
+can use this as the base directory when accessing the API directories
+exported by other, prerequisite, components.
+
+\subsubsection{\texttt{LMSBW\_C\_BUILD\_DIRECTORY}}
 
 This is set to the root of the build directory for the associated
-comonent.  The component \makefile can place files into this
+component.  The component \makefile can place files into this
 directory.
 
 The actual directory in which the build will take place is the current
 working directory for the \make process.  You can use the \gnumake
 \texttt{shell} command to determine that value.
 
-\subsubsection{CFLAGS}
+\subsubsection{\texttt{CFLAGS}}
 
 This is the union of the global \texttt{CFLAGS} value managed by
 \lmsbw and the per-component value set via
@@ -416,7 +475,7 @@ This is the union of the global \texttt{CFLAGS} value managed by
 The component \makefile should not assign directly to \texttt{CFLAGS},
 but should append additional options to it.
 
-\subsubsection{GMSL}
+\subsubsection{\texttt{GMSL}}
 
 This is the absolute pathname of the directory containing the \gmsl
 library.  If you want to use \gmsl in your component's build process,
@@ -424,4 +483,19 @@ you need to do the following:
 
 \begin{verbatim}
   include $(GMSL)/gmsl
+\end{verbatim}
+
+\section{Using a Prerequisite's API}\label{wrap:using-prerequisite-api}
+
+If your component has listed a prerequisite component, and the
+prerequisite component has declared an API, you can access the API
+directories by appending the API directory to the value of
+\texttt{LMSBW\_C\_INSTALL\_DIRECTORY}.
+
+If, for example, a prerequisite component declared an API at
+\texttt{/usr/include/src}, you would be able to access the
+include files with:
+
+\begin{verbatim}
+CFLAGS  += -I$(LMSBW_C_INSTALL_DIRECTORY)/usr/include/src
 \end{verbatim}

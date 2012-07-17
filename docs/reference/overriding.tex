@@ -45,14 +45,13 @@ building a component.
   referenced and can cause no damage.
 \end{quote}
 
-\section{Overriding Build}
+\section{Overriding Build}\label{overriding:overriding-build}
 
-In normal practice, it should be exceedingly rare for a\todo{Need to
-  put actual \makefile invocation into a function which can be used.}
-component's actual build process to be overridden; even though it
-should be rare, \lmsbw still provides a method of doing just that.
-Here are a few of the reasons why you might want to override the build
-phase of a component:
+In normal practice, it should be exceedingly rare for a component's
+actual build process to be overridden; even though it should be rare,
+\lmsbw still provides a method of doing just that.  Here are a few of
+the reasons why you might want to override the build phase of a
+component:
 
 \begin{itemize}
 \item Test \bni Infrastructure by not building a component
@@ -133,7 +132,7 @@ use the function shown above to build the component.  See the
 \texttt{component.makefile} to see the determine the necessary
 prerequisites.
 
-\section{Overriding Install}
+\section{Overriding Install}\label{overriding:overriding-install}
 
 \begin{itemize}
 \item Test \bni Infrastructure by not installing component
@@ -155,8 +154,8 @@ component name is \texttt{alpha}, you would do the following:
 \begin{verbatim}
 component.install.alpha:
         $(MKDIR) --parents $(DESTDIR)/usr/include/alpha
-        $(CP) --recursive \
-             $(LMSBW_C_BUILD_DIRECTORY)/include/* \
+        $(CP) --recursive                          \
+             $(LMSBW_C_BUILD_DIRECTORY)/include/*  \
              $(DESTDIR)/usr/include/alpha
 \end{verbatim}
 
