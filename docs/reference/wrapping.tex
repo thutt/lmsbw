@@ -450,6 +450,14 @@ pathname.  Your rules may assume the directory exists and that full
 control of the directory is available.
 
 
+\subsubsection{\texttt{LMSBW\_C\_BUILD\_INSTALL\_DIRECTORY}}\label{wrap:build-install-directory}
+
+You can use this as a prefix to access the build output for components
+that have their \texttt{reason} (\xref{variables:reason}) variable set
+to \texttt{build}.
+
+See \xref{wrap:using-build-components} for details on using this variable.
+
 \subsubsection{\texttt{LMSBW\_C\_INSTALL\_DIRECTORY}}
 
 This is the root directory where all components are installed.  You
@@ -498,4 +506,24 @@ include files with:
 
 \begin{verbatim}
 CFLAGS  += -I$(LMSBW_C_INSTALL_DIRECTORY)/usr/include/src
+\end{verbatim}
+
+\section{Using \texttt{build} Components}\label{wrap:using-build-components}
+
+You can access \texttt{build} component data via the
+\texttt{LMSBW\_C\_BUILD\_INSTALL\_DIRECTORY}
+(\xref{wrap:build-install-directory}) variable passed to your
+component's \makefile.
+
+This is the root of the install directory of components that have
+their \texttt{reason} variable set to \texttt{build}
+(\xref{variables:reason}).
+
+For example, if your project had a \texttt{build} component named
+\texttt{check} that installs it's binaries in
+\texttt{/usr/bin/check}, you could access it from your
+component's \makefile with the following:
+
+\begin{verbatim}
+$(LMSBW_C_BUILD_INSTALL_DIRECTORY)/usr/bin/check/check
 \end{verbatim}

@@ -15,7 +15,7 @@
 %
 \chapter{Introduction}
 
-Recursive use of \make has fallen out of favor after the publication
+Recursive use of \make has fallen out of favor since the publication
 of \emph{Recursive Make Considered Harmful}
 (\texttt{http://aegis.sourceforge.net/auug97.pdf}), but in real-world
 situations, recursive \make is still dominant because \make provides
@@ -25,8 +25,8 @@ non-recursive build system using \make is the complete lack of
 scoping; symbol scoping is accomplished by traditional recursive use
 of \make, and is all but non-existent in a non-recursive
 implementation.  The lack of scoping quickly becomes a maintenance
-issue because the \makefile developers have to be careful to avoid
-macro, target and implicit rule collisions.
+issue because the \makefile developers must be careful to avoid macro,
+target and implicit rule collisions.
 
 Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
@@ -82,9 +82,9 @@ The following tenets guided the implementation of \lmsbw:
 
   Partially due to the unknown behavior of wrapped builds, \lmsbw has
   been designed to consider the source directory tree to be immutable.
-  Further, to reduce the complexity of the implementation of \lmsbw as
-  well as to guarantee correctness, \lmsbw has been written to clone
-  the original source directory into the build directory.
+  Further, to reduce the complexity of the implementation of \lmsbw,
+  as well as to guarantee correctness, \lmsbw has been written to
+  clone the original source directory into the build directory.
 
   The upshot of this is that the original source directory will never
   be sullied by \lmsbw, nor your own wrapped build process.  Another
@@ -100,12 +100,12 @@ The following tenets guided the implementation of \lmsbw:
 
     The reason for this is that upon a successful build of a
     component, \lmsbw uses \mtree to take a snapshot of the state of
-    the source tree; it uses this snapshot to determine if the source
-    tree has changed.  If you edit the source tree while the component
-    is building -- after the source tree has been cloned into the
-    build tree -- the snapshot of the source tree will reflect your
-    editing, and will \emph{not} be consistent with the sources that
-    were just built.
+    the source tree; and on later builds uses this snapshot to
+    determine if the source tree has changed.  If you edit the source
+    tree while the component is building -- after the source tree has
+    been cloned into the build tree -- the snapshot of the source tree
+    will reflect your editing, and will \emph{not} be consistent with
+    the sources that were just built.
 
     You would not expect to edit your source files while your source
     is compiling with a regular build system; don't do it when using
@@ -115,11 +115,11 @@ The following tenets guided the implementation of \lmsbw:
 \item Uniform Interface
 
   \lmsbw has been designed to make it easy to wrap an existing build
-  process, and to access portions of the wrapped build.  In concept,
-  you will declare each one of your \emph{components}, usually a
-  source directory containing a \makefile, to \lmsbw.  Declaration
-  includes information about the directory and options for building
-  it, including which other component are prerequisites.
+  process.  In concept, you will declare each one of your
+  \emph{components}, usually a source directory containing a
+  \makefile, to \lmsbw.  Declaration includes information about the
+  directory and options for building it, including which other
+  components are prerequisites.
 
   \lmsbw compiles this information and generates, on-the-fly, a set of
   \make rules and targets which allow your wrapped build process to be
@@ -131,8 +131,9 @@ The following tenets guided the implementation of \lmsbw:
   \emph{dailyprocessing} component, you would execute \texttt{lmsbw
     report.dailyprocessing}.
 
-  Similarly, many other \emph{verbs} which are exported by \lmsbw can
-  be executed globally or on an individual component.
+  Similarly, many other \emph{verbs} (\xref{lmsbw:target:verbs}) which
+  are exported by \lmsbw can be executed globally or on an individual
+  component.
 
   With the designed-in extensibility of \lmsbw, it's also quite simple
   to add your own verbs to the build process.
@@ -152,7 +153,7 @@ lot of time just to find out if \lmsbw will benefit your build.
 Fortunately, there is a way to quickly determine if \lmsbw will
 provide a benefit, because this source package has a handy script
 which will provide you with benchmark numbers.  Just follow these
-instructions.
+instructions:
 
 \begin{enumerate}
 \item Download \& extract \lmsbw sources
@@ -186,7 +187,8 @@ utility was placed; we'll use that in the next command.
      <source directory>...
 \end{verbatim}
 
-To get a representative sample of how long a normal \nullbuild will
+This is a rough estimate of what your \nullbuild time should be.  To
+get a representative rough idea of how long a normal \nullbuild will
 take for your project, you should run this command multiple times to
 ensure that the in-RAM disk caches are filled.
 
@@ -194,17 +196,19 @@ ensure that the in-RAM disk caches are filled.
 
 In short, the \mtree utility performs a \texttt{stat} on every file in
 the named directories and produces output which can be used later to
-determine if any file in the source tree has changed.  By knowing that
-no files have changed in a source directory, \lmsbw will never recurse
-into that directory to build -- modulo other dependency issues which
-can force a re-build.\todo{This paragraph should be placed where mtree
-  is first mentioned.}
+determine if any file in the directory tree has changed.  By knowing
+that no files have changed in a source directory, \lmsbw will never
+recurse into that directory to build -- modulo other dependency issues
+which can force a re-build.\todo{This paragraph should be placed where
+  mtree is first mentioned.}
 
 What this means, for you, is that the elapsed time shown is a very
 good approximation for how long a full \nullbuild for your project
 will take.  Developers performing incremental builds will greatly
 benefit by never recursively building source directories that have not
 changed.
+
+\todo{What about startup time?}
 
 \section{How \lmsbw Works}
 
@@ -305,7 +309,7 @@ control the behavior of \lmsbw.
 \subsection{Loading Component Configuration}
 
 After loading the command-line-specified master configuration file,
-\lmsbw will invoke the component configuration-loading function
+\lmsbw will invoke the component configuration loading function
 (\xref{aa:load-configuration-function}).  This function is responsible
 for defining all the components that are to be included in your
 project.  Generally there is a one-to-one correspondence of components
@@ -342,7 +346,8 @@ of data:
   such as the \texttt{URL} from which the component can be downloaded.
 
   This flexibility allows new component types to be created without
-  affecting existing component types.
+  affecting existing component types.  See \xref{chap:extending} for
+  details on extending \lmsbw.
 \end{itemize}
 
 
