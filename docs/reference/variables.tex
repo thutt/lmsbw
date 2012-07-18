@@ -22,13 +22,13 @@ variables in a uniform way that makes using \lmsbw simple.
 
 This chapter provides a reference for the variables that are used
 internally by \lmsbw, and that provide the low-level interface used to
-declare and define components\todo{glossary:component}.
+declare and define components.
 
 \section{\lmsbwconfiguration}\label{variables:lmsbw-configuration}
 
 This variable is the nexus of all global configuration for a wrapped
-build.  It must be initialized by the file referenced via the \lmsbw
-\texttt{--configuration} option (\xref{lmsbw:configuration}), or the
+build.  It must be initialized by your master configuration file
+(\xref{lmsbw:configuration}, \xref{wrap:master-configuration}), or the
 build will fail with an error message indicating that the
 configuration is bad.
 
@@ -46,16 +46,17 @@ valid keys and their allowed values.
 Be aware that spaces in \gnumake function arguments are significant.
 The examples shown in this chapter have been formatted to be easily
 readable in a printed document; it is frequently best of have the
-entire function call on a single line in the source file.
+entire function call on a single line in the source file, or to
+fastidiously use \texttt{\$(strip)} on function arguments.
 \end{quote}
 
-\subsection{\texttt{component-build-support}}\label{aa:component-build-support}
+\subsection{\texttt{component-build-support}}\label{variables:component-build-support}
 
-This variable holds a list of supported components build methods that
-you want to be able to access in your wrapped build.  Loading the
-build methods on-the-fly allows \lmsbw to be extensible, and ensures
-that \lmsbw will only load \make functions to support the component
-types you will be using.
+This key holds a list of supported components build methods that you
+want to be able to access in your wrapped build.  Loading the build
+methods on-the-fly allows \lmsbw to be extensible, and ensures that
+\lmsbw will only load \make functions to support the component types
+you will be using.
 
 The following values are valid:
 
@@ -68,25 +69,18 @@ The following values are valid:
 
 \end{itemize}
 
-As \lmsbw is extended to support more component types, this list will
-be updated.
-
 If no component kinds are specified in the configuration, \lmsbw will
 fail with an error.
 
 Only the specified configuration kinds will be loaded and accessible
 when using \lmsbw.  This is the mechanism whereby support for
-additional types of components can be added to \lmsbw.  One could
-imagine, for example a component type which is associated with a
-\emph{branch tag} from a revision control system; such a component
-would facilitate being able to easily, and frequently, build any tagged
-revision present in the version control system.
+additional types of components can be added to \lmsbw
+(\xref{chap:extending}).
 
-\subsection{\texttt{load-configuration-function}}\label{aa:load-configuration-function}
-\todo{Fix this label to be variables:}
+\subsection{\texttt{load-configuration-function}}\label{variables:load-configuration-function}
 
-The value of this key must be the name of a \gnumake function which
-will load the component configuration which make up your project.
+This key must be the name of a \gnumake function which will load the
+component configurations which comprise your project.
 
 \begin{verbatim}
 vv:=$(call set,LMSBW_configuration, \
@@ -94,17 +88,15 @@ vv:=$(call set,LMSBW_configuration, \
       load_configuration)
 \end{verbatim}
 
-In the example above, the function called
-\texttt{load\_configuration}, which you must define, will be invoked
-to load the component configurations.
+In the example above, the user-supplied function called
+\texttt{load\_configuration} will be invoked to load the component
+configurations.
 
 Upon successful exit, the named function must have done the following:
 
 \begin{itemize}
 \item Create list of loaded components
-
-  \lmsbwcomponents must be a space-separated, no duplicate, list of
-  configured components.
+  (\xref{variables:lmsbw-components})
 
 \item Configure individual components
 
@@ -115,23 +107,19 @@ Upon successful exit, the named function must have done the following:
 
 \end{itemize}
 
-\subsection{\texttt{component-build-support}}\label{variables:component-build-support}
 
-\todo{document component-build-support}
-\todo{document that this variable must be set when the
-  load-configuration is set}
-
-\section{\texttt{LMSBW\_components}}
+\section{\texttt{LMSBW\_components}}\label{variables:lmsbw-components}
 
 This variable is a normal \make variable.  After the
 \texttt{load-configuration-function}
-(\xref{aa:load-configuration-function}) has completed initializing the
-build configuration, this variable must contain a list of configured
-components.
+(\xref{variables:load-configuration-function}) has completed
+initializing the build configuration, this variable must contain list
+of configured components.
 
 The variable is internally managed when you use the official APIs for
-declaring components.  If you write new APIs to load components, you
-must ensure that this variable is updated with each load.
+declaring components -- you should never have to change this variable.
+If you write new APIs to load or declare components, you must ensure
+that this variable is updated with each load.
 
 The list must adhere to the following rules:
 
@@ -179,21 +167,21 @@ described in the following sections.
 
 This is a list of install directories that contain the public API of
 the component.  The directories must be installed into the \destdir
-directory during the installation phase of the build.
+during the installation phase of the build.
 
 All directly dependent components will be automatically rebuilt if any
 files change in the named directories.
 
 This variable should be set to the directories that contain exported
-header files, static libraries, icons, and other images that affect
-the building of other components.
+header files, static libraries, icons, and other build output that
+affects the building of other components.
 
 Directories which contain shared libraries do not need to be included;
 changing a shared library does not need to cause other, directly
 dependent, components to be rebuilt.
 
 If there is no exported API -- no header files, no static libraries,
-etc. -- then you do not need to set this variable.
+etc. -- then you do not need to set this key.
 
 \apiref{api:component-attribute-api}
 
@@ -234,8 +222,7 @@ This value should not be used by a client of \lmsbw.
 \subsection{\lmsbwcomponentfield{<component>}{build-target}}\label{variables:build-target}
 
 This key holds the target used when invoking the component's \makefile
-to \emph{build}, but is not the target used for \emph{install}
-(\xref{variables:install-target}).
+to \emph{build}.
 
 If not specified, the component's build system will invoked with no
 target when building; this will cause the default target of the
@@ -244,7 +231,7 @@ component's \makefile to be built.
 This is included because it is sometimes necessary to not fulfill the
 default target of the component's build process -- if you are cross
 compiling, for example, and the component build process attempts to
-execute tests that were just built for another machine architecture.
+execute tests that were just built for another architecture.
 
 Compare to \xref{variables:install-target}.
 
@@ -306,7 +293,7 @@ changing \texttt{CFLAGS} (\xref{variables:cflags}) will.
 
 Furthermore, configuration files can contain \makefile rules which
 will override the default rules for building and installing the
-component.\todo{xref overriding configuration rules}
+component (\xref{chap:overriding}).
 
 % Move this into the overriding chapter...
 %
@@ -328,15 +315,16 @@ This key holds a brief description of the component.
 \subsection{\lmsbwcomponentfield{<component>}{destdir-directory}}\label{variables:destdir-directory}
 
 This key holds the absolute path of the \destdir directory; after
-building, the components public files will be \emph{installed} to this
-intermediate install directory via the \texttt{install} target.
+building, the component's public files must be \emph{installed} to this
+intermediate install directory via the \texttt{install} target of the
+component's \makefile.
+
 \lmsbw proper will then copy the files from the intermediate directory
 to the \texttt{productroot}\todo{glossary 'productroot'} directory.
 
-The component build process, or the component configuration file
-(\xref{chap:overriding}), should install files into a concatenation of
-\destdir and the actual pathname.  For example, if your file should
-end up in \texttt{/usr/include}, one way to install it would be:
+To install files, append the acutal install pathname to \destdir.  For
+example, if your file should end up in \texttt{/usr/include}, one way
+to install it would be:
 
 \begin{verbatim}
 cp include-file.h $(DESTDIR)/usr/include
@@ -374,17 +362,7 @@ phase of the build.
 
 This key represents the \emph{kind} of the component.
 
-The value is used internally to generate \make rules to build \&
-install the component.
-
-The supported values are as follows:
-
-\begin{itemize}
-\item source
-\end{itemize}
-
-If adding a new type of component to \lmsbw, you will need to add
-support for new values of this key.
+See \xref{api:kind} for the allowable values and semantics.
 
 \apiref{api:declare-source-component}
 
@@ -414,7 +392,7 @@ An empty value means that there are no prerequisites.
 
 This key holds the \emph{reason} this component is being built.
 
-See \xref{api:reason} for the allowable values.
+See \xref{api:reason} for the allowable values and semantics.
 
 \apiref{api:declare-source-component}
 

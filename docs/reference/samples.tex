@@ -14,3 +14,93 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %
 \chapter{Samples}\label{chap:samples}
+
+\lmsbw has a range of samples that show a range of capabilities and
+component configuration options.
+
+Each of these can be found in the \texttt{samples} directory of the
+\lmsbw distribution, and each has a script for running them in the
+default configuration as well as a \texttt{README} file.
+
+
+\section{generate}\label{samples:generate}
+
+This sample creates an artifical source tree complete with a recursive
+\make build system \emph{and} \lmsbw configuration files which allows
+you to actually compare the speed difference between a recursive \make
+and the same build wrapped with \lmsbw.
+
+Although it's just a simple, dummied-up, source tree with no complex
+dependencies, but the default configuration does produce 90,955 source
+files in 1856 directories.
+
+Here is a table of results of a run of this sample on the system used
+for testing \lmsbw:
+
+\begin{tabularx}{\linewidth}{|r|c|l|l|X|}
+  \hline Test & Parallel  & \make & \lmsbw & Description \\
+  \hline full build  & 4 & $\approx$ 00:18:00   & $\approx$ 00:18:00 & Full, from scratch, build \\
+  \hline \nullbuild  & 4 & 00:00:02.12 & 00:00:00.80 & Build after full build \\
+  \hline incremental & 4 & 00:00:02.17 & $\approx$ 00:00:01 & Touch file, rebuild \\
+  \hline incremental & 1 & 00:00:14.75 & $\approx$ 00:00:04 & Touch file, rebuild \\
+  \hline
+\end{tabularx}
+
+\section{hello-world}
+
+The \texttt{hello-world} sample is a very simple example of how you
+can wrap a build process with very little work.
+
+Rather than having any component configuration files, this sample
+declares the components directly in the configuration loading
+function.
+
+\section{lite-consumer-pro}
+
+This sample aims to show you how to configure a wrapped build that has
+several different SKUs.  In this case, a \emph{lite}, \emph{consumer}
+and \emph{pro} SKU.  The component configuration files associated with
+the individual SKUs are configured using symlinks to the actual files.
+
+\section{override}
+
+This sample quickly shows how you can override both the \emph{build}
+and \emph{install} rules for a component that is being wrapped.
+
+This is handy if your wrapped build process does not have a compliant
+(\xref{wrap:component-makefile}) build process.  For example, if the
+wrapped \makefile did not have an \emph{install} rule, you could
+override it and manually install the needed files into \destdir.
+
+\section{source-api}
+
+This sample provides an excellent example of how you can declare a
+directory as containing an API; if any file in that directory is
+changed, then directly dependent components will be automatically
+rebuilt, even if otherwise unnecessary.
+
+\section{sports}
+
+This sample showcases a component configuration mechanism which does
+not use symlinks.  Rather, it loads all the configuration files and
+includes or excludes them through the use of \make variables.
+
+This mechanism is really only needed in systems which do not suppport
+symlinks.
+
+\section{startup-time}\label{samples:startup-time}
+
+This sample allows you to measure the time (and indirectly, \lmsbw \&
+\make memory consumption) to load any number of dummied-up component
+configuration files.
+
+It's purpose is to give you a rough estimate of the load-time overhead
+of using \lmsbw on your project.
+
+The time to load all configuration files also includes the time to
+generate all the build-time \make rules: the produced number \emph{is}
+the startup overhead -- \make will immediately begin building your
+project after the configuration files are loaded.
+
+You should not that the task of loading configuration files is
+serialized, and is not affected by any amount of parallelization.

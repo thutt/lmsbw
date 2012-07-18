@@ -208,7 +208,12 @@ will take.  Developers performing incremental builds will greatly
 benefit by never recursively building source directories that have not
 changed.
 
-\todo{What about startup time?}
+You might also be interested in seeing how \lmsbw fares on a
+dummied-up build system with thousands of source files in
+\xref{samples:generate}.  If you are concerned that a large number of
+component configuration files might adversely impact startup time, you
+can validate of allay these fears by checking
+\xref{samples:startup-time}.
 
 \section{How \lmsbw Works}
 
@@ -298,10 +303,10 @@ set up the \lmsbwconfiguration (\xref{variables:lmsbw-configuration})
 variable.
 
 Primarily, you must declare a \gnumake function that will load your
-component configuration (\xref{aa:load-configuration-function}), and
-you must indicate what \emph{kind} (\xref{variables:kind}) of
-components your project will use
-(\xref{variables:component-build-support}).
+component configuration
+(\xref{variables:load-configuration-function}), and you must indicate
+what \emph{kind} (\xref{variables:kind}) of components your project
+will use (\xref{variables:component-build-support}).
 
 Other fields of \lmsbwconfiguration can be optionally set to further
 control the behavior of \lmsbw.
@@ -310,7 +315,7 @@ control the behavior of \lmsbw.
 
 After loading the command-line-specified master configuration file,
 \lmsbw will invoke the component configuration loading function
-(\xref{aa:load-configuration-function}).  This function is responsible
+(\xref{variables:load-configuration-function}).  This function is responsible
 for defining all the components that are to be included in your
 project.  Generally there is a one-to-one correspondence of components
 to component configuration files, that you provide.  The called
