@@ -30,21 +30,6 @@ file.
 This chapter describes the process needed to override these aspects of
 building a component.
 
-\begin{quote}
-  The astute reader will notice, after reading this chapter, that
-  there is seemingly nothing preventing you from overriding the rules
-  for component $\alpha$ in the configuration file for $\beta$.
-
-  In fact, there is something which prevents you from doing that: the
-  configuration file itself.  When component $\alpha$ is built, only
-  the configuration file for $\alpha$ is loaded; no overriding rules
-  for $\alpha$ will be present.
-
-  At the other end of the system, when the $\beta$ component is built,
-  the overriding rules for $\alpha$ are present, but will not be
-  referenced and can cause no damage.
-\end{quote}
-
 \section{Overriding Build}\label{overriding:overriding-build}
 
 In normal practice, it should be exceedingly rare for a component's

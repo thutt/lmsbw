@@ -59,24 +59,14 @@ The following tenets guided the implementation of \lmsbw:
   of time wasted by developers performing administrative tasks around
   their build and build output can be a gigantic productivity sink.
 
-  \lmsbw saves time by compromising on space.  Because developers
-  rarely need to know where their intermediate build output resides --
-  a report is provided which shows where all files are placed, if you
-  \emph{need to know} -- \lmsbw will place build output into
-  directories based on many global options.  For example, \lmsbw could
-  be configured to include the revision control system's branch name
-  when determining the build output directories; this means that
-  builds, regardless the revision control branch being used, would
-  always be incremental.  This is true because switching to an
-  already-used branch will use the already-created build directories.
-
-  Trading off increased disk space for improved developer productivity
-  makes perfect sense to reduce product development cost.
+  \lmsbw saves time by compromising on space.  Trading off increased
+  disk space for improved developer productivity makes perfect sense
+  to reduce product development cost.
 
 \item Source Is Immutable
 
   \lmsbw is a general wrapper for build systems, and generally
-  speaking, each build system perform differently: some write all
+  speaking, each build system performs differently: some write all
   output data into the source directory, while others write to a
   user-specified build directory.
 
@@ -92,25 +82,6 @@ The following tenets guided the implementation of \lmsbw:
   use different toolchains -- perhaps for cross compiling to another
   operating system or architecture -- without having to retool your
   own build process.
-
-  \begin{quotation}
-    Although \lmsbw considers the source directory immutable, and
-    clones it into the build directory, you must not edit your sources
-    while the build is in progress.
-
-    The reason for this is that upon a successful build of a
-    component, \lmsbw uses \mtree to take a snapshot of the state of
-    the source tree; and on later builds uses this snapshot to
-    determine if the source tree has changed.  If you edit the source
-    tree while the component is building -- after the source tree has
-    been cloned into the build tree -- the snapshot of the source tree
-    will reflect your editing, and will \emph{not} be consistent with
-    the sources that were just built.
-
-    You would not expect to edit your source files while your source
-    is compiling with a regular build system; don't do it when using
-    \lmsbw either.
-  \end{quotation}
 
 \item Uniform Interface
 
@@ -142,7 +113,7 @@ The following tenets guided the implementation of \lmsbw:
 
   \lmsbw may not have all the features you need, but it uses the
   \emph{Gnu Make Standard Library} (gmsl), it's fully documented and
-  it's easy to add new features.
+  it's easy to add new features.  See \xref{chap:extending}.
 
 \end{itemize}
 
@@ -209,22 +180,23 @@ benefit by never recursively building source directories that have not
 changed.
 
 You might also be interested in seeing how \lmsbw fares on a
-dummied-up build system with thousands of source files in
-\xref{samples:generate}.  If you are concerned that a large number of
-component configuration files might adversely impact startup time, you
-can validate of allay these fears by checking
+dummied-up build system with tens of thousands of source files by
+referring to \xref{samples:generate}.  If you are concerned that a
+large number of component configuration files might adversely impact
+startup time, you can validate of allay these fears by checking
 \xref{samples:startup-time}.
 
 \section{How \lmsbw Works}
 
 \lmsbw is not a system that actually builds your software; rather, it
 is a wrapper for your own build system that, in most cases, will
-improve the performance of your build system.  You're probably
-wondering how adding a layer on top of an existing build system will
-improve the original -- the simple answer is that many build processes
-perform altogether too much work when no work needs to be performed,
-and \lmsbw cuts out this unnecessary work by never invoking the build
-process when nothing has changed since the last build.
+improve the prompt-to-prompt performance of the system you use now.
+You're probably wondering how adding a layer on top of an existing
+build system will improve the original -- the simple answer is that
+many build processes perform altogether too much work when no work
+needs to be performed, and \lmsbw cuts out this unnecessary work by
+never invoking the build process when nothing has changed since the
+last build.
 
 Let's examine the what makes \lmsbw different:
 
@@ -253,7 +225,7 @@ Let's examine the what makes \lmsbw different:
 \item Recurse only when needed
 
   \lmsbw only maintains the inter-component dependencies that are
-  explicitly defined your component declarations.
+  explicitly defined by your component declarations.
 
   Intra-component file dependencies are entirely handled by each
   component's build process.  Not handling file dependencies reduces
@@ -325,9 +297,7 @@ function will load each of these files using the \gnumake
 The component configuration files are, in fact, \makefile snippets
 which can actually have rules that will override the default behavior
 of \lmsbw.  See \xref{chap:overriding} for more details on overriding
-the default behavior of component building, and there are several
-samples included with \lmsbw that show how rule overriding can be
-done.
+the default behavior of component building.
 
 This configuration-loading function must ultimately produce two sets
 of data:
@@ -337,6 +307,9 @@ of data:
 
   This is a standard \gnumake variable that is a list of all the
   component names which are to be built.
+
+  This variable is internally managed as a by-product of declaring
+  components.
 
 \item \lmsbwcomponent{<component-name>}
 

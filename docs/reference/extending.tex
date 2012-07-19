@@ -74,6 +74,12 @@ generate_component_rules_download
   \texttt{./configure} -- you will have to update
   \texttt{component.makefile} to support this new trampoline mode.
 
+\item Update \lmsbwconfiguration
+
+  If your new component \texttt{kind} requires global configuration
+  changes, make them using the \lmsbwconfiguration
+  (\xref{variables:lmsbw-configuration}) variable.
+
 \item Update documentation
 
   At the very least, you'll need to update \xref{chap:variables} and
