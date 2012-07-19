@@ -102,5 +102,32 @@ generate all the build-time \make rules: the produced number \emph{is}
 the startup overhead -- \make will immediately begin building your
 project after the configuration files are loaded.
 
-You should not that the task of loading configuration files is
+Below is a table which shows the measurements on the test machine for
+various numbers of component configuration files.  The third and
+fourth columns are taken from the \texttt{top} utility, and reflect
+the amount of virtual memory and resident memory consumed by the
+process, respectively.
+
+\begin{tabular}{|c|c|c|c|}
+  \hline configuration files  & startup time in seconds & virt Mb & res Mb \\
+  \hline   1 & $\approx$ 0.14  & 16.132 & 1.448 \\
+  \hline  10 & $\approx$ 0.33  & 16.256 & 1.588 \\
+  \hline  25 & $\approx$ 0.59  & 16.504 & 1.824 \\
+  \hline  50 & $\approx$ 1  & 16.980 & 2.292 \\
+  \hline 100 & $\approx$ 1  & 17.824 & 3.044 \\
+  \hline 200 & $\approx$ 3  & 19.658 & 4.708 \\
+  \hline 300 & $\approx$ 5  & 21.236 & 6.396 \\
+  \hline 400 & $\approx$ 8  & 22.952 & 8.292 \\
+  \hline 500 & $\approx$ 10 & 24.700 & 9.976 \\
+  \hline
+\end{tabular}
+
+One aspect of this table which should hit home is that \lmsbw needs
+only ten (10) seconds of overhead to load, configure and begin
+processing build rules for a project with 500 individual component
+configuration files.  Taking such a small amount of memory for 500
+components also leaves lots of address space for actual builds to
+occur without having to swap out the main build process.
+
+You should note that the task of loading configuration files is
 serialized, and is not affected by any amount of parallelization.
