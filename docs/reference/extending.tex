@@ -15,21 +15,94 @@
 %
 \chapter{Extending \lmsbw}\label{chap:extending}
 
+\lmsbw has been designed and written to facilitate easy extension
+through the adding of new component types.  For the most part, the
+work required to extend will take place in the core
+\texttt{wrapper/engine} code, but depending on the extension, you may
+need to add some additional rules to the trampoline \texttt{makefile}
+in \texttt{wrapper/component}.
+
+Extending boils down to performing these steps:
+
 \begin{enumerate}
-\item functions that must be implemented
-\item testing
-\item documentation
-\item \emph{kind} value must be lowercase
-\item report
-\item 'generate' sample must be run for speed testing before making
-  changes.
+\item Choose component \texttt{kind}
+
+  The new \texttt{kind} should be a single word, all lowercase, and be
+  a good mnemonic.
+
+\item Create a report function
+
+  The report generation (\texttt{generate-report.mk}) system generates
+  reports for each component based on their \texttt{kind}.  It does
+  this by calling a function named using the component's \texttt{kind}
+  field.  Thus, if you have add a new component \texttt{kind} of
+  \emph{download}, you'll have to create a function called:
+
+\begin{verbatim}
+generate_component_report_download
+\end{verbatim}
+
+  The function should take one argument, and the actual argument
+  passed to it will be a \texttt{LMSBW\_component\_<component>}
+  (\xref{variables:lmsbw-component-component}).
+
+  Examining \texttt{generate\_component\_report\_source} will show the
+  way that this function should be implemented.
+
+\item Create a rule generator function
+
+  Dependency rule generation in \lmsbw is handled by calling a
+  function based on the \texttt{kind} of each component.  If you add a
+  new component \texttt{kind} of \emph{download}, you'll have to
+  create a function called:
+
+\begin{verbatim}
+generate_component_rules_download
+\end{verbatim}
+
+  The function should take one argument, and the actual argument
+  passed to it will be a \texttt{LMSBW\_component\_<component>}
+  (\xref{variables:lmsbw-component-component}).
+
+  Examining \texttt{generate\_component\_rules\_source} will show the
+  way that this function should be implemented.
+
+\item Update \texttt{component.makefile}
+
+  If your new component \texttt{kind} requires the component's build
+  process to be invoked for other reasons -- for example, maybe to run
+  \texttt{./configure} -- you will have to update
+  \texttt{component.makefile} to support this new trampoline mode.
+
+\item Update documentation
+
+  At the very least, you'll need to update \xref{chap:variables} and
+  \xref{chap:api} to reflect your additions.
+
+\item Write new tests
+
+  You should write new tests to ensure that your changes are correct.
+  Update \texttt{lmsbw-run-tests} to incorporate them.
+
+\item Run tests
+
+  The \texttt{lmsbw-run-tests} script should be run.
+
+\item Update \texttt{generate} sample.
+
+  You must update the \texttt{generate} sample to incorporate your
+  new component \texttt{kind}.
+
+  Your new component \texttt{kind} should not be significantly
+  different in original build time than the \makefile version.
+
+  Your new component \texttt{kind} must not alter the incremental
+  characteristics of \lmsbw.
+
+\item Add new samples
+
+  You must add new samples that show how to declare and use the new
+  component \texttt{kind}.
+
 \end{enumerate}
 
-One could imagine, for example a component type which is associated
-with a \emph{branch tag} from a revision control system; such a
-component would facilitate being able to easily, and frequently, build
-any tagged revision present in the version control system.
-
-\section{Mandatory Tests}
-\subsection{lmsbw-run-tests}
-\subsection{samples}
