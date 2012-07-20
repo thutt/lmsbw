@@ -1,0 +1,29 @@
+This sample implements two components:
+
+  o producer
+
+    This component declares a data structure and an API to access the
+    data structure.  Changing the defined source API will cause the
+    'consumer' component to be rebuilt.
+
+  o consumer
+
+    The 'consumer' component includes and uses the source API as
+    defined by the 'producer' component.  Any changes to the exported
+    API will cause the 'consumer' to be rebuilt.
+
+The 'run-sample' script will execute lmsbw with all the proper command
+line options to invoke the local configuration configuration.
+
+Any additional command line parameters are passed directly to lmsbw.
+
+For example, try the following:
+
+   ./run-sample
+   ./run-sample log
+   ./run-sample report
+   ./run-sample targets
+   ./run-sample dependent-report
+   ./run-sample prerequisite-report
+
+The build output is placed in /tmp/source-api
