@@ -55,6 +55,30 @@ Rather than having any component configuration files, this sample
 declares the components directly in the configuration loading
 function.
 
+\section{Linux Kernel}
+
+The Linux Kernel sample is a prime example of what \lmsbw can do
+for an existing, real, build system.
+
+Follow the instructions in the associated README file and measure for
+your self how much \lmsbw will save.
+
+\begin{tabularx}{\linewidth}{|r|c|l|l|X|}
+  \hline Test & Parallel  & \make & \lmsbw & Description \\
+  \hline full build  & 4 & 00:25:00 & 00:25:11 & Full, from scratch, build \\
+  \hline \nullbuild  & 4 & 00:00:61 & 00:00:00 & Build after full build \\
+  \hline \nullbuild  & 1 & 00:02:01 & 00:00:01 & Build after full build \\
+  \hline incremental & 4 & 00:00:61 & 00:00:62 & Touch file, rebuild \\
+  \hline incremental & 1 & 00:02:00 & 00:02:07 & Touch file, rebuild \\
+  \hline
+\end{tabularx}
+
+If you are working exclusively on the Linux kernel, \lmsbw won't
+really help your productivity, but if the Linux kernel is only one
+part of a larger project, you can very easily see how much time is
+saved by not recursing into the Linux build process when no work needs
+to be performed.
+
 \section{lite-consumer-pro}
 
 This sample aims to show you how to configure a wrapped build that has
@@ -131,3 +155,4 @@ occur without having to swap out the main build process.
 
 You should note that the task of loading configuration files is
 serialized, and is not affected by any amount of parallelization.
+
