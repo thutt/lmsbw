@@ -29,8 +29,15 @@ function setup ()
 
 function run ()
 {
-    cmd="${lmsbw} --configuration ${config_file} --build-root ${build_root} --parallel 1 --time ${@}";
-    echo "**** ${cmd}";
+    if [ -z "${PARALLEL}" ] ; then
+        echo "**** "
+        echo "**** PARALLEL is not set, using '1'";
+        echo "**** "
+        PARALLEL=1;
+    fi;
+    opts="--time --progress --parallel ${PARALLEL}";
+    cmd="${lmsbw} ${opts} --configuration ${config_file} --build-root ${build_root} ${@}";
+    echo -e "\n${cmd}\n\n";
     ${cmd};
 }
 
