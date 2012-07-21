@@ -41,6 +41,7 @@ for testing \lmsbw:
   \hline Test & Parallel  & \make & \lmsbw & Description \\
   \hline full build  & 4 & $\approx$ 00:18:00   & $\approx$ 00:18:00 & Full, from scratch, build \\
   \hline \nullbuild  & 4 & 00:00:02.12 & 00:00:00.80 & Build after full build \\
+  \hline \nullbuild  & 1 & 00:00:13.96 & 00:00:02.44 & Build after full build \\
   \hline incremental & 4 & 00:00:02.17 & $\approx$ 00:00:01 & Touch file, rebuild \\
   \hline incremental & 1 & 00:00:14.75 & $\approx$ 00:00:04 & Touch file, rebuild \\
   \hline
@@ -61,11 +62,11 @@ The Linux Kernel sample is a prime example of what \lmsbw can do
 for an existing, real, build system.
 
 Follow the instructions in the associated README file and measure for
-your self how much \lmsbw will save.
+yourself how much time \lmsbw will save.
 
 \begin{tabularx}{\linewidth}{|r|c|l|l|X|}
   \hline Test & Parallel  & \make & \lmsbw & Description \\
-  \hline full build  & 4 & 00:25:00 & 00:25:11 & Full, from scratch, build \\
+  \hline full build  & 4 & 00:25:00 & 00:25:26 & Full, from scratch, build \\
   \hline \nullbuild  & 4 & 00:00:61 & 00:00:00 & Build after full build \\
   \hline \nullbuild  & 1 & 00:02:01 & 00:00:01 & Build after full build \\
   \hline incremental & 4 & 00:00:61 & 00:00:62 & Touch file, rebuild \\
