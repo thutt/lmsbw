@@ -26,38 +26,28 @@ function display_help ()
 {
     cat <<EOF
 ${program} \\
-   [--help               | \\
-    --build-root         | \\
-    --configuration      | \\
-    --debug              | \\
-    --parallel           | \\
-    --progress           | \\
-    --tarball-repository | \\
-    --time               | \\
-    --toolchain          | \\
-    --toolchains-root    | \\
-    --verbose]...          \\
-   -- [make-options]...
+   [--help | --verbose |                                   \\
+    --build-root <pathname> | --configuration <pathname> | \\
+    --parallel <integer> | --progress | --time |           \\
+    --toolchains-root <pathname> | --toolchain <name>]...  \\
+    -- [Gnu Make options]...
 
-  Builds a set of software based on a configuration.
-
-  The non-option arguments to this program are passed directly to Gnu
-  Make.
+  Builds a set of software based on a configuration file by wrapping
+  traditional recursive Makefiles.  Incremental builds are much faster
+  than a traditional recursive make.
 
   To see the available targets: lmsbw targets
   To see available components : lmsbw components
 
-  --help | -h                  : Show this help and exit
-  --build-root                 : Specify LMSBW_BUILD_ROOT
-  --configuration              : Full path to LMSBW configuration file
-  --debug                      : Enable debugging LMSBW system
-  --progress                   : Produce more progress messages during build
-  --parallel                   : Specify LMSBW_PARALLEL_LEVEL (-j to Make)
-  --tarball-repository         : Specify LMSBW_TARBALL_REPOSITORY
-  --time                       : Show elapsed time for component builds
-  --toolchain                  : Specify LMSBW_TOOLCHAIN
-  --toolchains-root            : Specify LMSBW_TOOLCHAINS_ROOT
-  --verbose                    : Enable more verbosity from build
+  --help | -h           : Show this help and exit
+  --build-root          : Specify LMSBW_BUILD_ROOT
+  --configuration       : Full path to LMSBW configuration file
+  --parallel            : Specify LMSBW_PARALLEL_LEVEL (-j to Make)
+  --progress            : Produce more progress messages during build
+  --time                : Show elapsed time for component builds
+  --toolchain           : Specify LMSBW_TOOLCHAIN
+  --toolchains-root     : Specify LMSBW_TOOLCHAINS_ROOT
+  --verbose             : Enable more verbosity from build
 
 EOF
 }
@@ -78,7 +68,6 @@ function generate_lmsbw_env ()
     add_lmsbw_env LMSBW_DEBUG;
     add_lmsbw_env LMSBW_PARALLEL_LEVEL;
     add_lmsbw_env LMSBW_PROGRESS;
-    add_lmsbw_env LMSBW_TARBALL_REPOSITORY;
     add_lmsbw_env LMSBW_ELAPSED_TIME;
     add_lmsbw_env LMSBW_TOOLCHAIN;
     add_lmsbw_env LMSBW_TOOLCHAINS_ROOT;
@@ -97,7 +86,6 @@ function main ()
         --long debug                            \
         --long parallel:                        \
         --long progress                         \
-        --long tarball-repository:              \
         --long toolchain:                       \
         --long toolchains-root:                 \
         --long time                             \
@@ -143,10 +131,6 @@ function main ()
             --progress)
                 export LMSBW_PROGRESS=1
                 shift 1 ;;
-
-            --tarball-repository)
-                export LMSBW_TARBALL_REPOSITORY="${2}";
-                shift 2 ;;
 
             --time)
                 export LMSBW_ELAPSED_TIME=1
