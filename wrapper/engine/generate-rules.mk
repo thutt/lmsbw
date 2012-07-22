@@ -249,7 +249,7 @@ define generate_component_destdir
 destdir::	destdir.$(strip $(1))
 
 destdir.$(strip $(1)):
-	$(ATSIGN)$(MESSAGE) "$(1): $(call lmsbw_gcf,$(1),destdir-directory)";
+	$(ATSIGN)$(MESSAGE) "$(1):$(call lmsbw_gcf,$(1),destdir-directory)";
 
 endef
 
@@ -258,7 +258,7 @@ define generate_component_builddir
 builddir::	builddir.$(strip $(1))
 
 builddir.$(strip $(1)):
-	$(ATSIGN)$(MESSAGE) "$(1): $(call lmsbw_gcf,$(1),build-directory)";
+	$(ATSIGN)$(MESSAGE) "$(1):$(call lmsbw_gcf,$(1),build-directory)";
 
 endef
 
@@ -267,7 +267,7 @@ define generate_component_installdir
 installdir::	installdir.$(strip $(1))
 
 installdir.$(strip $(1)):
-	$(ATSIGN)$(MESSAGE) "$(1): $(call lmsbw_gcf,$(1),install-directory)";
+	$(ATSIGN)$(MESSAGE) "$(1):$(call lmsbw_gcf,$(1),install-directory)";
 
 endef
 
