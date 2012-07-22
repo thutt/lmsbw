@@ -320,7 +320,7 @@ intermediate install directory via the \texttt{install} target of the
 component's \makefile.
 
 \lmsbw proper will then copy the files from the intermediate directory
-to the \texttt{productroot}\todo{glossary 'productroot'} directory.
+to the install directory.
 
 To install files, append the acutal install pathname to \destdir.  For
 example, if your file should end up in \texttt{/usr/include}, one way
@@ -340,7 +340,7 @@ component's build process with the \emph{install} target, and this
 target must place files into the \destdir directory.  Upon successful
 completion of component installation, \lmsbw will copy the files from
 the \destdir to the global \emph{install} directory; the global
-install directory, \texttt{productroot}, is shared by all components.
+install directory is shared by all components.
 
 This value of this key must not be used by components of \lmsbw.
 
