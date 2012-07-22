@@ -1,12 +1,9 @@
- o Need way to indicate where the install mtree manifest is located
-   via lmsbwe.  Or, LMSBW_configuration associative array.
- o Allow multiple configuration files.
  o Sharing interfaces between between 'build' and 'image' components must
    to be disallowed.  The compilers may be different, and their set of
    include directories should not intersect.
  o Add new target which reports on build space used per component
  o document that component.makefile is run in the directory where the
-   configuration file is stored.
+   configuration file is stored.  XXX Is this still true?
  o If debugging enabled, component.makefile should warn on undefined
    variables.
  o Need to be able to specify include directories in the install
@@ -16,43 +13,44 @@
    accessible to all components.  CFLAGS could be pre-populated with
    "-I<install-sysroot>/usr/include".
  o What about Windows toolchains?
- o Document that if no toolchain is set, the host toolchain is used.
  o Add lmsbw_ prefix to functions
- o document declare_source_component
- o document declare_component_install_target
- o document declare_component_build_target
- o document declare_component_api
- o document each file of LMSBW_<component>
- o Document all errors
  o Need document on adding a new 'kind' of component.
  o Add 'gdb' verb to load a component's binary output in gdb.
  o Remove TARBALL repository.
- o Document overriding component rules, such as 'install' for cases
-   when the component does not have an 'install' rule.
  o The help message for lmsbw is horrible.
- o Document how to override the build & install & configure rules.
-   Look for 'chap:overriding' in variables.tex
  o Error messages should print component names for disambiguation.
  o Figure out why generate-rules.mk causes errors when put in
    lmsbw-system.mk.
- o Document component.makefile-specific defines are LMSBW_C_<id>.
  o Document that global toolchain settings can be harmful when cross
    compiling.  Components built for use in the build process will be
    built with the global compiler, and thus be unusable.
- o Document toolchain macros CC, GXX, et al.
- o Install directory should be unique for toolchain?  If global, yes.
-   If not global, no.
  o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
  o Support LDFLAGS wrapping per-component.
  o Figure out why error occurs if assignment to __dsm in declare_source_component() is removed.
  o Would using a SHA  the source-api-mtree-manifest make it more robust?
    (No way to change API, and change it back and *not* rebuild
    everything; must clean dependent components...)
- o Remove documentation for component 'source-api-changed' field.
  o Document that subordinate Makefiles must not refer to absolute pathnames.
    This will violate the rule that the source is inviolable, and messes up
    all checking of source directory changes using mtree.
  o Document 'measure-startup-time' target.  Useful for measuring startup time.
- o Remove 'direct-dependents' component key.  It is calculated on-the-fly, as needed.
- o Sample for Linux kernel.
- o GMSL should be passed to each component Makefile.  This should be documented.
+ o Document that the install directory for a project uses the full
+   pathname of the configuration file in the hash.  If you have
+   projects with different SKUs, but the SKUs have exactly the same
+   components, only with compile-time differences in the components,
+   you can force different install directories by having different
+   configuration files.
+ o Need test which verifies that the report system does not change WRT
+   regexp parsing of the output.
+ o One could imagine an extension to the component system.  A plugin
+   for subdirectory makefiles which would has CFLAGS, the relative
+   pathname and the contents of the source file.  The hash would be
+   sent to an official build server asking if an object file for that
+   configuration exists on the build server.  If it does, the object
+   file is returned.  If it does not exist, then it should be built
+   locally.
+ o Besides 'destdir.component' directory output rule, add 'install', build', 
+ o Disallow declaring toolchain attribute on 'build'-reasoned components?
+ o Provide a mechanism to get an mtree manifest of the final install
+   directory.
+ o Need a system to check that prerequisites on a component are correct.

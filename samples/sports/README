@@ -1,0 +1,45 @@
+This sample demonstrates a method of component configuration that
+loads all components  and dynamically configures them based on the
+value of environment variables.
+
+See the 'lite-consumer-pro' sample for a method of configuring
+components using symlinks.
+
+This sample configures the set of included components based on the
+environment variable 'BALL_CLASSIFICATION', which can have one of the
+following values:
+
+    fuzzy
+    hard
+    large
+    round
+    small
+    soft
+
+If a ball's categorization matches the current setting of
+'BALL_CLASSIFICATION', then the component is included in the build.
+If it does not meet the classification, then it is not included.
+
+A component will be provided a unique build directory for each
+classification it matchs.  For example, a 'golf' ball would match the
+'hard' and 'small' classifications, and a build for 'hard' would be
+afforded a different build directory than a build for 'small'.
+
+Execute the classification programs in the 'scripts' directory to see
+an example of how this manner of configuration works.
+
+The 'run-sample' script will execute lmsbw with all the proper command
+line options to invoke the local configuration.
+
+Any additional command line parameters are passed directly to lmsbw.
+
+For example, try:
+
+   ./run-sample
+   ./run-sample log
+   ./run-sample report
+   ./run-sample targets
+   ./run-sample dependent-report
+   ./run-sample prerequisite-report
+
+The build output is placed in /tmp/sport

@@ -1,0 +1,61 @@
+This sample will build, but not install, the Linux kernel.
+
+The recommended way to explore this sample, is as follows:
+
+  o Obtain any Linux kernel tarball from kernel.org.
+
+  o Unpack tarball
+
+  o Configure Kernel
+
+    Run 'make menuconfig' and 'exit & save' without making any
+    configuration changes.
+
+    This will configure a kernel to be compiled on your host computer
+    with all the default options selected.
+
+  o Determine parallelization
+
+    export PARALLEL=4
+
+  o Build kernel
+
+    time -p make bzImage modules -j ${PARALLEL}
+
+    Note the amount of time the build takes.
+
+  o Perform a NULL build
+
+    time -p make bzImage modules -j ${PARALLEL}
+    time -p make bzImage modules -j ${PARALLEL}
+
+    The second run will be done with disk caches full, so it will be
+    the number you want to jot down.
+
+  o Clean and reconfigure the kernel
+
+    make distclean
+    Reconfigure the kernel the same way you did above.
+
+  o Set location of kernel source
+
+    export LINUX_KERNEL_SOURCE_DIR=<full path to kernel sources>
+
+  o Run the 'run-sample' script in this directory.
+
+    time -p PARALLEL=4 LINUX_KERNEL_SOURCE_DIR=<directory> ./run-sample  # Full
+    time -p PARALLEL=4 LINUX_KERNEL_SOURCE_DIR=<directory> ./run-sample  # NULL
+    time -p PARALLEL=4 LINUX_KERNEL_SOURCE_DIR=<directory> ./run-sample  # NULL
+
+
+This sample does not install the Linux kernel into the DESTDIR because
+Linux's does not have a very good system of building the kernel for
+your host architecture and installing it in a specific location.  When
+you've built using the tools on your host computer, Linux will always
+attempt to run programs on your host computer to install the kernel on
+your host -- regardless if you've set INSTALL_PATH, INSTALL_MOD_PATH,
+and INSTALL_HDR_PATH.  It's easy to get the modules and headers
+installed to a specific location, but installing the kernel proper
+just does not work as you might expect.
+
+    

@@ -40,4 +40,4 @@ $(call declare_source_component,		\
 	image,					\
 	$(CURRENT_CONFIGURATION_FILE),		\
 	$(subst product.cfg,src/pro,$(1)))
-$(call declare_component_cflags,pro,-DPRODUCT=$(PRODUCT))
+$(call component_attribute_cflags,pro,-DPRODUCT=$(PRODUCT))

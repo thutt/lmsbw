@@ -1,0 +1,42 @@
+This sample shows how to configure several different products using
+symlinks to component configuration files.
+
+The component configuration files are stored in 'components', while
+the configuration symlinks for the three different products -- lite,
+consumer, pro -- are stored in 'products'.
+
+The 'run-sample' script will execute lmsbw with all the proper command
+line options to invoke the local configuration.
+
+Any additional command line parameters are passed directly to lmsbw.
+
+For example, try the following for each product
+
+   ./run-sample
+   ./run-sample log
+   ./run-sample report
+   ./run-sample targets
+   ./run-sample dependent-report
+   ./run-sample prerequisite-report
+
+To run this sample, you must select which product you want to build
+and export the environment variable 'PRODUCT' set to one of:
+
+   lite
+   consumer
+   pro
+
+To interact with the 'lite' product:
+
+   PRODUCT=lite ./run-sample
+
+To interact with the 'consumer' product:
+
+   PRODUCT=consumer ./run-sample
+
+To interact with the 'pro' product:
+
+   PRODUCT=pro ./run-sample
+
+
+The build output is placed in /tmp/product   

@@ -28,71 +28,6 @@ $(call lmsbw_assert_known_function,$(1),lmsbw_expand_$(call lmsbw_gcf,$(1),reaso
 $(call lmsbw_expand_$(call lmsbw_gcf,$(1),reason)_build_root)/$(strip $(1))/$(call lmsbw_expand_component_hash,$(1))
 endef
 
-# declare_component_no_parallel_build <component>
-#
-#   Ensures that the individual component bearing this attribute will
-#   not be built in parallel.
-#
-#   This attribute, if present, is assigned to LMSBW_C_NO_PARALLEL
-#   when invoking 'component.makefile'.  If not present,
-#   LMSBW_C_NO_PARALLEL is defined, but will have no value.
-#
-define declare_component_no_parallel_build
-$(call lmsbw_assert_known_component,$(1))
-lmsbw_dcnpb:=$(call lmsbw_scf,$(1),no-parallel,-j 1)
-endef
-
-
-# declare_component_build_target <component> <list of targets>
-#
-#  Sets the targets that will be passed to the component's Makefile as
-#  the preliminary targets for the 'bulid' phase.
-#
-#  If not set, LMSBW will not use a specific set of targets for the
-#  'build' phase, and will end up using the default (or first) rule in
-#  the component's Makefile.
-#
-define declare_component_build_target
-$(call lmsbw_assert_known_component,$(1))
-lmsbw_dcbt:=$(call lmsbw_scf,$(1),build-target,$(2))
-endef
-
-
-# declare_component_install_target <component> <list of targets>
-#
-#  Sets the targets that will be passed to the components's Makefile
-#  as the preliminary targets for the 'install' phase.
-#
-#  If not set, LMSBW will set it to 'install'.
-#
-define declare_component_install_target
-$(call lmsbw_assert_known_component,$(1))
-lmsbw_dcbt:=$(call lmsbw_scf,$(1),install-target,$(2))
-endef
-
-
-# declare_component_api <component>, <list of directories>
-#
-#  This function declares a list of directories which contain the
-#  public API of the component.  The directories can contain the
-#  source API (header files) and/or the binary API (static libs).
-#
-#  This is be used to cause dependent components to be rebuilt *only*
-#  when the API has been changed.
-#
-#  The files installed in $(DESTDIR) are used when checking if the API
-#  has changed.
-#
-#  If you are using dynamic libraries, the directories in which they
-#  are installed should not be included in the API directories; this
-#  is because internal changes to dynamic libraries do not affect
-#  components which are simply linked to them.
-#
-define declare_component_api
-$(call lmsbw_assert_known_component,$(1))
-lmsbw_dca:=$(call lmsbw_scf,$(1),api,$(strip $(2)))
-endef
-
 # declare_component_kind <component>, <kind>
 #
 #   Declares the type of the component.  This value is used to
@@ -137,7 +72,7 @@ $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),reason,$(2))
 endef
 
-# declare_component_component <component>, <component>>
+# declare_component_component <component>, <component>
 #
 #   Sets the component name.
 #
@@ -146,7 +81,7 @@ $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),component,$(2))
 endef
 
-# declare_component_prerequisite <component>, <prerequisites>>
+# declare_component_prerequisite <component>, <prerequisites>
 #
 #   Sets the list of components which must be built prior to this
 #   component.
@@ -161,7 +96,7 @@ $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),prerequisite,$(2))
 endef
 
-# declare_component_source_directory <component>, <absolute directory>>
+# declare_component_source_directory <component>, <absolute directory>
 #
 #   Associates a source directory with the component.
 #
@@ -174,7 +109,7 @@ $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_scf,$(1),source-directory,$(2))
 endef
 
-# declare_component_configuration_file <component>, <configuration file path>>
+# declare_component_configuration_file <component>, <configuration file path>
 #
 #  This file associates the configuration file which declared the
 #  component to the component.  This is done for dependency checking
@@ -214,22 +149,5 @@ $(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-bui
 $(call lmsbw_scf,$(1),install-directory,					\
 	$(call lmsbw_expand_install_directory,$(call lmsbw_gcf,$(1),reason)))
 $(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),			\
-	$(call declare_component_install_target,$(strip $(1)),install))
-endef
-
-
-# declare_component_toolchain <component>,<toolchain-name>
-#
-#
-define declare_component_toolchain
-$(call lmsbw_assert_known_component,$(1))	\
-$(call lmsbw_scf,$(1),toolchain,$(2))
-endef
-
-# declare_component_cflags <component>,<cflags value>
-#
-#
-define declare_component_cflags
-$(call lmsbw_assert_known_component,$(1))	\
-$(call lmsbw_scf,$(1),cflags,$(2))
+	$(call component_attribute_install_target,$(strip $(1)),install))
 endef

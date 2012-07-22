@@ -1,0 +1,18 @@
+This sample creates two components which override the default
+component 'build' and 'install' targets.
+
+The 'run-sample' script will execute lmsbw with all the proper command
+line options to invoke the local configuration.
+
+Any additional command line parameters are passed directly to lmsbw.
+
+For example, try the following:
+
+   ./run-sample
+   ./run-sample log
+   ./run-sample report
+   ./run-sample targets
+   ./run-sample dependent-report
+   ./run-sample prerequisite-report
+
+The build output is placed in /tmp/override

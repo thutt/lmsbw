@@ -13,7 +13,10 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %
-\chapter{Public API Reference}
+\chapter{Public API Reference}\label{chap:api}
+
+This chapter facilitates the modification and extension of \lmsbw.
+
 \section{\texttt{declare\_source\_component}}\label{api:declare-source-component}
 
 This function allows the declaration of \emph{source-based} components
@@ -23,7 +26,8 @@ Source-based means that the entire source for the component is
 available in a directory tree that is currently accessible on the
 machine running the build.  The source tree must have a \makefile at
 the top level that will build the source in an \lmsbw-compliant
-manner.\todo{xref to makefile compliance.}
+manner.  See \xref{wrap:component-makefile} for details on \makefile
+compliance.
 
 \subsection{API}
 
@@ -85,7 +89,7 @@ declare_source_component
 
 \end{itemize}
 
-\section{\texttt{component\_attribute\_no\_parallel\_build}}\label{api:no-parallel}
+\section{\texttt{component\_attribute\_no\_parallel\_build}}\label{api:component-attribute-no-parallel-build}
 
 This function ensures that the associated component's build is never
 able to further invoke recursive instances of \make in parallel.
@@ -118,7 +122,7 @@ component_attribute_no_parallel_build
 
 \end{itemize}
 
-\section{\texttt{component\_attribute\_build\_target}}\label{api:build-target}
+\section{\texttt{component\_attribute\_build\_target}}\label{api:component-attribute-build-target}
 
 This changes the target for building a component with the component's
 build process from the \emph{default} \make target to the list of
@@ -149,7 +153,7 @@ component_attribute_build_target
 
 \end{itemize}
 
-\section{\texttt{component\_attribute\_install\_target}}\label{api:install-target}
+\section{\texttt{component\_attribute\_install\_target}}\label{api:component-attribute-install-target}
 
 This changes the target for installing a component with the
 component's build process from the \texttt{install} \make target to
@@ -180,7 +184,7 @@ component_attribute_install_target
     documented ideas.}
 \end{itemize}
 
-\section{\texttt{component\_attribute\_api}}\label{api:api}
+\section{\texttt{component\_attribute\_api}}\label{api:component-attribute-api}
 
 This allows the specification of \emph{install} directories that
 contain an exported \emph{API}.
@@ -191,10 +195,12 @@ if anything changes in those directories, the dependent component is
 rebuilt.
 
 It is incumbent upon the dependent component to have proper rules in
-the \makefile to detect changes in these API directories.  In other
-words, if an API header file or static library changes, it is up to
-the dependent \makefile to have the proper rules to detect this change
-and rebuild or relink as necessary.
+the component \makefile to detect changes in these API
+directories\footnote{For example, the \texttt{gcc} option
+  \texttt{-MMD} combined with the \makefile including the generated
+  dependencies}.  In other words, if an API header file or static
+library changes, it is up to the dependent \makefile to have the
+proper rules to detect this change and rebuild or relink as necessary.
 
 \subsection{API}
 
@@ -239,9 +245,7 @@ component_attribute_api
         execute the \emph{report} verb on a component to find out
         the location of API directories.}
 
-    \item Standardize on install locations locations\todo{Document how
-      dependent components can gain access to headers and libraries.
-      xref here}
+    \item Standardize on install locations locations
 
       If you have header files, put them in
       \texttt{/usr/include/\emph{component-name}}.
@@ -256,6 +260,9 @@ component_attribute_api
       also be unique.  And, this rule allows dependent components to
       easily include your header files, and link with your libraries
       -- because their location will be known.
+
+      See \xref{wrap:using-prerequisite-api} for details on using an API
+      exported by a prerequisite component.
 
     \item Install to \destdir
 
@@ -306,7 +313,8 @@ component_attribute_cflags
   This the value to which \texttt{CFLAGS} will be set when initiating
   the component's build process.
 
-  Be sure to match the value with the toolchain that is being used.
+  Be sure to match the values set with the toolchain that is being
+  used.
 
 \end{itemize}
 
@@ -314,6 +322,18 @@ component_attribute_cflags
 
 This internal function allows the specification of the \texttt{kind}
 of the component.
+
+The value is used internally to generate \make rules to build \&
+install the component.
+
+The supported values are as follows:
+
+\begin{itemize}
+\item source
+\end{itemize}
+
+If adding a new type of component to \lmsbw, you will need to add
+support for new values of this key.
 
 This value is used in the creation of function names, and these
 \texttt{kind}-based function names are used to process -- generate
@@ -324,9 +344,10 @@ rules, produce reports, etc. -- components of that specific
 attempting to invoke them\footnote{Invoking a function name which does
   not exist in \gnumake produces no error, and does nothing.  That's
   ok; \lmsbw takes advantage of that with component declaration
-  functions.}.  If you implement a new \emph{kind} of component, and
-fail to create all the necessary functions, \lmsbw will produce an
-appropriate error and stop.
+  functions which are processed in the main \makefile and ignored in
+  \texttt{component.makefile}.}.  If you implement a new \emph{kind}
+of component, and fail to create all the necessary functions, \lmsbw
+will produce an appropriate error and stop.
 
 See \xref{variables:component-build-support} for information on
 loading support for a particular \emph{kind} of component in your
@@ -384,8 +405,8 @@ declare_component_description
 
 \section{\texttt{declare\_component\_reason}}\label{api:reason}
 
-This function allows the specification of the reason that a component
-is included in the build.
+This function allows the specification of the \emph{reason} that a
+component is included in the build.
 
   Reason can be one of two values:
 
@@ -402,7 +423,7 @@ is included in the build.
 
   \item \texttt{image}
 
-    The component is built as part of the overall product, and it is
+    The component is built as part of the overall project, and it is
     intended to be delivered with the shipping product.
 
     Components declared with this \emph{reason} will always use the
@@ -423,6 +444,9 @@ is included in the build.
   reduces the risk of accidentally installing build-only components
   into a deliverable product.
 
+  See \xref{wrap:using-build-components} for information on using
+  \texttt{build}-reasoned components.
+
 \subsection{API}
 
 \begin{verbatim}
@@ -441,6 +465,7 @@ declare_component_reason
   set.
 
 \item reason
+  
   This is the value to which the component's \texttt{reason} variable
   will be set.
 
@@ -470,7 +495,7 @@ declare_component_component
 \item name
 
   This is the value to which the component's \texttt{component}
-  variable will be set.'
+  variable will be set.
 
 \end{itemize}
 
@@ -490,10 +515,10 @@ exist, \make will issue an error when attempting to fulfill the
 targets necessary to produce the build.
 
 If a prerequisite component has declared any API directories
-(\xref{api:api}, those API directories are checked for changes as part
-of determining if this component needs to be built.  If any
-prerequisite component's API has changed files, then this component
-will be built.
+(\xref{api:component-attribute-api}), those API directories are
+checked for changes as part of determining if this component needs to
+be built.  If any prerequisite component's API has changed files, then
+this component will be built.
 
 \subsection{API}
 
@@ -527,7 +552,8 @@ This function allows the specification of the full pathname to the
 source code for the associated component.
 
 This must be the full path of the directory containing the source, and
-importantly, the \makefile which actually builds the component.
+importantly, it must also contain the \makefile which actually builds
+the component.
 
 \lmsbw will produce an error if the named directory does not exist.
 
@@ -579,7 +605,7 @@ declare_component_configuration_file
 \item component-name
 
   This is the name of the component for which the component's
-  \texttt{cofiguration-file} variable should be set.
+  \texttt{configuration-file} variable should be set.
 
   The component must have been declared before this attribute can be
   set.
@@ -617,33 +643,9 @@ component_attribute_toolchain
   configured when building and installing this component.
 
   If the toolchain does not exist, \lmsbw will produce an
-  error.\todo{Need to xref how to use the toolchain}.
-
+  error.
 \end{itemize}
 
-\section{\texttt{default\_source\_component\_build}}\label{api:default-source-component-build}
-
-This function, which can be used when overriding the default rules for
-building a component (\xref{chap:overriding}) expands to the text used
-by \lmsbw proper to invoke \make using the component's own build
-process, to build.
-
-\subsection{API}
-
-\begin{verbatim}
-default_source_component_build
-\end{verbatim}
-
-
-\section{\texttt{default\_source\_component\_install}}\label{api:default-source-component-install}
-
-This function, which can be used when overriding the default rules for
-installing a component (\xref{chap:overriding}) expands to the text used
-by \lmsbw proper to invoke \make, using the component's own build
-process, to install.
-
-\subsection{API}
-
-\begin{verbatim}
-default_source_component_install
-\end{verbatim}
+See \xref{chap:toolchain-usage} and
+\xref{chap:toolchain-configuration} for information on using and
+configuring toolchains.

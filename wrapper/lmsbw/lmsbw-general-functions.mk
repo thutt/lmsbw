@@ -32,6 +32,7 @@ endef
 #  unique, based on a set of global attributes.  If a global attribute
 #  changes, for example:
 #
+#    o master configuration file
 #    o adding a component
 #    o removing a component
 #    o changing the global toolchain
@@ -40,6 +41,14 @@ endef
 #  generated product will be different.
 #
 #  Consider:
+#
+#    o Changing product SKU with a config file
+#
+#      If you have a product SKU that has the same set of components
+#      as another SKU, but the individual components are compiled
+#      differently, then just make sure each SKU has their own
+#      configuration file, as the configuration file pathname is
+#      included in the hash.
 #
 #    o Removing a component
 #
@@ -55,7 +64,7 @@ endef
 #      too.
 #
 define lmsbw_expand_install_directory_hash
-$(call lmsbw_expand_md5sum_text,$(LMSBW_components)$(LMSBW_TOOLCHAIN))
+$(call lmsbw_expand_md5sum_text,$(realpath $(LMSBW_CONFIGURATION_FILE))$(LMSBW_components)$(LMSBW_TOOLCHAIN))
 endef
 
 # lmsbw_expand_install_directory <build | image>
