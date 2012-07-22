@@ -49,7 +49,6 @@
    configuration exists on the build server.  If it does, the object
    file is returned.  If it does not exist, then it should be built
    locally.
- o Besides 'destdir.component' directory output rule, add 'install', build', 
  o Disallow declaring toolchain attribute on 'build'-reasoned components?
  o Provide a mechanism to get an mtree manifest of the final install
    directory.
