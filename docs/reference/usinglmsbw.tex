@@ -68,17 +68,6 @@ process.
 \end{verbatim}
 
 
-\subsection{\texttt{--debug}}
-
-This option, which is not required, enables debugging of the \lmsbw
-system.
-
-This option should not be used under normal circumstances.
-
-\begin{verbatim}
---debug
-\end{verbatim}
-
 \subsection{\texttt{--progress}}
 
 In normal operation, \lmsbw is very silent about the activities it is
@@ -145,7 +134,7 @@ See \xref{chap:toolchain-usage} for details on selecting your
 toolchain and \xref{chap:toolchain-configuration} for information
 about creating toolchains.
 
-\section{Using \lmsbw \make targets}\label{lmsbw:target:verbs}
+\section{Using \lmsbw targets}\label{lmsbw:target:verbs}
 
 Although \lmsbw is extremely fast, it is sometimes desirable to have
 it operate on only one component, or to provide further information
@@ -156,6 +145,11 @@ about the wrapped build.
 This is the default target, and it will cause your wrapped build to be
 executed in its entirety.
 
+\subsection{\texttt{mtree}}
+
+This target will build, install and show the location of the resulting
+\mtree utility executable.
+
 \subsection{\texttt{targets}}
 
 The \texttt{targets} target causes \lmsbw to produce a report of all
@@ -163,73 +157,41 @@ top-level targets that are accessible to the user.
 
 The \texttt{target} report will have this format:
 
+\begin{small}
 \begin{verbatim}
                       all : Perform a full build
+                    mtree : Install and show mtree executable path
                   targets : Produce this report
+               components : List all components in project
+      prerequisite-report : Show declared component prerequisites
+         dependent-report : Show computed component dependencies
+     measure-startup-time : Measure time to load configruation files
+ measure-memory-footprint : Measure lmsbw memory overhead
      report[.<component>] : Generate component reports
     install[.<component>] : Build & install components
       clean[.<component>] : Clean build output for components
         log[.<component>] : Display component build logs
-      prerequisite-report : Show declared component prerequisites
-         dependent-report : Show computed component dependencies
+    destdir[.<component>] : Shows the intermediate install directory
+   builddir[.<component>] : Shows the build directory
+ installdir[.<component>] : Shows the install directory
 \end{verbatim}
+\end{small}
 
 The \texttt{[.<component>]} notation means that this target can also
 be executed on a specific component of the wrapped build.  To
 determine which components exist in the build, see
 \xref{lmsbw:target:components}.
 
-\subsection{\texttt{report}}
+\subsection{\texttt{components}}\label{lmsbw:target:components}
 
-The \texttt{report} target will produce a report about each wrapped
-component in the build.  The report, for each component, will look
-something like this:
+The \texttt{compnents} target causes \lmsbw to produce a report of all
+the components present in your project build.  The report will take
+this form:
 
-\begin{footnotesize}
 \begin{verbatim}
-hello-world|Component   : hello-world
-hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
-hello-world|  desc      : Hello World example
-hello-world|  kind      : source
-hello-world|  reason    : image
-hello-world|  source    : /lms/build-process/samples/hello-world/src
-hello-world|  prereq    :
-hello-world|  direct dep: goodbye-world
-hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
-hello-world|  toolchain :
-hello-world|  api       : /usr/include/hello-world
-hello-world|Install Root: /tmp/hello/target/install/35f228d9be0694a19de8666fbcdbd80d
-hello-world|Build Root  : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2
-hello-world|  build     : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
-hello-world|  destdir   : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
-hello-world|Targets     :
-hello-world|  install   : install
-hello-world|  build     : build
+            goodbye-world : Goodbye World example
+              hello-world : Hello World example
 \end{verbatim}
-\end{footnotesize}
-
-\subsection{\texttt{install}}
-
-The \texttt{install} target is used by the default target
-(\xref{lmsbw:target:all}) to build and install each component.
-
-\subsection{\texttt{clean}}
-
-The \texttt{clean} target is used to clean out the entire build
-directory, or the build directory of a specific compoment.
-
-\subsection{\texttt{log}}
-
-The \texttt{log} target is used to display all the build logs, or the
-build log of a specific component, to the console.
-
-The build log for each component contains all the output produced when
-recursively invoking the build process of that component.
-
-If the build fails, the component that failed to build will be shown
-on the console, and then you can use the \texttt{log} target to view
-the actual output of building that component.
-
 
 \subsection{\texttt{prerequisite-report}}
 
@@ -259,13 +221,111 @@ goodbye-world:
 hello-world: goodbye-world
 \end{verbatim}
 
-\subsection{\texttt{components}}\label{lmsbw:target:components}
+\subsection{\texttt{measure-startup-time}}\label{usinglmsbw:measure-startup-time}
 
-The \texttt{compnents} target causes \lmsbw to produce a report of all
-the components present in your project build.  The report will take
-this form:
+This target is used when you want to measure the startup overhead of
+\lmsbw.
 
+This target will load all your configuration files, generate all the
+rules for building your project, and then immediately before starting
+to build your project.
+
+\subsection{\texttt{measure-memory-footprint}}
+
+This target is used when you want to measure the memory overhead of
+\lmsbw.
+
+This target is the same as \xref{usinglmsbw:measure-startup-time}, but
+instead of exiting, it will wait until the program is killed with
+\texttt{ctrl-c}.
+
+It is expected that while the program is waiting, you will measure the
+memory consumption of the \make process started by \lmsbw.
+
+\subsection{\texttt{report}}
+
+The \texttt{report} target will produce a report about each wrapped
+component in the build.  The report, for each component, will look
+something like this:
+
+\begin{landscape}
+\begin{small}
 \begin{verbatim}
-            goodbye-world : Goodbye World example
-              hello-world : Hello World example
+hello-world|Component   : hello-world
+hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
+hello-world|  desc      : Hello World example
+hello-world|  kind      : source
+hello-world|  reason    : image
+hello-world|  source    : /lms/build-process/samples/hello-world/src
+hello-world|  prereq    :
+hello-world|  direct dep: goodbye-world
+hello-world|  config    : /lms/build-process/samples/hello-world/hello-world.cfg
+hello-world|  toolchain :
+hello-world|  api       : /usr/include/hello-world
+hello-world|Install Root: /tmp/hello/target/install/35f228d9be0694a19de8666fbcdbd80d
+hello-world|Build Root  : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2
+hello-world|  build     : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
+hello-world|  destdir   : /tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
+hello-world|Targets     :
+hello-world|  install   : install
+hello-world|  build     : build
 \end{verbatim}
+\end{small}
+\end{landscape}
+
+\subsection{\texttt{install}}
+
+The \texttt{install} target is used by the default target
+(\xref{lmsbw:target:all}) to build and install each component.
+
+\subsection{\texttt{clean}}
+
+The \texttt{clean} target is used to clean out the entire build
+directory, or the build directory of a specific compoment.
+
+\subsection{\texttt{log}}
+
+The \texttt{log} target is used to display all the build logs, or the
+build log of a specific component, to the console.
+
+The build log for each component contains all the output produced when
+recursively invoking the build process of that component.
+
+If the build fails, the component that failed to build will be shown
+on the console, and then you can use the \texttt{log} target to view
+the actual output of building that component.
+
+\subsection{\texttt{destdir}}
+
+Because \lmsbw determines the location of the \destdir based on global
+configuration options, this target will print out the \destdir for the
+current configuration.
+
+Since the \destdir contains the install image of the component,
+knowning the \destdir location is useful if you want to perform any
+post-build processing on the component -- for example, running a
+debugger on the program or making sure that all deliverables are
+installed correctly.
+
+\subsection{\texttt{builddir}}
+
+Because \lmsbw determines the location of the build directory based on
+global configuration options, this target will print out the build
+directory name for the current configuration.
+
+You may want to know the build directory name to post process portions
+of the build -- for example, disassembling an object file.
+
+\subsection{\texttt{installdir}}
+
+Because \lmsbw determines the location of the install directory based
+on global configuration options, this target will print out the
+install directory name for the current configuration.
+
+You may want to know the install directory name to post process
+portions of the build -- for example, creating \& checking a manifest
+of files that are installed; if the manifest does not have the same
+set of files for each offical build, then the \bni team needs to
+investigate why the product has changed.
+
+
