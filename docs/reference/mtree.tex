@@ -15,3 +15,41 @@
 %
 \chapter{Uses of \mtree}\label{chap:mtree}
 
+The \mtree utility is used to check if the contents of a directory
+tree have changed; on the first run of mtree, it creates a manifest of
+each file in the directory and subsequent runs compare the current
+status of the files in the directory with the saved manifest.  If
+there are no changes, \mtree exits with a zero return code, otherwise
+it exits with a non-zero return code.
+
+\lmsbw uses \mtree to determine if a component is up-to-date with
+respect to its source directory, but there are many other ways that
+the tool can be used by satellite utlities in your own build system.
+
+\begin{itemize}
+\item Product Manifest
+
+  You can use \mtree to ensure that the final product image has the
+  proper set of files, file permissions, file owners and file groups.
+
+\item Component Manifest
+
+  Anything installed in the \destdir of a component is a deliverable.
+  If the manifest of a component's \destdir changes, that means that
+  its set of deliverables might have also changed.
+
+  By tracking component \destdir manifests, you can be sure that a
+  change to a \destdir will trigger action: if a new file is
+  suddenly present, or if an existing file is no long present.
+
+\item Ownership \& Group
+
+  You can check that all files in your product have the proper
+  ownership and group.
+
+\item Permissions
+
+  You can check that all files in your product have the proper
+  permissions.
+
+\end{itemize}
