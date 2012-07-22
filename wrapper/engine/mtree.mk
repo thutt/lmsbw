@@ -17,7 +17,7 @@
 # This file contains the targets & rules to build & install mtree.
 
 $(MTREE): $(LMSBW_DIR)/utilities/mtree/mtree
-	@$(MESSAGE) "Installing mtree";
+	@$(PROGRESS) "Installing mtree";
 	@$(MKDIR) --parents $(dir $@)
 	@$(CP) $< $@
 
