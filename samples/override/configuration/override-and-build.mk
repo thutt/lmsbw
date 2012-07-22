@@ -27,6 +27,7 @@ $(call declare_source_component,					\
        $(CURRENT_CONFIGURATION_FILE),					\
        $(realpath $(dir $(CURRENT_CONFIGURATION_FILE))..)/src/override-and-build))
 
-
-component.build.override-and-build:	sync.override-and-build
-	$(call default_$(LMSBW_C_KIND)_component_build)
+component.build.override-and-build:	sync
+	echo "Locally overriding build rule.";
+	$(MAKE)									\
+		$(DEFAULT_$(call uc,$(LMSBW_C_KIND))_COMPONENT_MAKE_OPTIONS) $(LMSBW_C_BUILD_TARGET)

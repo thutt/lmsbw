@@ -17,37 +17,24 @@
 .PHONY:	default.component.install.$(LMSBW_C_COMPONENT)	\
 	default.component.build.$(LMSBW_C_COMPONENT)
 
-define default_source_component_build
-$(MAKE)											\
+DEFAULT_SOURCE_COMPONENT_MAKE_OPTIONS :=						\
 	-f $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))/Makefile	\
 	-C $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))		\
 	$(LMSBW_C_NO_PARALLEL)								\
 	DESTDIR=$(LMSBW_C_DESTDIR_DIRECTORY)						\
 	LMSBW_C_BUILD_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
-	LMSBW_C_SOURCE_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
-	$(LMSBW_C_BUILD_TARGET)
-endef
+	LMSBW_C_INSTALL_DIRECTORY=$(LMSBW_C_INSTALL_DIRECTORY)				\
+	LMSBW_C_BUILD_INSTALL_DIRECTORY=$(LMSBW_C_BUILD_INSTALL_DIRECTORY)		\
+	GMSL=$(LMSBW_DIR)/wrapper/gmsl							\
+	CFLAGS="$(CFLAGS)"
 
-default.component.build.$(LMSBW_C_COMPONENT):	sync.$(LMSBW_C_COMPONENT)
+default.component.build.$(LMSBW_C_COMPONENT):	sync
 	$(MESSAGE) "[default] Building source component";
-	$(call default_source_component_build)
+	$(MAKE) $(DEFAULT_SOURCE_COMPONENT_MAKE_OPTIONS) $(LMSBW_C_BUILD_TARGET);
 
-define default_source_component_install
-$(MAKE)											\
-	-f $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))/Makefile	\
-	-C $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))		\
-	$(LMSBW_C_NO_PARALLEL)								\
-	DESTDIR=$(LMSBW_C_DESTDIR_DIRECTORY)						\
-	LMSBW_C_BUILD_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
-	LMSBW_C_SOURCE_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)				\
-	$(LMSBW_C_INSTALL_TARGET);
-endef
-
-default.component.install.$(LMSBW_C_COMPONENT):	build.$(LMSBW_C_COMPONENT)
+default.component.install.$(LMSBW_C_COMPONENT):	build
 	$(MESSAGE) "[default] Installing component";
-	$(call default_source_component_install)
+	$(MAKE) $(DEFAULT_SOURCE_COMPONENT_MAKE_OPTIONS)  $(LMSBW_C_INSTALL_TARGET);
 
 %::	default.%
 	$(MESSAGE) "$@:";
-	@$(TRUE)
-

@@ -1,0 +1,158 @@
+% Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+%
+% This program is free software: you can redistribute it and/or
+% modify it under the terms of the GNU General Public License as
+% published by the Free Software Foundation, either version 3 of the
+% License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+\chapter{Toolchain Usage}\label{chap:toolchain-usage}
+
+\lmsbw trivially facilitates the use of custom-built toolchains for
+building your project, and if you are producing a commercial product,
+then you really should be using such a toolchain to build your
+project.
+
+The foremost reason for this is that it becomes trivial to reproduce
+any build for your project, at any time and on any machine; creating a
+bit-for-bit identical build at some point in the future using the
+toolchain on your build machines -- which may have been upgraded -- is
+unlikely to be be successful.  Secondarily, everyone on your team will
+be building the exact same images, regardless the default toolchain
+installed on their system.
+
+\lmsbw has been designed to work well with toolchains that have been
+produced by the crosstool-ng program
+(\xref{chap:toolchain-configuration}).  This has several implications:
+
+\begin{itemize}
+\item Reproducible Builds
+
+  In many industries -- industrial control, for example -- it's
+  important to be able rebuild a project in exactly the same manner
+  as it was built before.  If you simply use your host's toolchain,
+  improvements to the compiler may no longer generate the same code,
+  and your project may no longer work correctly.
+
+  However, if you use \lmsbw, because the toolchain has been
+  specifically configured and built for your project, your project can
+  always be built with that toolchain.
+
+\item Architecture Cross Compilation
+
+  Allowing the ability to switch toolchains enables the ability to
+  transparently cross-compile your program to a completely different
+  architecture.
+
+  When you couple cross-compilation with the component configuration
+  model of \lmsbw, you can easily have a project with a core engine
+  which is present in every SKU, and an architecture-specific portion
+  which is automatically included when necessary.
+
+\item OS Version Cross Compilation
+
+  To compile for different versions of Linux, you will sometimes need
+  to use a different version of \texttt{glibc}.  Since the C library
+  is part of the toolchain, this becomes very easy.
+
+\item Different Toolchains for Components
+
+  Sometimes a compiling a component with a different compiler is
+  required; \lmsbw makes this easy.
+\end{itemize}
+
+\section{Using a Toolchain}
+
+The following steps must be taken to use a toolchain:
+
+\begin{enumerate}
+\item Configure \& Build toolchains
+
+  Follow the instruction in \xref{chap:toolchain-configuration} to
+  build your toolchains.
+
+\item Specify toolchain root directory
+
+  When executing \lmsbw, you must include the
+  \texttt{--toolchain-root} argument.  See
+  \xref{usinglmsbw:toolchain-root}.
+
+\item Specify desired toolchain
+
+  There are three hierarchical levels at which the toolchain can be set.
+
+  \begin{itemize}
+  \item component
+
+    You can indicate that a component must be built with a specific
+    toolchain using the \texttt{component\_attribute\_toolchain}
+    (\xref{api:toolchain}) API.
+
+    Once a toolchain has been specified at the component level, the
+    component will always be built using that toolchain.
+
+    If a component does not have a toolchain specified, then the
+    global toolchain setting is used.
+
+    If the specified toolchain does not exist, \lmsbw will produce an
+    error.
+
+  \item global
+
+    To use a specific toolchain to build all components with their
+    \emph{reason} set to \texttt{image} (\xref{variables:reason}),
+    when executing \lmsbw, include the \texttt{--toolchain} argument.
+
+    See \xref{usinglmsbw:toolchain} for more details on this global
+    argument.
+
+    If a global toolchain is not specified, then the toolchain
+    installed on the host computer is used.
+
+    If the specified toolchain does not exist, \lmsbw will produce an
+    error.
+
+  \item host
+
+    If no toolchain has been specified, then \lmsbw will default to
+    using the toolchain installed on the host computer.
+
+    If no build tools are installed on the host, then components will
+    fail to build.
+
+  \end{itemize}
+
+\end{enumerate}
+
+\section{Toolchain Variables}
+
+\lmsbw will set the \makefile variables to reference the configured
+toolchain's versions of the following programs:
+
+\begin{description}
+\item{ADDR2LINE}
+\item{AR}
+\item{AS}
+\item{CC}
+\item{CPP}
+\item{CXX}
+\item{GCOV}
+\item{GXX}
+\item{LD}
+\item{NM}
+\item{OBJCOPY}
+\item{OBJDUMP}
+\item{POPULATE}
+\item{RANLIB}
+\item{READELF}
+\item{SIZE}
+\item{SIZE}
+\item{STRIP}
+\end{description}

@@ -34,11 +34,11 @@ to add the \texttt{scripts} directory to your \texttt{PATH}.
 
 The \lmsbw script is a wrapper for \make.  It ensures that the
 preconditions for using the \lmsbw system are met, and once they are
-guaranteed \make is executed with the proper set of environment,
-command line arguments and targets.
+guaranteed \make is executed with the proper environment, command line
+arguments, and targets.
 
-When successfully invoked, \lmsbw will begin building your wrapped
-project immediately.
+\lmsbw takes a number of parameters that are described in the
+following sections.
 
 \subsection{\texttt{--help}}
 
@@ -46,12 +46,11 @@ This option causes the script to display a help message and then exit.
 
 \subsection{\texttt{--build-root}}
 
-This option, which is required, allows you to specify the root
-directory where build output should be placed.  Build output for the
-configured project (\xref{lmsbw:configuration}) will be placed
-into the named directory.
+This required option, specifies root directory where build output
+should be placed.  Build output for the configured project
+(\xref{lmsbw:configuration}) will be placed into the named directory.
 
-This directory should not be shared with other projects wrapped by
+This directory must not be shared with other projects wrapped by
 \lmsbw.
 
 \begin{verbatim}
@@ -60,8 +59,9 @@ This directory should not be shared with other projects wrapped by
 
 \subsection{\texttt{--configuration}}\label{lmsbw:configuration}
 
-This option, which is required, allows you to specify the file which
-is used to configure \lmsbw to wrap your build process.
+This option, which is required, allows you to specify the master
+configuration file that is used to configure \lmsbw to wrap your build
+process.
 
 \begin{verbatim}
 --configuration ~/lmsbw/samples/hello-world/hello-world.cfg
@@ -102,23 +102,6 @@ This value for this argument is directly used with the \gnumake
 --parallel 3
 \end{verbatim}
 
-
-\subsection{\texttt{--tarball-repository}}\texttt{Remove this
-  documentation, and remove references in the source.}
-
-This option, which is not required, allows you to specify the
-directory where downloaded tarballs should be stored.
-
-This option can be shared between all builds wrapped with \lmsbw; if
-the tarball already exists in the repository, it will not be loaded.
-
-\textbf{NOTE: This option is for use with a feature that has not yet
-  been implemented.}
-
-\begin{verbatim}
---tarball-repository /tmp/lmsbw-tarballs
-\end{verbatim}
-
 \subsection{\texttt{--verbose}}
 
 This option causes \lmsbw to be much more verbose while running.
@@ -139,8 +122,30 @@ the elapsed time to build each component as each is completed.
 --time
 \end{verbatim}
 
+\subsection{\texttt{--toolchain}}\label{usinglmsbw:toolchain}
 
-\section{Using \lmsbw \make targets}
+This option globally specifies the toolchain that is to be used to
+compile your project.  All components will be compiled using this
+toolchain, unless they specify a toolchain in their configuration
+file.
+
+If you specify a toolchain with this argument, you must specify the
+toolchain root directory with \texttt{--toolchain-root}.
+
+See \xref{chap:toolchain-usage} for details on selecting your
+toolchain and \xref{chap:toolchain-configuration} for information
+about creating toolchains.
+
+\subsection{\texttt{--toolchain-root}}\label{usinglmsbw:toolchain-root}
+
+This option sets the root directory that contains the toolchains which
+can be used to build your project.
+
+See \xref{chap:toolchain-usage} for details on selecting your
+toolchain and \xref{chap:toolchain-configuration} for information
+about creating toolchains.
+
+\section{Using \lmsbw \make targets}\label{lmsbw:target:verbs}
 
 Although \lmsbw is extremely fast, it is sometimes desirable to have
 it operate on only one component, or to provide further information

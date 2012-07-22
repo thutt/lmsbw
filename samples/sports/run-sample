@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
@@ -14,16 +16,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-$(if $(filter $(BALL_CLASSIFICATION),large hard round),			\
-$(call declare_source_component,					\
-       basketball,							\
-       $(BALL_CLASSIFICATION) basketball example,			\
-       image,								\
-       $(CURRENT_CONFIGURATION_FILE),					\
-       $(dir $(CURRENT_CONFIGURATION_FILE))../src)			\
-$(call component_attribute_cflags,basketball,-D$(BALL_CLASSIFICATION))	\
-)
 
-component.install.basketball:
-	$(MKDIR) --parents $(LMSBW_C_DESTDIR_DIRECTORY)/$(BALL_CLASSIFICATION);
-	$(ECHO) basketball >$(LMSBW_C_DESTDIR_DIRECTORY)/$(BALL_CLASSIFICATION)/basketball;
+function setup ()
+{
+    this_dir=$(readlink -f $(dirname "${0}"));
+    lmsbw_dir=$(echo ${this_dir}|sed -e "s%samples/.*$%%g");
+    lmsbw="${lmsbw_dir}scripts/lmsbw";
+    config_file="${this_dir}/sports.cfg";
+    build_root="/tmp/$(basename ${config_file} .cfg)";
+    set -e;
+}
+
+function run ()
+{
+    if [ -z "${PARALLEL}" ] ; then
+        echo "**** "
+        echo "**** PARALLEL is not set, using '1'";
+        echo "**** "
+        PARALLEL=1;
+    fi;
+    opts="--time --progress --parallel ${PARALLEL}";
+    cmd="${lmsbw} ${opts} --configuration ${config_file} --build-root ${build_root} ${@}";
+    echo -e "\n${cmd}\n\n";
+    ${cmd};
+}
+
+setup;
+run ${@}

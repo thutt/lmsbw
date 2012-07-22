@@ -1,0 +1,159 @@
+% Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+%
+% This program is free software: you can redistribute it and/or
+% modify it under the terms of the GNU General Public License as
+% published by the Free Software Foundation, either version 3 of the
+% License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+\chapter{Samples}\label{chap:samples}
+
+\lmsbw has a range of samples that show a range of capabilities and
+component configuration options.
+
+Each of these can be found in the \texttt{samples} directory of the
+\lmsbw distribution, and each has a script for running them in the
+default configuration as well as a \texttt{README} file.
+
+
+\section{generate}\label{samples:generate}
+
+This sample creates an artifical source tree complete with a recursive
+\make build system \emph{and} \lmsbw configuration files which allows
+you to actually compare the speed difference between a recursive \make
+and the same build wrapped with \lmsbw.
+
+Although it's just a simple, dummied-up, source tree with no complex
+dependencies, but the default configuration does produce 90,955 source
+files in 1856 directories.
+
+Here is a table of results of a run of this sample on the system used
+for testing \lmsbw:
+
+\begin{tabularx}{\linewidth}{|r|c|l|l|X|}
+  \hline Test & Parallel  & \make & \lmsbw & Description \\
+  \hline full build  & 4 & $\approx$ 00:18:00   & $\approx$ 00:18:00 & Full, from scratch, build \\
+  \hline \nullbuild  & 4 & 00:00:02.12 & 00:00:00.80 & Build after full build \\
+  \hline \nullbuild  & 1 & 00:00:13.96 & 00:00:02.44 & Build after full build \\
+  \hline incremental & 4 & 00:00:02.17 & $\approx$ 00:00:01 & Touch file, rebuild \\
+  \hline incremental & 1 & 00:00:14.75 & $\approx$ 00:00:04 & Touch file, rebuild \\
+  \hline
+\end{tabularx}
+
+\section{hello-world}
+
+The \texttt{hello-world} sample is a very simple example of how you
+can wrap a build process with very little work.
+
+Rather than having any component configuration files, this sample
+declares the components directly in the configuration loading
+function.
+
+\section{Linux Kernel}
+
+The Linux Kernel sample is a prime example of what \lmsbw can do
+for an existing, real, build system.
+
+Follow the instructions in the associated README file and measure for
+yourself how much time \lmsbw will save.
+
+\begin{tabularx}{\linewidth}{|r|c|l|l|X|}
+  \hline Test & Parallel  & \make & \lmsbw & Description \\
+  \hline full build  & 4 & 00:25:00 & 00:25:26 & Full, from scratch, build \\
+  \hline \nullbuild  & 4 & 00:00:61 & 00:00:00 & Build after full build \\
+  \hline \nullbuild  & 1 & 00:02:01 & 00:00:01 & Build after full build \\
+  \hline incremental & 4 & 00:00:61 & 00:00:62 & Touch file, rebuild \\
+  \hline incremental & 1 & 00:02:00 & 00:02:07 & Touch file, rebuild \\
+  \hline
+\end{tabularx}
+
+If you are working exclusively on the Linux kernel, \lmsbw won't
+really help your productivity, but if the Linux kernel is only one
+part of a larger project, you can very easily see how much time is
+saved by not recursing into the Linux build process when no work needs
+to be performed.
+
+\section{lite-consumer-pro}
+
+This sample aims to show you how to configure a wrapped build that has
+several different SKUs.  In this case, a \emph{lite}, \emph{consumer}
+and \emph{pro} SKU.  The component configuration files associated with
+the individual SKUs are configured using symlinks to the actual files.
+
+\section{override}
+
+This sample quickly shows how you can override both the \emph{build}
+and \emph{install} rules for a component that is being wrapped.
+
+This is handy if your wrapped build process does not have a compliant
+(\xref{wrap:component-makefile}) build process.  For example, if the
+wrapped \makefile did not have an \emph{install} rule, you could
+override it and manually install the needed files into \destdir.
+
+\section{source-api}
+
+This sample provides an excellent example of how you can declare a
+directory as containing an API; if any file in that directory is
+changed, then directly dependent components will be automatically
+rebuilt, even if otherwise unnecessary.
+
+\section{sports}
+
+This sample showcases a component configuration mechanism which does
+not use symlinks.  Rather, it loads all the configuration files and
+includes or excludes them through the use of \make variables.
+
+This mechanism is really only needed in systems which do not suppport
+symlinks.
+
+\section{startup-time}\label{samples:startup-time}
+
+This sample allows you to measure the time (and indirectly, \lmsbw \&
+\make memory consumption) to load any number of dummied-up component
+configuration files.
+
+It's purpose is to give you a rough estimate of the load-time overhead
+of using \lmsbw on your project.
+
+The time to load all configuration files also includes the time to
+generate all the build-time \make rules: the produced number \emph{is}
+the startup overhead -- \make will immediately begin building your
+project after the configuration files are loaded.
+
+Below is a table which shows the measurements on the test machine for
+various numbers of component configuration files.  The third and
+fourth columns are taken from the \texttt{top} utility, and reflect
+the amount of virtual memory and resident memory consumed by the
+process, respectively.
+
+\begin{tabular}{|c|c|c|c|}
+  \hline configuration files  & startup time in seconds & virt Mb & res Mb \\
+  \hline   1 & $\approx$ 0.14  & 16.132 & 1.448 \\
+  \hline  10 & $\approx$ 0.33  & 16.256 & 1.588 \\
+  \hline  25 & $\approx$ 0.59  & 16.504 & 1.824 \\
+  \hline  50 & $\approx$ 1  & 16.980 & 2.292 \\
+  \hline 100 & $\approx$ 1  & 17.824 & 3.044 \\
+  \hline 200 & $\approx$ 3  & 19.658 & 4.708 \\
+  \hline 300 & $\approx$ 5  & 21.236 & 6.396 \\
+  \hline 400 & $\approx$ 8  & 22.952 & 8.292 \\
+  \hline 500 & $\approx$ 10 & 24.700 & 9.976 \\
+  \hline
+\end{tabular}
+
+One aspect of this table which should hit home is that \lmsbw needs
+only ten (10) seconds of overhead to load, configure and begin
+processing build rules for a project with 500 individual component
+configuration files.  Taking such a small amount of memory for 500
+components also leaves lots of address space for actual builds to
+occur without having to swap out the main build process.
+
+You should note that the task of loading configuration files is
+serialized, and is not affected by any amount of parallelization.
+

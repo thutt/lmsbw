@@ -35,5 +35,5 @@ $(call declare_source_component,					\
        $(realpath $(dir $(CURRENT_CONFIGURATION_FILE))..)/src/override-install))
 
 
-component.install.override-install:	build.override-install
+component.install.override-install:	build
 	$(ECHO) "Nothing was installed; it was overridden."

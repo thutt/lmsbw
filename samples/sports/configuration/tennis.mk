@@ -21,7 +21,7 @@ $(call declare_source_component,					\
        image,								\
        $(CURRENT_CONFIGURATION_FILE),					\
        $(dir $(CURRENT_CONFIGURATION_FILE))../src)			\
-$(call declare_component_cflags,tennisball,-D$(BALL_CLASSIFICATION))	\
+$(call component_attribute_cflags,tennisball,-D$(BALL_CLASSIFICATION))	\
 )
 
 component.install.tennisball:

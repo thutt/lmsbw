@@ -1,0 +1,209 @@
+% Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+%
+% This program is free software: you can redistribute it and/or
+% modify it under the terms of the GNU General Public License as
+% published by the Free Software Foundation, either version 3 of the
+% License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+\chapter{Toolchain Configuration}\label{chap:toolchain-configuration}
+
+Configuring toolchains used to be a painful by-hand task that no
+reasonable developer would willingly undertake, but now with the
+availability of \texttt{crosstool-ng} (aka \ctng), it's a simple matter
+to crank out a wide variety of toolchains.
+
+\section{Prerequisites}
+
+Before embarking on an odyssey to build toolchains, you must first
+make a few configuration changes for uniformity.  These changes are
+not absolutely necessary.  You may skip them if you so desire, but you
+must be aware that all future documentation about the toolchains
+assumes you have performed these steps.
+
+We will put all the toolchains into a single directory tree, and
+allow \ctng to place its downloaded tarballs into a single
+directory, too.
+
+\begin{verbatim}
+sudo mkdir /opt/crosstool-ng
+sudo chown --recursive ${USER}:${USER} /opt/crosstool-ng
+
+sudo mkdir /opt/toolchains
+sudo chown --recursive ${USER}:${USER} /opt/toolchains
+
+sudo mkdir /opt/toolchain-source-tarballs
+sudo chown --recursive ${USER}:${USER} /opt/toolchain-source-tarballs
+\end{verbatim}
+
+\section{\texttt{crosstool-ng}}
+
+This utility, which uses a Linux-like configuration system, handles
+all the messy details of fetching, configuring, building and
+installing Gnu toolchains.
+
+\begin{description}
+\item Download \& install \ctng
+
+  You must download and install \ctng without instructions because
+  each host computer can run into a unique set of issues such as
+  missing prerequisites like \texttt{yacc}.
+
+  Configure \ctng to install into \texttt{/opt/crosstool-ng}
+
+  Once downloaded, configured and installed, you are ready to
+  configure and build a toolchain.
+
+  \item Run \ctng
+
+    \ctng will save its configuration and produce a build in the
+    current working directory.  It is recommended that you create a
+    directory where you want to store the build output and toolchain
+    configuration, and change into that directory.
+
+\begin{verbatim}
+mkdir ~/myfirsttoolchain
+cd ~/myfirsttoolchain
+/opt/crosstool-ng/bin/ct-ng menuconfig
+\end{verbatim}
+
+    This will start a Linux-like configuration system.  The following
+    items will walk you through the items you must set to produce a
+    toolchain.
+
+    Leave undiscussed items unchanged.
+
+    \begin{description}
+
+    \item Paths and misc options
+
+      \begin{itemize}
+      \item{Prefix Directory}
+
+        Set to: \texttt{/opt/toolchains/\$\{CT\_TARGET\}}
+
+      \item{Render the toolchain read-only}
+
+        If you will need to make changes to the toolchain, or possibly
+        delete it, unselect this option.
+
+        Recommendation: Unselect
+
+      \item{Number of parallel jobs}
+
+        This option affects the number of parallel jobs used when
+        building the toolchain.  The system will automatically
+        determine a reasonable number, but you can change it.
+
+
+        Recommendation: Do not change.
+
+      \item{Maximum Allowed load}
+
+        This option affects the total load building the toolchain can put on
+        your system.  Adjust for your personal taste.
+
+        Recommendation: Do not change.
+
+      \end{itemize}
+
+    \item{Target Options}
+      \begin{itemize}
+      \item{Target Architecture}
+
+        Select the desired target architecture.
+
+      \item{Endianess}
+
+        If allowed, select the endianess for the selected architecture.
+
+      \item{Bitness}
+
+        If allowed, select the bitness for the selected architecture.
+
+      \item{ABI}
+
+        If allowed, select the desired ABI for the selected architecture.
+
+      \end{itemize}
+
+    \item{Toolchain Options}
+
+      \begin{itemize}
+      \item{Tuple's vendor string}
+
+        This is a string which can be used to help uniquely identify
+        the toolchain.  A tuple is of the form
+        'arch-vendor-kernel-system' and is used to form the name of
+        the executables in the toolchain, as well as the toolchain
+        directory name.
+
+        If you intend on creating many different toolchains -- perhaps
+        for different compiler versions, or different kernels -- it is
+        recommended to create a vendor string which mnemonically
+        distinguishes toolchains from one another.
+
+        You could use, for example, the gcc version as the vendor
+        string.  For a \emph{bare metal} MIPS configuration, you might
+        end up with a tuple like this: \texttt{mipsel-gcc\_4.6.3-elf}.
+
+        You may not use dashes in the vendor string.
+      \end{itemize}
+
+    \item{Operating System}
+      \begin{itemize}
+      \item{Target OS}
+
+        Choose the type of OS you wish to target.
+
+        If you choose \texttt{linux}, you will have to make several
+        more choices about the Linux kernel.
+      \end{itemize}
+
+    \item{Binary Utilities}
+
+      The defaults here are normally sufficient.
+
+    \item{C compiler}
+
+      Choose the compiler version and the desired additional language
+      support.
+
+    \item{C-library}
+
+      Choose the desired C-library implementation.
+
+    \item{Debug facilities}
+
+      Choose the desired debugging facilities.
+
+    \item{Companion Libraries}
+
+      Choose the desired companion libraries.
+    \end{description}
+  \item Build your toolchain
+
+    The next, and final step in the process of building a toolchain to
+    to execute the following:
+
+\begin{verbatim}
+/opt/crosstool-ng/bin/ct-ng build
+\end{verbatim}
+
+   \item Use your toolchain
+
+     Your toolchain was installed in \texttt{/opt/toolchains}.
+
+     You may access it directly, or you can use the \emph{populate}
+     script to install the toolchain, the headers and all the
+     libraries in a \emph{sysroot} directory that can be used for
+     building.
+
+\end{description}

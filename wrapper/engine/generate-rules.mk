@@ -66,7 +66,7 @@ endef
 define lmsbw_expand_build_component
 	$(MESSAGE) "$(1): Trampoline to '$(1)' build system";					\
 	$(TIME)											\
-	-f "$(foreach v,$(shell seq $(MAKELEVEL))," ") [$(MAKELEVEL)]  $(1): elapsed time: %E"	\
+	-f "$(1): elapsed time: %E"								\
 	--output="$(call lmsbw_gcf,$(1),build-directory)/build-time.text"			\
 	$(MAKE)											\
 		-f $(LMSBW_DIR)/wrapper/component/component.makefile				\
@@ -79,6 +79,7 @@ define lmsbw_expand_build_component
 		LMSBW_C_BUILD_DIRECTORY="$(call lmsbw_gcf,$(1),build-directory)"		\
 		LMSBW_C_DESTDIR_DIRECTORY="$(call lmsbw_gcf,$(1),destdir-directory)"		\
 		LMSBW_C_INSTALL_DIRECTORY="$(call lmsbw_gcf,$(1),install-directory)"		\
+		LMSBW_C_BUILD_INSTALL_DIRECTORY="$(call lmsbw_expand_install_directory,build)"	\
 		LMSBW_C_CONFIGURATION_FILE="$(call lmsbw_gcf,$(1),configuration-file)"		\
 		LMSBW_C_BUILD_TARGET="$(call lmsbw_gcf,$(1),build-target)"			\
 		LMSBW_C_INSTALL_TARGET="$(call lmsbw_gcf,$(1),install-target)"			\
