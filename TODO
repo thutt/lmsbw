@@ -15,7 +15,6 @@
  o What about Windows toolchains?
  o Add lmsbw_ prefix to functions
  o Add 'gdb' verb to load a component's binary output in gdb.
- o The help message for lmsbw is horrible.
  o Error messages should print component names for disambiguation.
  o Figure out why generate-rules.mk causes errors when put in
    lmsbw-system.mk.
