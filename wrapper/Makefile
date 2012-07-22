@@ -24,7 +24,7 @@ include $(LMSBW_DIR)/wrapper/engine/generate-rules.mk
 all:	install
 
 mtree:	$(MTREE)
-	$(ATSIGN)$(MESSAGE) "mtree is installed at '$(MTREE)'";
+	$(ATSIGN)$(MESSAGE) "mtree:$(MTREE)";
 
 install::
 
@@ -59,7 +59,14 @@ measure-memory-footprint:
 .PHONY:		all install clean report prerequisite-report dependent-report
 
 $(eval $(call declare_target,all,,Perform a full build))
+$(eval $(call declare_target,mtree,,Install and show mtree executable path))
 $(eval $(call declare_target,targets,,Produce this report))
+$(eval $(call declare_target,components,,List all components in project))
+$(eval $(call declare_target,prerequisite-report,,Show declared component prerequisites))
+$(eval $(call declare_target,dependent-report,,Show computed component dependencies))
+$(eval $(call declare_target,measure-startup-time,,Measure time to load configruation files))
+$(eval $(call declare_target,measure-memory-footprint,,Measure lmsbw memory overhead))
+
 $(eval $(call declare_target,report,[.<component>],Generate component reports))
 $(eval $(call declare_target,install,[.<component>],Build & install components))
 $(eval $(call declare_target,clean,[.<component>],Clean build output for components))
@@ -67,10 +74,6 @@ $(eval $(call declare_target,log,[.<component>],Display component build logs))
 $(eval $(call declare_target,destdir,[.<component>],Shows the intermediate install directory))
 $(eval $(call declare_target,builddir,[.<component>],Shows the build directory))
 $(eval $(call declare_target,installdir,[.<component>],Shows the install directory))
-$(eval $(call declare_target,prerequisite-report,,Show declared component prerequisites))
-$(eval $(call declare_target,dependent-report,,Show computed component dependencies))
-$(eval $(call declare_target,measure-startup-time,,Measure time to load configruation files))
-$(eval $(call declare_target,measure-memory-footprint,,Measure amount of memory needed))
 
 include $(LMSBW_DIR)/wrapper/engine/component-last-chance-rules.mk
 
