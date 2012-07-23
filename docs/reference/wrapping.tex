@@ -53,9 +53,10 @@ build:
 
 
   Besides the labor of creating the component configurations
-  (\xref{wrap:source-components}) and providing the component
-  configurations to \lmsbw (\xref{wrap:techniques}), you also have to
-  decide how to split your build process into individual components.
+  (\xref{wrap:component-creation}) and providing the component
+  configurations to \lmsbw (\xref{wrap:master-configuration}), you
+  also have to decide how to split your build process into individual
+  components.
 
   One good heuristic is to start with the top-level directories that
   are entered via \make-recursion with your current build system.
@@ -143,7 +144,6 @@ especially when the final results are nebulous until everything is
 finalized and working.
 
 \section{Master Configuration}\label{wrap:master-configuration}
-\label{wrap:techniques}\todo{rename this label to match section}
 
 Your master configuration file must do the following:
 
@@ -233,7 +233,6 @@ regain much of that lost incremental development speed.  Here's how:
 \end{enumerate}
 
 \section{Component Creation}\label{wrap:component-creation}
-\label{wrap:source-components}\todo{Rename up this label to match section}
 
 A component is a set of source files that can be transformed into a
 deliverable for your project.  You must declare components to \lmsbw
