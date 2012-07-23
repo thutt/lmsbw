@@ -222,7 +222,7 @@ Let's examine the what makes \lmsbw different:
   build, and, when requested, installing it into the \texttt{DESTDIR}
   directory.
 
-\item Recurse only when needed
+\item Recurse only when needed\label{intro:build-component-criteria}
 
   \lmsbw only maintains the inter-component dependencies that are
   explicitly defined by your component declarations.
@@ -247,6 +247,9 @@ Let's examine the what makes \lmsbw different:
   component's build process; not recursing for components that are
   already built saves an amount of time that is proportional to the
   number and complexity of \make rules present in that directory.
+
+  See \xref{samples:linux-kernel} for benchmarks numbers on wrapping
+  the Linux kernel build process with \lmsbw.
 
 \item Share Build Output
 
@@ -322,17 +325,13 @@ of data:
   of keys which would include information such as the source
   directory.  A \emph{download} component would have different keys,
   such as the \texttt{URL} from which the component can be downloaded.
-
-  This flexibility allows new component types to be created without
-  affecting existing component types.  See \xref{chap:extending} for
-  details on extending \lmsbw.
 \end{itemize}
 
 
 \subsection{\lmsbwcomponent{<component-name>} Configuration}
 
-Each component's associative array contains various bits of
-user-provided data which enables \lmsbw to build and install it.
+Each component's associative array contains data which enables \lmsbw
+to build and install it.
 
 Such user-provided data, for a \emph{source} component, includes:
 
@@ -354,8 +353,8 @@ configuration of components.
 
 \subsection{Recursively Invoking \make}
 
-During the execution of the build process, \lmsbw recursively runs
-three different \makefile processes:
+During the execution of the build process, \lmsbw runs three different
+\makefile processes:
 
 \begin{itemize}
 \item \lmsbw \makefile
@@ -365,11 +364,9 @@ three different \makefile processes:
 
 \item Component Trampoline \makefile
 
-  The second \makefile, still part of \lmsbw, that performs
-  component-specific configuration such as configuring standard
-  \makefile macros (\texttt{CC}, \texttt{LD}, etc.) that correspond to
-  the toolchain (\xref{chap:toolchain-usage}) which will be used to
-  actually build the component.
+  The second \makefile performs configuration such as standard
+  \makefile macros (\texttt{CC}, \texttt{LD}, etc.) for the toolchain
+  (\xref{chap:toolchain-usage}) selected to build the component.
 
   It also ensures that each component's build process is completely
   disjoint from other components; the settings for \emph{component $\alpha$}

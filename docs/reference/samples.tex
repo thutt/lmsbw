@@ -25,17 +25,17 @@ default configuration as well as a \texttt{README} file.
 
 \section{generate}\label{samples:generate}
 
-This sample creates an artificial source tree complete with a recursive
-\make build system \emph{and} \lmsbw configuration files which allows
-you to actually compare the speed difference between a recursive \make
-and the same build wrapped with \lmsbw.
+This sample creates an artificial source tree complete with a
+recursive \make build system \emph{and} \lmsbw configuration files
+that allow you to actually compare the speed difference between a
+recursive \make and the same build wrapped with \lmsbw.
 
-Although it's just a simple, dummied-up, source tree with no complex
+It's just a simple, dummied-up, source tree with no complex
 dependencies, but the default configuration does produce 90,955 source
 files in 1856 directories.
 
-Here is a table of results of a run of this sample on the system used
-for testing \lmsbw:
+Here are the results of running this sample on the system used for
+testing \lmsbw:
 
 \begin{tabularx}{\linewidth}{|r|c|l|l|X|}
   \hline Test & Parallel  & \make & \lmsbw & Description \\
@@ -49,20 +49,21 @@ for testing \lmsbw:
 
 \section{hello-world}
 
-The \texttt{hello-world} sample is a very simple example of how you
-can wrap a build process with very little work.
+The \texttt{hello-world} sample is a very simple example showing how
+you can wrap a build process with very little work.
 
 Rather than having any component configuration files, this sample
 declares the components directly in the configuration loading
 function.
 
-\section{Linux Kernel}
+\section{Linux Kernel}\label{samples:linux-kernel}
 
-The Linux Kernel sample is a prime example of what \lmsbw can do
-for an existing, real, build system.
+This is a prime example of what \lmsbw can do for an existing,
+complex, build system.
 
 Follow the instructions in the associated README file and measure for
-yourself how much time \lmsbw will save.
+yourself how much time \lmsbw will save.  The following table shows
+the results from building the Linux kernel on the test system.
 
 \begin{tabularx}{\linewidth}{|r|c|l|l|X|}
   \hline Test & Parallel  & \make & \lmsbw & Description \\
@@ -85,7 +86,8 @@ to be performed.
 This sample aims to show you how to configure a wrapped build that has
 several different SKUs.  In this case, a \emph{lite}, \emph{consumer}
 and \emph{pro} SKU.  The component configuration files associated with
-the individual SKUs are configured using symlinks to the actual files.
+the individual SKUs are configured using symlinks to the actual
+configuration files.
 
 \section{override}
 
@@ -103,6 +105,8 @@ This sample provides an excellent example of how you can declare a
 directory as containing an API; if any file in that directory is
 changed, then directly dependent components will be automatically
 rebuilt, even if otherwise unnecessary.
+\xref{intro:build-component-criteria} describes the criteria used to
+determine if a component needs to be rebuilt.
 
 \section{sports}
 
@@ -110,7 +114,7 @@ This sample showcases a component configuration mechanism which does
 not use symlinks.  Rather, it loads all the configuration files and
 includes or excludes them through the use of \make variables.
 
-This mechanism is really only needed in systems which do not support
+This mechanism is really only needed on systems which do not support
 symlinks.
 
 \section{startup-time}\label{samples:startup-time}
@@ -123,11 +127,11 @@ It's purpose is to give you a rough estimate of the load-time overhead
 of using \lmsbw on your project.
 
 The time to load all configuration files also includes the time to
-generate all the build-time \make rules: the produced number \emph{is}
-the startup overhead -- \make will immediately begin building your
-project after the configuration files are loaded.
+generate all the build-time \make rules, and thus the time produced by
+this sample \emph{is} the startup overhead -- \make will immediately
+begin building your project after the configuration files are loaded.
 
-Below is a table which shows the measurements on the test machine for
+Below is a table which shows the results on the test machine for
 various numbers of component configuration files.  The third and
 fourth columns are taken from the \texttt{top} utility, and reflect
 the amount of virtual memory and resident memory consumed by the

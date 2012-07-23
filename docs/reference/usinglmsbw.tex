@@ -37,8 +37,8 @@ preconditions for using the \lmsbw system are met, and once they are
 guaranteed \make is executed with the proper environment, command line
 arguments, and targets.
 
-\lmsbw takes a number of parameters that are described in the
-following sections.
+The \lmsbw script takes a number of parameters that are described in
+the following sections.
 
 \subsection{\texttt{--help}}
 
@@ -46,9 +46,9 @@ This option causes the script to display a help message and then exit.
 
 \subsection{\texttt{--build-root}}
 
-This required option, specifies root directory where build output
-should be placed.  Build output for the configured project
-(\xref{lmsbw:configuration}) will be placed into the named directory.
+This required option, specifies the root directory where build output
+for the configured project (\xref{lmsbw:configuration}) will be
+placed.
 
 This directory must not be shared with other projects wrapped by
 \lmsbw.
@@ -150,6 +150,12 @@ executed in its entirety.
 This target will build, install and show the location of the resulting
 \mtree utility executable.
 
+The output will appear in this easily parsed format:
+
+\begin{verbatim}
+mtree:/tmp/hello/lmsbw/utilities/bin/mtree
+\end{verbatim}
+
 \subsection{\texttt{targets}}
 
 The \texttt{targets} target causes \lmsbw to produce a report of all
@@ -246,9 +252,10 @@ memory consumption of the \make process started by \lmsbw.
 
 The \texttt{report} target will produce a report about each wrapped
 component in the build.  The report, for each component, will look
-something like this:
+as shown in figure \tabref{usinglmsbw:component-report}.
 
 \begin{landscape}
+\begin{figure}
 \begin{small}
 \begin{verbatim}
 hello-world|Component   : hello-world
@@ -271,6 +278,8 @@ hello-world|  install   : install
 hello-world|  build     : build
 \end{verbatim}
 \end{small}
+\caption{Component Report}\label{usinglmsbw:component-report}
+\end{figure}
 \end{landscape}
 
 \subsection{\texttt{install}}
@@ -306,6 +315,15 @@ the \destdir location is useful if you want to perform any post-build
 processing on the component -- for example, running a debugger on the
 program or making sure that all deliverables are installed correctly.
 
+The output will appear in this easily parsed format:
+
+\begin{scriptsize}
+\begin{verbatim}
+hello-world:/tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
+goodbye-world:/tmp/hello/host/goodbye-world/917400cac32350dc041660456b128124/destdir
+\end{verbatim}
+\end{scriptsize}
+
 \subsection{\texttt{builddir}}
 
 Because \lmsbw determines the location of the build directory based on
@@ -314,6 +332,15 @@ directory name for the current configuration.
 
 You may want to know the build directory name to post process portions
 of the build -- for example, disassembling an object file.
+
+The output will appear in this easily parsed format:
+
+\begin{scriptsize}
+\begin{verbatim}
+hello-world:/tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
+goodbye-world:/tmp/hello/host/goodbye-world/917400cac32350dc041660456b128124/build
+\end{verbatim}
+\end{scriptsize}
 
 \subsection{\texttt{installdir}}
 
@@ -327,4 +354,9 @@ of files that are installed; if the manifest does not have the same
 set of files for each official build, then the \bni team needs to
 investigate why the product has changed.
 
-
+\begin{footnotesize}
+\begin{verbatim}
+hello-world:/tmp/hello/target/install/35f228d9be0694a19de8666fbcdbd80d
+goodbye-world:/tmp/hello/host/install/35f228d9be0694a19de8666fbcdbd80d
+\end{verbatim}
+\end{footnotesize}
