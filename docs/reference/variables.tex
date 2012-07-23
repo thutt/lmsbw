@@ -42,13 +42,15 @@ Each key in this array covers a global configuration option that will
 affect the entire wrapped build.  The following sections describe the
 valid keys and their allowed values.
 
-\begin{quote}
-Be aware that spaces in \gnumake function arguments are significant.
-The examples shown in this chapter have been formatted to be easily
-readable in a printed document; it is frequently best of have the
-entire function call on a single line in the source file, or to
-fastidiously use \texttt{\$(strip)} on function arguments.
-\end{quote}
+
+\begin{center}\framebox{\begin{minipage}{.9\linewidth}\textbf{NOTE}
+
+    Be aware that spaces in \gnumake function arguments are
+  significant.  The examples shown in this chapter have been formatted
+  to be easily readable in a printed document; it is frequently best
+  of have the entire function call on a single line in the source
+  file, or to fastidiously use \texttt{\$(strip)} on function
+  arguments.\end{minipage}}\end{center}
 
 \subsection{\texttt{component-build-support}}\label{variables:component-build-support}
 
@@ -72,10 +74,9 @@ The following values are valid:
 If no component kinds are specified in the configuration, \lmsbw will
 fail with an error.
 
-Only the specified configuration kinds will be loaded and accessible
-when using \lmsbw.  This is the mechanism whereby support for
-additional types of components can be added to \lmsbw
-(\xref{chap:extending}).
+Only specified configuration kinds will be loaded and accessible when
+using \lmsbw.  This is the mechanism whereby support for additional
+types of components can be added to \lmsbw (\xref{chap:extending}).
 
 \subsection{\texttt{load-configuration-function}}\label{variables:load-configuration-function}
 
@@ -101,17 +102,17 @@ Upon successful exit, the named function must have done the following:
 \item Configure individual components
 
   For each component contained in the \lmsbwcomponents variable, there
-  must be a corresponding associative array named
-  \lmsbwcomponent{<component>}.  See \xref{chap:wrapping} for details
-  on declaring components.
+  must be an associative array named \lmsbwcomponent{<component>}.
+  See \xref{chap:wrapping} for details on declaring components.
 
 \end{itemize}
 
 
 \section{\texttt{LMSBW\_components}}\label{variables:lmsbw-components}
 
-This variable is a normal \make variable.  After the
-\texttt{load-configuration-function}
+This variable is a normal \make variable.
+
+After the \texttt{load-configuration-function} variable
 (\xref{variables:load-configuration-function}) has completed
 initializing the build configuration, this variable must contain list
 of configured components.
@@ -158,7 +159,7 @@ allowable associative keys and values.
 
 \section{Source Components}
 
-Source components are declared to \lmsbw through
+Source components are declared to \lmsbw via
 \texttt{declare\_source\_component}
 (\xref{api:declare-source-component}) and have the keys which are
 described in the following sections.

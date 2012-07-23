@@ -363,11 +363,11 @@ three different \makefile processes:
 
 \item Component Trampoline \makefile
 
-  The second is a subservient \makefile, yet still part of \lmsbw,
-  which performs component-specific configuration such as configuring
-  standard \makefile macros (\texttt{CC}, \texttt{LD}, etc.) that
-  correspond to the toolchain (\xref{chap:toolchain-usage}) which will
-  be used to actually build the component.
+  The second \makefile, still part of \lmsbw, that performs
+  component-specific configuration such as configuring standard
+  \makefile macros (\texttt{CC}, \texttt{LD}, etc.) that correspond to
+  the toolchain (\xref{chap:toolchain-usage}) which will be used to
+  actually build the component.
 
   It also ensures that each component's build process is completely
   disjoint from other components; the settings for \emph{component $\alpha$}

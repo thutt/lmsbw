@@ -157,7 +157,7 @@ top-level targets that are accessible to the user.
 
 The \texttt{target} report will have this format:
 
-\begin{small}
+\begin{footnotesize}
 \begin{verbatim}
                       all : Perform a full build
                     mtree : Install and show mtree executable path
@@ -175,7 +175,7 @@ The \texttt{target} report will have this format:
    builddir[.<component>] : Shows the build directory
  installdir[.<component>] : Shows the install directory
 \end{verbatim}
-\end{small}
+\end{footnotesize}
 
 The \texttt{[.<component>]} notation means that this target can also
 be executed on a specific component of the wrapped build.  To
@@ -301,11 +301,10 @@ Because \lmsbw determines the location of the \destdir based on global
 configuration options, this target will print out the \destdir for the
 current configuration.
 
-Since the \destdir contains the install image of the component,
-knowing the \destdir location is useful if you want to perform any
-post-build processing on the component -- for example, running a
-debugger on the program or making sure that all deliverables are
-installed correctly.
+Since \destdir contains the install image of the component, knowing
+the \destdir location is useful if you want to perform any post-build
+processing on the component -- for example, running a debugger on the
+program or making sure that all deliverables are installed correctly.
 
 \subsection{\texttt{builddir}}
 

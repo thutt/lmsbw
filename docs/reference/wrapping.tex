@@ -209,8 +209,8 @@ regain much of that lost incremental development speed.  Here's how:
   Create a new global configuration which contains only your component
   and components necessary to build your component.
 
-  Because \lmsbw shares build output, your \emph{small} master
-  configuration will cause your component to be built in the same
+  Because \lmsbw shares build output, the \emph{small} master
+  configuration will cause the component to be built in the same
   directory as the \emph{large} master configuration.
 
 \item Incrementally Build
@@ -240,8 +240,8 @@ through a simple API that has been provided; once declared, \lmsbw
 takes care of all the administrative details for building.
 
 For each declared source component, \lmsbw will generate target
-\makefile rules that are used to perform the \lmsbw verbs\todo{Need to
-  document the verbs} on the component.
+\makefile rules that are used to perform the \lmsbw verbs on the
+component.
 
 The following sections describe how to declare the supported
 component types of \lmsbw.
@@ -558,20 +558,19 @@ CFLAGS  += -I$(LMSBW_C_INSTALL_DIRECTORY)/usr/include/src
 
 \section{Using \texttt{build} Components}\label{wrap:using-build-components}
 
-You can access \texttt{build} component data via the
-\texttt{LMSBW\_C\_BUILD\_INSTALL\_DIRECTORY}
-(\xref{wrap:build-install-directory}) variable passed to your
-component's \makefile.
+The \texttt{LMSBW\_C\_BUILD\_INSTALL\_DIRECTORY} variable
+(\xref{wrap:build-install-directory}) is passed down to the component
+build process, and it can be used to access \texttt{build} component
+data.
 
 This is the root of the install directory of components that have
 their \texttt{reason} variable set to \texttt{build}
 (\xref{variables:reason}).
 
 For example, if your project had a \texttt{build} component named
-\texttt{check} that installs it's binaries in
-\texttt{/usr/bin/check}, you could access it from your
-component's \makefile with the following:
+\texttt{check} that installs binaries in \texttt{/usr/bin/check}, you
+could access it from your component's \makefile with the following:
 
 \begin{verbatim}
-$(LMSBW_C_BUILD_INSTALL_DIRECTORY)/usr/bin/check/check
+$(LMSBW_C_BUILD_INSTALL_DIRECTORY)/usr/bin/check
 \end{verbatim}
