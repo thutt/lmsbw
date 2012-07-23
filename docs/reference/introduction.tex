@@ -133,17 +133,19 @@ instructions:
 
 \begin{verbatim}
 cd <directory where you extracted lmsbw>
-ld=$(pwd)
+ld=$(pwd);
+cfg="samples/hello-world/hello-world.cfg";
 \end{verbatim}
 \item Build mtree utility
 \begin{verbatim}
-${ld}/scripts/lmsbw                                          \
-   --configuration ${ld}/samples/hello-world/hello-world.cfg \
-   --build-root /tmp/lmsbw-test  -- mtree
+mtree=$(${ld}/scripts/lmsbw           \
+        --configuration ${ld}/${cfg}  \
+        --build-root /tmp/lmsbw-test  \
+        mtree|cut -d ':' -f 2);
 \end{verbatim}
 
-The command above will output a message indicating where the \mtree
-utility was placed; we'll use that in the next command.
+The command above, using \texttt{bash} syntax, will set the
+\texttt{mtree} variable to the full path of the executable.
 
 \item Test Speed
 
@@ -152,8 +154,8 @@ utility was placed; we'll use that in the next command.
   time for processing all the directories.
 
 \begin{verbatim}
-  ${ld}/scripts/lmsbw-mtree-speed-test         \
-     --mtree <full path output by step above>  \
+  ${ld}/scripts/lmsbw-mtree-speed-test   \
+     --mtree "${mtree}"                  \
      <source directory>...
 \end{verbatim}
 
