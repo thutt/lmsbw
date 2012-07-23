@@ -16,7 +16,7 @@
 \chapter{Using \lmsbw}
 
 Ease-of-use and flexibility were two important design decisions taken
-when buiding \lmsbw.  Besides creating the configuration files to wrap
+when building \lmsbw.  Besides creating the configuration files to wrap
 your project's build process, you also must be able to execute the
 main tool: \lmsbw.  This chapter only describes how to execute \lmsbw;
 \xref{chap:wrapping} describes how to produce the configuration for
@@ -184,7 +184,7 @@ determine which components exist in the build, see
 
 \subsection{\texttt{components}}\label{lmsbw:target:components}
 
-The \texttt{compnents} target causes \lmsbw to produce a report of all
+The \texttt{components} target causes \lmsbw to produce a report of all
 the components present in your project build.  The report will take
 this form:
 
@@ -281,7 +281,7 @@ The \texttt{install} target is used by the default target
 \subsection{\texttt{clean}}
 
 The \texttt{clean} target is used to clean out the entire build
-directory, or the build directory of a specific compoment.
+directory, or the build directory of a specific component.
 
 \subsection{\texttt{log}}
 
@@ -302,7 +302,7 @@ configuration options, this target will print out the \destdir for the
 current configuration.
 
 Since the \destdir contains the install image of the component,
-knowning the \destdir location is useful if you want to perform any
+knowing the \destdir location is useful if you want to perform any
 post-build processing on the component -- for example, running a
 debugger on the program or making sure that all deliverables are
 installed correctly.
@@ -325,7 +325,7 @@ install directory name for the current configuration.
 You may want to know the install directory name to post process
 portions of the build -- for example, creating \& checking a manifest
 of files that are installed; if the manifest does not have the same
-set of files for each offical build, then the \bni team needs to
+set of files for each official build, then the \bni team needs to
 investigate why the product has changed.
 
 

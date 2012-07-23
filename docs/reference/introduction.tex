@@ -51,7 +51,6 @@ The following tenets guided the implementation of \lmsbw:
   To achieve such speed, in simple terms, \lmsbw will never recurse
   into a sub-directory unless something in the corresponding source
   tree has changed.  This is accomplished by using the \mtree utility.
-  \todo{describe what mtree is.}
 
 \item Disk Space
 
@@ -170,8 +169,7 @@ the named directories and produces output which can be used later to
 determine if any file in the directory tree has changed.  By knowing
 that no files have changed in a source directory, \lmsbw will never
 recurse into that directory to build -- modulo other dependency issues
-which can force a re-build.\todo{This paragraph should be placed where
-  mtree is first mentioned.}
+which can force a re-build.
 
 What this means, for you, is that the elapsed time shown is a very
 good approximation for how long a full \nullbuild for your project
