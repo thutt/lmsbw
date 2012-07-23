@@ -47,3 +47,5 @@
    directory.
  o Need a system to check that prerequisites on a component are correct.
  o Need short reference on mtree.
+ o Applying patches should be part of lmsbw
+
