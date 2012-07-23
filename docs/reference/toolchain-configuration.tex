@@ -32,6 +32,7 @@ We will put all the toolchains into a single directory tree, and
 allow \ctng to place its downloaded tarballs into a single
 directory, too.
 
+\begin{footnotesize}
 \begin{verbatim}
 sudo mkdir /opt/crosstool-ng
 sudo chown --recursive ${USER}:${USER} /opt/crosstool-ng
@@ -42,6 +43,7 @@ sudo chown --recursive ${USER}:${USER} /opt/toolchains
 sudo mkdir /opt/toolchain-source-tarballs
 sudo chown --recursive ${USER}:${USER} /opt/toolchain-source-tarballs
 \end{verbatim}
+\end{footnotesize}
 
 \section{\texttt{crosstool-ng}}
 
@@ -139,11 +141,10 @@ cd ~/myfirsttoolchain
       \begin{itemize}
       \item{Tuple's vendor string}
 
-        This is a string which can be used to help uniquely identify
-        the toolchain.  A tuple is of the form
-        'arch-vendor-kernel-system' and is used to form the name of
-        the executables in the toolchain, as well as the toolchain
-        directory name.
+        This is a string that helps uniquely identify the toolchain.
+        A tuple is of the form 'arch-vendor-kernel-system' and is used
+        to form the name of the executables in the toolchain, as well
+        as the toolchain directory name.
 
         If you intend on creating many different toolchains -- perhaps
         for different compiler versions, or different kernels -- it is

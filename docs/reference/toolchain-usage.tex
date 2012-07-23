@@ -15,7 +15,7 @@
 %
 \chapter{Toolchain Usage}\label{chap:toolchain-usage}
 
-\lmsbw trivially facilitates the use of custom-built toolchains for
+\lmsbw trivially facilitates using custom-built toolchains for
 building your project, and if you are producing a commercial product,
 then you really should be using such a toolchain to build your
 project.
@@ -65,7 +65,7 @@ produced by the crosstool-ng program
 \item Different Toolchains for Components
 
   Sometimes a compiling a component with a different compiler is
-  required; \lmsbw makes this easy.
+  required.
 \end{itemize}
 
 \section{Using a Toolchain}
@@ -98,8 +98,8 @@ The following steps must be taken to use a toolchain:
     Once a toolchain has been specified at the component level, the
     component will always be built using that toolchain.
 
-    If a component does not have a toolchain specified, then the
-    global toolchain setting is used.
+    If a component does not have a toolchain specified, the global
+    toolchain setting is used.
 
     If the specified toolchain does not exist, \lmsbw will produce an
     error.

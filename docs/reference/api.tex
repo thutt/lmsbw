@@ -44,9 +44,9 @@ declare_source_component
 \begin{itemize}
 \item{component-name}
 
-  This is the name by which the component will be referred throughout
-  the \lmsbw-project.  The name must be a valid \make identifier, and
-  it must be globally unique within the project.
+  This is the name used to reference the component throughout the
+  \lmsbw-project.  The name must be a valid \make identifier, and it
+  must be globally unique within the project.
 
   See \xref{api:component}.
 
@@ -180,8 +180,9 @@ component_attribute_install_target
 
   This argument is a space-separated list of targets in the
   component's \makefile which will be used for the install phase of
-  the component.\todo{Make sure the build phase \& install phase are
-    documented ideas.}
+  the component.
+
+  \todo{Document build \& install phase ideas.}
 \end{itemize}
 
 \section{\texttt{component\_attribute\_api}}\label{api:component-attribute-api}
@@ -244,9 +245,10 @@ component_attribute_api
         execute the \emph{report} verb on a component to find out
         the location of API directories.}
 
-    \item Standardize on install locations locations
+    \item Standardize on install locations
 
-      If you have header files, put them in
+      If you have header files, they should be placed in:
+      
       \texttt{/usr/include/\emph{component-name}}.
 
       If you have libraries, put them in
@@ -570,8 +572,8 @@ declare_component_source_directory
 \begin{itemize}
 \item component-name
 
-  This is the name of the component for which the component's
-  \texttt{source-directory} variable will be set.
+  This is the name of the component that will have its
+  \texttt{source-directory} variable set.
 
   The component must have been declared before this attribute can be
   set.
@@ -603,8 +605,8 @@ declare_component_configuration_file
 \begin{itemize}
 \item component-name
 
-  This is the name of the component for which the component's
-  \texttt{configuration-file} variable should be set.
+  This is the name of the component that will have its
+  \texttt{configuration-file} variable set.
 
   The component must have been declared before this attribute can be
   set.
