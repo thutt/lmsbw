@@ -68,7 +68,9 @@ build:
     conquer}: create first-class components from second or third level
   directories in the build process.  Each sub-directory directly
   assigned to component will have little impact on the NULL build, but
-  will have a great impact on incremental builds.
+  will have a great impact on incremental builds.  It will have a
+  great impact because fewer directories will be entered to build
+  changed components.
 
   Component creation will be discussed in
   \xref{wrap:component-creation}.
@@ -257,7 +259,7 @@ information:
 \item Component Name
 
   You must provide a name that will be used to reference the component
-  through the \lmsbw command line, and as a prerequisite of other
+  on the \lmsbw command line, and as a prerequisite of other
   components.
 
   The name supplied must be a valid \makefile variable name.
@@ -265,12 +267,13 @@ information:
 \item Component Description
 
   You must supply a brief description of the component.  This
-  description will be shown if the \texttt{components} verb is used to
-  show a list of all the components defined in the build project.
+  description will be shown if the \texttt{components} verb
+  (\xref{lmsbw:target:components}) is used to show a list of all the
+  components defined in the build project.
 
 \item Reason for building component
 
-  A component is included in a build for one of two reasons:
+  A component is included in a project for one of two reasons:
 
   \begin{itemize}
     \item It's part of the delivered product
@@ -282,6 +285,9 @@ information:
   \texttt{image}, and if it's part of the build the reason is
   \texttt{build}.
 
+  This choice affects which toolchain is used to build the component,
+  and where it is installed in the build tree.  See \xref{variables:reason}.
+
 \item Configuration File
 
   The full pathname of the configuration file that defines the
@@ -290,9 +296,11 @@ information:
 
   Since the pathname may not be known until the configuration file
   itself is loaded, it becomes the responsibility of your
-  \texttt{load-configuration-function} to marshal this information to
-  the component configuration file.  See the \texttt{sports} sample
-  for one approach to addressing this issue.
+  \texttt{load-configuration-function}
+  (\xref{variables:load-configuration-function}) to marshal this
+  information to the component configuration file.  See the
+  \texttt{sports} (\xref{samples:sports}) sample for one approach to
+  addressing this issue.
 
 \item Path to Source Directory
 
@@ -307,7 +315,7 @@ information:
     \item Use the \gnumake \texttt{realpath} function and a relative path from
       the configuration file.
     \item Use an environment variable to denote the root of the source
-      tree, and append the path to the component.
+      tree, and append the relative path to the component.
   \end{itemize}
 
 \item List of prerequisite components
@@ -342,6 +350,9 @@ $(call declare_source_component,              \
        $(PROJECT_SOURCE_ROOT)/src/compiler)
 \end{verbatim}
 
+Any other component that \emph{uses} this compiler must list the
+\texttt{compiler} component as a prerequisite.
+
 \item A component with a prerequisite
 
 The following declares a component, named \texttt{consumer}, with a
@@ -363,20 +374,20 @@ $(call declare_source_component,              \
 An idiom you might see in many component configuration files is the
 handling of parameter number five (5) -- the source directory path.
 This file containing this code is loaded from the declared
-\texttt{load-configuration-function}, and that configuration-loading
-function is passed a single parameter: the full pathname of the
-configuration file itself.
+\texttt{load-configuration-function}, and that component
+configuration-loading function is passed a single parameter: the full
+pathname of the master configuration file itself.
 
 Of course, since the component configuration file is loaded and
 evaluated in the context of the \texttt{load-configuration-function},
 the full path to the configuration file is still available as
-\texttt{\$(1)}.
+\texttt{\$(1)} -- provided they are in the same directory tree.
 
 The idiom in argument five (5) is correct because the project
 configuration file resides in the same directory as the component
 source directory.  The code for this parameter replaces the
 configuration file name -- which is known -- with the name of the
-source directory for the component.
+source directory for the component.\todo{Show the tree structure}
 
 \end{itemize}
 
@@ -428,6 +439,11 @@ rules:
   product image (see \xref{variables:reason}) should execute any
   program that is built by the component build.
 
+  If your system is never meant to cross compile, then it's ok for the
+  component build process to execute tests; if cross compilation is
+  later used, the tests will have a different architecture type and
+  fail to run.
+
   You must be very careful when testing in a cross-compiled
   environment; the details of this are beyond the scope of this
   software.
@@ -439,12 +455,12 @@ rules:
   with no target; in other words, the default target of the component
   \makefile is used to build the component.
 
-  The \texttt{component\_attribute\_build\_target} API allows you to
-  change the target used to build a individual component.  See
-  \xref{api:component-attribute-build-target}.
+  The \texttt{component\_attribute\_build\_target} API
+  (\xref{api:component-attribute-build-target}) allows you to change
+  the target used to build a individual component.
 
-  You can also override this behavior by overriding the default
-  rules.  See \xref{overriding:overriding-build}.
+  \xref{overriding:overriding-build} shows how you can override this
+  default behavior.
 
 \item \texttt{install} target
 
@@ -455,8 +471,7 @@ rules:
   The \texttt{install} target must \emph{install} public output of the
   build process into the directory denoted by the \makefile variable
   \texttt{DESTDIR}.  \texttt{DESTDIR} is a standard \make variable
-  used when installing software, and it facilitates installing
-  software when permissions to the root directory are not present.
+  used when installing software.
 
   To be compliant, a component's build process should be written to
   assume that the directory into which it installs files is the root
@@ -473,12 +488,12 @@ $(CP) --recursive                          \
 
   \lmsbw guarantees that \texttt{DESTDIR} will be defined.
 
-  The \texttt{component\_attribute\_install\_target} API allows you to
-  change the target used to build a individual component.  See
-  \xref{api:component-attribute-install-target}.
+  The \texttt{component\_attribute\_install\_target} API
+  (\xref{api:component-attribute-install-target}) allows you to change
+  the target used to build a individual component.
 
-  You can also override this behavior by overriding the default rules.
-  See \xref{overriding:overriding-install}.
+  \xref{overriding:overriding-install} shows how you can override this
+  default behavior.
 
 \end{itemize}
 
@@ -514,12 +529,12 @@ exported by other, prerequisite, components.
 \subsubsection{\texttt{LMSBW\_C\_BUILD\_DIRECTORY}}
 
 This is set to the root of the build directory for the associated
-component.  The component \makefile can place files into this
-directory.
+component.  The component \makefile can place files such a \mtree
+manifests or \make sentinels into this directory.
 
-The actual directory in which the build will take place is the current
-working directory for the \make process.  You can use the \gnumake
-\texttt{shell} command to determine that value.
+This is \emph{not} the directory in which the component \makefile is
+started, although that directory will be a subdirectory of this one;
+do not put object files into this directory.
 
 \subsubsection{\texttt{CFLAGS}}
 
@@ -528,7 +543,7 @@ This is the union of the global \texttt{CFLAGS} value managed by
 \texttt{\texttt{component\_attribute\_cflags}} (\xref{api:cflags}).
 
 The component \makefile should not assign directly to \texttt{CFLAGS},
-but should append additional options to it.
+but instead should append additional options to it.
 
 \subsubsection{\texttt{GMSL}}
 
