@@ -171,7 +171,7 @@ can be seen by using the \texttt{report} verb
 (\xref{usinglmsbw:report}).
 
 
-\subsection{\lmsbwcomponentfield{<component>}{api}}\label{variables:api}
+\subsection{\lmsbwcomponentfield{api}}\label{variables:api}
 
 This is a list of install directories that contain the public API of
 the component.  The directories must be installed into the \destdir by
@@ -194,7 +194,7 @@ etc. -- then you do not need to set this key.
 
 \apiref{api:component-attribute-api}
 
-\subsection{\lmsbwcomponentfield{<component>}{build-directory}}\label{variables:build-directory}
+\subsection{\lmsbwcomponentfield{build-directory}}\label{variables:build-directory}
 
 This key is used internally; it contains the absolute pathname of the
 directory in which the build will be performed.
@@ -203,7 +203,7 @@ This key must not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{build-log}}\label{variables:build-log}
+\subsection{\lmsbwcomponentfield{build-log}}\label{variables:build-log}
 
 This key is used internally; it contains the absolute pathname of the
 file containing the console output of the component's build process.
@@ -219,7 +219,7 @@ This key must not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{build-root-directory}}\label{variables:build-root-directory}
+\subsection{\lmsbwcomponentfield{build-root-directory}}\label{variables:build-root-directory}
 
 This key holds the root directory where all build-related output is
 placed for the associated component.
@@ -228,7 +228,7 @@ This key must not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{build-target}}\label{variables:build-target}
+\subsection{\lmsbwcomponentfield{build-target}}\label{variables:build-target}
 
 This key holds the list of targets used when invoking the component's
 \makefile to build.
@@ -241,7 +241,7 @@ Compare to \xref{variables:install-target}.
 
 \apiref{api:component-attribute-build-target}
 
-\subsection{\lmsbwcomponentfield{<component>}{cflags}}\label{variables:cflags}
+\subsection{\lmsbwcomponentfield{cflags}}\label{variables:cflags}
 
 This key holds a list of values which will be assigned to the
 \texttt{CFLAGS} variable before the component's \makefile is invoked.
@@ -277,13 +277,13 @@ configuration file rather than in the component \makefile.
 
 \apiref{api:cflags}
 
-\subsection{\lmsbwcomponentfield{<component>}{component}}\label{variables:component}
+\subsection{\lmsbwcomponentfield{component}}\label{variables:component}
 
 This key contains the name of the component.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{configuration-file}}\label{variables:configuration-file}
+\subsection{\lmsbwcomponentfield{configuration-file}}\label{variables:configuration-file}
 
 This key is the absolute pathname of the component configuration file
 that was used to declare the component.
@@ -298,13 +298,13 @@ override the defaults for building
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{description}}\label{variables:description}
+\subsection{\lmsbwcomponentfield{description}}\label{variables:description}
 
 This key holds the description of the component.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{destdir-directory}}\label{variables:destdir-directory}
+\subsection{\lmsbwcomponentfield{destdir-directory}}\label{variables:destdir-directory}
 
 This key holds the absolute path of the \destdir directory; after
 building, the component's public files must be \emph{installed} to this
@@ -323,7 +323,7 @@ cp include-file.h $(DESTDIR)/usr/include
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{install-directory}}\label{variables:install-directory}
+\subsection{\lmsbwcomponentfield{install-directory}}\label{variables:install-directory}
 
 This key holds the absolute path of the shared install directory.
 After building, \lmsbw will invoke the component's build process with
@@ -337,7 +337,7 @@ This key must not be used by components of \lmsbw.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{install-target}}\label{variables:install-target}
+\subsection{\lmsbwcomponentfield{install-target}}\label{variables:install-target}
 
 This key holds the component's \makefile target that is used to
 \emph{install} the component into the \destdir.
@@ -350,7 +350,7 @@ Compare to \xref{variables:build-target}.
 
 \apiref{api:component-attribute-install-target}
 
-\subsection{\lmsbwcomponentfield{<component>}{kind}}\label{variables:kind}
+\subsection{\lmsbwcomponentfield{kind}}\label{variables:kind}
 
 This key represents the \emph{kind} of the component.
 
@@ -383,7 +383,7 @@ project.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{no-parallel}}\label{variables:no-parallel}
+\subsection{\lmsbwcomponentfield{no-parallel}}\label{variables:no-parallel}
 
 This key, when set, causes the recursive make for the associated
 component to \emph{never} allow parallel builds; it directly sets the
@@ -394,7 +394,7 @@ bad dependencies -- in a very poorly constructed \makefile.
 
 \apiref{api:component-attribute-no-parallel-build}
 
-\subsection{\lmsbwcomponentfield{<component>}{prerequisite}}\label{variables:prerequisite}
+\subsection{\lmsbwcomponentfield{prerequisite}}\label{variables:prerequisite}
 
 This key holds a list of components declared to be prerequisites of
 the associated component.  All components contained in this list will
@@ -405,7 +405,7 @@ An empty value means that there are no prerequisites.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{reason}}\label{variables:reason}
+\subsection{\lmsbwcomponentfield{reason}}\label{variables:reason}
 
 This key holds the \emph{reason} this component is being built.
 
@@ -450,7 +450,7 @@ Reason can be one of two values:
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{source-directory}}\label{variables:source-directory}
+\subsection{\lmsbwcomponentfield{source-directory}}\label{variables:source-directory}
 
 This key contains the absolute pathname of the source directory for
 the component.
@@ -459,7 +459,7 @@ This key must not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{source-mtree-manifest}}\label{variables:source-mtree-manifest}
+\subsection{\lmsbwcomponentfield{source-mtree-manifest}}\label{variables:source-mtree-manifest}
 
 This key holds the absolute pathname of the file which holds the
 \mtree manifest for the source directory.
@@ -468,7 +468,7 @@ This value should not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{<component>}{toolchain}}\label{variables:toolchain}
+\subsection{\lmsbwcomponentfield{toolchain}}\label{variables:toolchain}
 
 This is the name of the toolchain that will be used to build the
 component.  It can be specified at the component level.  If it is not
