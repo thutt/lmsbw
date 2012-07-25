@@ -29,8 +29,7 @@ the top level that will build the source in an \lmsbw-compliant
 manner.  See \xref{wrap:component-makefile} for details on \makefile
 compliance.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_source_component
     <component-name>,
@@ -88,6 +87,8 @@ declare_source_component
   See \xref{api:prerequisite}.
 
 \end{itemize}
+\end{minipage}
+
 
 \section{\texttt{component\_attribute\_no\_parallel\_build}}\label{api:component-attribute-no-parallel-build}
 
@@ -100,8 +101,7 @@ will benefit from this option will intermittently fail when being
 built with high levels of parallelism because of incorrect
 dependencies.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 component_attribute_no_parallel_build
     <component-name>
@@ -121,6 +121,7 @@ component_attribute_no_parallel_build
   on the command line.
 
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{component\_attribute\_build\_target}}\label{api:component-attribute-build-target}
 
@@ -128,8 +129,7 @@ This changes the target for building a component with the component's
 build process from the \emph{default} \make target to the list of
 targets provided.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 component_attribute_build_target
     <component-name>
@@ -150,8 +150,8 @@ component_attribute_build_target
   This argument is a space-separated list of targets in the
   component's \makefile which will be used for the build phase of the
   component.
-
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{component\_attribute\_install\_target}}\label{api:component-attribute-install-target}
 
@@ -159,8 +159,7 @@ This changes the target for installing a component with the
 component's build process from the \texttt{install} \make target to
 the list of targets provided.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 component_attribute_install_target
     <component-name>
@@ -182,8 +181,9 @@ component_attribute_install_target
   component's \makefile which will be used for the install phase of
   the component.
 
-  \todo{Document build \& install phase ideas.}
 \end{itemize}
+\end{minipage}
+  \todo{Document build \& install phase ideas.}
 
 \section{\texttt{component\_attribute\_api}}\label{api:component-attribute-api}
 
@@ -203,8 +203,7 @@ directories\footnote{For example, the \texttt{gcc} option
 library changes, it is up to the dependent \makefile to have the
 proper rules to detect this change and rebuild or relink as necessary.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 component_attribute_api
     <component-name>,
@@ -248,7 +247,7 @@ component_attribute_api
     \item Standardize on install locations
 
       If you have header files, they should be placed in:
-      
+
       \texttt{/usr/include/\emph{component-name}}.
 
       If you have libraries, put them in
@@ -274,6 +273,7 @@ component_attribute_api
 
   \end{itemize}
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{component\_attribute\_cflags}}\label{api:cflags}
 
@@ -292,8 +292,7 @@ Switching between different \texttt{CFLAGS} values will always result
 in the minimal (from the last build) incremental build for the
 component.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 component_attribute_cflags
     <component-name>,
@@ -318,6 +317,7 @@ component_attribute_cflags
   used.
 
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{declare\_component\_kind}}\label{api:kind}
 
@@ -329,8 +329,7 @@ install the component.
 
 See \xref{variables:kind} for allowed values and semantics.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_component_kind
     <component-name>,
@@ -350,13 +349,13 @@ declare_component_kind
   This provides the value to which the component's \texttt{kind} will
   be set.
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{declare\_component\_description}}\label{api:description}
 
 This function allows the specification of a component's description.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_component_description
     <component>,
@@ -378,6 +377,7 @@ declare_component_description
   variable will be set.
 
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{declare\_component\_reason}}\label{api:reason}
 
@@ -386,8 +386,7 @@ component is included in the build.
 
 See \xref{variables:reason} for allowed values and semantics.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_component_reason
     <component>,
@@ -404,18 +403,18 @@ declare_component_reason
   set.
 
 \item reason
-  
+
   This is the value to which the component's \texttt{reason} variable
   will be set.
 
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{declare\_component\_component}}\label{api:component}
 
 This function allows the specification of the name of the component.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_component_component
     <component-name>,
@@ -437,6 +436,7 @@ declare_component_component
   variable will be set.
 
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{declare\_component\_prerequisite}}\label{api:prerequisite}
 
@@ -459,8 +459,7 @@ checked for changes as part of determining if this component needs to
 be built.  If any prerequisite component's API has changed files, then
 this component will be built.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_component_prerequisite
     <component>,
@@ -484,6 +483,7 @@ declare_component_prerequisite
   Each prerequisite will be successfully built \& installed before
   this component is built.
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{declare\_component\_source\_directory}}\label{api:source-directory}
 
@@ -499,8 +499,7 @@ the component.
 \lmsbw expects that a \makefile will be at the top level of the named
 directory.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_component_source_directory
     <component>,
@@ -523,6 +522,7 @@ declare_component_source_directory
 
   If the directory does not exist, \lmsbw will produce an error.
 \end{itemize}
+\end{minipage}
 
 \section{\texttt{declare\_component\_configuration\_file}}\label{api:configuration-file}
 
@@ -532,8 +532,7 @@ configuration file associated with the component.
 \lmsbw sets up dependencies so that changes to this file will
 automatically force the component's build process to be invoked.
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_component_configuration_file
     <component>,
@@ -555,12 +554,11 @@ declare_component_configuration_file
   file which declared the component.
 
 \end{itemize}
-
+\end{minipage}
 
 \section{\texttt{component\_attribute\_toolchain}}\label{api:toolchain}
 
-\subsection{API}
-
+\begin{minipage}{\linewidth}
 \begin{verbatim}
 component_attribute_toolchain
     <component-name>,
@@ -588,3 +586,4 @@ component_attribute_toolchain
 See \xref{chap:toolchain-usage} and
 \xref{chap:toolchain-configuration} for information on using and
 configuring toolchains.
+\end{minipage}
