@@ -15,7 +15,7 @@
 %
 \chapter{Public API Reference}\label{chap:api}
 
-This chapter facilitates the modification and extension of \lmsbw.
+This chapter describes the public functions present in \lmsbw.
 
 \section{\texttt{declare\_source\_component}}\label{api:declare-source-component}
 
@@ -35,58 +35,38 @@ declare_source_component
     <component-name>,
     <description>,
     <reason>,
-    <configuration-file>,
-    <full path to source directory>,
-    <optional list of prerequisite components>
+    <configuration file>,
+    <source directory>,
+    <prerequisites>
 \end{verbatim}
 
-\begin{itemize}
-\item{component-name}
+\begin{tabularx}{\linewidth}{l|X}
+component name &
+The name used to reference the component throughout the project.  The
+name must be a valid \make identifier, and globally unique within the
+project.  See \xref{api:component}. \\
 
-  This is the name used to reference the component throughout the
-  \lmsbw-project.  The name must be a valid \make identifier, and it
-  must be globally unique within the project.
+\hline description &
+  A brief description of the purpose of the component.
+  See \xref{api:description}. \\
 
-  See \xref{api:component}.
+\hline reason &
+  The \emph{reason} the component is being included in the build. See
+  \xref{api:reason}. \\
 
-\item{description}
+\hline configuration file &
 
-  This is a brief description of the purpose of the component.  The
-  description will be printed by various verbs of the \lmsbw system.
+  The full pathname of the component configuration file which declares
+  the source component. See \xref{api:configuration-file}. \\
 
-  Even though this is a required parameter, the description is purely
-  informational.
+\hline source directory &
+  The full pathname to the source directory for the component.  See
+  \xref{api:source-directory}. \\
 
-  See \xref{api:description}.
-
-\item{reason}
-
-  This is the \emph{reason} the component is being included in the
-  build.
-
-  See \xref{api:reason}.
-
-\item{configuration file}
-
-  This must be the full pathname of the component configuration file
-  which declares the source component.
-
-  See \xref{api:configuration-file}.
-
-\item{source directory}
-
-  The full pathname to the source directory for the component.
-
-  See \xref{api:source-directory}.
-
-\item{optional list of prerequisites}
-
-  If specified, this argument must hold a space-separated list of
-  component names.
-
-  See \xref{api:prerequisite}.
-
-\end{itemize}
+\hline prerequisites &
+  An optional space-separated list of component names.  See
+  \xref{api:prerequisite}.
+\end{tabularx}
 \end{minipage}
 
 
@@ -107,20 +87,15 @@ component_attribute_no_parallel_build
     <component-name>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
-
-  This is the name of the component for which parallel builds should
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
+  The name of a declared component for which parallel builds should
   not be allowed.
+\end{tabularx}
 
-  The component must have been declared before this attribute can be
-  set.
-
-  When this attribute is set, the recursive invocation of \gnumake
-  used to build the component will have \texttt{-j 1} explicitly set
-  on the command line.
-
-\end{itemize}
+When this attribute is set, the recursive invocation of \gnumake
+used to build the component will have \texttt{-j 1} explicitly set
+on the command line.
 \end{minipage}
 
 \section{\texttt{component\_attribute\_build\_target}}\label{api:component-attribute-build-target}
@@ -136,21 +111,16 @@ component_attribute_build_target
     <list of targets>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+  component-name &
+  The name of declared component for which the build target key
+  should be set. \\
 
-  This is the name of the component for which the build target value
-  should be set.
-
-  The component must have been declared before this attribute can be
-  set.
-
-\item list-of-targets
-
-  This argument is a space-separated list of targets in the
-  component's \makefile which will be used for the build phase of the
+\hline list-of-targets &
+  A space-separated list of targets in the
+  component's \makefile that will be used for the build phase of the
   component.
-\end{itemize}
+\end{tabularx}
 \end{minipage}
 
 \section{\texttt{component\_attribute\_install\_target}}\label{api:component-attribute-install-target}
@@ -166,24 +136,17 @@ component_attribute_install_target
     <list of targets>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component name &
+  The name of a declared component for which the install
+  target value should be set. \\
 
-  This is the name of the component for which the install target value
-  should be set.
-
-  The component must have been declared before this attribute can be
-  set.
-
-\item list-of-targets
-
-  This argument is a space-separated list of targets in the
+\hline list-of-targets &
+  A space-separated list of targets in the
   component's \makefile which will be used for the install phase of
   the component.
-
-\end{itemize}
+\end{tabularx}
 \end{minipage}
-  \todo{Document build \& install phase ideas.}
 
 \section{\texttt{component\_attribute\_api}}\label{api:component-attribute-api}
 
@@ -210,68 +173,64 @@ component_attribute_api
     <list of directories>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
+  The name of a declared component for which a set of \emph{api}
+  directories should be maintained. \\
 
-  This is the name of the component for which a set of \emph{api}
-  directories should be maintained.
+\hline list-of-directories &
 
-  The component must have been declared before this attribute can be
-  set.
-
-\item list-of-directories
-
-  This is a space-separated list of directories which contain files
-  that can be used by other, dependent, components.
+  A space-separated list of directories which contain files that can
+  be used by other, dependent, components.
 
   The contents of each directory contained in this list should be
   filled in \destdir by the \texttt{install} target of the build
   process.
+\end{tabularx}
 
-  The following rules are recommended when creating API directories:
+The following rules are recommended when creating API directories:
 
-  \begin{itemize}
-    \item Use root-based pathnames
+\begin{itemize}
+\item Use root-based pathnames
 
-      Because you are going to install everything into \destdir, and
-      \lmsbw proper will copy those files into the install directory,
-      you should use root-based API directory names.
+  Because you are going to install everything into \destdir, and
+  \lmsbw proper will copy those files into the install directory,
+  you should use root-based API directory names.
 
-    \item Use the name of the component in the directory name.
+\item Use the name of the component in the directory name.
 
-      This will make it easy for dependent component maintainers to
-      easily find your API locations.\footnote{It is also easy to
-        execute the \emph{report} verb on a component to find out
-        the location of API directories.}
+  This will make it easy for dependent component maintainers to
+  easily find your API locations.\footnote{It is also easy to
+    execute the \emph{report} verb on a component to find out
+    the location of API directories.}
 
-    \item Standardize on install locations
+\item Standardize on install locations
 
-      If you have header files, they should be placed in:
+  If you have header files, they should be placed in:
 
-      \texttt{/usr/include/\emph{component-name}}.
+  \texttt{/usr/include/\emph{component-name}}.
 
-      If you have libraries, put them in
-      \texttt{/usr/lib/\emph{component-name}}.
+  If you have libraries, put them in
+  \texttt{/usr/lib/\emph{component-name}}.
 
-      If you have some other type of files, be sure to reach consensus
-      on standardized locations; it will make maintenance much easier.
+  If you have some other type of files, be sure to reach consensus
+  on standardized locations; it will make maintenance much easier.
 
-      Since component names must be unique, the directory names will
-      also be unique.  And, this rule allows dependent components to
-      easily include your header files, and link with your libraries
-      -- because their location will be known.
+  Since component names must be unique, the directory names will
+  also be unique.  And, this rule allows dependent components to
+  easily include your header files, and link with your libraries
+  -- because their location will be known.
 
-      See \xref{wrap:using-prerequisite-api} for details on using an API
-      exported by a prerequisite component.
+  See \xref{wrap:using-prerequisite-api} for details on using an API
+  exported by a prerequisite component.
 
-    \item Install to \destdir
+\item Install to \destdir
 
-      Install all files into the API directory prefixed with \destdir.
+  Install all files into the API directory prefixed with \destdir.
 
-      If you don't prefix with \destdir, your build process will
-      likely fail with permission errors on the root-based pathnames.
+  If you don't prefix with \destdir, your build process will
+  likely fail with permission errors on the root-based pathnames.
 
-  \end{itemize}
 \end{itemize}
 \end{minipage}
 
@@ -299,24 +258,15 @@ component_attribute_cflags
     <cflags-value>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
+  The name of a declared component for which the \texttt{CFLAGS} value
+  should be set. \\
 
-  This is the name of the component for which the \texttt{CFLAGS}
-  value should be set.
-
-  The component must have been declared before this attribute can be
-  set.
-
-\item cflags-value
-
-  This the value to which \texttt{CFLAGS} will be set when initiating
-  the component's build process.
-
-  Be sure to match the values set with the toolchain that is being
-  used.
-
-\end{itemize}
+\hline cflags-value &
+  The value to which \texttt{CFLAGS} will be set when initiating the
+  component's build process.
+\end{tabularx}
 \end{minipage}
 
 \section{\texttt{declare\_component\_kind}}\label{api:kind}
@@ -327,8 +277,6 @@ of the component.
 The value is used internally to generate \make rules to build \&
 install the component.
 
-See \xref{variables:kind} for allowed values and semantics.
-
 \begin{minipage}{\linewidth}
 \begin{verbatim}
 declare_component_kind
@@ -336,20 +284,19 @@ declare_component_kind
     <kind>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
 
-  This is the name of the component for which the \emph{kind} is to be declared.
+  The name of a declared component for which the \emph{kind} is to be
+  declared. \\
 
-  The component must have been declared before this attribute can be
-  set.
+\hline kind &
+  The value to which the component's \texttt{kind} will be set.  See
+  \xref{variables:kind} for allowed values and semantics.
 
-\item kind
-
-  This provides the value to which the component's \texttt{kind} will
-  be set.
-\end{itemize}
+\end{tabularx}
 \end{minipage}
+
 
 \section{\texttt{declare\_component\_description}}\label{api:description}
 
@@ -362,21 +309,16 @@ declare_component_description
     <description>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
 
-  This is the name of the component for which the component's
-  \texttt{description} variable should be set.
+  The name of a declared component for which the component's
+  \texttt{description} variable should be set. \\
 
-  The component must have been declared before this attribute can be
-  set.
-
-\item description
-
-  This is the value to which the component's \texttt{description}
-  variable will be set.
-
-\end{itemize}
+\hline  description &
+  The value to which the component's \texttt{description} variable
+  will be set.
+\end{tabularx}
 \end{minipage}
 
 \section{\texttt{declare\_component\_reason}}\label{api:reason}
@@ -393,21 +335,15 @@ declare_component_reason
     <reason>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
+  The name of a declared component for which the component's
+  \texttt{reason} variable should be set. \\
 
-  This is the name of the component for which the component's
-  \texttt{reason} variable should be set.
-
-  The component must have been declared before this attribute can be
+\hline reason &
+  The value to which the component's \texttt{reason} variable will be
   set.
-
-\item reason
-
-  This is the value to which the component's \texttt{reason} variable
-  will be set.
-
-\end{itemize}
+\end{tabularx}
 \end{minipage}
 
 \section{\texttt{declare\_component\_component}}\label{api:component}
@@ -421,21 +357,16 @@ declare_component_component
     <name>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
 
-  This is the name of the component for which the component's
-  \texttt{component} variable should be set.
+  The name of a declared component for which the component's
+  \texttt{component} variable should be set. \\
 
-  The component must have been declared before this attribute can be
-  set.
-
-\item name
-
-  This is the value to which the component's \texttt{component}
-  variable will be set.
-
-\end{itemize}
+\hline name &
+  The value to which the component's \texttt{component} variable will
+  be set.
+\end{tabularx}
 \end{minipage}
 
 \section{\texttt{declare\_component\_prerequisite}}\label{api:prerequisite}
@@ -466,23 +397,19 @@ declare_component_prerequisite
     <prerequisites>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
+  The name of a declared component for which the component's
+  \texttt{prerequisite} variable should be set. \\
 
-  This is the name of the component for which the component's
-  \texttt{prerequisite} variable should be set.
+\hline prerequisites &
 
-  The component must have been declared before this attribute can be
-  set.
-
-\item prerequisites
-
-  This is a space-separated list of component names which are
-  considered to be prerequisites of this component.
+  A space-separated list of component names which are considered to be
+  prerequisites of this component.
 
   Each prerequisite will be successfully built \& installed before
   this component is built.
-\end{itemize}
+\end{tabularx}
 \end{minipage}
 
 \section{\texttt{declare\_component\_source\_directory}}\label{api:source-directory}
@@ -506,22 +433,15 @@ declare_component_source_directory
     <absolute-directory>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
+  The name of a declared component that will have its
+  \texttt{source-directory} variable set. \\
 
-  This is the name of the component that will have its
-  \texttt{source-directory} variable set.
-
-  The component must have been declared before this attribute can be
-  set.
-
-\item absolute-directory
-
-  This must be an absolute pathname to the source directory for the
+\hline  absolute-directory &
+  The absolute pathname of the source directory for the
   named component.
-
-  If the directory does not exist, \lmsbw will produce an error.
-\end{itemize}
+\end{tabularx}
 \end{minipage}
 
 \section{\texttt{declare\_component\_configuration\_file}}\label{api:configuration-file}
@@ -539,21 +459,14 @@ declare_component_configuration_file
     <configuration-file>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
-
-  This is the name of the component that will have its
-  \texttt{configuration-file} variable set.
-
-  The component must have been declared before this attribute can be
-  set.
-
-\item configuration-file
-
-  This should be the absolute pathname of the component configuration
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
+  The name of a declared component that will have its
+  \texttt{configuration-file} variable set. \\
+\hline configuration-file &
+  The absolute pathname of the component configuration
   file which declared the component.
-
-\end{itemize}
+\end{tabularx}
 \end{minipage}
 
 \section{\texttt{component\_attribute\_toolchain}}\label{api:toolchain}
@@ -565,23 +478,15 @@ component_attribute_toolchain
     <toolchain-name>
 \end{verbatim}
 
-\begin{itemize}
-\item component-name
+\begin{tabularx}{\linewidth}{l|X}
+component-name &
+  The name of a declared component for which the toolchain should be
+  set. \\
 
-  This is the name of the component for which the toolchain should be
-  set.
-
-  The component must have been declared before this attribute can be
-  set.
-
-\item toolchain
-
-  This is the directory name of the toolchain which should be
-  configured when building and installing this component.
-
-  If the toolchain does not exist, \lmsbw will produce an
-  error.
-\end{itemize}
+\hline toolchain &
+  The directory name of an existing toolchain which should be
+  used when building and installing this component.
+\end{tabularx}
 
 See \xref{chap:toolchain-usage} and
 \xref{chap:toolchain-configuration} for information on using and
