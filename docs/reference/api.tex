@@ -327,32 +327,7 @@ of the component.
 The value is used internally to generate \make rules to build \&
 install the component.
 
-The supported values are as follows:
-
-\begin{itemize}
-\item source
-\end{itemize}
-
-If adding a new type of component to \lmsbw, you will need to add
-support for new values of this key.
-
-This value is used in the creation of function names, and these
-\texttt{kind}-based function names are used to process -- generate
-rules, produce reports, etc. -- components of that specific
-\emph{kind}.
-
-\lmsbw will check that functions used in this manner exist before
-attempting to invoke them\footnote{Invoking a function name which does
-  not exist in \gnumake produces no error, and does nothing.  That's
-  ok; \lmsbw takes advantage of that with component declaration
-  functions which are processed in the main \makefile and ignored in
-  \texttt{component.makefile}.}.  If you implement a new \emph{kind}
-of component, and fail to create all the necessary functions, \lmsbw
-will produce an appropriate error and stop.
-
-See \xref{variables:component-build-support} for information on
-loading support for a particular \emph{kind} of component in your
-project.
+See \xref{variables:kind} for allowed values and semantics.
 
 \subsection{API}
 
@@ -409,44 +384,7 @@ declare_component_description
 This function allows the specification of the \emph{reason} that a
 component is included in the build.
 
-  Reason can be one of two values:
-
-  \begin{enumerate}
-  \item \texttt{build}
-
-    The component is used in other parts of the build process and is
-    not intended to be part of the delivered product.
-
-    Components declared with this \emph{reason} are always built with
-    the native toolchain present on the host; this ensures that the
-    program will actually run on the machine which is performing the
-    build.
-
-  \item \texttt{image}
-
-    The component is built as part of the overall project, and it is
-    intended to be delivered with the shipping product.
-
-    Components declared with this \emph{reason} will always use the
-    component-defined, globally-defined or host toolchain to build.
-
-    If the component does not declare a specific toolchain, the global
-    toolchain declaration is used.  If there is no global toolchain
-    specified, then the toolchain installed on the host will be used
-    to build the component.
-
-  \end{enumerate}
-
-  \lmsbw maintains separate install and build directories for
-  components of each type.  The impetus for this separation is cross
-  compilation: \texttt{build} components are built with the native
-  toolchain installed on the host computer, and the file format may be
-  different than those of type \texttt{image}.  This separation also
-  reduces the risk of accidentally installing build-only components
-  into a deliverable product.
-
-  See \xref{wrap:using-build-components} for information on using
-  \texttt{build}-reasoned components.
+See \xref{variables:reason} for allowed values and semantics.
 
 \subsection{API}
 

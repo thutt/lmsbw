@@ -15,10 +15,9 @@
 %
 \chapter{Variable Reference}\label{chap:variables}
 
-The \lmsbw system uses \gmsl to simplify the implementation of data
-structures in \make by using associative arrays as a kind of record
-structure.  This facilitates a programming interface that uses few
-variables in a uniform way that makes using \lmsbw simple.
+The \lmsbw system uses associative arrays as a kind of record
+structure to facilitate a programming interface that uses few
+variables in a uniform manner.
 
 This chapter provides a reference for the variables that are used
 internally by \lmsbw, and that provide the low-level interface used to
@@ -26,21 +25,21 @@ declare and define components.
 
 \section{\lmsbwconfiguration}\label{variables:lmsbw-configuration}
 
-This variable is the nexus of all global configuration for a wrapped
-build.  It must be initialized by your master configuration file
-(\xref{lmsbw:configuration}, \xref{wrap:master-configuration}), or the
-build will fail with an error message indicating that the
+This variable is the nexus of all global configuration for a porject.
+It must be initialized by your master configuration file
+(\xref{lmsbw:configuration}, \xref{wrap:master-configuration}), or
+\lmsbw will fail with an error message indicating that the
 configuration is bad.
 
-It is implemented as a \gmsl associative array, and is readily
-extensible by simply adding new \emph{key} / \emph{value} pairs.
+It is implemented as an associative array, and is readily extensible
+by simply adding new \emph{key} / \emph{value} pairs.
 
 Its keys and values must not be changed after the initial load of the
 configuration file.
 
 Each key in this array covers a global configuration option that will
-affect the entire wrapped build.  The following sections describe the
-valid keys and their allowed values.
+affect the entire project.  The following sections describe the valid
+keys and their allowed values.
 
 
 \begin{center}\framebox{\begin{minipage}{.9\linewidth}\textbf{NOTE}
@@ -54,29 +53,23 @@ valid keys and their allowed values.
 
 \subsection{\texttt{component-build-support}}\label{variables:component-build-support}
 
-This key holds a list of supported components build methods that you
-want to be able to access in your wrapped build.  Loading the build
-methods on-the-fly allows \lmsbw to be extensible, and ensures that
-\lmsbw will only load \make functions to support the component types
-you will be using.
+To be more easily extensible, \lmsbw dynamically loads support for the
+\texttt{kind} of components that you wish to build based on the value
+of this variable.
 
-The following values are valid:
+The list of values contained in this variable corresponds directly to
+the component \texttt{kind} described in \xref{variables:kind}.
 
-\begin{itemize}
-\item source
-
-  The source code is available on the local system.  \lmsbw will
-  manage the invocation of the \make-based build process contained
-  in the source directory.
-
-\end{itemize}
+By including a component \texttt{kind} in this variable, the ability
+declare and build such components will be enabled.  If a component
+\texttt{kind} is not enabled, you will not be able to build components
+of that type.
 
 If no component kinds are specified in the configuration, \lmsbw will
-fail with an error.
+exit with an error.
 
 Only specified configuration kinds will be loaded and accessible when
-using \lmsbw.  This is the mechanism whereby support for additional
-types of components can be added to \lmsbw (\xref{chap:extending}).
+using \lmsbw.
 
 \subsection{\texttt{load-configuration-function}}\label{variables:load-configuration-function}
 
@@ -92,6 +85,20 @@ vv:=$(call set,LMSBW_configuration, \
 In the example above, the user-supplied function called
 \texttt{load\_configuration} will be invoked to load the component
 configurations.
+
+The signature of the function is this:
+
+\begin{verbatim}
+load_function
+   <master configuration file pathname>
+\end{verbatim}
+
+\begin{itemize}
+\item master configuration file pathname
+
+  The first argument to this function is the full pathname of the
+  master configuration file provided to \lmsbw. 
+\end{itemize}
 
 Upon successful exit, the named function must have done the following:
 
@@ -110,17 +117,13 @@ Upon successful exit, the named function must have done the following:
 
 \section{\texttt{LMSBW\_components}}\label{variables:lmsbw-components}
 
-This variable is a normal \make variable.
-
 After the \texttt{load-configuration-function} variable
 (\xref{variables:load-configuration-function}) has completed
-initializing the build configuration, this variable must contain list
+initializing the project configuration, this variable must contain list
 of configured components.
 
 The variable is internally managed when you use the official APIs for
 declaring components -- you should never have to change this variable.
-If you write new APIs to load or declare components, you must ensure
-that this variable is updated with each load.
 
 The list must adhere to the following rules:
 
@@ -132,7 +135,7 @@ The list must adhere to the following rules:
 \end{itemize}
 
 \lmsbw will use this list of components to generate the rules which
-will be used to build the component.
+will be used to build the project.
 
 % To verify that this documentation is complete, you must find all
 % component associative array keys.  This is done by looking for
@@ -142,11 +145,11 @@ will be used to build the component.
 
 Each component named in \lmsbwcomponents must have a corresponding
 associative array which describes all the attributes needed to
-correctly build it.  However, the allowed attributes will vary based
-on the \emph{kind} (\xref{variables:kind}) of the component.
+correctly build it.  Be aware that the allowed attributes will vary
+based on the \texttt{kind} (\xref{variables:kind}) of the component.
 
-The \make variable for each \emph{kind} of source component will be
-named as shown below; consider that the component name is \texttt{baselib}.
+The variable for a component will be named as shown below; consider
+that the component name is \texttt{baselib}.
 
 \begin{verbatim}
 LMSBW_component_baselib
@@ -159,19 +162,24 @@ allowable associative keys and values.
 
 \section{Source Components}
 
-Source components are declared to \lmsbw via
+Source components are declared to \lmsbw using
 \texttt{declare\_source\_component}
-(\xref{api:declare-source-component}) and have the keys which are
-described in the following sections.
+(\xref{api:declare-source-component}).
+
+Note that the majority of the keys described in the following sections
+can be seen by using the \texttt{report} verb
+(\xref{usinglmsbw:report}).
+
 
 \subsection{\lmsbwcomponentfield{<component>}{api}}\label{variables:api}
 
 This is a list of install directories that contain the public API of
-the component.  The directories must be installed into the \destdir
-during the installation phase of the build.
+the component.  The directories must be installed into the \destdir by
+the component's build process during the installation phase of the
+build.
 
-All directly dependent components will be automatically rebuilt if any
-files change in the named directories.
+All directly dependent components will be built if any files change in
+the named directories.
 
 This variable should be set to the directories that contain exported
 header files, static libraries, icons, and other build output that
@@ -191,14 +199,14 @@ etc. -- then you do not need to set this key.
 This key is used internally; it contains the absolute pathname of the
 directory in which the build will be performed.
 
-This value should not be used by a client of \lmsbw.
+This key must not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{build-log}}\label{variables:build-log}
 
 This key is used internally; it contains the absolute pathname of the
-console output of the component's build process.
+file containing the console output of the component's build process.
 
 If you want to view the log for a component, use the \texttt{log}
 verb, like so:
@@ -207,7 +215,7 @@ verb, like so:
 lmbw log.hello-world
 \end{verbatim}
 
-This value should not be used by a client of \lmsbw.
+This key must not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
@@ -216,23 +224,18 @@ This value should not be used by a client of \lmsbw.
 This key holds the root directory where all build-related output is
 placed for the associated component.
 
-This value should not be used by a client of \lmsbw.
+This key must not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{build-target}}\label{variables:build-target}
 
-This key holds the target used when invoking the component's \makefile
-to \emph{build}.
+This key holds the list of targets used when invoking the component's
+\makefile to build.
 
 If not specified, the component's build system will invoked with no
 target when building; this will cause the default target of the
 component's \makefile to be built.
-
-This is included because it is sometimes necessary to not fulfill the
-default target of the component's build process -- if you are cross
-compiling, for example, and the component build process attempts to
-execute tests that were just built for another architecture.
 
 Compare to \xref{variables:install-target}.
 
@@ -240,8 +243,8 @@ Compare to \xref{variables:install-target}.
 
 \subsection{\lmsbwcomponentfield{<component>}{cflags}}\label{variables:cflags}
 
-This key holds values which will be assigned to the \texttt{CFLAGS}
-variable before the component's \makefile is invoked.
+This key holds a list of values which will be assigned to the
+\texttt{CFLAGS} variable before the component's \makefile is invoked.
 
 The value of this key is also used to determine the build directory
 for each component.  Changing the value for a component will change
@@ -251,9 +254,10 @@ the build output directory; the purpose of this several fold:
 \item \texttt{CFLAGS} changes incorporated into build
 
   Build processes infrequently have correct dependencies to do a
-  full-rebuild when compiler options change.  This method of assigning
-  a build directory (partially) based on the compiler options
-  guarantees that option changes are correctly reflected in the build.
+  proper build when compiler options change.  Assigning a build
+  directory based partially on the compiler options guarantees that
+  such changes are correctly reflected in the build; changing
+  \texttt{CFLAGS} results in a different build directory.
 
 \item Incremental builds
 
@@ -266,10 +270,9 @@ the build output directory; the purpose of this several fold:
 
   A component compiled with the same global options, regardless if it
   is for a different SKU, will share the same build output.
-
 \end{itemize}
 
-It is recommended that all compiler options are set in the component
+It is recommended that all compiler options be set in the component
 configuration file rather than in the component \makefile.
 
 \apiref{api:cflags}
@@ -282,34 +285,22 @@ This key contains the name of the component.
 
 \subsection{\lmsbwcomponentfield{<component>}{configuration-file}}\label{variables:configuration-file}
 
-This value is the absolute pathname of the configuration file which
-was used to declare the component.
+This key is the absolute pathname of the component configuration file
+that was used to declare the component.
 
 Changes to the configuration file will result in the component's build
-process being invoked; whether or not this results in a actual files
-being rebuilt depends on the nature of the changes to the
-configuration file, and the component's \makefile.  Changing a
-comment, for example, will not result in any files being rebuilt, but
-changing \texttt{CFLAGS} (\xref{variables:cflags}) will.
+process being invoked.
 
-Furthermore, configuration files can contain \makefile rules which
-will override the default rules for building and installing the
-component (\xref{chap:overriding}).
-
-% Move this into the overriding chapter...
-%
-% For example, if the wrapped build system does not have an
-% \texttt{install} rule, this can be provided by an overriding rule in
-% the configuration file.  This overriding rule would copy files from
-% known locations out of the build directory and install them into the
-% proper locations in the \destdir directory.  See
-% \xref{chap:overriding}.
+Component configuration files can contain \makefile rules that will
+override the defaults for building
+(\xref{overriding:overriding-build}) and installing
+(\xref{overriding:overriding-install}) the component.
 
 \apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{description}}\label{variables:description}
 
-This key holds a brief description of the component.
+This key holds the description of the component.
 
 \apiref{api:declare-source-component}
 
@@ -317,11 +308,10 @@ This key holds a brief description of the component.
 
 This key holds the absolute path of the \destdir directory; after
 building, the component's public files must be \emph{installed} to this
-intermediate install directory via the \texttt{install} target of the
-component's \makefile.
+intermediate install directory when the \texttt{install} target of the
+component's \makefile is invoked.
 
-\lmsbw proper will then copy the files from the intermediate directory
-to the install directory.
+\lmsbw will copy the files from \destdir to the shared install directory.
 
 To install files, append the actual install pathname to \destdir.  For
 example, if your file should end up in \texttt{/usr/include}, one way
@@ -335,27 +325,28 @@ cp include-file.h $(DESTDIR)/usr/include
 
 \subsection{\lmsbwcomponentfield{<component>}{install-directory}}\label{variables:install-directory}
 
-This key holds the absolute path of the component's view of the
-\emph{install} directory.  After building, \lmsbw will invoke the
-component's build process with the \emph{install} target, and this
-target must place files into the \destdir directory.  Upon successful
-completion of component installation, \lmsbw will copy the files from
-the \destdir to the global \emph{install} directory; the global
-install directory is shared by all components.
+This key holds the absolute path of the shared install directory.
+After building, \lmsbw will invoke the component's build process with
+the \emph{install} target (\xref{variables:install-target}), and this
+target must place files to be installed into the \destdir directory.
 
-This value of this key must not be used by components of \lmsbw.
+Upon successful completion of component installation, \lmsbw will copy
+the files from the \destdir to the shared install directory.
+
+This key must not be used by components of \lmsbw.
 
 \apiref{api:declare-source-component}
 
 \subsection{\lmsbwcomponentfield{<component>}{install-target}}\label{variables:install-target}
 
 This key holds the component's \makefile target that is used to
-\emph{install} the component into the \destdir.  Compare to
-\xref{variables:build-target}.
+\emph{install} the component into the \destdir.
 
 If not specified, the component's build system will invoked with
 \texttt{install} as the target when processing the \emph{install}
 phase of the build.
+
+Compare to \xref{variables:build-target}.
 
 \apiref{api:component-attribute-install-target}
 
@@ -363,7 +354,32 @@ phase of the build.
 
 This key represents the \emph{kind} of the component.
 
-See \xref{api:kind} for the allowable values and semantics.
+The supported values are as follows:
+
+\begin{itemize}
+\item source
+\end{itemize}
+
+If adding a new type of component to \lmsbw, you will need to add
+support for new values of this key.
+
+This value is used in the creation of function names, and these
+\texttt{kind}-based function names are used to process -- generate
+rules, produce reports, etc. -- components of that specific
+\emph{kind}.
+
+\lmsbw will check that functions used in this manner exist before
+attempting to invoke them\footnote{Invoking a function name which does
+  not exist in \gnumake produces no error, and does nothing.  That's
+  ok; \lmsbw takes advantage of that with component declaration
+  functions which are processed in the main \makefile and ignored in
+  \texttt{component.makefile}.}.  If you implement a new \emph{kind}
+of component, and fail to create all the necessary functions, \lmsbw
+will produce an appropriate error and stop.
+
+See \xref{variables:component-build-support} for information on
+loading support for a particular \emph{kind} of component in your
+project.
 
 \apiref{api:declare-source-component}
 
@@ -393,7 +409,44 @@ An empty value means that there are no prerequisites.
 
 This key holds the \emph{reason} this component is being built.
 
-See \xref{api:reason} for the allowable values and semantics.
+Reason can be one of two values:
+
+  \begin{enumerate}
+  \item \texttt{build}
+
+    The component is used in other parts of the build process and is
+    not intended to be part of the delivered product.
+
+    Components declared with this \emph{reason} are always built with
+    the native toolchain present on the host; this ensures that the
+    program will actually run on the machine which is performing the
+    build.
+
+  \item \texttt{image}
+
+    The component is built as part of the overall project, and it is
+    intended to be delivered with the shipping product.
+
+    Components declared with this \emph{reason} will always use the
+    component-defined, globally-defined or host toolchain to build.
+
+    If the component does not declare a specific toolchain, the global
+    toolchain declaration is used.  If there is no global toolchain
+    specified, then the toolchain installed on the host will be used
+    to build the component.
+
+  \end{enumerate}
+
+  \lmsbw maintains separate install and build directories for
+  components of each type.  The impetus for this separation is cross
+  compilation: \texttt{build} components are built with the native
+  toolchain installed on the host computer, and the file format may be
+  different than those of type \texttt{image}.  This separation also
+  reduces the risk of accidentally installing build-only components
+  into a deliverable product.
+
+  See \xref{wrap:using-build-components} for information on using
+  \texttt{build}-reasoned components.
 
 \apiref{api:declare-source-component}
 
@@ -402,7 +455,7 @@ See \xref{api:reason} for the allowable values and semantics.
 This key contains the absolute pathname of the source directory for
 the component.
 
-This value should not be used by a client of \lmsbw.
+This key must not be used by a client of \lmsbw.
 
 \apiref{api:declare-source-component}
 
