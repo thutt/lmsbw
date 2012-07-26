@@ -126,7 +126,6 @@ you might need to override the default install rules:
 \item Other unknown reasons
 \end{itemize}
 
-
 Once you have determined the need to override the automatic rules to
 perform a component install, the actual work is quite trivial; all you
 need to do is add a \makefile target to your component configuration
@@ -135,13 +134,15 @@ name of the target is based on the component name; if the component
 name is \texttt{alpha}, you would do the following:
 
 
+\begin{small}
 \begin{verbatim}
 component.install.alpha:
         $(MKDIR) --parents $(DESTDIR)/usr/include/alpha
-        $(CP) --recursive                          \
-             $(LMSBW_C_BUILD_DIRECTORY)/include/*  \
+        $(CP) --recursive                                  \
+             $(LMSBW_C_BUILD_WORKING_DIRECTORY)/include/*  \
              $(DESTDIR)/usr/include/alpha
 \end{verbatim}
+\end{small}
 
 If your component configuration file does \emph{not} have this
 specific target, then the default install rules of \lmsbw will take

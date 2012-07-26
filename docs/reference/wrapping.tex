@@ -387,7 +387,7 @@ The idiom in argument five (5) is correct because the project
 configuration file resides in the same directory as the component
 source directory.  The code for this parameter replaces the
 configuration file name -- which is known -- with the name of the
-source directory for the component.\todo{Show the tree structure}
+source directory for the component.\todo{Show tree structure}
 
 \end{itemize}
 
@@ -456,7 +456,7 @@ rules:
   \makefile is used to build the component.
 
   The \texttt{component\_attribute\_build\_target} API
-  (\xref{api:component-attribute-build-target}) allows you to change
+  (\xref{api:component-attribute-build-target}) allows you to alter
   the target used to build a individual component.
 
   \xref{overriding:overriding-build} shows how you can override this
@@ -497,12 +497,12 @@ $(CP) --recursive                          \
 
 \end{itemize}
 
-\subsection{\lmsbw-supplied Variables}
+\section{\lmsbw-supplied Variables}
 
 \lmsbw provides several variables to the component \makefile.  The
 following section describes these variables.
 
-\subsubsection{\destdir}
+\subsection{\destdir}
 
 The \destdir variable must be used as a root-directory prefix on the
 component \emph{install} rules.
@@ -512,7 +512,7 @@ pathname.  Your rules may assume the directory exists and that full
 control of the directory is available.
 
 
-\subsubsection{\texttt{LMSBW\_C\_BUILD\_INSTALL\_DIRECTORY}}\label{wrap:build-install-directory}
+\subsection{\texttt{LMSBW\_C\_BUILD\_INSTALL\_DIRECTORY}}\label{wrap:build-install-directory}
 
 You can use this as a prefix to access the build output for components
 that have their \texttt{reason} (\xref{variables:reason}) variable set
@@ -520,23 +520,31 @@ to \texttt{build}.
 
 See \xref{wrap:using-build-components} for details on using this variable.
 
-\subsubsection{\texttt{LMSBW\_C\_INSTALL\_DIRECTORY}}
+\subsection{\texttt{LMSBW\_C\_INSTALL\_DIRECTORY}}
 
 This is the root directory where all components are installed.  You
 can use this as the base directory when accessing the API directories
 exported by other, prerequisite, components.
 
-\subsubsection{\texttt{LMSBW\_C\_BUILD\_DIRECTORY}}
+\subsection{\texttt{LMSBW\_C\_BUILD\_DIRECTORY}}\label{wrap:lmsbw-c-build-directory}
 
 This is set to the root of the build directory for the associated
 component.  The component \makefile can place files such a \mtree
 manifests or \make sentinels into this directory.
 
 This is \emph{not} the directory in which the component \makefile is
-started, although that directory will be a subdirectory of this one;
-do not put object files into this directory.
+started.   Do not put object files into this directory.
 
-\subsubsection{\texttt{CFLAGS}}
+Compare \xref{wrap:lmsbw-c-build-working-directory}.
+
+\subsection{\texttt{LMSBW\_C\_BUILD\_WORKING\_DIRECTORY}}\label{wrap:lmsbw-c-build-working-directory}
+
+This variable holds the actual directory in which the component's
+build will be executed.
+
+Compare \xref{wrap:lmsbw-c-build-directory}.
+
+\subsection{\texttt{CFLAGS}}
 
 This is the union of the global \texttt{CFLAGS} value managed by
 \lmsbw and the per-component value set via
@@ -545,7 +553,7 @@ This is the union of the global \texttt{CFLAGS} value managed by
 The component \makefile should not assign directly to \texttt{CFLAGS},
 but instead should append additional options to it.
 
-\subsubsection{\texttt{GMSL}}
+\subsection{\texttt{GMSL}}
 
 This is the absolute pathname of the directory containing the \gmsl
 library.  If you want to use \gmsl in your component's build process,
