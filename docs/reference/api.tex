@@ -19,8 +19,30 @@ This chapter describes the public functions present in \lmsbw.
 
 \section{\texttt{declare\_source\_component}}\label{api:declare-source-component}
 
+\begin{tabularx}{\linewidth}{ll|cX}
+  \multicolumn{4}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component name & \xref{api:component} & Component name used
+  throughout project. \\
+
+  2 & description & \xref{api:description} & Brief component
+  description. \\
+  
+  3 & reason & \xref{api:reason} & Reason component is included
+  in build. \\
+
+  4 & configuration file & \xref{api:configuration-file} & Full
+  pathname of component configuration file. \\
+
+  5 & source directory & \xref{api:source-directory} &
+  Full pathname to component's source directory. \\
+
+  6 & prerequisites & \xref{api:prerequisite} &
+  Optional space-separated list of component names.
+\end{tabularx}
+
 This function allows the declaration of \emph{source-based} components
-in a wrapped project.
+in a project.
 
 Source-based means that the entire source for the component is
 available in a directory tree that is currently accessible on the
@@ -29,164 +51,69 @@ the top level that will build the source in an \lmsbw-compliant
 manner.  See \xref{wrap:component-makefile} for details on \makefile
 compliance.
 
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-declare_source_component
-    <component-name>,
-    <description>,
-    <reason>,
-    <configuration file>,
-    <source directory>,
-    <prerequisites>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component name &
-The name used to reference the component throughout the project.  The
-name must be a valid \make identifier, and globally unique within the
-project.  See \xref{api:component}. \\
-
-\hline description &
-  A brief description of the purpose of the component.
-  See \xref{api:description}. \\
-
-\hline reason &
-  The \emph{reason} the component is being included in the build. See
-  \xref{api:reason}. \\
-
-\hline configuration file &
-
-  The full pathname of the component configuration file which declares
-  the source component. See \xref{api:configuration-file}. \\
-
-\hline source directory &
-  The full pathname to the source directory for the component.  See
-  \xref{api:source-directory}. \\
-
-\hline prerequisites &
-  An optional space-separated list of component names.  See
-  \xref{api:prerequisite}.
-\end{tabularx}
-\end{minipage}
-
+The \emph{component name} must be a valid \make identifier, and
+globally unique within the project.
 
 \section{\texttt{component\_attribute\_no\_parallel\_build}}\label{api:component-attribute-no-parallel-build}
 
-This function ensures that the associated component's build is never
-able to further invoke recursive instances of \make in parallel.
-
-This attribute is normally not necessary, but can be handy for
-components which have a poorly-created \makefile; a build system which
-will benefit from this option will intermittently fail when being
-built with high levels of parallelism because of incorrect
-dependencies.
-
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-component_attribute_no_parallel_build
-    <component-name>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-  The name of a declared component for which parallel builds should
-  not be allowed.
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  1 & component-name & Name of a declared component.
 \end{tabularx}
 
-When this attribute is set, the recursive invocation of \gnumake
-used to build the component will have \texttt{-j 1} explicitly set
-on the command line.
-\end{minipage}
+This function forces the component to not recursively build in
+parallel by passing ``\texttt{-j~1}'' to its build system.
+
+This attribute is normally not necessary, but can be handy for
+components which have a \makefile with incorrect dependencies; bad
+dependencies will manifest itself as intermittent failure when being
+built with parallelism.
 
 \section{\texttt{component\_attribute\_build\_target}}\label{api:component-attribute-build-target}
 
-This changes the target for building a component with the component's
-build process from the \emph{default} \make target to the list of
-targets provided.
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  1 & component-name & Name of a declared component. \\
 
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-component_attribute_build_target
-    <component-name>
-    <list of targets>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-  component-name &
-  The name of declared component for which the build target key
-  should be set. \\
-
-\hline list-of-targets &
-  A space-separated list of targets in the
-  component's \makefile that will be used for the build phase of the
-  component.
+  2 & list-of-targets & Space-separated list of targets.
 \end{tabularx}
-\end{minipage}
+
+This function changes the target for building a component using the
+component's build process from the \emph{default} \make target to the
+list of targets provided.
 
 \section{\texttt{component\_attribute\_install\_target}}\label{api:component-attribute-install-target}
 
-This changes the target for installing a component with the
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component name & Name of a declared component. \\
+  2 & list-of-targets & Space-separated list of targets.
+\end{tabularx}
+
+This function changes the target for installing a component using the
 component's build process from the \texttt{install} \make target to
 the list of targets provided.
 
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-component_attribute_install_target
-    <component-name>
-    <list of targets>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component name &
-  The name of a declared component for which the install
-  target value should be set. \\
-
-\hline list-of-targets &
-  A space-separated list of targets in the
-  component's \makefile which will be used for the install phase of
-  the component.
-\end{tabularx}
-\end{minipage}
-
 \section{\texttt{component\_attribute\_api}}\label{api:component-attribute-api}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & list-of-directories &  Space-separated list of directories.
+\end{tabularx}
 
 This allows the specification of \emph{install} directories that
 contain an exported \emph{API}.
 
 All components that list this component as a prerequisite will
-automatically become dependent upon changes to the directories named;
-if anything changes in those directories, the dependent component is
-rebuilt.
+automatically become dependent upon changes to the directories named.
 
-It is incumbent upon the dependent component to have proper rules in
-the component \makefile to detect changes in these API
-directories\footnote{For example, the \texttt{gcc} option
-  \texttt{-MMD} combined with the \makefile including the generated
-  dependencies}.  In other words, if an API header file or static
-library changes, it is up to the dependent \makefile to have the
-proper rules to detect this change and rebuild or relink as necessary.
-
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-component_attribute_api
-    <component-name>,
-    <list of directories>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-  The name of a declared component for which a set of \emph{api}
-  directories should be maintained. \\
-
-\hline list-of-directories &
-
-  A space-separated list of directories which contain files that can
-  be used by other, dependent, components.
-
-  The contents of each directory contained in this list should be
-  filled in \destdir by the \texttt{install} target of the build
-  process.
-\end{tabularx}
+It is the responsibility of the component's build process to populate
+the directories named in the second argument using \destdir as their
+base directory name; \lmsbw will copy the \destdir directories into
+the shared install directory.
 
 The following rules are recommended when creating API directories:
 
@@ -197,12 +124,12 @@ The following rules are recommended when creating API directories:
   \lmsbw proper will copy those files into the install directory,
   you should use root-based API directory names.
 
+  For example, \texttt{/usr/include/project}.
+
 \item Use the name of the component in the directory name.
 
-  This will make it easy for dependent component maintainers to
-  easily find your API locations.\footnote{It is also easy to
-    execute the \emph{report} verb on a component to find out
-    the location of API directories.}
+  Use the \emph{report} verb (\xref{usinglmsbw:report}) to find out
+  the location of API directories.
 
 \item Standardize on install locations
 
@@ -232,44 +159,34 @@ The following rules are recommended when creating API directories:
   likely fail with permission errors on the root-based pathnames.
 
 \end{itemize}
-\end{minipage}
 
 \section{\texttt{component\_attribute\_cflags}}\label{api:cflags}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & cflags-value & \texttt{CFLAGS} value.
+\end{tabularx}
 
 This allows the specification of \texttt{CFLAGS} values which are
 passed to the component build process.  It is incumbent upon the
 component's \makefile to never directly assign to \texttt{CFLAGS};
 rather it should append values to the \lmsbw-provided value.
 
-\lmsbw uses the declared value of \texttt{CFLAGS} in the assignment of
-the build directory.
-
-Using the \texttt{CFLAGS} value in the assignment of the build
-directory results in being able to have multiple build versions --
-say, debugging \& optimized -- of your component at one time.
-Switching between different \texttt{CFLAGS} values will always result
-in the minimal (from the last build) incremental build for the
-component.
-
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-component_attribute_cflags
-    <component-name>,
-    <cflags-value>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-  The name of a declared component for which the \texttt{CFLAGS} value
-  should be set. \\
-
-\hline cflags-value &
-  The value to which \texttt{CFLAGS} will be set when initiating the
-  component's build process.
-\end{tabularx}
-\end{minipage}
+\lmsbw uses the declared value of \texttt{CFLAGS} in the determination
+of the build directory; changing \texttt{CFLAGS} will result in a
+different build directory, and this results in the correct amount of
+rebuilding when the flags are changed.
 
 \section{\texttt{declare\_component\_kind}}\label{api:kind}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & kind & A component \emph{kind}.
+\end{tabularx}
 
 This internal function allows the specification of the \texttt{kind}
 of the component.
@@ -277,218 +194,118 @@ of the component.
 The value is used internally to generate \make rules to build \&
 install the component.
 
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-declare_component_kind
-    <component-name>,
-    <kind>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-
-  The name of a declared component for which the \emph{kind} is to be
-  declared. \\
-
-\hline kind &
-  The value to which the component's \texttt{kind} will be set.  See
-  \xref{variables:kind} for allowed values and semantics.
-
-\end{tabularx}
-\end{minipage}
+See \xref{variables:kind} for the allowed values and semantics of the
+second argument.
 
 
 \section{\texttt{declare\_component\_description}}\label{api:description}
 
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & description & Brief component description.
+\end{tabularx}
+
 This function allows the specification of a component's description.
 
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-declare_component_description
-    <component>,
-    <description>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-
-  The name of a declared component for which the component's
-  \texttt{description} variable should be set. \\
-
-\hline  description &
-  The value to which the component's \texttt{description} variable
-  will be set.
-\end{tabularx}
-\end{minipage}
-
 \section{\texttt{declare\_component\_reason}}\label{api:reason}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & reason & Component reason.
+\end{tabularx}
 
 This function allows the specification of the \emph{reason} that a
 component is included in the build.
 
-See \xref{variables:reason} for allowed values and semantics.
-
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-declare_component_reason
-    <component>,
-    <reason>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-  The name of a declared component for which the component's
-  \texttt{reason} variable should be set. \\
-
-\hline reason &
-  The value to which the component's \texttt{reason} variable will be
-  set.
-\end{tabularx}
-\end{minipage}
+See \xref{variables:reason} for the allowed values and semantics of
+the second argument.
 
 \section{\texttt{declare\_component\_component}}\label{api:component}
 
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & name & Component name.
+\end{tabularx}
+
 This function allows the specification of the name of the component.
 
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-declare_component_component
-    <component-name>,
-    <name>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-
-  The name of a declared component for which the component's
-  \texttt{component} variable should be set. \\
-
-\hline name &
-  The value to which the component's \texttt{component} variable will
-  be set.
-\end{tabularx}
-\end{minipage}
-
 \section{\texttt{declare\_component\_prerequisite}}\label{api:prerequisite}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & prerequisites & Space-separated list of components.
+\end{tabularx}
 
 This function allows the specification of a list of prerequisite
 components.
 
-\lmsbw will ensure that all the named components are built and
-installed prior to building this component.
+\lmsbw will ensure that all the named prerequisite components are
+built and installed prior to building this component.
 
-The prerequisite components do not need to have been declared before
-they are referenced.
+The prerequisite components need not have been declared before they
+are referenced with this function.
 
-If a component is named as a prerequisite that does not actually
-exist, \make will issue an error when attempting to fulfill the
-targets necessary to produce the build.
+If any prerequisite component's API has changed files, then this
+component will be built.
 
-If a prerequisite component has declared any API directories
-(\xref{api:component-attribute-api}), those API directories are
-checked for changes as part of determining if this component needs to
-be built.  If any prerequisite component's API has changed files, then
-this component will be built.
-
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-declare_component_prerequisite
-    <component>,
-    <prerequisites>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-  The name of a declared component for which the component's
-  \texttt{prerequisite} variable should be set. \\
-
-\hline prerequisites &
-
-  A space-separated list of component names which are considered to be
-  prerequisites of this component.
-
-  Each prerequisite will be successfully built \& installed before
-  this component is built.
-\end{tabularx}
-\end{minipage}
+See \xref{intro:build-component-criteria} for details on what triggers
+a component to be built.
 
 \section{\texttt{declare\_component\_source\_directory}}\label{api:source-directory}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & absolute-directory & Absolute pathname of source directory.
+\end{tabularx}
 
 This function allows the specification of the full pathname to the
 source code for the associated component.
 
-This must be the full path of the directory containing the source, and
-importantly, it must also contain the \makefile which actually builds
-the component.
+The second argument must be the full path of the directory containing
+the source, and it must contain the \makefile which builds the
+component.
 
 \lmsbw will produce an error if the named directory does not exist.
 
-\lmsbw expects that a \makefile will be at the top level of the named
-directory.
-
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-declare_component_source_directory
-    <component>,
-    <absolute-directory>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-  The name of a declared component that will have its
-  \texttt{source-directory} variable set. \\
-
-\hline  absolute-directory &
-  The absolute pathname of the source directory for the
-  named component.
-\end{tabularx}
-\end{minipage}
-
 \section{\texttt{declare\_component\_configuration\_file}}\label{api:configuration-file}
 
-This function allows the specification of the full pathname of the
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & configuration-file & Absolute pathname of component configuration
+  file.
+\end{tabularx}
+
+This function allows the specification of the path to the component
 configuration file associated with the component.
 
 \lmsbw sets up dependencies so that changes to this file will
 automatically force the component's build process to be invoked.
 
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-declare_component_configuration_file
-    <component>,
-    <configuration-file>
-\end{verbatim}
-
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-  The name of a declared component that will have its
-  \texttt{configuration-file} variable set. \\
-\hline configuration-file &
-  The absolute pathname of the component configuration
-  file which declared the component.
-\end{tabularx}
-\end{minipage}
 
 \section{\texttt{component\_attribute\_toolchain}}\label{api:toolchain}
 
-\begin{minipage}{\linewidth}
-\begin{verbatim}
-component_attribute_toolchain
-    <component-name>,
-    <toolchain-name>
-\end{verbatim}
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
 
-\begin{tabularx}{\linewidth}{l|X}
-component-name &
-  The name of a declared component for which the toolchain should be
-  set. \\
-
-\hline toolchain &
-  The directory name of an existing toolchain which should be
-  used when building and installing this component.
+  1 & component-name & Name of a declared component. \\
+  2 & toolchain & Directory of existing toolchain.
 \end{tabularx}
+
+The second argument must be a directory name that is present in the
+toolchain root directory (\xref{usinglmsbw:toolchain-root}).
 
 See \xref{chap:toolchain-usage} and
 \xref{chap:toolchain-configuration} for information on using and
 configuring toolchains.
-\end{minipage}
