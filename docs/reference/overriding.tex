@@ -15,28 +15,24 @@
 %
 \chapter{Overriding Default Rules} \label{chap:overriding}
 
-In some cases, you'll have a component \makefile that cannot be edited
-for various reasons (office politics, code maintained elsewhere,
-etc.), and it doesn't conform to the \lmsbw requirements.
+Occasionally there will be a component \makefile that cannot be edited
+for various reasons that does not conform to the \lmsbw requirements.
 
 When \lmsbw's default for producing a component is insufficient or
 when you cannot modify the component's build process, it is possible
-to override the built-in method for building \& installing.  \lmsbw
-provides the ability to alter the behavior of both the \makefile
-target for building and the target for installing the component by
-adding particularly named targets to the component's configuration
+to override the built-in method for building \& installing by
+providing particularly named targets to the component's configuration
 file.
 
-This chapter describes the process needed to override these aspects of
-building a component.
+This chapter describes the process to override these aspects of
+producing a component.
 
 \section{Overriding Build}\label{overriding:overriding-build}
 
-In normal practice, it should be exceedingly rare for a component's
-actual build process to be overridden; even though it should be rare,
-\lmsbw still provides a method of doing just that.  Here are a few of
-the reasons why you might want to override the build phase of a
-component:
+In normal practice, it should be exceedingly rare for a component
+build process to be overridden; even though it should be rare, \lmsbw
+still provides a method of doing just that.  Here are a few of the
+reasons why you might want to override the build phase of a component:
 
 \begin{itemize}
 \item Test \bni Infrastructure by not building a component
@@ -48,14 +44,14 @@ component:
   production deliverable?  Will it fail with an easy-to-diagnose
   error?
 
-  The simple test would be to add a build override target, and then do
-  nothing.
+  The simple test would be to add a build override target that simply
+  does nothing.
 
-\item Test \bni Infrastructure by corrupting component build
+\item Test \bni Infrastructure by corrupting build
 
   Will your \bni system recognize if a build has been corrupted?
   Perhaps only some files are built, or maybe the executables are
-  corrupt?
+  corrupt, or the executables are for a different architecture?
 
   You could override the build target, build the component (using the
   \lmsbw infrastructure) and then corrupt the build output in-situ.
@@ -84,8 +80,8 @@ to perform a component build, the actual work is quite trivial; all
 you need to do is add a specially named \makefile target to your
 component configuration file, and supply the new commands to
 associated with the target.  The name of the target is based on the
-component name; if the component name is \texttt{alpha}, you would do
-the following:
+component name; if the name is \texttt{alpha}, you would provide the
+following rule:
 
 \begin{verbatim}
 component.build.alpha:
@@ -98,7 +94,7 @@ effect, and your component's \makefile will be invoked to build the
 component.
 
 If you ultimately want to execute the component's actual build
-process, you can use the same code of \lmsbw proper to instigate this
+process, you can use the same code of \lmsbw proper to initiate this
 by executing:
 
 \begin{footnotesize}
@@ -108,16 +104,19 @@ $(MAKE)                                                          \
     $(LMSBW_C_BUILD_TARGET)
 \end{verbatim}
 \end{footnotesize}
-\
+
 You must be aware when overriding default targets that the override
 does not provide any prerequisites.  If you override the build target,
 for example, without the proper prerequisites, you will not be able to
 use the function shown above to build the component.  See the
 \texttt{override} sample for details, and look at
-\texttt{component.makefile} to see the determine the necessary
-prerequisites.
+\texttt{component.makefile} to determine the necessary prerequisites.
 
 \section{Overriding Install}\label{overriding:overriding-install}
+
+Overriding the default install rules is a task that will happen more
+frequently than overriding the build rules.  Here are some reaons why
+you might need to override the default install rules:
 
 \begin{itemize}
 \item Test \bni Infrastructure by not installing component
@@ -150,7 +149,7 @@ effect, and your component's \makefile will be invoked to install the
 component.
 
 If you ultimately want to execute the component's actual build
-process, you can use the same code of \lmsbw proper to instigate this
+process, you can use the same code of \lmsbw proper to initiate this
 by executing:
 
 \begin{footnotesize}
