@@ -207,7 +207,7 @@ Let's examine the what makes \lmsbw different:
   especially when the exported API of a prerequisite component changes
   -- \lmsbw defines an API that wrapped builds must follow.  This API
   requires that each component install its public build product into a
-  \texttt{DESTDIR}\todo{Glossary destdir} directory.
+  \texttt{DESTDIR}.
 
 \item Component Declarations
 
@@ -316,8 +316,8 @@ of data:
 
 \item \lmsbwcomponent{<component-name>}
 
-  Each component loaded is assigned a \gmsl\todo{glossary} associative
-  array to hold all the data relevant to building the software.
+  Each component loaded is assigned to an associative array that holds
+  all the data relevant to building the software.
 
   The keys that are defined for the component's associative array are
   dependent upon the \emph{kind} (\xref{variables:kind}) of the
