@@ -161,8 +161,11 @@ mtree:/tmp/hello/lmsbw/utilities/bin/mtree
 The \texttt{targets} target causes \lmsbw to produce a report of all
 top-level targets that are accessible to the user.
 
-The \texttt{target} report will have this format:
+The format of the \texttt{target} report is shown in figure
+\tabref{usinglmsbw:targets-verb}.
 
+\begin{figure}[tbh]
+\hrulefill
 \begin{footnotesize}
 \begin{verbatim}
                       all : Perform a full build
@@ -182,6 +185,9 @@ The \texttt{target} report will have this format:
  installdir[.<component>] : Shows the install directory
 \end{verbatim}
 \end{footnotesize}
+\hrulefill
+\caption{\texttt{targets} verb}\label{usinglmsbw:targets-verb}
+\end{figure}
 
 The \texttt{[.<component>]} notation means that this target can also
 be executed on a specific component of the wrapped build.  To
@@ -256,6 +262,7 @@ as shown in figure \tabref{usinglmsbw:component-report}.
 
 \begin{landscape}
 \begin{figure}
+\hrulefill
 \begin{small}
 \begin{verbatim}
 hello-world|Component   : hello-world
@@ -278,6 +285,7 @@ hello-world|  install   : install
 hello-world|  build     : build
 \end{verbatim}
 \end{small}
+\hrulefill
 \caption{Component Report}\label{usinglmsbw:component-report}
 \end{figure}
 \end{landscape}

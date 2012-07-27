@@ -383,11 +383,32 @@ evaluated in the context of the \texttt{load-configuration-function},
 the full path to the configuration file is still available as
 \texttt{\$(1)} -- provided they are in the same directory tree.
 
-The idiom in argument five (5) is correct because the project
-configuration file resides in the same directory as the component
-source directory.  The code for this parameter replaces the
-configuration file name -- which is known -- with the name of the
-source directory for the component.\todo{Show tree structure}
+\begin{figure}[tbh]
+\hrulefill
+\begin{small}
+\begin{verbatim}
+  .../build-process/samples/source-api:
+  drwxrwxr-x  3 users users 4096 Jul 26 20:26 .
+  drwxr-xr-x 10 users users 4096 Jul 19 19:07 ..
+  -rw-rw-r--  1 users users 1664 Jul 21 20:34 sample.cfg
+  drwxrwxr-x  4 users users 4096 Jun 27 05:23 src
+
+  .../build-process/samples/source-api/src:
+  drwxrwxr-x 4 users users 4096 Jun 27 05:23 .
+  drwxrwxr-x 3 users users 4096 Jul 26 20:26 ..
+  drwxrwxr-x 2 users users 4096 Jul 14 19:30 consumer
+  drwxrwxr-x 2 users users 4096 Jul 21 20:00 producer
+\end{verbatim}
+\end{small}
+\hrulefill
+\caption{Directory Structure}\label{wrap:config-structure}
+\end{figure}
+
+Figure \tabref{wrap:config-structure} shows that the idiom in
+argument five (5) is correct because the project configuration file
+resides in the same directory as the component source directory.  The
+code for this parameter replaces the configuration file name -- which
+is known -- with the name of the source directory for the component.
 
 \end{itemize}
 
