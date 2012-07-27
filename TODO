@@ -43,9 +43,5 @@
    file is returned.  If it does not exist, then it should be built
    locally.
  o Disallow declaring toolchain attribute on 'build'-reasoned components?
- o Provide a mechanism to get an mtree manifest of the final install
-   directory.
  o Need a system to check that prerequisites on a component are correct.
- o Need short reference on mtree.
  o Applying patches should be part of lmsbw
- o Replace \lmsbwcomponentfield with a single parm version. first parm is unused.
