@@ -197,41 +197,60 @@ determine which components exist in the build, see
 \subsection{\texttt{components}}\label{lmsbw:target:components}
 
 The \texttt{components} target causes \lmsbw to produce a report of all
-the components present in your project build.  The report will take
-this form:
+the components present in your project build.  The report format is
+shown in figure \tabref{usinglmsbw:components-verb}.
 
+\begin{figure}[tbh]
+\hrulefill
 \begin{verbatim}
             goodbye-world : Goodbye World example
               hello-world : Hello World example
 \end{verbatim}
+\hrulefill
+\caption{\texttt{components} verb}\label{usinglmsbw:components-verb}
+\end{figure}
 
 \subsection{\texttt{prerequisite-report}}
 
 The \texttt{prerequisite-report} target will produce a report showing
 each component and its declared prerequisites.
 
-This output could be used to produce a graph of the project dependencies.
+This output format, shown in figure
+\tabref{usinglmsbw:prerequisites-verb}, could be used to produce a
+graph of the project dependencies.
 
+\begin{figure}[tbh]
+\hrulefill
 \begin{verbatim}
 goodbye-world: hello-world
 hello-world:
 \end{verbatim}
+\hrulefill
+\caption{\texttt{prerequisites-report} verb}\label{usinglmsbw:prerequisites-verb}
+\end{figure}
+
 
 \subsection{\texttt{dependent-report}}
 
 The \texttt{dependent-report} target will produce a report showing
 each component and the components which directly depend on it.
 
-This output could be used to produce a graph of the project
-dependencies.
+This output format, shown in \tabref{usinglmsbw:dependents-verb},
+could be used to produce a graph of the project dependencies.
 
 Another use would be to determine which components will be directly
 affected by API changes.
 
+\begin{figure}[tbh]
+\hrulefill
 \begin{verbatim}
 goodbye-world:
 hello-world: goodbye-world
 \end{verbatim}
+\hrulefill
+\caption{\texttt{dependent-report} verb}\label{usinglmsbw:dependents-verb}
+\end{figure}
+
 
 \subsection{\texttt{measure-startup-time}}\label{usinglmsbw:measure-startup-time}
 
@@ -323,14 +342,20 @@ the \destdir location is useful if you want to perform any post-build
 processing on the component -- for example, running a debugger on the
 program or making sure that all deliverables are installed correctly.
 
-The output will appear in this easily parsed format:
+The easily parsed output format is shown in
+\tabref{usinglmsbw:destdir-verb}.
 
+\begin{figure}[tbh]
+\hrulefill
 \begin{scriptsize}
 \begin{verbatim}
 hello-world:/tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/destdir
 goodbye-world:/tmp/hello/host/goodbye-world/917400cac32350dc041660456b128124/destdir
 \end{verbatim}
 \end{scriptsize}
+\hrulefill
+\caption{\texttt{destdir} verb}\label{usinglmsbw:destdir-verb}
+\end{figure}
 
 \subsection{\texttt{builddir}}
 
@@ -341,14 +366,20 @@ directory name for the current configuration.
 You may want to know the build directory name to post process portions
 of the build -- for example, disassembling an object file.
 
-The output will appear in this easily parsed format:
+The easily parsed output format is shown in
+\tabref{usinglmsbw:builddir-verb}.
 
+\begin{figure}[tbh]
+\hrulefill
 \begin{scriptsize}
 \begin{verbatim}
 hello-world:/tmp/hello/target/hello-world/8a8933dab8deebe52e30886da1ef6ee2/build
 goodbye-world:/tmp/hello/host/goodbye-world/917400cac32350dc041660456b128124/build
 \end{verbatim}
 \end{scriptsize}
+\hrulefill
+\caption{\texttt{builddir} verb}\label{usinglmsbw:builddir-verb}
+\end{figure}
 
 \subsection{\texttt{installdir}}
 
@@ -362,9 +393,18 @@ of files that are installed; if the manifest does not have the same
 set of files for each official build, then the \bni team needs to
 investigate why the product has changed.
 
+The easily parsed output format is shown in
+\tabref{usinglmsbw:installdir-verb}.
+
+\begin{figure}[tbh]
+\hrulefill
 \begin{footnotesize}
 \begin{verbatim}
 hello-world:/tmp/hello/target/install/35f228d9be0694a19de8666fbcdbd80d
 goodbye-world:/tmp/hello/host/install/35f228d9be0694a19de8666fbcdbd80d
 \end{verbatim}
 \end{footnotesize}
+\hrulefill
+\caption{\texttt{installdir} verb}\label{usinglmsbw:installdir-verb}
+\end{figure}
+
