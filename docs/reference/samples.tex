@@ -34,9 +34,10 @@ It's just a simple, dummied-up, source tree with no complex
 dependencies, but the default configuration does produce 90,955 source
 files in 1856 directories.
 
-Here are the results of running this sample on the system used for
-testing \lmsbw:
+The results of running this sample on the test system can be seen in
+figure~\tabref{samples:generate-results}.
 
+\begin{figure}[tb]
 \begin{tabularx}{\linewidth}{|r|c|l|l|X|}
   \hline Test & Parallel  & \make & \lmsbw & Description \\
   \hline full build  & 4 & $\approx$ 00:18:00   & $\approx$ 00:18:00 & Full, from scratch, build \\
@@ -46,6 +47,9 @@ testing \lmsbw:
   \hline incremental & 1 & 00:00:14.75 & $\approx$ 00:00:04 & Touch file, rebuild \\
   \hline
 \end{tabularx}
+\caption{\texttt{generate} Sample Results}\label{samples:generate-results}
+\end{figure}
+
 
 \section{hello-world}
 
@@ -65,6 +69,10 @@ Follow the instructions in the associated README file and measure for
 yourself how much time \lmsbw will save.  The following table shows
 the results from building the Linux kernel on the test system.
 
+The results of running this sample on the test system can be seen in
+figure~\tabref{samples:linux-kernel-results}.
+
+\begin{figure}[tb]
 \begin{tabularx}{\linewidth}{|r|c|l|l|X|}
   \hline Test & Parallel  & \make & \lmsbw & Description \\
   \hline full build  & 4 & 00:25:00 & 00:25:26 & Full, from scratch, build \\
@@ -74,6 +82,8 @@ the results from building the Linux kernel on the test system.
   \hline incremental & 1 & 00:02:00 & 00:02:07 & Touch file, rebuild \\
   \hline
 \end{tabularx}
+\caption{Linux Sample Results}\label{samples:linux-kernel-results}
+\end{figure}
 
 If you are working exclusively on the Linux kernel, \lmsbw won't
 really help your productivity, but if the Linux kernel is only one
@@ -131,25 +141,30 @@ generate all the build-time \make rules, and thus the time produced by
 this sample \emph{is} the startup overhead -- \make will immediately
 begin building your project after the configuration files are loaded.
 
-Below is a table which shows the results on the test machine for
-various numbers of component configuration files.  The third and
-fourth columns are taken from the \texttt{top} utility, and reflect
-the amount of virtual memory and resident memory consumed by the
-process, respectively.
+The results of running this sample on the test system can be seen in
+figure~\tabref{samples:startup-time-results}.  The third and fourth
+columns are taken from the \texttt{top} utility, and reflect the
+amount of virtual memory and resident memory consumed by the process,
+respectively.
 
-\begin{tabular}{|c|c|c|c|}
-  \hline configuration files  & startup time in seconds & virt Mb & res Mb \\
-  \hline   1 & $\approx$ 0.14  & 16.132 & 1.448 \\
-  \hline  10 & $\approx$ 0.33  & 16.256 & 1.588 \\
-  \hline  25 & $\approx$ 0.59  & 16.504 & 1.824 \\
-  \hline  50 & $\approx$ 1  & 16.980 & 2.292 \\
-  \hline 100 & $\approx$ 1  & 17.824 & 3.044 \\
-  \hline 200 & $\approx$ 3  & 19.658 & 4.708 \\
-  \hline 300 & $\approx$ 5  & 21.236 & 6.396 \\
-  \hline 400 & $\approx$ 8  & 22.952 & 8.292 \\
-  \hline 500 & $\approx$ 10 & 24.700 & 9.976 \\
-  \hline
-\end{tabular}
+\begin{figure}[tb]
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+      \hline configuration files  & startup time in seconds & virt Mb & res Mb \\
+      \hline   1 & $\approx$ 0.14  & 16.132 & 1.448 \\
+      \hline  10 & $\approx$ 0.33  & 16.256 & 1.588 \\
+      \hline  25 & $\approx$ 0.59  & 16.504 & 1.824 \\
+      \hline  50 & $\approx$ 1  & 16.980 & 2.292 \\
+      \hline 100 & $\approx$ 1  & 17.824 & 3.044 \\
+      \hline 200 & $\approx$ 3  & 19.658 & 4.708 \\
+      \hline 300 & $\approx$ 5  & 21.236 & 6.396 \\
+      \hline 400 & $\approx$ 8  & 22.952 & 8.292 \\
+      \hline 500 & $\approx$ 10 & 24.700 & 9.976 \\
+      \hline
+    \end{tabular}
+  \end{center}
+\caption{\texttt{startup-time} Results}\label{samples:startup-time-results}
+\end{figure}
 
 One aspect of this table which should hit home is that \lmsbw needs
 only ten (10) seconds of overhead to load, configure and begin
