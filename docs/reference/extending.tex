@@ -15,16 +15,14 @@
 %
 \chapter{Extending \lmsbw}\label{chap:extending}
 
-\lmsbw has been designed and written to facilitate easy extension
-through the adding of new component types.  For the most part, the
-work required to extend will take place in the core
-\texttt{wrapper/engine} code, but depending on the extension, you may
-need to add some additional rules to the trampoline \texttt{makefile}
-in \texttt{wrapper/component}.
+\lmsbw has been designed and written to facilitate easy extension by
+adding new component \emph{kinds}.  The majority of the work will take
+place in the core \texttt{wrapper/engine} directory, but some work may
+need to done in \texttt{wrapper/component}.
 
 Extending boils down to performing these steps:
 
-\begin{enumerate}
+\begin{itemize}
 \item Choose component \texttt{kind}
 
   The new \texttt{kind} should be a single word, all lowercase, and be
@@ -33,39 +31,36 @@ Extending boils down to performing these steps:
 \item Create a report function
 
   The report generation (\texttt{generate-report.mk}) system generates
-  reports for each component based on their \texttt{kind}.  It does
-  this by calling a function named using the component's \texttt{kind}
-  field.  Thus, if you have add a new component \texttt{kind} of
-  \emph{download}, you'll have to create a function called:
+  reports for each component based on its \texttt{kind} by calling a
+  function named using the component's \texttt{kind} field.  Thus, if
+  you have add a new component \texttt{kind} of \emph{download},
+  you'll have to create a function called:
 
 \begin{verbatim}
 generate_component_report_download
 \end{verbatim}
 
-  The function should take one argument, and the actual argument
-  passed to it will be a \texttt{LMSBW\_component\_<component>}
-  (\xref{variables:lmsbw-component-component}).
+  The function takes one \texttt{LMSBW\_component\_<component>}
+  (\xref{variables:lmsbw-component-component}) argument.
 
-  Examining \texttt{generate\_component\_report\_source} will show how
-  to implement this function.
+  Refer to \texttt{generate\_component\_report\_source} as a
+  reference.
 
 \item Create a rule generator function
 
   Dependency rule generation in \lmsbw is handled by calling a
   function based on the \texttt{kind} of each component.  If you add a
-  new component \texttt{kind} of \emph{download}, you'll have to
-  create a function called:
+  new component \texttt{kind} of \emph{download}, a function must be
+  created with the following name:
 
 \begin{verbatim}
 generate_component_rules_download
 \end{verbatim}
 
-  The function should take one argument, and the actual argument
-  passed to it will be a \texttt{LMSBW\_component\_<component>}
-  (\xref{variables:lmsbw-component-component}).
+  The function takes one \texttt{LMSBW\_component\_<component>}
+  (\xref{variables:lmsbw-component-component}) argument.
 
-  Examining \texttt{generate\_component\_rules\_source} will show the
-  way that this function should be implemented.
+  Refer to \texttt{generate\_component\_rules\_source} as a reference.
 
 \item Update \texttt{component.makefile}
 
@@ -110,5 +105,5 @@ generate_component_rules_download
   You must add new samples that show how to declare and use the new
   component \texttt{kind}.
 
-\end{enumerate}
+\end{itemize}
 
