@@ -28,6 +28,7 @@ not absolutely necessary.  You may skip them if you so desire, but you
 must be aware that all future documentation about the toolchains
 assumes you have performed these steps.
 
+\subsection{Directories}
 We will put all the toolchains into a single directory tree, and
 allow \ctng to place its downloaded tarballs into a single
 directory, too.
@@ -40,10 +41,22 @@ sudo chown --recursive ${USER}:${USER} /opt/crosstool-ng
 sudo mkdir /opt/toolchains
 sudo chown --recursive ${USER}:${USER} /opt/toolchains
 
-sudo mkdir /opt/toolchain-source-tarballs
-sudo chown --recursive ${USER}:${USER} /opt/toolchain-source-tarballs
+sudo mkdir --parents /opt/toolchain-admin/{tarballs,build}
+sudo chown --recursive ${USER}:${USER} /opt/toolchain-admin
 \end{verbatim}
 \end{footnotesize}
+
+\subsection{Tools}
+
+The following tools are known to be required before configuring and
+building \ctng.
+
+\begin{itemize}
+\item{subversion}
+
+  Some of the tools that are downloaded by \ctng use subversion.
+
+\end{itemize}
 
 \section{\texttt{crosstool-ng}}
 
@@ -51,7 +64,7 @@ This utility, which uses a Linux-like configuration system, handles
 all the messy details of fetching, configuring, building and
 installing Gnu toolchains.
 
-\begin{description}
+\begin{enumerate}
 \item Download \& install \ctng
 
   You must download and install \ctng without instructions because
@@ -77,16 +90,34 @@ cd ~/myfirsttoolchain
 \end{verbatim}
 
     This will start a Linux-like configuration system.  The following
-    items will walk you through the items you must set to produce a
+    steps will walk you through the items you must set to produce a
     toolchain.
 
     Leave unmentioned items unchanged.
 
-    \begin{description}
+    \begin{itemize}
 
     \item Paths and misc options
 
       \begin{itemize}
+      \item{Local tarballs directory}
+
+        Set to: \texttt{/opt/toolchain-admin/tarballs}
+
+        This will allow sharing of common tarballs among various
+        toolchain builds.
+
+      \item{Save new tarballs}
+
+        Select this item so that tarballs will be saved in the
+        directory you just entered above.
+
+      \item{Working Directory}
+
+        Set to: \texttt{/opt/toolchain-admin/build/\$\{CT\_TARGET\}}
+
+        This is the directory where the toolchain will be built.
+
       \item{Prefix Directory}
 
         Set to: \texttt{/opt/toolchains/\$\{CT\_TARGET\}}
@@ -141,21 +172,17 @@ cd ~/myfirsttoolchain
       \begin{itemize}
       \item{Tuple's vendor string}
 
-        This is a string that helps uniquely identify the toolchain.
-        A tuple is of the form 'arch-vendor-kernel-system' and is used
-        to form the name of the executables in the toolchain, as well
-        as the toolchain directory name.
+        Set to a value determined by following the suggestions in
+        \xref{toolchain-config:vendor-string}.
 
-        If you intend on creating many different toolchains -- perhaps
-        for different compiler versions, or different kernels -- it is
-        recommended to create a vendor string which mnemonically
-        distinguishes toolchains from one another.
+        \item{Tuple's alias}
 
-        You could use, for example, the gcc version as the vendor
-        string.  For a \emph{bare metal} MIPS configuration, you might
-        end up with a tuple like this: \texttt{mipsel-gcc\_4.6.3-elf}.
+          Set to: \texttt{lmsbw}.
 
-        You may not use dashes in the vendor string.
+          This will provide a simpler interface for hand-use of the
+          toolchains; the main programs in the toolchain will have an
+          alias with a simple \texttt{lmsbw-} prefix.
+
       \end{itemize}
 
     \item{Operating System}
@@ -188,7 +215,7 @@ cd ~/myfirsttoolchain
     \item{Companion Libraries}
 
       Choose the desired companion libraries.
-    \end{description}
+    \end{itemize}
   \item Build your toolchain
 
     The next, and final step in the process of building a toolchain to
@@ -207,4 +234,96 @@ cd ~/myfirsttoolchain
      libraries in a \emph{sysroot} directory that can be used for
      building.
 
+\end{enumerate}
+
+\subsection{Determining Vendor Tuple}\label{toolchain-config:vendor-string}
+
+This is a string that helps uniquely identify the toolchain.  A tuple
+is of the form 'arch-vendor-kernel-system' and is used to form the
+name of the executables in the toolchain, as well as the toolchain
+directory name.  You will provide the \emph{vendor} portion of this
+string.
+
+If you intend on creating many different toolchains -- different
+compiler versions, different architectures, different kernels, etc. --
+it is recommended to create a vendor string which mnemonically
+distinguishes toolchains from one another so that each toolchain's
+attributes are clearly discernable when looking at a directory listing
+of toolchains.
+
+The following rules were used when creating the vendor string for the
+toolchain samples included in \lmsbw; perhaps they will help you
+create a policy for the vendor string of the toolchains you produce:
+
+\begin{itemize}
+\item{You may not use dashes in the vendor string.}
+\item{Use '\_' for inter-section spacing.}
+\item{Use '.' for intra-section spacing.}
+\item{Use \emph{endianess}}
+\item{Use \emph{bit size}}
+\item{Use compiler info}
+\item{Use kernel / bare metal info}
+\item{Use C library information}
+\end{itemize}
+
+Here are example applications of these rules; these are the exact
+directory names created by the installation of the sample toolchains
+provided with \lmsbw:
+
+\begin{description}
+\item{\texttt{arm-le\_bare.metal\_gcc.4.6.3\_newlib.1.17.0-eabi}}
+
+  Toolchain producing code for a \emph{bare metal} \emph{little
+    endian} \emph{arm} system using \emph{gcc 4.6.3} and the
+  \emph{newlib 1.17.0} runtime library.
+
+\item{\texttt{arm-le\_linux.3.3.4\_gcc.4.6.3\_eglibc.2.15-linux-gnuabi}}
+
+  Toolchain producing code for a \emph{Linux 3.3.4} \emph{little
+    endian} \emph{arm} system using \emph{gcc 4.6.3} and the
+  \emph{eglibc 2.15} runtime library.
+
+\item{\texttt{i386-32\_bare.metal\_gcc.4.6.3\_newlib.1.17.0-elf}}
+
+  Toolchain producing code for a \emph{bare metal} \emph{32-bit}
+  \emph{x86} system using \emph{gcc 4.6.3} and the \emph{newlib
+    1.17.0} runtime library.
+
+\item{\texttt{mips-be\_bare.metal\_gcc.4.6.3\_newlib.1.17.0-elf}}
+
+  Toolchain producing code for a \emph{bare metal} \emph{big endian}
+  \emph{MIPS} system using \emph{gcc 4.6.3} and the \emph{newlib
+    1.17.0} runtime library.
+
+\item{\texttt{mips-be\_linux.3.3.4\_gcc.4.6.3\_eglibc.2.15-linux-gnu}}
+
+  Toolchain producing code for a \emph{linux 3.3.4} \emph{big
+    endian} \emph{MIPS} system using \emph{gcc 4.6.3} and the
+  \emph{eglibc 2.15} runtime library.
+
+\item{\texttt{mipsel-le\_bare.metal\_gcc.4.6.3\_newlib.1.17.0-elf}}
+
+
+  Toolchain producing code for a \emph{bare metal} \emph{little
+    endian} \emph{MIPS} system using \emph{gcc 4.6.3} and the
+  \emph{newlib 1.17.0} runtime library.
+
+\item{\texttt{mipsel-le\_linux.3.3.4\_gcc.4.6.3\_eglibc.2.15-linux-gnu}}
+
+  Toolchain producing code for a \emph{linux 3.3.4} \emph{little
+    endian} \emph{MIPS} system using \emph{gcc 4.6.3} and the
+  \emph{eglibc 2.15} runtime library.
+
+\item{\texttt{x86\_64-64\_bare.metal\_gcc.4.6.3\_newlib.1.17.0-elf}}
+
+  Toolchain producing code for a \emph{bare metal} \emph{64-bit}
+  \emph{x86} system using \emph{gcc 4.6.3} and the \emph{newlib
+    1.17.0} runtime library.
+
+
+\item{\texttt{x86\_64-64\_linux.3.3.4\_gcc.4.6.3\_eglibc.2.15-linux-gnu}}
+
+  Toolchain producing code for a \emph{linux 3.3.4} \emph{64-bit}
+  \emph{x86} system using \emph{gcc 4.6.3} and the \emph{eglibc 2.15}
+  runtime library.
 \end{description}
