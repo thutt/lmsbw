@@ -15,6 +15,9 @@
 %
 \chapter{Toolchain Usage}\label{chap:toolchain-usage}
 
+\todo{Using sample toolchains}
+
+
 \lmsbw trivially facilitates using custom-built toolchains for
 building your project, and if you are producing a commercial product,
 then you really should be using such a toolchain to build your
@@ -67,6 +70,39 @@ produced by the crosstool-ng program
   Sometimes a compiling a component with a different compiler is
   required.
 \end{itemize}
+
+\section{Sample Configurations}
+
+\lmsbw provides several \ctng configurations to facilitate quickly
+being able to cross compile your projects.  In order to be able to use
+these sample configurations, you must have first configured \&
+installed \ctng.  Please follow the instructions
+in \xref{toolchain-config:prerequisites}
+and \xref{toolchain-config:install-ctng}.
+
+Once \ctng has been installed, it's very simple to install these
+sample toolchains.
+
+\begin{itemize}
+  \item Change directory
+
+    Select a toolchain that you want to build, and chagne to that
+    directory.  For example, to build one of the MIPS toolchains:
+
+\begin{footnotesize}
+\begin{verbatim}
+cd ${LMSBW}/toolchains/mips/be_linux.3.3.4_gcc.4.6.3_eglibc.2.15
+\end{verbatim}
+\end{footnotesize}
+
+  \item Build
+
+    To build and install the toolchain once you have entered the
+    directory:
+
+    \texttt{/opt/crosstool-ng/bin/ct-ng build}
+\end{itemize}
+
 
 \section{Using a Toolchain}
 
