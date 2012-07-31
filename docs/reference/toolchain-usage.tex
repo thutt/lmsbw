@@ -19,21 +19,22 @@
 
 
 \lmsbw trivially facilitates using custom-built toolchains for
-building your project, and if you are producing a commercial product,
-then you really should be using such a toolchain to build your
-project.
+building your project: just specify the toolchain root directory
+(\xref{usinglmsbw:toolchain-root}), and the name of a subdirectory
+inside the root directory (\xref{usinglmsbw:toolchain}).
 
-The foremost reason for this is that it becomes trivial to reproduce
-any build for your project, at any time and on any machine; creating a
-bit-for-bit identical build at some point in the future using the
-toolchain on your build machines -- which may have been upgraded -- is
-unlikely to be be successful.  Secondarily, everyone on your team will
-be building the exact same images, regardless the default toolchain
-installed on their system.
+There are many reasons to use a custom-built toolchain over the one
+prosent on your host computer.  The foremost reason for this is that
+it becomes posslbe to reproduce any build of your project, at any time
+and on any machine; creating a bit-for-bit identical build at some
+point in the future using the toolchain on your host -- which may have
+been upgraded -- is unlikely to be be successful.  Secondarily,
+everyone on your team will be building the exact same images,
+regardless the default toolchain installed on their system.
 
-\lmsbw has been designed to work well with toolchains that have been
-produced by the crosstool-ng program
-(\xref{chap:toolchain-configuration}).  This has several implications:
+\lmsbw has been designed to work with toolchains produced by the
+crosstool-ng program (\xref{chap:toolchain-configuration}).  This has
+several implications:
 
 \begin{itemize}
 \item Reproducible Builds
@@ -101,10 +102,12 @@ cd ${LMSBW}/toolchains/mips/be_linux.3.3.4_gcc.4.6.3_eglibc.2.15
     directory:
 
     \texttt{/opt/crosstool-ng/bin/ct-ng build}
+
+    The toolchains will be placed in \texttt{/opt/toolchains}.
 \end{itemize}
 
 
-\section{Using a Toolchain}
+\section{Using a Custom Toolchain}
 
 The following steps must be taken to use a toolchain:
 
@@ -122,7 +125,8 @@ The following steps must be taken to use a toolchain:
 
 \item Specify desired toolchain
 
-  There are three hierarchical levels at which the toolchain can be set.
+  There are three levels at which the toolchain can be set for your
+  project.
 
   \begin{itemize}
   \item component
@@ -134,11 +138,11 @@ The following steps must be taken to use a toolchain:
     Once a toolchain has been specified at the component level, the
     component will always be built using that toolchain.
 
+    If the specified toolchain does not exist in the toolchain root
+    directory, \lmsbw will produce an error.
+
     If a component does not have a toolchain specified, the global
     toolchain setting is used.
-
-    If the specified toolchain does not exist, \lmsbw will produce an
-    error.
 
   \item global
 
@@ -149,19 +153,20 @@ The following steps must be taken to use a toolchain:
     See \xref{usinglmsbw:toolchain} for more details on this global
     argument.
 
+    If the specified toolchain does not exist in the toolchain root
+    directory, \lmsbw will produce an error.
+
     If a global toolchain is not specified, then the toolchain
     installed on the host computer is used.
 
-    If the specified toolchain does not exist, \lmsbw will produce an
-    error.
-
   \item host
 
-    If no toolchain has been specified, then \lmsbw will default to
-    using the toolchain installed on the host computer.
+    If no toolchain has been specified, then \lmsbw will use the
+    toolchain installed on the host computer.
 
     If no build tools are installed on the host, then components will
-    fail to build.
+    fail to build; it is your responsibility to ensure that the
+    necessary build tools are installed on your computer.
 
   \end{itemize}
 
@@ -188,7 +193,6 @@ toolchain's versions of the following programs:
 \item{POPULATE}
 \item{RANLIB}
 \item{READELF}
-\item{SIZE}
 \item{SIZE}
 \item{STRIP}
 \end{description}
