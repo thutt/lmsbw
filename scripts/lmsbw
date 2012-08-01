@@ -112,11 +112,11 @@ function main ()
                 shift 1 ;;
 
             --build-root)
-                export LMSBW_BUILD_ROOT="${2}";
+                export LMSBW_BUILD_ROOT="$(readlink -f ${2})";
                 shift 2 ;;
 
             --configuration)
-                export LMSBW_CONFIGURATION_FILE="${2}";
+                export LMSBW_CONFIGURATION_FILE="$(readlink -f ${2})";
                 shift 2 ;;
 
             --debug)
@@ -141,7 +141,7 @@ function main ()
                 shift 2 ;;
 
             --toolchains-root)
-                export LMSBW_TOOLCHAINS_ROOT="${2}";
+                export LMSBW_TOOLCHAINS_ROOT="$(readlink -f ${2})";
                 shift 2 ;;
 
             --) shift ;
