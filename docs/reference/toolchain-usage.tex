@@ -172,6 +172,182 @@ The following steps must be taken to use a toolchain:
 
 \end{enumerate}
 
+\section{Examples of Using Toolchains}
+
+An example of using various toolchains to build one of the sample
+projects will helpful in undrstanding how easy it is to cross compile
+to different architectures, or to just use a specific compiler for the
+same architecture as your host.
+
+We will be using the \texttt{lite-consumer-pro} sample for this
+example.
+
+\subsection{Reducing Repitition with Shell Functions}
+
+To reduce the reptitive, keyboard-based, work for building the sample
+with different toolchains, several \texttt{bash} functions will be
+written and reused.
+
+\begin{itemize}
+  \item{\texttt{set\_tc}}
+
+    This function is used to \emph{set the toolchain} that will be
+    used to build the sample.  It also configures the product within
+    the \texttt{lite-consumer-pro} sample that should be built.
+
+\begin{verbatim}
+function set_tc ()
+{
+  export PRODUCT=lite;
+  export TOOLCHAIN=${1};
+}
+\end{verbatim}
+
+\item{\texttt{build}}
+
+  This function invokes \lmsbw to build the sample.  This can only be
+  used after \texttt{set\_tc} has been called.
+
+\begin{verbatim}
+function build ()
+{
+  lmsbw
+    --toolchains-root /opt/toolchains
+    --toolchain ${TOOLCHAIN}
+    --build-root /tmp/lite
+    --configuration product.cfg $*;
+}
+\end{verbatim}
+
+\item{\texttt{check\_lite\_file}}
+
+  This function executes \texttt{file} on the file produced by the
+  sample's build porcess.  It obtains the install directory of the
+  file by using the \texttt{installdir} (\xref{usinglmsbw:installdir})
+  and discarding the first field -- the component name.
+
+\begin{small}
+\begin{verbatim}
+function check_lite_file ()
+{
+  file $(build installdir|cut -f 2 -d ':')/usr/bin/lite
+}
+\end{verbatim}
+\end{small}
+
+\item{\texttt{pt}}
+
+  This function performs the actual test by wrapping all the previous
+  functions together into a single command.  This command will be used
+  to build the sample for several toolchains.
+
+\begin{verbatim}
+function pt ()
+{
+  local tc=${1};
+  shift;
+  set_tc ${tc};
+  build
+  check_lite_file
+}
+\end{verbatim}
+\end{itemize}
+
+\subsection{Peforming the Tests}
+
+\begin{scriptsize}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+  \hline Target & Figure & Command \\
+  \hline LE Arm & \tabref{toolchain-usage:le-arm} &
+  \texttt{pt arm-le\_linux.3.3.4\_gcc.4.6.3\_eglibc.2.15-linux-gnueabi} \\
+
+  \hline BE MIPS & \tabref{toolchain-usage:be-mips} &
+  \texttt{pt mips-be\_linux.3.3.4\_gcc.4.6.3\_eglibc\_2.15-linux-gnu} \\
+
+  \hline LE MIPS & \tabref{toolchain-usage:le-mips} &
+  \texttt{pt mipsel-le\_linux.3.3.4\_gcc.4.6.3\_eglibc\_2.15-linux-gnu} \\
+
+  \hline x86\_64 & \tabref{toolchain-usage:x86-64} &
+  \texttt{pt x86\_64-64\_linux.3.3.4\_gcc.4.6.3\_eglibc.2.15-linux-gnu} \\
+
+  \hline
+\end{tabularx}
+\end{scriptsize}
+
+\begin{figure}[p]
+\begin{scriptsize}
+\begin{verbatim}
+lite: Creating directory: '/tmp/lite/target/lite/47145117a11a5ce831079351eec2c54d/build'
+lite: Creating directory: '/tmp/lite/target/lite/47145117a11a5ce831079351eec2c54d/destdir'
+Creating directory: '/tmp/lite/target/install/451336eb87a4169e325952ca674c69db'
+lite: Trampoline to 'lite' build system
+lite: Updating manifest
+lite: Install
+/tmp/lite/target/install/451336eb87a4169e325952ca674c69db/usr/bin/lite: ELF 32-bit LSB
+   executable, ARM, version 1 (SYSV), dynamically linked (uses shared libs),
+   for GNU/Linux 3.3.4, not stripped
+\end{verbatim}
+\end{scriptsize}
+\caption{Little Endian Arm}\label{toolchain-usage:le-arm}
+\end{figure}
+
+
+\begin{figure}[p]
+\begin{scriptsize}
+\begin{verbatim}
+lite: Creating directory: '/tmp/lite/target/lite/2db80f978ab6e8f96c1f7eca6c0fdf6b/build'
+lite: Creating directory: '/tmp/lite/target/lite/2db80f978ab6e8f96c1f7eca6c0fdf6b/destdir'
+Creating directory: '/tmp/lite/target/install/582598746ec21b53bdda1ba2874acc68'
+lite: Trampoline to 'lite' build system
+lite: Updating manifest
+lite: Install
+/tmp/lite/target/install/582598746ec21b53bdda1ba2874acc68/usr/bin/lite: ELF 32-bit MSB
+   executable, MIPS, MIPS-I version 1 (SYSV), dynamically linked (uses shared libs),
+   for GNU/Linux 3.3.4, with unknown capability 0x41000000 = 0xf676e75,
+   with unknown capability 0x10000 = 0x70401, not stripped
+\end{verbatim}
+\end{scriptsize}
+\caption{Big Endian Arm}\label{toolchain-usage:be-mips}
+\end{figure}
+
+\begin{figure}[p]
+\begin{scriptsize}
+\begin{verbatim}
+lite: Creating directory: '/tmp/lite/target/lite/0831580102e7c193d2be1f39f8368f93/build'
+lite: Creating directory: '/tmp/lite/target/lite/0831580102e7c193d2be1f39f8368f93/destdir'
+Creating directory: '/tmp/lite/target/install/bff139f7e5b28e0213ecc0b9760829a9'
+lite: Trampoline to 'lite' build system
+lite: Updating manifest
+lite: Install
+/tmp/lite/target/install/bff139f7e5b28e0213ecc0b9760829a9/usr/bin/lite: ELF 32-bit LSB
+   executable, MIPS, MIPS-I version 1 (SYSV), dynamically linked (uses shared libs),
+   for GNU/Linux 3.3.4, with unknown capability 0xf41 = 0x756e6700,
+   with unknown capability 0x70100 = 0x1040000, not stripped
+\end{verbatim}
+\end{scriptsize}
+\caption{Little Endian MIPS}\label{toolchain-usage:le-mips}
+\end{figure}
+
+
+\begin{figure}[p]
+\begin{scriptsize}
+\begin{verbatim}
+lite: Creating directory: '/tmp/lite/target/lite/160a8847f104d5b6f5432b98dfd6e319/build'
+lite: Creating directory: '/tmp/lite/target/lite/160a8847f104d5b6f5432b98dfd6e319/destdir'
+Creating directory: '/tmp/lite/target/install/1a96628d2b1833136b9540261d7cbe9e'
+lite: Trampoline to 'lite' build system
+lite: Updating manifest
+lite: Install
+/tmp/lite/target/install/1a96628d2b1833136b9540261d7cbe9e/usr/bin/lite: ELF 64-bit LSB
+   executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs),
+   for GNU/Linux 3.3.4, not stripped
+\end{verbatim}
+\end{scriptsize}
+\caption{x86-64}\label{toolchain-usage:x86-64}
+\end{figure}
+
+
+
 \section{Toolchain Variables}
 
 \lmsbw will set the \makefile variables to reference the configured
@@ -196,3 +372,5 @@ toolchain's versions of the following programs:
 \item{SIZE}
 \item{STRIP}
 \end{description}
+
+
