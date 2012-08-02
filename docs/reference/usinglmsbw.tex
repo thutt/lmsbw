@@ -16,29 +16,29 @@
 \chapter{Using \lmsbw}
 
 Ease-of-use and flexibility were two important design decisions taken
-when building \lmsbw.  Besides creating the configuration files to wrap
-your project's build process, you also must be able to execute the
-main tool: \lmsbw.  This chapter only describes how to execute \lmsbw;
-\xref{chap:wrapping} describes how to produce the configuration for
-wrapping your build.
+when building \lmsbw.  Besides creating the configuration files to
+wrap your project's build process, you also must be able to execute
+the main tool: \lmsbwcmd.  This chapter only describes how to execute
+\lmsbwcmd; \xref{chap:wrapping} describes how to produce the
+configuration for wrapping your build.
 
-\section{Accessing \lmsbw}
+\section{Accessing \lmsbwcmd}
 
-The \lmsbw script resides in the \texttt{scripts} directory of the
+The \lmsbwcmd script resides in the \texttt{scripts} directory of the
 \lmsbw source tree.
 
-Although it is not required, the most convenient way to use \lmsbw is
+Although it is not required, the most convenient way to use \lmsbwcmd is
 to add the \texttt{scripts} directory to your \texttt{PATH}.
 
-\section{\lmsbw script}
+\section{\lmsbwcmd script}
 
-The \lmsbw script is a wrapper for \make.  It ensures that the
+The \lmsbwcmd script is a wrapper for \make.  It ensures that the
 preconditions for using the \lmsbw system are met, and once they are
 guaranteed \make is executed with the proper environment, command line
 arguments, and targets.
 
-The \lmsbw script takes a number of parameters that are described in
-the following sections.
+The \lmsbwcmd script takes a number of parameters that are described
+in the following sections.
 
 \subsection{\texttt{--help}}
 
@@ -46,7 +46,7 @@ This option causes the script to display a help message and then exit.
 
 \subsection{\texttt{--build-root}}
 
-This required option, specifies the root directory where build output
+This required option specifies the root directory where build output
 for the configured project (\xref{lmsbw:configuration}) will be
 placed.
 
@@ -68,7 +68,7 @@ process.
 \end{verbatim}
 
 
-\subsection{\texttt{--progress}}
+\subsection{\texttt{--progress}}\label{usinglmsbw:progress}
 
 In normal operation, \lmsbw is very silent about the activities it is
 undertaking.  If you want to be presented with more information about
@@ -77,6 +77,8 @@ the progress of the build, add this to the command line.
 \begin{verbatim}
 --progress
 \end{verbatim}
+
+Compare \xref{usinglmsbw:verbose}.
 
 \subsection{\texttt{--parallel}}
 
@@ -91,7 +93,7 @@ This value for this argument is directly used with the \gnumake
 --parallel 3
 \end{verbatim}
 
-\subsection{\texttt{--verbose}}
+\subsection{\texttt{--verbose}}\label{usinglmsbw:verbose}
 
 This option causes \lmsbw to be much more verbose while running.
 
@@ -101,6 +103,8 @@ This option causes \lmsbw to be much more verbose while running.
 
 This option causes every command executed by the main \makefile to be
 printed to the console.
+
+Compare \xref{usinglmsbw:progress}
 
 \subsection{\texttt{--time}}
 
@@ -121,12 +125,12 @@ file.
 If you specify a toolchain with this argument, you must specify the
 toolchain root directory with \texttt{--toolchain-root}.
 
-The value you provide as an argument to this option should be the name
+The value you provide as an argument to this option must be the name
 of a subdirectory of the directory named with
 \texttt{--toolchain-root}.
 
-See \xref{chap:toolchain-usage} for details on selecting your
-toolchain and \xref{chap:toolchain-configuration} for information
+See \xref{chap:toolchain-usage} for details on using different
+toolchains and \xref{chap:toolchain-configuration} for information
 about creating toolchains.
 
 \subsection{\texttt{--toolchain-root}}\label{usinglmsbw:toolchain-root}
@@ -134,15 +138,16 @@ about creating toolchains.
 This option sets the root directory that contains the toolchains which
 can be used to build your project.
 
-See \xref{chap:toolchain-usage} for details on selecting your
-toolchain and \xref{chap:toolchain-configuration} for information
+See \xref{chap:toolchain-usage} for details on using different
+toolchains and \xref{chap:toolchain-configuration} for information
 about creating toolchains.
 
 \section{Using \lmsbw targets}\label{lmsbw:target:verbs}
 
 Although \lmsbw is extremely fast, it is sometimes desirable to have
 it operate on only one component, or to provide further information
-about the wrapped build.
+about the wrapped build.  The following sections describe methos of
+interacting with a wrapped build using \lmsbw.
 
 \subsection{\texttt{all}}\label{lmsbw:target:all}
 
@@ -262,8 +267,7 @@ This target is used when you want to measure the startup overhead of
 \lmsbw.
 
 This target will load all your configuration files, generate all the
-rules for building your project, and then immediately before starting
-to build your project.
+rules for building your project, and then immediately exit.
 
 \subsection{\texttt{measure-memory-footprint}}
 
