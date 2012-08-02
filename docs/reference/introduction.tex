@@ -259,7 +259,7 @@ Let's examine the what makes \lmsbw different:
 
 \item \makefile Simplicity
 
-  During the execution of the build process, \lmsbw loads at most
+  During the execution of the build process, \lmsbw executes, at most,
   three different \makefile processes:
 
   \begin{itemize}
@@ -279,6 +279,10 @@ Let's examine the what makes \lmsbw different:
     disjoint from other components; the settings for \emph{component
       $\alpha$} cannot interfere with the settings for \emph{component
       $\beta$}.
+
+    Because each individual component is fulfilled through a separate
+    \make process, this trampoline also ensures that the parallelism
+    available through \gnumake is effectively used.
 
   \item Component \makefile
 
