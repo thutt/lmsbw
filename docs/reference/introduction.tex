@@ -145,7 +145,9 @@ mtree=$(${ld}/scripts/lmsbw           \
 \end{verbatim}
 
 The command above, using \texttt{bash} syntax, will set the
-\texttt{mtree} variable to the full path of the executable.
+\texttt{mtree} variable to the full path of the \texttt{mtree}
+executable.  We will use this program to measure potential \nullbuild
+speed.
 
 \item Test Speed
 
@@ -159,10 +161,11 @@ The command above, using \texttt{bash} syntax, will set the
      <source directory>...
 \end{verbatim}
 
-This is a rough estimate of what your \nullbuild time should be.  To
-get a representative rough idea of how long a normal \nullbuild will
-take for your project, you should run this command multiple times to
-ensure that the in-RAM disk caches are filled.
+The output of this command is a rough estimate of what your \nullbuild
+time should be.  To get a representative rough idea of how long a
+normal \nullbuild will take for your project, you should run this
+command multiple times to ensure that the in-RAM disk caches are
+filled.
 
 \end{enumerate}
 
@@ -207,7 +210,9 @@ Let's examine the what makes \lmsbw different:
   especially when the exported API of a prerequisite component changes
   -- \lmsbw defines an API that wrapped builds must follow.  This API
   requires that each component install its public build product into a
-  \texttt{DESTDIR}.
+  \texttt{DESTDIR}.  This facilitates automatic checking of
+  inter-component APIs that will force dependent components to be
+  rebuilt upon changes to the API.
 
 \item Component Declarations
 
@@ -248,8 +253,43 @@ Let's examine the what makes \lmsbw different:
   already built saves an amount of time that is proportional to the
   number and complexity of \make rules present in that directory.
 
-  See \xref{samples:linux-kernel} for benchmarks numbers on wrapping
-  the Linux kernel build process with \lmsbw.
+  A good example of improving an existing build system is the Linux
+  Kernel.  See~\xref{samples:linux-kernel} for benchmark numbers on
+  wrapping the Linux Kernel build process with \lmsbw.
+
+\item \makefile Simplicity
+
+  During the execution of the build process, \lmsbw loads at most
+  three different \makefile processes:
+
+  \begin{itemize}
+  \item \lmsbw \makefile
+
+    The first is the main \lmsbw \makefile which handles all the
+    configuration and dependencies between components.
+
+  \item Component Trampoline \makefile
+
+    The second \makefile performs configuration such as standard
+    \makefile macros (\texttt{CC}, \texttt{LD}, etc.) for the
+    toolchain (\xref{chap:toolchain-usage}) selected to build the
+    component.
+
+    It also ensures that each component's build process is completely
+    disjoint from other components; the settings for \emph{component
+      $\alpha$} cannot interfere with the settings for \emph{component
+      $\beta$}.
+
+  \item Component \makefile
+
+    Finally, the \makefile of the component is executed.  This will
+    likely already exist if you are wrapping an existing build process.
+
+    This \makefile will be entered at most twice for each build.  The
+    first invocation will be to \emph{build} the component, and the
+    second time will be to \emph{install} the component into the
+    \destdir.
+\end{itemize}
 
 \item Share Build Output
 
@@ -273,9 +313,8 @@ steps are the same.
 \subsection{Configuration File}
 
 You must provide a master configuration file to \lmsbw for your
-project.  The main purpose of the configuration file is to create and
-set up the \lmsbwconfiguration (\xref{variables:lmsbw-configuration})
-variable.
+project.  The main purpose of the configuration file is to set up the
+\lmsbwconfiguration (\xref{variables:lmsbw-configuration}) variable.
 
 Primarily, you must declare a \gnumake function that will load your
 component configuration
@@ -285,6 +324,7 @@ will use (\xref{variables:component-build-support}).
 
 Other fields of \lmsbwconfiguration can be optionally set to further
 control the behavior of \lmsbw.
+See~\xref{variables:lmsbw-configuration}.
 
 \subsection{Loading Component Configuration}
 
@@ -316,8 +356,8 @@ of data:
 
 \item \lmsbwcomponent{<component-name>}
 
-  Each component loaded is assigned to an associative array that holds
-  all the data relevant to building the software.
+  Each component loaded is assigned an associative array that holds
+  all the data relevant to building the component.
 
   The keys that are defined for the component's associative array are
   dependent upon the \emph{kind} (\xref{variables:kind}) of the
@@ -350,35 +390,3 @@ Conveniently, there are \lmsbw functions, such as
 \texttt{declare\_source\_component}
 (\xref{api:declare-source-component}), which simplify the
 configuration of components.
-
-\subsection{Recursively Invoking \make}
-
-During the execution of the build process, \lmsbw runs three different
-\makefile processes:
-
-\begin{itemize}
-\item \lmsbw \makefile
-
-  The first is the main \lmsbw \makefile which handles all the
-  configuration and inter-dependencies between components.
-
-\item Component Trampoline \makefile
-
-  The second \makefile performs configuration such as standard
-  \makefile macros (\texttt{CC}, \texttt{LD}, etc.) for the toolchain
-  (\xref{chap:toolchain-usage}) selected to build the component.
-
-  It also ensures that each component's build process is completely
-  disjoint from other components; the settings for \emph{component $\alpha$}
-  cannot interfere with the settings for \emph{component $\beta$}.
-
-\item Component \makefile
-
-  Finally, the \makefile of the component is executed.  This will
-  likely already exist if you are wrapping an existing build process.
-
-  This \makefile will be entered at most twice for each build.  The
-  first invocation will be to \emph{build} the component, and the
-  second time will be to \emph{install} the component into the
-  \destdir.
-\end{itemize}
