@@ -15,7 +15,7 @@
 %
 \chapter{Samples}\label{chap:samples}
 
-\lmsbw has a range of samples that show a range of capabilities and
+\lmsbw has a range of samples that show a variety of capabilities and
 component configuration options.
 
 Each of these can be found in the \texttt{samples} directory of the
@@ -31,23 +31,25 @@ that allow you to actually compare the speed difference between a
 recursive \make and the same build wrapped with \lmsbw.
 
 It's just a simple, dummied-up, source tree with no complex
-dependencies, but the default configuration does produce 90,955 source
-files in 1856 directories.
+dependencies, but the default configuration does produce $90,955$ source
+files in $1,856$ directories.
 
 The results of running this sample on the test system can be seen in
 figure~\tabref{samples:generate-results}.
 
 \begin{figure}[tb]
-\begin{tabularx}{\linewidth}{|r|c|l|l|X|}
-  \hline Test & Parallel  & \make & \lmsbw & Description \\
-  \hline full build  & 4 & $\approx$ 00:18:00   & $\approx$ 00:18:00 & Full, from scratch, build \\
-  \hline \nullbuild  & 4 & 00:00:02.12 & 00:00:00.80 & Build after full build \\
-  \hline \nullbuild  & 1 & 00:00:13.96 & 00:00:02.44 & Build after full build \\
-  \hline incremental & 4 & 00:00:02.17 & $\approx$ 00:00:01 & Touch file, rebuild \\
-  \hline incremental & 1 & 00:00:14.75 & $\approx$ 00:00:04 & Touch file, rebuild \\
-  \hline
-\end{tabularx}
-\caption{\texttt{generate} Sample Results}\label{samples:generate-results}
+  \hrulefill\vspace{10pt}
+  \begin{tabularx}{\linewidth}{|r|c|l|l|X|}
+    \hline Test & Parallel  & \make & \lmsbw & Description \\
+    \hline full build  & 4 & $\approx$ 00:18:00   & $\approx$ 00:18:00 & Full, from scratch, build \\
+    \hline \nullbuild  & 4 & 00:00:02.12 & 00:00:00.80 & Build after full build \\
+    \hline \nullbuild  & 1 & 00:00:13.96 & 00:00:02.44 & Build after full build \\
+    \hline incremental & 4 & 00:00:02.17 & $\approx$ 00:00:01 & Touch file, rebuild \\
+    \hline incremental & 1 & 00:00:14.75 & $\approx$ 00:00:04 & Touch file, rebuild \\
+    \hline
+  \end{tabularx}
+  \caption{\texttt{generate} Sample Results}\label{samples:generate-results}
+  \hrulefill
 \end{figure}
 
 
@@ -66,13 +68,12 @@ This is a prime example of what \lmsbw can do for an existing,
 complex, build system.
 
 Follow the instructions in the associated README file and measure for
-yourself how much time \lmsbw will save.  The following table shows
-the results from building the Linux kernel on the test system.
-
-The results of running this sample on the test system can be seen in
+yourself how much time \lmsbw will save.  The results of running this
+sample on the test system can be seen in
 figure~\tabref{samples:linux-kernel-results}.
 
 \begin{figure}[tb]
+  \hrulefill\vspace{10pt}
 \begin{tabularx}{\linewidth}{|r|c|l|l|X|}
   \hline Test & Parallel  & \make & \lmsbw & Description \\
   \hline full build  & 4 & 00:25:00 & 00:25:26 & Full, from scratch, build \\
@@ -83,6 +84,7 @@ figure~\tabref{samples:linux-kernel-results}.
   \hline
 \end{tabularx}
 \caption{Linux Sample Results}\label{samples:linux-kernel-results}
+\hrulefill
 \end{figure}
 
 If you are working exclusively on the Linux kernel, \lmsbw won't
@@ -112,9 +114,12 @@ override it and manually install the needed files into \destdir.
 \section{source-api}
 
 This sample provides an excellent example of how you can declare a
-directory as containing an API; if any file in that directory is
+\destdir directory as containing an API; if any file in that directory is
 changed, then directly dependent components will be automatically
-rebuilt, even if otherwise unnecessary.
+rebuilt\footnote{\lmsbw will enter the component's build process.  It
+  is, obviously, the responsibility of that build process to have the
+  proper dependencies written so that API changes are detected and a
+  minimal incremental build is performed.}, even if otherwise unnecessary.
 \xref{intro:build-component-criteria} describes the criteria used to
 determine if a component needs to be rebuilt.
 
@@ -148,6 +153,7 @@ amount of virtual memory and resident memory consumed by the process,
 respectively.
 
 \begin{figure}[tb]
+  \hrulefill\vspace{10pt}
   \begin{center}
     \begin{tabular}{|c|c|c|c|}
       \hline configuration files  & startup time in seconds & virt Mb & res Mb \\
@@ -164,15 +170,9 @@ respectively.
     \end{tabular}
   \end{center}
 \caption{\texttt{startup-time} Results}\label{samples:startup-time-results}
+  \hrulefill
 \end{figure}
 
-One aspect of this table which should hit home is that \lmsbw needs
-only ten (10) seconds of overhead to load, configure and begin
-processing build rules for a project with 500 individual component
-configuration files.  Taking such a small amount of memory for 500
-components also leaves lots of address space for actual builds to
-occur without having to swap out the main build process.
-
-You should note that the task of loading configuration files is
+It should noted that the task of loading configuration files is
 serialized, and is not affected by any amount of parallelization.
 
