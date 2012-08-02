@@ -250,30 +250,30 @@ function pt ()
 \end{verbatim}
 \end{itemize}
 
-\subsection{Peforming the Tests}
+\subsection{Little Endian Arm}
+The commands and results for a \emph{little endian Arm} toolchain can be
+seen in figure \tabref{toolchain-usage:le-arm}.
 
-\begin{scriptsize}
-\begin{tabularx}{\linewidth}{|l|l|X|}
-  \hline Target & Figure & Command \\
-  \hline LE Arm & \tabref{toolchain-usage:le-arm} &
-  \texttt{pt arm-le\_linux.3.3.4\_gcc.4.6.3\_eglibc.2.15-linux-gnueabi} \\
+\subsection{x86-64}
 
-  \hline BE MIPS & \tabref{toolchain-usage:be-mips} &
-  \texttt{pt mips-be\_linux.3.3.4\_gcc.4.6.3\_eglibc\_2.15-linux-gnu} \\
+The commands and results for an \emph{x86-64} toolchain can be seen in
+figure \tabref{toolchain-usage:x86-64}.
 
-  \hline LE MIPS & \tabref{toolchain-usage:le-mips} &
-  \texttt{pt mipsel-le\_linux.3.3.4\_gcc.4.6.3\_eglibc\_2.15-linux-gnu} \\
+\subsection{Big Endian MIPS}
+The commands and results for a \emph{big endian MIPS} toolchain can be
+seen in figure \tabref{toolchain-usage:be-mips}.
 
-  \hline x86\_64 & \tabref{toolchain-usage:x86-64} &
-  \texttt{pt x86\_64-64\_linux.3.3.4\_gcc.4.6.3\_eglibc.2.15-linux-gnu} \\
+\subsection{Little Endian MIPS}
 
-  \hline
-\end{tabularx}
-\end{scriptsize}
+The commands and results for a \emph{little endian MIPS} toolchain can
+seen in figure \tabref{toolchain-usage:le-mips}.
 
-\begin{figure}[p]
-\begin{scriptsize}
+\begin{landscape}
+\begin{figure}
+\hrulefill
 \begin{verbatim}
+pt arm-le_linux.3.3.4_gcc.4.6.3_eglibc.2.15-linux-gnueabi
+
 lite: Creating directory: '/tmp/lite/target/lite/47145117a11a5ce831079351eec2c54d/build'
 lite: Creating directory: '/tmp/lite/target/lite/47145117a11a5ce831079351eec2c54d/destdir'
 Creating directory: '/tmp/lite/target/install/451336eb87a4169e325952ca674c69db'
@@ -284,14 +284,36 @@ lite: Install
    executable, ARM, version 1 (SYSV), dynamically linked (uses shared libs),
    for GNU/Linux 3.3.4, not stripped
 \end{verbatim}
-\end{scriptsize}
 \caption{Little Endian Arm}\label{toolchain-usage:le-arm}
+\hrulefill
 \end{figure}
 
-
-\begin{figure}[p]
-\begin{scriptsize}
+\begin{figure}
+\hrulefill
 \begin{verbatim}
+pt x86_64-64_linux.3.3.4_gcc.4.6.3_eglibc.2.15-linux-gnu
+
+lite: Creating directory: '/tmp/lite/target/lite/160a8847f104d5b6f5432b98dfd6e319/build'
+lite: Creating directory: '/tmp/lite/target/lite/160a8847f104d5b6f5432b98dfd6e319/destdir'
+Creating directory: '/tmp/lite/target/install/1a96628d2b1833136b9540261d7cbe9e'
+lite: Trampoline to 'lite' build system
+lite: Updating manifest
+lite: Install
+/tmp/lite/target/install/1a96628d2b1833136b9540261d7cbe9e/usr/bin/lite: ELF 64-bit LSB
+   executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs),
+   for GNU/Linux 3.3.4, not stripped
+\end{verbatim}
+\caption{x86-64}\label{toolchain-usage:x86-64}
+\hrulefill
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\hrulefill
+\begin{verbatim}
+pt mips-be_linux.3.3.4_gcc.4.6.3_eglibc_2.15-linux-gnu
+
 lite: Creating directory: '/tmp/lite/target/lite/2db80f978ab6e8f96c1f7eca6c0fdf6b/build'
 lite: Creating directory: '/tmp/lite/target/lite/2db80f978ab6e8f96c1f7eca6c0fdf6b/destdir'
 Creating directory: '/tmp/lite/target/install/582598746ec21b53bdda1ba2874acc68'
@@ -303,13 +325,15 @@ lite: Install
    for GNU/Linux 3.3.4, with unknown capability 0x41000000 = 0xf676e75,
    with unknown capability 0x10000 = 0x70401, not stripped
 \end{verbatim}
-\end{scriptsize}
 \caption{Big Endian Arm}\label{toolchain-usage:be-mips}
+\hrulefill
 \end{figure}
 
-\begin{figure}[p]
-\begin{scriptsize}
+\begin{figure}
+\hrulefill
 \begin{verbatim}
+pt mipsel-le_linux.3.3.4_gcc.4.6.3_eglibc_2.15-linux-gnu
+
 lite: Creating directory: '/tmp/lite/target/lite/0831580102e7c193d2be1f39f8368f93/build'
 lite: Creating directory: '/tmp/lite/target/lite/0831580102e7c193d2be1f39f8368f93/destdir'
 Creating directory: '/tmp/lite/target/install/bff139f7e5b28e0213ecc0b9760829a9'
@@ -321,27 +345,10 @@ lite: Install
    for GNU/Linux 3.3.4, with unknown capability 0xf41 = 0x756e6700,
    with unknown capability 0x70100 = 0x1040000, not stripped
 \end{verbatim}
-\end{scriptsize}
 \caption{Little Endian MIPS}\label{toolchain-usage:le-mips}
+\hrulefill
 \end{figure}
-
-
-\begin{figure}[p]
-\begin{scriptsize}
-\begin{verbatim}
-lite: Creating directory: '/tmp/lite/target/lite/160a8847f104d5b6f5432b98dfd6e319/build'
-lite: Creating directory: '/tmp/lite/target/lite/160a8847f104d5b6f5432b98dfd6e319/destdir'
-Creating directory: '/tmp/lite/target/install/1a96628d2b1833136b9540261d7cbe9e'
-lite: Trampoline to 'lite' build system
-lite: Updating manifest
-lite: Install
-/tmp/lite/target/install/1a96628d2b1833136b9540261d7cbe9e/usr/bin/lite: ELF 64-bit LSB
-   executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs),
-   for GNU/Linux 3.3.4, not stripped
-\end{verbatim}
-\end{scriptsize}
-\caption{x86-64}\label{toolchain-usage:x86-64}
-\end{figure}
+\end{landscape}
 
 
 
