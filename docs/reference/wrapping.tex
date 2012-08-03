@@ -27,64 +27,30 @@ build:
 \begin{description}
 \item Defining Roles
 
-  Maintaining a build process for a large system is a thankless,
-  unwieldy job that transcends the \bni team; managers and developers
-  must also become involved and be stake owners in the process.
-
-  Definition, and acceptance, of roles for all players is an important
-  part of success.
-
-  This will be discussed in \xref{wrap:build-process-roles}.
+  Maintaining a build process for a large system transcends the \bni
+  team; managers and developers must also become involved stake
+  owners.  Definition, and acceptance, of roles for all players is an
+  important part of success.  This will be discussed in
+  \xref{wrap:build-process-roles}.
 
 \item Master Configuration
 
-  Your master configuration file -- the one which is provided as a
-  command line argument of \lmsbw -- sets up \lmsbw with a callback
-  that is used to load all component configurations that are part of
-  your project.  If you've got a complicated project -- one with
-  multiple SKUs, and different sets of components delivered with each
-  SKU -- then the loading of the individual component configuration
-  files may seem daunting, but it's really very tractable.
-
-  This will be discussed in \xref{wrap:master-configuration}.
+  The master configuration file sets up \lmsbw to load all component
+  configurations that are part of the project.  This will be discussed
+  in \xref{wrap:master-configuration}.
 
 \item Component Creation
 
-
-  Besides the labor of creating the component configurations
-  (\xref{wrap:component-creation}) and providing the component
-  configurations to \lmsbw (\xref{wrap:master-configuration}), you
-  also have to decide how to split your build process into individual
-  components.
-
-  One good heuristic is to start with the top-level directories that
-  are entered via \make-recursion with your current build system.
-  Your overall NULL build times will immediately improve, but if each
-  recursively-invoked \makefile again recursively invokes \make, the
-  incremental builds can quickly reach the top of the ``it's taking
-  too much time'' complaints.
-
-  If this happens, the recommended solution is to \emph{divide \&
-    conquer}: create first-class components from second or third level
-  directories in the build process.  Each sub-directory directly
-  assigned to component will have little impact on the NULL build, but
-  will have a great impact on incremental builds.  It will have a
-  great impact because fewer directories will be entered to build
-  changed components.
-
-  Component creation will be discussed in
-  \xref{wrap:component-creation}.
+  Deciding how to split your project to create components, and the
+  actual component configuration files will have a direct effect on
+  the quality of the wrapped build.  Component creation will be
+  discussed in \xref{wrap:component-creation}.
 
 \item Component \makefile
 
   Each \makefile associated with a component must meet the compliance
-  requirements (\xref{wrap:component-makefile}) of \lmsbw.  If a
-  \makefile is not fully compliant, the build will probably fail in
-  some mysterious way.  It could fail, for example, due to header
-  files or executables not being available because the \makefile of
-  some component did not properly install them.
-
-  This will be discussed in \xref{wrap:component-makefile}.
+  requirements of \lmsbw.  This will be discussed in
+  \xref{wrap:component-makefile}.
 
 \end{description}
 
@@ -99,21 +65,27 @@ a new tool for you.
 Here are a few tenets to help guide you to the right configuration
 choices:
 
-\begin{itemize}
-  \item Component \makefile maintenance is for the \emph{development} teams.
+\begin{description}
+  \item High-level Product Configuration
 
-    Since \lmsbw strictly defines an interface -- an API -- for
-    \makefile implementation, it easily follows that the developers
-    responsible for a sub-project should be responsible for writing a
-    conformant \makefile for that sub-project.  After all, they are
-    the ones familiar with the interrelationships between the source
-    modules.
+    This job is most well-suited to \emph{product management}.
 
-    If needed, the \bni team can become involved to help with
-    performance or conformance issues.
+    The product configuration -- which sub-projects are included into
+    each SKU produced by your company -- is a task owned by the
+    product management team.
 
-  \item Overall build \emph{process} maintenance is for the
-    \emph{\bni} team.
+  \item Build Process Configuration
+
+    This aspect is reall an amalgam of roles: the configuration of the
+    build process requires the cooperation of the product management
+    team (to determine what is included and what is excluded), the
+    development team (to create \& maintain a \makefile for their
+    sub-project) and the \bni team (to create the actual configuration
+    that \lmsbw will use).
+
+  \item Build Process Maintenance
+
+    This job is best subsumed by the \emph{\bni} team.
 
     The \bni team is not responsible for sub-project \makefile
     maintenance, but they are responsible for the overall
@@ -124,25 +96,26 @@ choices:
     structure and maintenance of the output produced by the build
     process.
 
-  \item High-level product configuration is for \emph{product
-    management}.
+  \item Component \makefile Maintenance
 
-    The product configuration -- which sub-projects are included into
-    each SKU produced by your company -- is a task owned by the
-    product management team.
+    This job is be assigned to the \emph{development} teams
+    responsible for the source code.
 
-  \item Build process configuration is an amalgam of roles
+    Since \lmsbw strictly defines an interface -- an API -- for
+    \makefile implementation (\xref{wrap:component-makefile}), it
+    easily follows that the developers responsible for a sub-project
+    should be responsible for writing a conformant \makefile for that
+    sub-project.  After all, they are the ones familiar with the
+    interrelationships between the source modules.
 
-    The configuration of the build process requires the cooperation of
-    the product management team (to determine what is included and
-    what is excluded), the development team (to create \& maintain a
-    \makefile for their sub-project) and the \bni team (to create the
-    actual configuration that \lmsbw will use).
-\end{itemize}
+    If needed, the \bni team can become involved to help with
+    performance or conformance issues.
 
-Cooperation is important in all of this; no one likes change,
-especially when the final results are nebulous until everything is
-finalized and working.
+\end{description}
+
+Cooperation is important in all of this; a build process will only be
+successful if everyone pulls their weight and stives for the best
+outcome.
 
 \section{Master Configuration}\label{wrap:master-configuration}
 
@@ -157,23 +130,20 @@ Your master configuration file must do the following:
   function.
 \end{enumerate}
 
-Loading component configuration files seems fairly straightforward,
-but because different operating systems have varying file system
-capabilities, your decisions on how to set up your component
-configuration files will be affected.  The following sections provide
-some suggestions, and some pointers to sample configurations contained
-in the \lmsbw distribution.
+Loading component configuration files is straightforward, but as
+different operating systems have varying file system capabilities,
+your decisions on how to set up your component configuration files
+will be affected.  The following sections provide some suggestions,
+and some pointers to sample configurations contained in the \lmsbw
+distribution.
 
 \subsection{Directory of Configuration Files}\label{wrap:directory}
 
 The basic recommendation for \lmsbw component configuration is to
-place all your configuration files into the same directory.  This
-centralizes all the maintenance and makes global configuration changes
-much easier.  Your \texttt{load-configuration} function can simply
-load all the component configuration files from the common directory.
-
-This works well for a single SKU, but falls apart quickly if you have
-multiple.
+place all your component configuration files into the same directory,
+centralizing maintenance and making global configuration changes much
+easier.  The \texttt{load-configuration} function can easily load all
+the component configuration files from the common directory.
 
 \subsection{Symlinks to Configuration Files}
 
@@ -182,9 +152,11 @@ SKUs and different components in each SKU, you can still keep all your
 configuration files in a single directory, but on top of that you will
 have \emph{configuration} directories for each distinct product.
 These \emph{configuration} directories will be populated with relative
-symlinks to the original configuration file; see the
-\texttt{lite-consumer-pro} sample for an example of how this is
-performed.
+symlinks\footnote{Always use relative symlinks.  Absolute symlinks
+  encode full pathname structure into your build system, and that is
+  undesirable.} to the original configuration file; see the
+\texttt{lite-consumer-pro} sample (\xref{samples:lite-consumer-pro})
+for an example of how this is performed.
 
 \subsection{Conditional Component Declaration}
 
@@ -194,7 +166,7 @@ component configuration files, as in \xref{wrap:directory}, and use
 the facilities of \gnumake to conditionally include only the desired
 components.
 
-See the \texttt{sports} sample for an example of this configuration
+See the \texttt{sports} sample (\xref{samples:sports})  for an example of this configuration
 strategy.
 
 \subsection{Configurations for More Speed}
@@ -204,11 +176,11 @@ time for \lmsbw is longer than the incremental build of your part of
 the project, you may be able to perform some configuration magic to
 regain much of that lost incremental development speed.  Here's how:
 
-\begin{enumerate}
-\item New master configuration
+\begin{itemize}
+\item New Master Configuration
 
-  Create a new global configuration which contains only your component
-  and components necessary to build your component.
+  Create a new master configuration which contains only your component
+  and necessary prequisites.
 
   Because \lmsbw shares build output, the \emph{small} master
   configuration will cause the component to be built in the same
@@ -216,8 +188,8 @@ regain much of that lost incremental development speed.  Here's how:
 
 \item Incrementally Build
 
-  Once set up, you can incrementally build your component with a much
-  smaller startup time.
+  Once your new master configuration is set up, you can incrementally
+  build your component with a much smaller startup time.
 
   If your component can be tested stand-alone, you can even test using
   this smaller master configuration.
@@ -228,21 +200,35 @@ regain much of that lost incremental development speed.  Here's how:
   your component are satisfactory, switch back to the \emph{large}
   master configuration file, and re-build.
 
-  Since your project is already built, it will be quickly installed
-  into the new configuration's install directory.
-
-\end{enumerate}
+  Since your project is already built, the only work necessary will be
+  to quickly install your component into the main configuration's
+  install directory.
+\end{itemize}
 
 \section{Component Creation}\label{wrap:component-creation}
 
 A component is a set of source files that can be transformed into a
-deliverable for your project.  You must declare components to \lmsbw
+deliverable for a project.  Components must be declared to \lmsbw
 through a simple API that has been provided; once declared, \lmsbw
 takes care of all the administrative details for building.
 
-For each declared source component, \lmsbw will generate target
-\makefile rules that are used to perform the \lmsbw verbs on the
-component.
+One good heuristic for determining how to split a system into
+components is to start with the top-level directories that are entered
+via \make-recursion with the current build system.  The overall NULL
+build times will immediately improve, but if each recursively-invoked
+\makefile again invokes \make, the incremental builds can become the
+bottleneck.
+
+If incremental builds become a bottleneck, the recommended solution is
+to \emph{divide \& conquer}: create first-class components from second
+or third level directories in the build process.  Each sub-directory
+directly assigned to component will have little impact on the NULL
+build time, but will have a great impact on reducing incremental build
+times.  It will have a great impact because fewer directories will be
+entered to build changed components.
+
+For each declared source component, \lmsbw will generate \makefile
+rules that are used to perform the \lmsbw verbs on the component.
 
 The following sections describe how to declare the supported
 component types of \lmsbw.
@@ -250,23 +236,22 @@ component types of \lmsbw.
 \subsection{\texttt{declare\_source\_component}}
 
 A source component is a set of sources that is directly available in
-your project's source tree.
+the project's source tree.
 
-To declare a source component to \lmsbw, you'll need the following
-information:
+To declare a source component to \lmsbw, the following
+information is required:
 
 \begin{enumerate}
 \item Component Name
 
-  You must provide a name that will be used to reference the component
-  on the \lmsbw command line, and as a prerequisite of other
-  components.
+  A name must be provided that will be used to refer to the component
+  when using \lmsbwcmd, or as a prerequisite of other components.
 
   The name supplied must be a valid \makefile variable name.
 
 \item Component Description
 
-  You must supply a brief description of the component.  This
+  A brief description of the component must must supplied.  This
   description will be shown if the \texttt{components} verb
   (\xref{lmsbw:target:components}) is used to show a list of all the
   components defined in the build project.
@@ -283,32 +268,33 @@ information:
 
   If the component is part of the product, the reason is
   \texttt{image}, and if it's part of the build the reason is
-  \texttt{build}.
-
-  This choice affects which toolchain is used to build the component,
-  and where it is installed in the build tree.  See \xref{variables:reason}.
+  \texttt{build}.  This choice affects which toolchain is used to
+  build the component, and where it is installed in the build tree.
+  See \xref{variables:reason}.
 
 \item Configuration File
 
   The full pathname of the configuration file that defines the
-  component.  It is part of the declaration so that changes to the
-  configuration file will force the component to be rebuilt.
+  component.  It is included as part of the declaration so that
+  changes to the configuration file will force the component to be
+  rebuilt.
 
   Since the pathname may not be known until the configuration file
-  itself is loaded, it becomes the responsibility of your
+  itself is loaded, it is the responsibility of the
   \texttt{load-configuration-function}
   (\xref{variables:load-configuration-function}) to marshal this
-  information to the component configuration file.  See the
-  \texttt{sports} (\xref{samples:sports}) sample for one approach to
-  addressing this issue.
+  information to the component configuration file.
+
+  See the \texttt{sports} (\xref{samples:sports}) sample for one
+  approach to addressing this issue.
 
 \item Path to Source Directory
 
   The full pathname to the directory containing the sources of the
   component is also necessary.  To be flexible and allow any client of
-  your wrapped build to put the software in any location on disk, it
-  is incumbent upon you to determine the full pathname of the source
-  directory at configuration load time.  There are many ways to
+  the wrapped build to put the software in any location on disk, it is
+  incumbent upon the developer to determine the full pathname of the
+  source directory at configuration load time.  There are many ways to
   accomplish this, here are a few suggestions:
 
   \begin{itemize}
@@ -322,25 +308,27 @@ information:
 
   If your component requires one or more other components to have been
   built and installed prior to this component being built, you must
-  provide that information when declaring your component.  \lmsbw will
+  provide that information when declaring a component.  \lmsbw will
   ensure that all prerequisite components are built and installed
   before the dependent components are built.
 \end{enumerate}
 
-Once this information has been gathered, you can create a component
-configuration file and declare your component with the
-\texttt{declare\_source\_component} function.  The following are a few
+Once this information has been gathered, it is possible to declare
+components using the \texttt{declare\_source\_component} function
+(\xref{api:declare-source-component}).  The following are a few
 examples of declaring source components:
 
 \begin{itemize}
 \item A component used in the build
 
-The following declares a component named \texttt{compiler}, which is
-included in the project because it is used as part of the
-\texttt{build}.  It's configuration file is named by a \make variable,
-and the source is relative to a directory named by the variable
-\texttt{PROJECT\_SOURCE\_ROOT}.
+Figure~\tabref{wrap:simple-component-declaration} declares a component
+named \texttt{compiler}, that is included in the project because it is
+used as part of the \texttt{build}.  It's configuration file is named
+by a \make variable, and the source is relative to a directory named
+by the variable \texttt{PROJECT\_SOURCE\_ROOT}.
 
+\begin{figure}
+\hrulefill
 \begin{verbatim}
 $(call declare_source_component,              \
        compiler,                              \
@@ -349,18 +337,24 @@ $(call declare_source_component,              \
        $(CURRENT_CONFIGURATION_FILE),         \
        $(PROJECT_SOURCE_ROOT)/src/compiler)
 \end{verbatim}
+\hrulefill
+\caption{Simple Source Component Declaration}\label{wrap:simple-component-declaration}
+\end{figure}
 
-Any other component that \emph{uses} this compiler must list the
-\texttt{compiler} component as a prerequisite.
+Any other component that \emph{uses} this compiler in the build
+process must list the \texttt{compiler} component as a prerequisite.
 
 \item A component with a prerequisite
 
-The following declares a component, named \texttt{consumer}, with a
-prerequisite called \texttt{producer}; \texttt{producer} will always
-be built before \texttt{consumer}.  It is included in the project
-because it is delivered as part of the project \texttt{image}.  It's
-configuration file is named by a \make variable.
+Figure~\tabref{wrap:prerequisite-component-declaration} declares a
+component, named \texttt{consumer}, with a prerequisite called
+\texttt{producer}; \texttt{producer} will always be built before
+\texttt{consumer}.  It is included in the project because it is
+delivered as part of the project \texttt{image}.  It's configuration
+file is named by a \make variable.
 
+\begin{figure}
+\hrulefill
 \begin{verbatim}
 $(call declare_source_component,              \
        consumer,                              \
@@ -370,6 +364,9 @@ $(call declare_source_component,              \
        $(subst sample.cfg,src/consumer,$(1)), \
        producer)
 \end{verbatim}
+\hrulefill
+\caption{Source Component with Prerequisite Declaration}\label{wrap:prerequisite-component-declaration}
+\end{figure}
 
 An idiom you might see in many component configuration files is the
 handling of parameter number five (5) -- the source directory path.
@@ -381,9 +378,10 @@ pathname of the master configuration file itself.
 Of course, since the component configuration file is loaded and
 evaluated in the context of the \texttt{load-configuration-function},
 the full path to the configuration file is still available as
-\texttt{\$(1)} -- provided they are in the same directory tree.
+\texttt{\$(1)}\footnote{Provided the configuration file and the source
+  directory  are in the same directory tree.}.
 
-\begin{figure}[tbh]
+\begin{figure}
 \hrulefill
 \begin{small}
 \begin{verbatim}
@@ -446,24 +444,18 @@ rules:
   \texttt{\$(CC)} rather than \texttt{cc} or \texttt{gcc}.
 
   The \gnumake reference manual describes all the standard macros that
-  are available to access development tools.
-
-  In other words, a compliant \makefile should not directly reference
-  programs, such as the C compiler with \texttt{cc}, or the linker
-  with \texttt{ld}.  Rather, the compliant \makefile should use macros
-  such as \texttt{\$(CC)} and \texttt{\$(LD)} respectively.
+  are available to access development tools, and
+  \xref{toolchain-usage:variables} lists the standard macros provided
+  by \lmsbw.
 
 \item Test Execution
 
   Because \lmsbw facilitates easy cross-compilation to a different
   architecture, no component which is declared to be part of the
   product image (see \xref{variables:reason}) should execute any
-  program that is built by the component build.
-
-  If your system is never meant to cross compile, then it's ok for the
-  component build process to execute tests; if cross compilation is
-  later used, the tests will have a different architecture type and
-  fail to run.
+  program that is built by the component build\footnote{Unless it is
+    known with certainty that the build will never be cross-compiled
+    to a different architecture.}.
 
   You must be very careful when testing in a cross-compiled
   environment; the details of this are beyond the scope of this
@@ -497,15 +489,20 @@ rules:
   To be compliant, a component's build process should be written to
   assume that the directory into which it installs files is the root
   directory.  For example, if your component, \texttt{alpha}, is
-  installing header files, it should be written to do something like
-  this:
+  installing header files, it should be written to do something as
+  shown in figure~\tabref{wrap:install-target}.
 
+\begin{figure}
+\hrulefill
 \begin{verbatim}
 $(MKDIR) --parents $(DESTDIR)/usr/include/alpha
 $(CP) --recursive                          \
      $(LMSBW_C_BUILD_DIRECTORY)/include/*  \
      $(DESTDIR)/usr/include/alpha
 \end{verbatim}
+\hrulefill
+\caption{Installing from \texttt{install} target}\label{wrap:install-target}
+\end{figure}
 
   \lmsbw guarantees that \texttt{DESTDIR} will be defined.
 
@@ -550,7 +547,7 @@ exported by other, prerequisite, components.
 \subsection{\texttt{LMSBW\_C\_BUILD\_DIRECTORY}}\label{wrap:lmsbw-c-build-directory}
 
 This is set to the root of the build directory for the associated
-component.  The component \makefile can place files such a \mtree
+component.  The component \makefile can place files such as \mtree
 manifests or \make sentinels into this directory.
 
 This is \emph{not} the directory in which the component \makefile is
