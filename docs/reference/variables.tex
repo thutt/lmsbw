@@ -23,6 +23,15 @@ This chapter provides a reference for the variables that are used
 internally by \lmsbw, and that provide the low-level interface used to
 declare and define components.
 
+\begin{center}\framebox{\begin{minipage}{.9\linewidth}\textbf{NOTE}
+
+    Be aware that spaces in \gnumake function arguments are
+  significant.  The examples shown in this chapter have been formatted
+  to be easily readable in a printed document; it is frequently best
+  of have the entire function call on a single line in the source
+  file, or to fastidiously use \texttt{\$(strip)} on function
+  arguments.\end{minipage}}\end{center}
+
 \section{\lmsbwconfiguration}\label{variables:lmsbw-configuration}
 
 This variable is the nexus of all global configuration for a porject.
@@ -35,30 +44,18 @@ It is implemented as an associative array, and is readily extensible
 by simply adding new \emph{key} / \emph{value} pairs.
 
 Its keys and values must not be changed after the initial load of the
-configuration file.
+master configuration file.
 
-Each key in this array covers a global configuration option that will
-affect the entire project.  The following sections describe the valid
-keys and their allowed values.
+Each key covers a global configuration option that will affect the
+entire project.  The following sections describe the valid keys and
+their allowed values.
 
-
-\begin{center}\framebox{\begin{minipage}{.9\linewidth}\textbf{NOTE}
-
-    Be aware that spaces in \gnumake function arguments are
-  significant.  The examples shown in this chapter have been formatted
-  to be easily readable in a printed document; it is frequently best
-  of have the entire function call on a single line in the source
-  file, or to fastidiously use \texttt{\$(strip)} on function
-  arguments.\end{minipage}}\end{center}
 
 \subsection{\texttt{component-build-support}}\label{variables:component-build-support}
 
-To be more easily extensible, \lmsbw dynamically loads support for the
-\texttt{kind} of components that you wish to build based on the value
-of this variable.
-
-The list of values contained in this variable corresponds directly to
-the component \texttt{kind} described in \xref{variables:kind}.
+To be more modular and easily extensible, \lmsbw dynamically loads
+support for the \texttt{kind} (\xref{variables:kind}) of components
+that you wish to build based on the value of this variable.
 
 By including a component \texttt{kind} in this variable, the ability
 declare and build such components will be enabled.  If a component
@@ -68,37 +65,37 @@ of that type.
 If no component kinds are specified in the configuration, \lmsbw will
 exit with an error.
 
-Only specified configuration kinds will be loaded and accessible when
-using \lmsbw.
-
 \subsection{\texttt{load-configuration-function}}\label{variables:load-configuration-function}
 
 This key must be the name of a \gnumake function which will load the
-component configurations which comprise your project.
+component configurations which comprise the project.
 
+\begin{figure}
+\hrulefill
 \begin{verbatim}
 vv:=$(call set,LMSBW_configuration, \
       load-configuration-function,  \
       load_configuration)
 \end{verbatim}
+\hrulefill
+\caption{Setting \texttt{load-configuration-function}}\label{variables:set-load-configuration}
+\end{figure}
 
-In the example above, the user-supplied function called
-\texttt{load\_configuration} will be invoked to load the component
-configurations.
+In the figure~\tabref{variables:set-load-configuration}, the
+user-supplied function called \texttt{load\_configuration} will be
+invoked to load the component configurations.
 
-The signature of the function is this:
+\subsubsection{Load Configuration Signature}
 
-\begin{verbatim}
-load_function
-   <master configuration file pathname>
-\end{verbatim}
+The function name assigned to \texttt{load-configuration-function} has
+the signature shown below:
 
-\begin{itemize}
-\item master configuration file pathname
+\begin{tabularx}{\linewidth}{ll|X}
+  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  1 & pathname &   The only  argument to this function is the full pathname of the
+  master configuration file provided to \lmsbw. \\
+\end{tabularx}
 
-  The first argument to this function is the full pathname of the
-  master configuration file provided to \lmsbw.
-\end{itemize}
 
 Upon successful exit, the named function must have done the following:
 
@@ -109,7 +106,7 @@ Upon successful exit, the named function must have done the following:
 \item Configure individual components
 
   For each component contained in the \lmsbwcomponents variable, there
-  must be an associative array named \lmsbwcomponent{<component>}.
+  must be an associative array named \lmsbwcomponent{component}.
   See \xref{chap:wrapping} for details on declaring components.
 
 \end{itemize}
@@ -130,7 +127,7 @@ The list must adhere to the following rules:
 \begin{itemize}
 \item Space separated.
 \item No duplicates.
-\item Each item must have a corresponding \lmsbwcomponent{<component>}
+\item Each item must have a corresponding \lmsbwcomponent{component}
   associative array.
 \end{itemize}
 
@@ -141,19 +138,16 @@ will be used to build the project.
 % component associative array keys.  This is done by looking for
 % the function which sets component keys -- lmsbw_scf -- in the
 % 'wrapper' directory.
-\section{\lmsbwcomponent{<component>}}\label{variables:lmsbw-component-component}
+\section{\lmsbwcomponent{component}}\label{variables:lmsbw-component-component}
 
 Each component named in \lmsbwcomponents must have a corresponding
 associative array which describes all the attributes needed to
 correctly build it.  Be aware that the allowed attributes will vary
 based on the \texttt{kind} (\xref{variables:kind}) of the component.
 
-The variable for a component will be named as shown below; consider
-that the component name is \texttt{baselib}.
-
-\begin{verbatim}
-LMSBW_component_baselib
-\end{verbatim}
+These variables are internally managed when using \lmsbw: if you are
+not extending \lmsbw, you will not have to worry about the creation of
+these variables.
 
 Once key:value pairs are set they should not be changed.
 
@@ -176,24 +170,18 @@ can be seen by using the \texttt{report} verb
 
 \subsection{\lmsbwcomponentfield{api}}\label{variables:api}
 
-This is a list of install directories that contain the public API of
-the component.  The directories must be installed into the \destdir by
-the component's build process during the installation phase of the
-build.
+This is a list of directories that contain the public API of the
+component.  The directories must be installed into the \destdir by the
+component's build process during the installation phase of the build.
 
-All directly dependent components will be built if any files change in
-the named directories.
+All directly dependent components will have their build process
+invoked if any files change in the named directories.
 
 This variable should be set to the directories that contain exported
 header files, static libraries, icons, and other build output that
 affects the building of other components.
 
-Directories which contain shared libraries do not need to be included;
-changing a shared library does not need to cause other, directly
-dependent, components to be rebuilt.
-
-If there is no exported API -- no header files, no static libraries,
-etc. -- then you do not need to set this key.
+It is not necessary to set this key if there is no exported API.
 
 \apiref{api:component-attribute-api}
 
@@ -249,9 +237,10 @@ Compare to \xref{variables:install-target}.
 This key holds a list of values which will be assigned to the
 \texttt{CFLAGS} variable before the component's \makefile is invoked.
 
-The value of this key is also used to determine the build directory
-for each component.  Changing the value for a component will change
-the build output directory; the purpose of this several fold:
+The value of this key is also used to help determine the build
+directory name for each component.  Changing value of
+\lmsbwcomponentfield{cflags} for a component will change the build
+output directory. The purpose of this several fold:
 
 \begin{itemize}
 \item \texttt{CFLAGS} changes incorporated into build
