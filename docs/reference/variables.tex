@@ -190,7 +190,7 @@ It is not necessary to set this key if there is no exported API.
 This key is used internally; it contains the absolute pathname of the
 directory in which the build will be performed.
 
-This key must not be used by a client of \lmsbw.
+This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
 
@@ -206,7 +206,7 @@ verb, like so:
 lmbw log.hello-world
 \end{verbatim}
 
-This key must not be used by a client of \lmsbw.
+This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
 
@@ -215,7 +215,7 @@ This key must not be used by a client of \lmsbw.
 This key holds the root directory where all build-related output is
 placed for the associated component.
 
-This key must not be used by a client of \lmsbw.
+This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
 
@@ -325,7 +325,7 @@ target must place files to be installed into the \destdir directory.
 Upon successful completion of component installation, \lmsbw will copy
 the files from the \destdir to the shared install directory.
 
-This key must not be used by components of \lmsbw.
+This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
 
@@ -382,7 +382,7 @@ component to \emph{never} allow parallel builds; it directly sets the
 \gnumake parallel option to \texttt{-j 1}.
 
 This key is normally only needed to address build issues -- caused by
-bad dependencies -- in a very poorly constructed \makefile.
+bad dependencies.
 
 \apiref{api:component-attribute-no-parallel-build}
 
@@ -430,12 +430,12 @@ Reason can be one of two values:
   \end{enumerate}
 
   \lmsbw maintains separate install and build directories for
-  components of each type.  The impetus for this separation is cross
-  compilation: \texttt{build} components are built with the native
-  toolchain installed on the host computer, and the file format may be
-  different than those of type \texttt{image}.  This separation also
-  reduces the risk of accidentally installing build-only components
-  into a deliverable product.
+  components of each \texttt{reason}.  The impetus for this separation
+  is cross compilation: \texttt{build} components are built with the
+  native toolchain installed on the host computer, and the file format
+  may be different than those of type \texttt{image}.  This separation
+  also reduces the risk of accidentally installing build-only
+  components into a deliverable product.
 
   See \xref{wrap:using-build-components} for information on using
   \texttt{build}-reasoned components.
@@ -447,7 +447,7 @@ Reason can be one of two values:
 This key contains the absolute pathname of the source directory for
 the component.
 
-This key must not be used by a client of \lmsbw.
+This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
 
