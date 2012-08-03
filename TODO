@@ -45,3 +45,4 @@
  o Disallow declaring toolchain attribute on 'build'-reasoned components?
  o Need a system to check that prerequisites on a component are correct.
  o Applying patches should be part of lmsbw
+ o Is source-mtree-manifest a necessary component key?  What about other manifests?
