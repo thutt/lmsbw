@@ -19,9 +19,9 @@ Occasionally there will be a component \makefile that cannot be edited
 for various reasons that does not conform to the \lmsbw requirements.
 
 When \lmsbw's default for producing a component is insufficient or
-when you cannot modify the component's build process, it is possible
-to override the built-in method for building \& installing by
-providing particularly named targets to the component's configuration
+when it's not feasible to modify the component's build process, it is
+possible to override the built-in method for building \& installing by
+providing particularly named targets in the component's configuration
 file.
 
 This chapter describes the process to override these aspects of
@@ -32,12 +32,12 @@ producing a component.
 In normal practice, it should be exceedingly rare for a component
 build process to be overridden; even though it should be rare, \lmsbw
 still provides a method of doing just that.  Here are a few of the
-reasons why you might want to override the build phase of a component:
+reasons to override the build phase of a component:
 
 \begin{itemize}
 \item Test \bni Infrastructure by not building a component
 
-  How does your \bni system function if a required component is not
+  How does the \bni system function if a required component is not
   actually built?
 
   Will it fail during \emph{install}, or while integrating into a
@@ -49,54 +49,64 @@ reasons why you might want to override the build phase of a component:
 
 \item Test \bni Infrastructure by corrupting build
 
-  Will your \bni system recognize if a build has been corrupted?
-  Perhaps only some files are built, or maybe the executables are
+  Will the \bni system recognize if a build has been corrupted?
+  Perhaps only some files are install, or maybe the executables are
   corrupt, or the executables are for a different architecture?
 
-  You could override the build target, build the component (using the
-  \lmsbw infrastructure) and then corrupt the build output in-situ.
+  To test this, override the build target, build the component (using
+  the \lmsbw infrastructure) and then corrupt the build output
+  in-situ.
 
 \item Apply a patch in-situ
 
   The component's source tree cannot be changed in the source tree,
-  but you can apply a patch to the sources after they have been copied
-  to the build directory.
+  but it is possible to apply a patch to the sources after they have
+  been copied to the build directory.
 
-  To do this, you'd override the build rule to apply the patches, then
-  use the \lmsbw infrastructure to invoke the component's build
-  process.
+  To do this, override the build rule to first apply the
+  patches\footnote{When the overriden build rule is dependent upon
+    \texttt{sync}, the source files will have been copied to the build
+    directory before the rule is invoked.}, then use the \lmsbw
+  infrastructure to invoke the component's build process.
 
 \item Component may not need a build; only installs static files
 
   Perhaps the component doesn't have a build; maybe only static files
-  are installed.  In this case, you could override the build to do
-  nothing, and save a minute amount of time.
+  are installed.  In this case, override the build to do nothing, and
+  save a minute amount of time.
 
 \item Other unknown reasons
 \end{itemize}
 
-Once you have determined that you need to override the automatic rules
-to perform a component build, the actual work is quite trivial; all
-you need to do is add a specially named \makefile target to your
-component configuration file, and supply the new commands to
-associated with the target.  The name of the target is based on the
-component name; if the name is \texttt{alpha}, you would provide the
-following rule:
+Once it has been determined that overriding the automatic rules to
+perform a component build is necessary, the actual work is quite
+trivial; add a specially named \makefile target to the component
+configuration file, and supply the new commands associated with the
+target.  The name of the special target is based on the component
+name; figure~\tabref{overriding:override-build-alpha} shows how this
+is done for a component named \texttt{alpha}.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 component.build.alpha:
         echo "Overriding trampoline; not building alpha";
 \end{verbatim}
+  \caption{Overriding Build for Component \texttt{alpha}}\label{overriding:override-build-alpha}
+  \hrulefill
+\end{figure}
 
-If your component configuration file does \emph{not} have this
-specific target, then the default build rules of \lmsbw will take
-effect, and your component's \makefile will be invoked to build the
-component.
 
-If you ultimately want to execute the component's actual build
-process, you can use the same code of \lmsbw proper to initiate this
-by executing:
+If the component configuration file does \emph{not} have this specific
+target, then the default build rules of \lmsbw will take effect, and
+tbe component's \makefile will be invoked to build the component.
 
+To ultimately execute the component's actual build process, use the
+same code of \lmsbw proper to initiate this, as shown in
+figure~\tabref{overriding:invoke-build-like-lmsbw}.
+
+\begin{figure}[h]
+  \hrulefill
 \begin{footnotesize}
 \begin{verbatim}
 $(MAKE)                                                          \
@@ -104,19 +114,25 @@ $(MAKE)                                                          \
     $(LMSBW_C_BUILD_TARGET)
 \end{verbatim}
 \end{footnotesize}
+  \caption{Invoking Build Like \lmsbw}\label{overriding:invoke-build-like-lmsbw}
+  \hrulefill
+\end{figure}
 
-You must be aware when overriding default targets that the override
-does not provide any prerequisites.  If you override the build target,
-for example, without the proper prerequisites, you will not be able to
-use the function shown above to build the component.  See the
-\texttt{override} sample for details, and look at
-\texttt{component.makefile} to determine the necessary prerequisites.
+
+Be aware when overriding default targets that the override does not
+provide any prerequisites.  When overriding the build target, for
+example, without the proper prerequisites, it will not be possible to
+use the code shown in
+figure~\tabref{overriding:invoke-build-like-lmsbw} to build the
+component.  See the \texttt{override} sample (\xref{samples:override})
+for details, and look at \texttt{component.makefile} to determine the
+necessary prerequisites.
 
 \section{Overriding Install}\label{overriding:overriding-install}
 
 Overriding the default install rules is a task that will happen more
 frequently than overriding the build rules.  Here are some reaons why
-you might need to override the default install rules:
+overriding the default install rules might be necessary:
 
 \begin{itemize}
 \item Test \bni Infrastructure by not installing component
@@ -126,14 +142,17 @@ you might need to override the default install rules:
 \item Other unknown reasons
 \end{itemize}
 
-Once you have determined the need to override the automatic rules to
-perform a component install, the actual work is quite trivial; all you
-need to do is add a \makefile target to your component configuration
-file, and supply the new commands to associated with the target.  The
-name of the target is based on the component name; if the component
-name is \texttt{alpha}, you would do the following:
+Once it has been determined that overriding the automatic rules to
+perform a component install is necessary, the actual work is quite
+trivial; add a specially named \makefile target to the component
+configuration file, and supply the new commands to associated with the
+target.  The name of the special target is based on the component
+name; figure~\tabref{overriding:override-install-alpha} shows how this
+is done for a component named \texttt{alpha}.
 
 
+\begin{figure}[h]
+  \hrulefill
 \begin{small}
 \begin{verbatim}
 component.install.alpha:
@@ -143,16 +162,20 @@ component.install.alpha:
              $(DESTDIR)/usr/include/alpha
 \end{verbatim}
 \end{small}
+  \caption{Overrding \texttt{install} For Component \texttt{alpha}}\label{overriding:override-install-alpha}
+  \hrulefill
+\end{figure}
 
-If your component configuration file does \emph{not} have this
-specific target, then the default install rules of \lmsbw will take
-effect, and your component's \makefile will be invoked to install the
-component.
+If the component configuration file does \emph{not} have this specific
+target, then the default install rules of \lmsbw will take effect, and
+the component's \makefile will be invoked to install the component.
 
-If you ultimately want to execute the component's actual build
-process, you can use the same code of \lmsbw proper to initiate this
-by executing:
+To ultimately execute the component's actual build process, use the
+same code of \lmsbw proper to initiate this, as shown in
+figure~\tabref{overriding:invoke-install-like-lmsbw}.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{footnotesize}
 \begin{verbatim}
 $(MAKE)                                                          \
@@ -160,13 +183,17 @@ $(MAKE)                                                          \
     $(LMSBW_C_INSTALL_TARGET)
 \end{verbatim}
 \end{footnotesize}
+  \caption{Invoking Component Install Like \lmsbw}\label{overriding:invoke-install-like-lmsbw}
+  \hrulefill
+\end{figure}
 
 
-You must be aware when overriding default targets that the override
-does not provide any prerequisites.  If you override the build target,
-for example, without the proper prerequisites, you will not be able to
-use the function shown above to build the component.  See the
-\texttt{override} sample for details, and look at
-\texttt{component.makefile} to see the determine the necessary
-prerequisites.
+Be aware when overriding default targets that the override does not
+provide any prerequisites.  When overriding the install target, for
+example, without the proper prerequisites, it will not be possible to
+use the code shown in
+figure~\tabref{overriding:invoke-install-like-lmsbw} to install the
+component.  See the \texttt{override} sample (\xref{samples:override})
+for details, and look at \texttt{component.makefile} to determine the
+necessary prerequisites.
 
