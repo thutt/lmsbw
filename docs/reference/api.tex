@@ -57,22 +57,21 @@ globally unique within the project.
 \section{\texttt{component\_attribute\_no\_parallel\_build}}\label{api:component-attribute-no-parallel-build}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:no-parallel} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
   1 & component-name & Name of a declared component.
 \end{tabularx}
 
 This function forces the component to not recursively build in
 parallel by passing ``\texttt{-j~1}'' to its build system.
 
-This attribute is normally not necessary, but can be handy for
-components which have a \makefile with incorrect dependencies; bad
-dependencies will manifest itself as intermittent failure when being
-built with parallelism.
+This attribute only necessary when a \makefile contains incorrect
+dependencies.  Bad dependencies will manifest as intermittent failures
+when build with parallelism.
 
 \section{\texttt{component\_attribute\_build\_target}}\label{api:component-attribute-build-target}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+\textbf{Variable:} \xref{variables:build-target} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
   1 & component-name & Name of a declared component. \\
 
   2 & list-of-targets & Space-separated list of targets.
@@ -85,7 +84,7 @@ list of targets provided.
 \section{\texttt{component\_attribute\_install\_target}}\label{api:component-attribute-install-target}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:install-target} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component name & Name of a declared component. \\
   2 & list-of-targets & Space-separated list of targets.
@@ -98,14 +97,15 @@ the list of targets provided.
 \section{\texttt{component\_attribute\_api}}\label{api:component-attribute-api}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:api} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & list-of-directories &  Space-separated list of directories.
 \end{tabularx}
 
 This allows the specification of \emph{install} directories that
-contain an exported \emph{API}.
+contain an exported \emph{API} that can be used by other dependent
+components.
 
 All components that list this component as a prerequisite will
 automatically become dependent upon changes to the directories named.
@@ -121,15 +121,20 @@ The following rules are recommended when creating API directories:
 \item Use root-based pathnames
 
   Because you are going to install everything into \destdir, and
-  \lmsbw proper will copy those files into the install directory,
-  you should use root-based API directory names.
+  \lmsbw proper will copy those files into the install directory, you
+  should use root-based API directory names for the second parameter.
 
   For example, \texttt{/usr/include/project}.
 
 \item Use the name of the component in the directory name.
 
-  Use the \emph{report} verb (\xref{usinglmsbw:report}) to find out
-  the location of API directories.
+  Because component names must be globally unique in a project,
+  Keeping the exported API in a component-named directory ensures that
+  there will be no file collisions in the build process.
+
+  When writing a dependent component, Use the \emph{report} verb
+  (\xref{usinglmsbw:report}) to find out the location of the
+  prerequisite's API directories.
 
 \item Standardize on install locations
 
@@ -142,11 +147,6 @@ The following rules are recommended when creating API directories:
 
   If you have some other type of files, be sure to reach consensus
   on standardized locations; it will make maintenance much easier.
-
-  Since component names must be unique, the directory names will
-  also be unique.  And, this rule allows dependent components to
-  easily include your header files, and link with your libraries
-  -- because their location will be known.
 
   See \xref{wrap:using-prerequisite-api} for details on using an API
   exported by a prerequisite component.
@@ -163,26 +163,30 @@ The following rules are recommended when creating API directories:
 \section{\texttt{component\_attribute\_cflags}}\label{api:cflags}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:cflags} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & cflags-value & \texttt{CFLAGS} value.
 \end{tabularx}
 
-This allows the specification of \texttt{CFLAGS} values which are
+This allows the specification of a \texttt{CFLAGS} value that is
 passed to the component build process.  It is incumbent upon the
 component's \makefile to never directly assign to \texttt{CFLAGS};
-rather it should append values to the \lmsbw-provided value.
+rather it should append values to the \lmsbw-provided value to ensure
+that the global settings are not overwritten.
 
-\lmsbw uses the declared value of \texttt{CFLAGS} in the determination
-of the build directory; changing \texttt{CFLAGS} will result in a
-different build directory, and this results in the correct amount of
-rebuilding when the flags are changed.
+\lmsbw uses the declared value of \texttt{CFLAGS} when creating a hash
+to use in the build directory name; changing \texttt{CFLAGS} will
+result in a different build directory; this is effectively the same
+thing as performing a \texttt{clean} build when changing compiler
+options, except that changing the options back will result in the
+previous build directory\footnote{In other words, incremental builds
+  across compiler option changes}.
 
 \section{\texttt{declare\_component\_kind}}\label{api:kind}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:kind} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & kind & A component \emph{kind}.
@@ -201,7 +205,7 @@ second argument.
 \section{\texttt{declare\_component\_description}}\label{api:description}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:description} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & description & Brief component description.
@@ -212,7 +216,7 @@ This function allows the specification of a component's description.
 \section{\texttt{declare\_component\_reason}}\label{api:reason}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:reason} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & reason & Component reason.
@@ -227,7 +231,7 @@ the second argument.
 \section{\texttt{declare\_component\_component}}\label{api:component}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:component} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & name & Component name.
@@ -238,7 +242,7 @@ This function allows the specification of the name of the component.
 \section{\texttt{declare\_component\_prerequisite}}\label{api:prerequisite}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:prerequisite} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & prerequisites & Space-separated list of components.
@@ -253,16 +257,16 @@ built and installed prior to building this component.
 The prerequisite components need not have been declared before they
 are referenced with this function.
 
-If any prerequisite component's API has changed files, then this
-component will be built.
+If any prerequisite component's API has changed files, then the
+associated component's build process will be invoked.
 
 See \xref{intro:build-component-criteria} for details on what triggers
-a component to be built.
+a component's build process to be invoked.
 
 \section{\texttt{declare\_component\_source\_directory}}\label{api:source-directory}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:source-directory} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & absolute-directory & Absolute pathname of source directory.
@@ -280,7 +284,7 @@ component.
 \section{\texttt{declare\_component\_configuration\_file}}\label{api:configuration-file}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:configuration-file} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & configuration-file & Absolute pathname of component configuration
@@ -297,7 +301,7 @@ automatically force the component's build process to be invoked.
 \section{\texttt{component\_attribute\_toolchain}}\label{api:toolchain}
 
 \begin{tabularx}{\linewidth}{ll|X}
-  \multicolumn{3}{c}{\textbf{Arguments}} \\ \hline
+  \textbf{Variable:} \xref{variables:toolchain} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
 
   1 & component-name & Name of a declared component. \\
   2 & toolchain & Directory of existing toolchain.
