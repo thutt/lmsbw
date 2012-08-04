@@ -32,9 +32,9 @@ Extending boils down to performing these steps:
 
   The report generation (\texttt{generate-report.mk}) system generates
   reports for each component based on its \texttt{kind} by calling a
-  function named using the component's \texttt{kind} field.  Thus, if
-  you have add a new component \texttt{kind} of \emph{download},
-  you'll have to create a function called:
+  function named using the component's \texttt{kind} field.  Thus, to
+  add a new component \texttt{kind} of \emph{download}, create a
+  function called:
 
 \begin{verbatim}
 generate_component_report_download
@@ -49,8 +49,8 @@ generate_component_report_download
 \item Create a rule generator function
 
   Dependency rule generation in \lmsbw is handled by calling a
-  function based on the \texttt{kind} of each component.  If you add a
-  new component \texttt{kind} of \emph{download}, a function must be
+  function based on the \texttt{kind} of each component.  To add a new
+  component \texttt{kind} of \emph{download}, a function must be
   created with the following name:
 
 \begin{verbatim}
@@ -64,26 +64,26 @@ generate_component_rules_download
 
 \item Update \texttt{component.makefile}
 
-  If your new component \texttt{kind} requires the component's build
+  If the new component \texttt{kind} requires the component's build
   process to be invoked for other reasons -- for example, maybe to run
-  \texttt{./configure} -- you will have to update
-  \texttt{component.makefile} to support this new trampoline mode.
+  \texttt{./configure} -- tnen update \texttt{component.makefile} to
+  support this new trampoline mode.
 
 \item Update \lmsbwconfiguration
 
-  If your new component \texttt{kind} requires global configuration
+  If the new component \texttt{kind} requires global configuration
   changes, make them using the \lmsbwconfiguration
   (\xref{variables:lmsbw-configuration}) variable.
 
 \item Update documentation
 
-  At the very least, you'll need to update \xref{chap:variables} and
-  \xref{chap:api} to reflect your additions.
+  At the very least, update \xref{chap:variables} and \xref{chap:api}
+  to reflect the new additions.
 
 \item Write new tests
 
-  You should write new tests to ensure that your changes are correct.
-  Update \texttt{lmsbw-run-tests} to incorporate them.
+  Write new tests to ensure that the changes are correct.  Update
+  \texttt{lmsbw-run-tests} to incorporate them.
 
 \item Run tests
 
@@ -91,19 +91,19 @@ generate_component_rules_download
 
 \item Update \texttt{generate} sample.
 
-  You must update the \texttt{generate} sample to incorporate your
-  new component \texttt{kind}.
+  Update the \texttt{generate} sample to incorporate the new component
+  \texttt{kind}.
 
-  Your new component \texttt{kind} should not be significantly
+  The new component \texttt{kind} should not be significantly
   different in original build time than the \makefile version.
 
-  Your new component \texttt{kind} must not alter the incremental
+  The new component \texttt{kind} must not alter the incremental
   characteristics of \lmsbw.
 
 \item Add new samples
 
-  You must add new samples that show how to declare and use the new
-  component \texttt{kind}.
+  Add new samples that show how to declare and use the new component
+  \texttt{kind}.
 
 \end{itemize}
 
