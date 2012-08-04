@@ -22,11 +22,11 @@ situations, recursive \make is still dominant because \make provides
 little support towards actually creating a maintainable non-recursive
 build system.  The biggest stumbling block to implementing a
 non-recursive build system using \make is the complete lack of
-scoping; symbol scoping is accomplished by traditional recursive use
-of \make, and is all but non-existent in a non-recursive
-implementation.  The lack of scoping quickly becomes a maintenance
-issue because the \makefile developers must be careful to avoid macro,
-target and implicit rule collisions.
+scoping; in the traditional use of \make, symbol scoping is
+accomplished by recursive invocation, but is non-existent in a
+non-recursive implementation.  The lack of scoping quickly becomes a
+maintenance issue because the \makefile developers must be careful to
+avoid macro, target and implicit rule collisions.
 
 Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
@@ -104,9 +104,6 @@ The following tenets guided the implementation of \lmsbw:
   Similarly, many other \emph{verbs} (\xref{lmsbw:target:verbs}) which
   are exported by \lmsbw can be executed globally or on an individual
   component.
-
-  With the designed-in extensibility of \lmsbw, it's also quite simple
-  to add your own verbs to the build process.
 
 \item Extensible
 
