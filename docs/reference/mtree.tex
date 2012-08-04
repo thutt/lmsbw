@@ -24,13 +24,13 @@ it exits with a non-zero return code.
 
 \lmsbw uses \mtree to determine if a component is up-to-date with
 respect to its source directory, but there are many other ways that
-the tool can be used by satellite utilities in your own build system.
+the tool can be used by satellite utilities in any build system.
 
 \begin{itemize}
 \item Product Manifest
 
-  You can use \mtree to ensure that the final product image has the
-  proper set of files, file permissions, file owners and file groups.
+  Use \mtree to ensure that the final product image has the proper set
+  of files, file permissions, file owners and file groups.
 
 \item Component Manifest
 
@@ -38,18 +38,17 @@ the tool can be used by satellite utilities in your own build system.
   If the manifest of a component's \destdir changes, that means that
   its set of deliverables might have also changed.
 
-  By tracking component \destdir manifests, you can be sure that a
-  change to a \destdir will trigger action: if a new file is
-  suddenly present, or if an existing file is no long present.
+  By tracking component \destdir manifests, changes to a \destdir will
+  trigger action: if a new file is suddenly present, or if an existing
+  file is no longer present.
 
 \item Ownership \& Group
 
-  You can check that all files in your product have the proper
-  ownership and group.
+  Check that all files in the product have the proper ownership and
+  group.
 
 \item Permissions
 
-  You can check that all files in your product have the proper
-  permissions.
+  Check that all files in the product have the proper permissions.
 
 \end{itemize}
