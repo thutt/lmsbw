@@ -53,9 +53,8 @@ reasons to override the build phase of a component:
   Perhaps only some files are install, or maybe the executables are
   corrupt, or the executables are for a different architecture?
 
-  To test this, override the build target, build the component (using
-  the \lmsbw infrastructure) and then corrupt the build output
-  in-situ.
+  To test this, override the build target, build the component and
+  then corrupt the build output in-situ.
 
 \item Apply a patch in-situ
 
@@ -66,8 +65,8 @@ reasons to override the build phase of a component:
   To do this, override the build rule to first apply the
   patches\footnote{When the overriden build rule is dependent upon
     \texttt{sync}, the source files will have been copied to the build
-    directory before the rule is invoked.}, then use the \lmsbw
-  infrastructure to invoke the component's build process.
+    directory before the rule is invoked.}, then use the provided
+  \lmsbw infrastructure to invoke the component's build process.
 
 \item Component may not need a build; only installs static files
 
@@ -86,7 +85,7 @@ target.  The name of the special target is based on the component
 name; figure~\tabref{overriding:override-build-alpha} shows how this
 is done for a component named \texttt{alpha}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \hrulefill
 \begin{verbatim}
 component.build.alpha:
@@ -105,7 +104,7 @@ To ultimately execute the component's actual build process, use the
 same code of \lmsbw proper to initiate this, as shown in
 figure~\tabref{overriding:invoke-build-like-lmsbw}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \hrulefill
 \begin{footnotesize}
 \begin{verbatim}
@@ -151,7 +150,7 @@ name; figure~\tabref{overriding:override-install-alpha} shows how this
 is done for a component named \texttt{alpha}.
 
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \hrulefill
 \begin{small}
 \begin{verbatim}
@@ -174,7 +173,7 @@ To ultimately execute the component's actual build process, use the
 same code of \lmsbw proper to initiate this, as shown in
 figure~\tabref{overriding:invoke-install-like-lmsbw}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \hrulefill
 \begin{footnotesize}
 \begin{verbatim}
