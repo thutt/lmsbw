@@ -120,9 +120,9 @@ The following rules are recommended when creating API directories:
 \begin{itemize}
 \item Use root-based pathnames
 
-  Because you are going to install everything into \destdir, and
-  \lmsbw proper will copy those files into the install directory, you
-  should use root-based API directory names for the second parameter.
+  Because everything is installed into \destdir, and \lmsbw proper
+  will copy those files into the install directory, root-based API
+  directory names for the second parameter must be used.
 
   For example, \texttt{/usr/include/project}.
 
@@ -138,15 +138,15 @@ The following rules are recommended when creating API directories:
 
 \item Standardize on install locations
 
-  If you have header files, they should be placed in:
+  If there are header files, they should be placed in:
 
   \texttt{/usr/include/\emph{component-name}}.
 
-  If you have libraries, put them in
+  If there are libraries, put them in
   \texttt{/usr/lib/\emph{component-name}}.
 
-  If you have some other type of files, be sure to reach consensus
-  on standardized locations; it will make maintenance much easier.
+  If there are some other type of files, be sure to reach consensus on
+  standardized locations; it will make maintenance much easier.
 
   See \xref{wrap:using-prerequisite-api} for details on using an API
   exported by a prerequisite component.
@@ -155,8 +155,8 @@ The following rules are recommended when creating API directories:
 
   Install all files into the API directory prefixed with \destdir.
 
-  If you don't prefix with \destdir, your build process will
-  likely fail with permission errors on the root-based pathnames.
+  Not prefixing with \destdir, will likely cause the build process to
+  fail with permission errors on the root-based pathnames.
 
 \end{itemize}
 
