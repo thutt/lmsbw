@@ -27,7 +27,7 @@ default configuration as well as a \texttt{README} file.
 
 This sample creates an artificial source tree complete with a
 recursive \make build system \emph{and} \lmsbw configuration files
-that allow you to actually compare the speed difference between a
+that enables the comparison of the difference in speed between a
 recursive \make and the same build wrapped with \lmsbw.
 
 It's just a simple, dummied-up, source tree with no complex
@@ -55,8 +55,8 @@ figure~\tabref{samples:generate-results}.
 
 \section{hello-world}
 
-The \texttt{hello-world} sample is a very simple example showing how
-you can wrap a build process with very little work.
+The \texttt{hello-world} sample is a very simple example showing how a
+build process can be wrapped with very little work.
 
 Rather than having any component configuration files, this sample
 declares the components directly in the configuration loading
@@ -65,11 +65,9 @@ function.
 \section{Linux Kernel}\label{samples:linux-kernel}
 
 This is a prime example of what \lmsbw can do for an existing,
-complex, build system.
-
-Follow the instructions in the associated README file and measure for
-yourself how much time \lmsbw will save.  The results of running this
-sample on the test system can be seen in
+complex, build system: follow the instructions in the associated
+README file to measure how much time \lmsbw will save.  The results of
+running this sample on the test system can be seen in
 figure~\tabref{samples:linux-kernel-results}.
 
 \begin{figure}[tb]
@@ -87,15 +85,15 @@ figure~\tabref{samples:linux-kernel-results}.
 \hrulefill
 \end{figure}
 
-If you are working exclusively on the Linux kernel, \lmsbw won't
-really help your productivity, but if the Linux kernel is only one
-part of a larger project, you can very easily see how much time is
-saved by not recursing into the Linux build process when no work needs
-to be performed.
+Figure~\tabref{samples:linux-kernel-results} clearly shows that \lmsbw
+won't help productivity when working exclusively on the Linux kernel,
+but if the Linux kernel is only one component of a large project, it
+should be clear how much time is saved by not recursing into the Linux
+build process when no work needs to be performed.
 
 \section{lite-consumer-pro}\label{samples:lite-consumer-pro}
 
-This sample aims to show you how to configure a wrapped build that has
+This sample aims to show how to configure a wrapped build that has
 several different SKUs.  In this case, a \emph{lite}, \emph{consumer}
 and \emph{pro} SKU.  The component configuration files associated with
 the individual SKUs are configured using symlinks to the actual
@@ -103,25 +101,25 @@ configuration files.
 
 \section{override}\label{samples:override}
 
-This sample quickly shows how you can override both the \emph{build}
-and \emph{install} rules for a component that is being wrapped.
+This sample quickly shows how to override both the \emph{build} and
+\emph{install} rules for a component that is being wrapped.
 
-This is handy if your wrapped build process does not have a compliant
-(\xref{wrap:component-makefile}) build process.  For example, if the
-wrapped \makefile did not have an \emph{install} rule, you could
-override it and manually install the needed files into \destdir.
+This is handy if the wrapped build process does not have a compliant
+build process~(\xref{wrap:component-makefile}).  For example, if the
+wrapped \makefile did not have an \emph{install} rule, it could be
+overridden to manually install the needed files into \destdir.
 
 \section{source-api}
 
-This sample provides an excellent example of how you can declare a
-\destdir directory as containing an API; if any file in that directory is
+This sample provides an excellent example of how to declare a \destdir
+directory as containing an API; if any file in that directory is
 changed, then directly dependent components will be automatically
 rebuilt\footnote{\lmsbw will enter the component's build process.  It
   is, obviously, the responsibility of that build process to have the
   proper dependencies written so that API changes are detected and a
-  minimal incremental build is performed.}, even if otherwise unnecessary.
-\xref{intro:build-component-criteria} describes the criteria used to
-determine if a component needs to be rebuilt.
+  minimal incremental build is performed.}, even if otherwise
+unnecessary.  \xref{intro:build-component-criteria}~describes the
+criteria used to determine if a component needs to be rebuilt.
 
 \section{sports}\label{samples:sports}
 
@@ -134,17 +132,15 @@ symlinks.
 
 \section{startup-time}\label{samples:startup-time}
 
-This sample allows you to measure the time (and indirectly, \lmsbw \&
-\make memory consumption) to load any number of dummied-up component
-configuration files.
-
-It's purpose is to give you a rough estimate of the load-time overhead
-of using \lmsbw on your project.
+This sample allows the time to load any number of dummied-up component
+configuration files to be measured. It's purpose is to provide a rough
+estimate of the load-time overhead of using \lmsbw on a project.
 
 The time to load all configuration files also includes the time to
 generate all the build-time \make rules, and thus the time produced by
-this sample \emph{is} the startup overhead -- \make will immediately
-begin building your project after the configuration files are loaded.
+this sample \emph{is} the entire startup overhead -- \make will
+immediately begin building the project after the configuration files
+are loaded.
 
 The results of running this sample on the test system can be seen in
 figure~\tabref{samples:startup-time-results}.  The third and fourth
