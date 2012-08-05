@@ -23,8 +23,9 @@ E1000: Invalid configuration: 'load-configuration-function' not set
 \end{verbatim}
 \end{footnotesize}
 
-You have loaded \lmsbw with a configuration file, but you have not set
-the configuration value, \texttt{load-configuration-function}.
+\lmsbw has been loaded with a configuration file, but the
+configuration value \texttt{load-configuration-function} has not been
+set.
 
 See \xref{variables:load-configuration-function} for details on
 setting this value.
@@ -38,9 +39,10 @@ E1001: Invalid configuration: 'load-configuration-function' \
 \end{verbatim}
 \end{footnotesize}
 
-The function referenced by your \texttt{load-configuration-function}
-value does not exist.  See \xref{variables:load-configuration-function} for
-details on properly setting this value.
+The function referenced by the \texttt{load-configuration-function}
+value does not exist.  See
+\xref{variables:load-configuration-function} for details on properly
+setting this value.
 
 \section{E1002}
 
@@ -51,8 +53,8 @@ E1002: Configuration file '<pathname>' redefines component
 \end{verbatim}
 \end{footnotesize}
 
-Each component name must be globally unique to a project.  You have
-two configuration files declaring the same component name.
+Each component name must be globally unique to a project.  Two
+configuration files declare the same component name.
 
 \section{E1003}
 
@@ -62,7 +64,7 @@ E1003: Reason '<reason>' is not 'build' nor 'image'
 \end{verbatim}
 \end{footnotesize}
 
-You have attempted to use an invalid \texttt{reason}.  See
+An attempt has been made to use an invalid \texttt{reason}.  See
 \xref{variables:reason} for details on the allowed values for this
 variable.
 
@@ -99,11 +101,11 @@ E1005: Does this component exist?  Use 'lmsbw report'
 \end{verbatim}
 \end{footnotesize}
 
-You have attempted to use a valid \lmsbw verb on a component that does
-not exist.  You have probably misspelled the component name.
+An attempt has been made to use a valid \lmsbw verb on a component
+that does not exist.
 
-If you had used an invalid verb, \lmsbw will report that there is no
-rule to make the target.
+If an invalid verb was used, \lmsbw will report that there is no rule
+to make the target.
 
 \section{E1007}
 
@@ -118,7 +120,7 @@ The set of components and their prerequisites in \lmsbw must be a
 directed acyclic graph (DAG).  The set of components shown in the
 error message produce a graph with a cycle.
 
-You must restructure your components so that they form a DAG.
+Restructure the components so that they form a DAG.
 
 \section{E1008}
 
@@ -128,12 +130,12 @@ E1008: Unknown component '<component>'
 \end{verbatim}
 \end{footnotesize}
 
-You have attempted to use an unknown component.  This will typically
-occur if you try to set an attribute or call a component declaration
-function on a component which has not yet been declared.
+An attempt has been made to use an unknown component.  This will
+typically occur when trying to set an attribute or call a component
+declaration function on a component which has not yet been declared.
 
-To remedy this situation, make sure you always declare components
-before you try to change them.
+To remedy this situation, always declare components before trying to
+change them.
 
 \section{E1009}
 
@@ -146,8 +148,8 @@ E1009: Function '<function>' for component '<component>' not written
 This is an internal error which should only be seen when an extension
 to \lmsbw is incomplete.  Internally, \lmsbw will call functions which
 are written to specifically process a component of a certain
-\emph{kind} (\xref{variables:kind}).  If you have added a new
-component \emph{kind} to \lmsbw, you have missed the implementation of
-a necessary function.  You may use the \emph{source} version of the
-missing function as a reference on the function semantics.
+\emph{kind} (\xref{variables:kind}).  When adding a new component
+\emph{kind} to \lmsbw, always implement the necessary functions.  Use
+the \emph{source} version of the missing function as a reference on
+the function semantics.
 
