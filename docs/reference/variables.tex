@@ -35,7 +35,7 @@ declare and define components.
 \section{\lmsbwconfiguration}\label{variables:lmsbw-configuration}
 
 This variable is the nexus of all global configuration for a porject.
-It must be initialized by your master configuration file
+It must be initialized by the master configuration file
 (\xref{lmsbw:configuration}, \xref{wrap:master-configuration}), or
 \lmsbw will fail with an error message indicating that the
 configuration is bad.
@@ -55,12 +55,12 @@ their allowed values.
 
 To be more modular and easily extensible, \lmsbw dynamically loads
 support for the \texttt{kind} (\xref{variables:kind}) of components
-that you wish to build based on the value of this variable.
+that are required based on the value of this variable.
 
 By including a component \texttt{kind} in this variable, the ability
 declare and build such components will be enabled.  If a component
-\texttt{kind} is not enabled, you will not be able to build components
-of that type.
+\texttt{kind} is not enabled, it will not be possible to build
+components of that type.
 
 If no component kinds are specified in the configuration, \lmsbw will
 exit with an error.
@@ -119,8 +119,9 @@ After the \texttt{load-configuration-function} variable
 initializing the project configuration, this variable must contain list
 of configured components.
 
-The variable is internally managed when you use the official APIs for
-declaring components -- you should never have to change this variable.
+The variable is internally managed when using the official APIs for
+declaring components -- it should not be necessary to change this
+variable.
 
 The list must adhere to the following rules:
 
@@ -145,9 +146,7 @@ associative array which describes all the attributes needed to
 correctly build it.  Be aware that the allowed attributes will vary
 based on the \texttt{kind} (\xref{variables:kind}) of the component.
 
-These variables are internally managed when using \lmsbw: if you are
-not extending \lmsbw, you will not have to worry about the creation of
-these variables.
+These variables are internally managed when using \lmsbw.
 
 Once key:value pairs are set they should not be changed.
 
@@ -199,8 +198,7 @@ This key must not be used by clients of \lmsbw.
 This key is used internally; it contains the absolute pathname of the
 file containing the console output of the component's build process.
 
-If you want to view the log for a component, use the \texttt{log}
-verb, like so:
+To view the log for a component, use the \texttt{log} verb, like so:
 
 \begin{verbatim}
 lmbw log.hello-world
@@ -306,7 +304,7 @@ component's \makefile is invoked.
 \lmsbw will copy the files from \destdir to the shared install directory.
 
 To install files, append the actual install pathname to \destdir.  For
-example, if your file should end up in \texttt{/usr/include}, one way
+example, if the file should end up in \texttt{/usr/include}, one way
 to install it would be:
 
 \begin{verbatim}
@@ -352,8 +350,8 @@ The supported values are as follows:
 \item source
 \end{itemize}
 
-If adding a new type of component to \lmsbw, you will need to add
-support for new values of this key.
+If adding a new type of component to \lmsbw, add support for new
+values of this key.
 
 This value is used in the creation of function names, and these
 \texttt{kind}-based function names are used to process -- generate
@@ -365,12 +363,12 @@ attempting to invoke them\footnote{Invoking a function name which does
   not exist in \gnumake produces no error, and does nothing.  That's
   ok; \lmsbw takes advantage of that with component declaration
   functions which are processed in the main \makefile and ignored in
-  \texttt{component.makefile}.}.  If you implement a new \emph{kind}
-of component, and fail to create all the necessary functions, \lmsbw
-will produce an appropriate error and stop.
+  \texttt{component.makefile}.}.  When implementing a new \emph{kind}
+of component, failure to create all the necessary functions will cause
+\lmsbw will produce an error and stop.
 
 See \xref{variables:component-build-support} for information on
-loading support for a particular \emph{kind} of component in your
+loading support for a particular \emph{kind} of component in a
 project.
 
 \apiref{api:declare-source-component}
