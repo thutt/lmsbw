@@ -116,14 +116,10 @@ instructions:
 \begin{itemize}
 \item Download \& extract \lmsbw sources
 
-  Download and extract the sources.
-
 \item Set environment variable
 
-\begin{verbatim}
-cd <lmsbw extraction directory>
-ld=$(pwd);
-\end{verbatim}
+  Set \texttt{ld} to the full pathname of the directory to which
+  \lmsbw was extracted.
 
 \item Test Speed
 
@@ -148,7 +144,7 @@ This test will create \texttt{/tmp/lmsbw-test} to hold the
 
 
 The output of this test is a rough estimate of what your \nullbuild
-time should be.  To get a representative rough idea of how long a
+time should be.  To get a roughly representative idea of how long a
 normal \nullbuild will take for your project, you should run this
 command multiple times to ensure that the in-RAM disk caches are
 filled.
