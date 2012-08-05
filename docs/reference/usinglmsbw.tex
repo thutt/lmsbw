@@ -16,19 +16,24 @@
 \chapter{Using \lmsbw}
 
 Ease-of-use and flexibility were two important design decisions taken
-when building \lmsbw.  Besides creating the configuration files to
-wrap your project's build process, you also must be able to execute
-the main tool: \lmsbwcmd.  This chapter only describes how to execute
-\lmsbwcmd; \xref{chap:wrapping} describes how to produce the
-configuration for wrapping your build.
+when creating \lmsbw.  After creating the configuration files to wrap
+the project's build process, \lmsbwcmd is used to build it.
+
+This chapter only describes how to execute \lmsbwcmd;
+\xref{chap:wrapping} describes how to produce the configuration for
+wrapping the build.
 
 \section{Accessing \lmsbwcmd}
 
 The \lmsbwcmd script resides in the \texttt{scripts} directory of the
 \lmsbw source tree.
 
-Although it is not required, the most convenient way to use \lmsbwcmd is
-to add the \texttt{scripts} directory to your \texttt{PATH}.
+Although it is not required, the most convenient way to use \lmsbwcmd
+is to add the \texttt{scripts} directory to the \texttt{PATH}
+environment variable.
+
+If modifying \texttt{PATH} is undesirable, just use the full pathname
+of \lmsbwcmd when executing.
 
 \section{\lmsbwcmd script}
 
@@ -59,9 +64,9 @@ This directory must not be shared with other projects wrapped by
 
 \subsection{\texttt{--configuration}}\label{lmsbw:configuration}
 
-This option, which is required, allows you to specify the master
-configuration file that is used to configure \lmsbw to wrap your build
-process.
+This required option allows the specification of the master
+configuration file that is used to configure \lmsbw for the wrapped
+build process.
 
 \begin{verbatim}
 --configuration ~/src/project/project.cfg
@@ -71,8 +76,8 @@ process.
 \subsection{\texttt{--progress}}\label{usinglmsbw:progress}
 
 In normal operation, \lmsbw is very silent about the activities it is
-undertaking.  If you want to be presented with more information about
-the progress of the build, add this to the command line.
+undertaking.  To be presented with more information about the progress
+of the build, add this to the command line.
 
 \begin{verbatim}
 --progress
@@ -82,9 +87,9 @@ Compare \xref{usinglmsbw:verbose}.
 
 \subsection{\texttt{--parallel}}
 
-This option allows you to directly control the number of parallel
-builds that \make is allowed to invoke.  When not specified on the
-command line, the default is one (1).
+This option allows the direct control the number of parallel builds
+that \make is allowed to invoke.  When not specified on the command
+line, the default is one (1).
 
 This value for this argument is directly used with the \gnumake
 \texttt{-j} option.
@@ -118,16 +123,15 @@ the elapsed time to build each component as each is completed.
 \subsection{\texttt{--toolchain}}\label{usinglmsbw:toolchain}
 
 This option globally specifies the toolchain that is to be used to
-compile your project.  All components will be compiled using this
+compile the project.  All components will be compiled using this
 toolchain, unless they specify a toolchain in their configuration
 file.
 
-If you specify a toolchain with this argument, you must specify the
-toolchain root directory with \texttt{--toolchain-root}.
+If a toolchain is specified with this argument, then the toolchain
+root directory with \texttt{--toolchain-root} must also be specified.
 
-The value you provide as an argument to this option must be the name
-of a subdirectory of the directory named with
-\texttt{--toolchain-root}.
+The value provided as an argument to this option must be the name of a
+subdirectory of the directory named with \texttt{--toolchain-root}.
 
 See \xref{chap:toolchain-usage} for details on using different
 toolchains and \xref{chap:toolchain-configuration} for information
@@ -136,7 +140,7 @@ about creating toolchains.
 \subsection{\texttt{--toolchain-root}}\label{usinglmsbw:toolchain-root}
 
 This option sets the root directory that contains the toolchains which
-can be used to build your project.
+can be used to build the project.
 
 See \xref{chap:toolchain-usage} for details on using different
 toolchains and \xref{chap:toolchain-configuration} for information
@@ -151,7 +155,7 @@ interacting with a wrapped build using \lmsbw.
 
 \subsection{\texttt{all}}\label{lmsbw:target:all}
 
-This is the default target, and it will cause your wrapped build to be
+This is the default target, and it will cause the wrapped build to be
 executed in its entirety.
 
 \subsection{\texttt{mtree}}
@@ -206,7 +210,7 @@ determine which components exist in the build, see
 \subsection{\texttt{components}}\label{lmsbw:target:components}
 
 The \texttt{components} target causes \lmsbw to produce a report of all
-the components present in your project build.  The report format is
+the components present in the project build.  The report format is
 shown in figure \tabref{usinglmsbw:components-verb}.
 
 \begin{figure}[tbh]
@@ -263,23 +267,21 @@ hello-world: goodbye-world
 
 \subsection{\texttt{measure-startup-time}}\label{usinglmsbw:measure-startup-time}
 
-This target is used when you want to measure the startup overhead of
-\lmsbw.
+This target is used to measure the startup overhead of \lmsbw.
 
-This target will load all your configuration files, generate all the
-rules for building your project, and then immediately exit.
+This target will load all the configuration files, generate all the
+rules for building the project, and then immediately exit.
 
 \subsection{\texttt{measure-memory-footprint}}
 
-This target is used when you want to measure the memory overhead of
-\lmsbw.
+This target is used to measure the memory overhead of \lmsbw.
 
 This target is the same as \xref{usinglmsbw:measure-startup-time}, but
 instead of exiting, it will wait until the program is killed with
 \texttt{ctrl-c}.
 
-It is expected that while the program is waiting, you will measure the
-memory consumption of the \make process started by \lmsbw.
+It is expected that while the program is waiting, memory consumption
+of the \make process started by \lmsbw will be measured.
 
 \subsection{\texttt{report}}\label{usinglmsbw:report}
 
@@ -336,8 +338,8 @@ The build log for each component contains all the output produced when
 recursively invoking the build process of that component.
 
 If the build fails, the component that failed to build will be shown
-on the console, and then you can use the \texttt{log} target to view
-the actual output of building that component.
+on the console; use the \texttt{log} verb to view the actual output of
+building that component.
 
 \subsection{\texttt{destdir}}
 
@@ -346,9 +348,9 @@ configuration options, this target will print out the \destdir for the
 current configuration.
 
 Since \destdir contains the install image of the component, knowing
-the \destdir location is useful if you want to perform any post-build
-processing on the component -- for example, running a debugger on the
-program or making sure that all deliverables are installed correctly.
+the \destdir location is useful to perform any post-build processing
+on the component -- for example, running a debugger on the program or
+making sure that all deliverables are installed correctly.
 
 The easily parsed output format is shown in
 \tabref{usinglmsbw:destdir-verb}.
@@ -371,8 +373,8 @@ Because \lmsbw determines the location of the build directory based on
 global configuration options, this target will print out the build
 directory name for the current configuration.
 
-You may want to know the build directory name to post process portions
-of the build -- for example, disassembling an object file.
+Knowing the build directory name to post process portions of the build
+-- for example, disassembling an object file -- can be helpful.
 
 The easily parsed output format is shown in
 \tabref{usinglmsbw:builddir-verb}.
@@ -395,9 +397,9 @@ Because \lmsbw determines the location of the install directory based
 on global configuration options, this target will print out the
 install directory name for the current configuration.
 
-You may want to know the install directory name to post process
-portions of the build -- for example, creating \& checking a manifest
-of files that are installed; if the manifest does not have the same
+Knowing the install directory name to post process portions of the
+build -- for example, creating \& checking a manifest of files that
+are installed can be helpful; if the manifest does not have the same
 set of files for each official build, then the \bni team needs to
 investigate why the product has changed.
 
