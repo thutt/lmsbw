@@ -19,14 +19,7 @@ Recursive use of \make has fallen out of favor since the publication
 of \emph{Recursive Make Considered Harmful}
 (\texttt{http://aegis.sourceforge.net/auug97.pdf}), but in real-world
 situations, recursive \make is still dominant because \make provides
-little support towards actually creating a maintainable non-recursive
-build system.  The biggest stumbling block to implementing a
-non-recursive build system using \make is the complete lack of
-scoping; in the traditional use of \make, symbol scoping is
-accomplished by recursive invocation, but is non-existent in a
-non-recursive implementation.  The lack of scoping quickly becomes a
-maintenance issue because the \makefile developers must be careful to
-avoid macro, target and implicit rule collisions.
+no support for creating a maintainable non-recursive build system.
 
 Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
@@ -56,10 +49,10 @@ The following tenets guided the implementation of \lmsbw:
 
   Disk space is free relative to the cost of a developer: the amount
   of time wasted by developers performing administrative tasks around
-  their build and build output can be a gigantic productivity sink.
+  their build \& build output is a giant productivity drain.
 
   \lmsbw saves time by compromising on space.  Trading off increased
-  disk space for improved developer productivity makes perfect sense
+  disk space for improved developer productivity is the right choice
   to reduce product development cost.
 
 \item Source Is Immutable
@@ -95,11 +88,11 @@ The following tenets guided the implementation of \lmsbw:
   \make rules and targets which allow your wrapped build process to be
   executed.
 
-  Included in this is a uniform interface: if you want to produce a
-  build report for all components, you simply execute \texttt{lmsbw
-    report}, but if you want to specifically get a report on the
-  \emph{dailyprocessing} component, you would execute \texttt{lmsbw
-    report.dailyprocessing}.
+  Included in the generation of rules and targets is a uniform
+  interface: if you want to produce a build report for all components,
+  you simply execute \texttt{lmsbw report}, but if you want to
+  specifically get a report on the \emph{dailyprocessing} component,
+  you would execute \texttt{lmsbw report.dailyprocessing}.
 
   Similarly, many other \emph{verbs} (\xref{lmsbw:target:verbs}) which
   are exported by \lmsbw can be executed globally or on an individual
@@ -107,10 +100,8 @@ The following tenets guided the implementation of \lmsbw:
 
 \item Extensible
 
-  \lmsbw may not have all the features you need, but it uses the
-  \emph{Gnu Make Standard Library} (gmsl), it's fully documented and
-  it's easy to add new features.  See \xref{chap:extending}.
-
+  \lmsbw has been designed to be easily extended with new types of
+  components.  See \xref{chap:extending}.
 \end{itemize}
 
 \section{Will \lmsbw Benefit You?}
@@ -122,56 +113,52 @@ provide a benefit, because this source package has a handy script
 which will provide you with benchmark numbers.  Just follow these
 instructions:
 
-\begin{enumerate}
+\begin{itemize}
 \item Download \& extract \lmsbw sources
 
-  Download and extract the sources.  We'll use an environment variable
-  to note the location.
+  Download and extract the sources.
+
+\item Set environment variable
 
 \begin{verbatim}
-cd <directory where you extracted lmsbw>
+cd <lmsbw extraction directory>
 ld=$(pwd);
-cfg="samples/hello-world/hello-world.cfg";
 \end{verbatim}
-\item Build mtree utility
-\begin{verbatim}
-mtree=$(${ld}/scripts/lmsbw           \
-        --configuration ${ld}/${cfg}  \
-        --build-root /tmp/lmsbw-test  \
-        mtree|cut -d ':' -f 2);
-\end{verbatim}
-
-The command above, using \texttt{bash} syntax, will set the
-\texttt{mtree} variable to the full path of the \texttt{mtree}
-executable.  We will use this program to measure potential \nullbuild
-speed.
 
 \item Test Speed
 
-  The following command will execute the \mtree utility on each
-  directory named on the command line, and then output the elapsed
-  time for processing all the directories.
-
 \begin{verbatim}
   ${ld}/scripts/lmsbw-mtree-speed-test   \
-     --mtree "${mtree}"                  \
      <source directory>...
 \end{verbatim}
 
-The output of this command is a rough estimate of what your \nullbuild
+  The command will execute the \mtree utility on each directory named
+  on the command line, and then output the elapsed time for processing
+  all the directories.
+
+\end{itemize}
+
+\begin{center}\framebox{\begin{minipage}{.9\linewidth}\textbf{NOTE}
+
+This test will create \texttt{/tmp/lmsbw-test} to hold the
+\texttt{mtree} utility.  After testing is complete,
+\texttt{/tmp/lmsbw-test} can be deleted.
+
+\end{minipage}}\end{center}
+
+
+The output of this test is a rough estimate of what your \nullbuild
 time should be.  To get a representative rough idea of how long a
 normal \nullbuild will take for your project, you should run this
 command multiple times to ensure that the in-RAM disk caches are
 filled.
 
-\end{enumerate}
-
 In short, the \mtree utility performs a \texttt{stat} on every file in
 the named directories and produces output which can be used later to
-determine if any file in the directory tree has changed.  By knowing
-that no files have changed in a source directory, \lmsbw will never
-recurse into that directory to build -- modulo other dependency issues
-which can force a re-build.
+determine if any file in the directory tree has changed.  When no files
+have changed in a source directory, \lmsbw will not recurse into that
+directory to build -- modulo other dependency issues which can force
+the build to be re-invoked.
 
 What this means, for you, is that the elapsed time shown is a very
 good approximation for how long a full \nullbuild for your project
@@ -181,22 +168,20 @@ changed.
 
 You might also be interested in seeing how \lmsbw fares on a
 dummied-up build system with tens of thousands of source files by
-referring to \xref{samples:generate}.  If you are concerned that a
-large number of component configuration files might adversely impact
-startup time, you can allay these fears by checking
-\xref{samples:startup-time}.
+referring to \xref{samples:generate}.  To see the relationship between
+\emph{number of component configuration files} and \emph{\lmsbw
+  startup time}, please refer to \xref{samples:startup-time}.
 
 \section{How \lmsbw Works}
 
 \lmsbw is not a system that actually builds your software; rather, it
 is a wrapper for your own build system that, in most cases, will
-improve the prompt-to-prompt performance of the system you use now.
-You're probably wondering how adding a layer on top of an existing
-build system will improve the original -- the simple answer is that
+improve the prompt-to-prompt incremental build performance of the
+system you use now.  \lmsbw can improve an existing system because
 many build processes perform altogether too much work when no work
-needs to be performed, and \lmsbw cuts out this unnecessary work by
-never invoking the build process when nothing has changed since the
-last build.
+needs to be performed; \lmsbw cuts out this unnecessary work by never
+invoking the wrapped build when nothing has changed since the last
+build.
 
 Let's examine the what makes \lmsbw different:
 
@@ -250,10 +235,6 @@ Let's examine the what makes \lmsbw different:
   already built saves an amount of time that is proportional to the
   number and complexity of \make rules present in that directory.
 
-  A good example of improving an existing build system is the Linux
-  Kernel.  See~\xref{samples:linux-kernel} for benchmark numbers on
-  wrapping the Linux Kernel build process with \lmsbw.
-
 \item \makefile Simplicity
 
   During the execution of the build process, \lmsbw executes, at most,
@@ -268,9 +249,8 @@ Let's examine the what makes \lmsbw different:
   \item Component Trampoline \makefile
 
     The second \makefile performs configuration such as standard
-    \makefile macros (\texttt{CC}, \texttt{LD}, etc.) for the
-    toolchain (\xref{chap:toolchain-usage}) selected to build the
-    component.
+    \makefile macros for the toolchain (\xref{chap:toolchain-usage})
+    selected to build the component.
 
     It also ensures that each component's build process is completely
     disjoint from other components; the settings for \emph{component
@@ -305,12 +285,12 @@ Let's examine the what makes \lmsbw different:
 incremental builds.  It handily achieves that goal by performing as
 little work as possible from run-to-run.
 
-\section{Steps To Wrap Your Build}
+\section{Steps To Wrap A Build}
 
-The work needed to wrap your build with \lmsbw is directly
-proportional to the size of your build process; a small project will
-obviously take less time than a large project, but in both cases the
-steps are the same.
+The work needed to wrap a build with \lmsbw is directly proportional
+to the size of your build process; a small project will obviously take
+less time than a large project, but in both cases the steps are the
+same.
 
 \subsection{Configuration File}
 
@@ -332,12 +312,12 @@ See~\xref{variables:lmsbw-configuration}.
 
 After loading the command-line-specified master configuration file,
 \lmsbw will invoke the component configuration loading function
-(\xref{variables:load-configuration-function}).  This function is responsible
-for defining all the components that are to be included in your
-project.  Generally there is a one-to-one correspondence of components
-to component configuration files, that you provide.  The called
-function will load each of these files using the \gnumake
-\texttt{\$(include)} directive.
+(\xref{variables:load-configuration-function}).  This function is
+responsible for defining all the components that are to be included in
+your project.  Generally there is a one-to-one correspondence of
+components to component configuration files.  The called function will
+load each of these files using the \gnumake \texttt{\$(include)}
+directive.
 
 The component configuration files are, in fact, \makefile snippets
 which can actually have rules that will override the default behavior

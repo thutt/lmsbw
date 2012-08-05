@@ -25,7 +25,7 @@ source "${__include_file}";
 function display_help ()
 {
     cat <<EOF
-${program} [--help | --verbose]... --mtree <mtree> [directory name]...
+${program} [--help | --verbose]... [directory name]...
 
   This times the execution of 'mtree' on each directory named on the
   command line.
@@ -51,6 +51,15 @@ ${program} [--help | --verbose]... --mtree <mtree> [directory name]...
 EOF
 }
 
+function get_mtree ()
+{
+    local dir="$(dirname ${0})";
+    local lmsbw="${dir}/lmsbw";
+    local config="${dir}/../samples/hello-world/hello-world.cfg";
+
+    mtree=$(${lmsbw} --configuration ${config} --build-root /tmp/lmsbw-test mtree|cut -d ':' -f 2);
+}
+
 function main ()
 {
     local verbose="--silent";   # verbose not enabled => make should be silent.
@@ -61,7 +70,6 @@ function main ()
     args=$(getopt -o h                          \
         --long help                             \
         --long verbose                          \
-        --long mtree:                           \
         -n "${program}"                         \
         -- "$@");
 
@@ -84,15 +92,6 @@ function main ()
                 export LMSBW_VERBOSE=1
                 shift 1 ;;
 
-            --mtree)
-                mtree="${2}";
-                if [ ! -x "${mtree}" ] ; then
-                    echo "'${mtree}' is not an executable file";
-                    exit -1;
-                fi;
-
-                shift 2 ;;
-
             --) shift ;
                 break ;;
 
@@ -101,6 +100,8 @@ function main ()
         esac
     done
 
+
+    get_mtree;
 
     start_seconds=$(date +%s)
 
