@@ -90,9 +90,9 @@ The following tenets guided the implementation of \lmsbw:
 
   Included in the generation of rules and targets is a uniform
   interface: if you want to produce a build report for all components,
-  you simply execute \texttt{lmsbw report}, but if you want to
-  specifically get a report on the \emph{dailyprocessing} component,
-  you would execute \texttt{lmsbw report.dailyprocessing}.
+  simply execute the \texttt{report} verb (\xref{usinglmsbw:report}),
+  but it can also be executed on a particular component with this
+  syntax: \texttt{report.dailyprocessing}.
 
   Similarly, many other \emph{verbs} (\xref{lmsbw:target:verbs}) which
   are exported by \lmsbw can be executed globally or on an individual
@@ -151,10 +151,10 @@ filled.
 
 In short, the \mtree utility performs a \texttt{stat} on every file in
 the named directories and produces output which can be used later to
-determine if any file in the directory tree has changed.  When no files
-have changed in a source directory, \lmsbw will not recurse into that
-directory to build -- modulo other dependency issues which can force
-the build to be re-invoked.
+determine if any file in the directory tree has changed.  When no
+files have changed in a source directory, \lmsbw will not recurse into
+that directory to build -- modulo other dependency issues which can
+force the component's build to be re-invoked.
 
 What this means, for you, is that the elapsed time shown is a very
 good approximation for how long a full \nullbuild for your project
@@ -309,11 +309,11 @@ See~\xref{variables:lmsbw-configuration}.
 After loading the command-line-specified master configuration file,
 \lmsbw will invoke the component configuration loading function
 (\xref{variables:load-configuration-function}).  This function is
-responsible for defining all the components that are to be included in
-your project.  Generally there is a one-to-one correspondence of
+responsible for declaring all the components that are to be included
+in your project.  Generally there is a one-to-one correspondence of
 components to component configuration files.  The called function will
-load each of these files using the \gnumake \texttt{\$(include)}
-directive.
+generally load each component configuration file using the \gnumake
+\texttt{\$(include)} directive.
 
 The component configuration files are, in fact, \makefile snippets
 which can actually have rules that will override the default behavior
@@ -330,7 +330,7 @@ of data:
   component names which are to be built.
 
   This variable is internally managed as a by-product of declaring
-  components.
+  components when using the standard declaration functions.
 
 \item \lmsbwcomponent{component}
 
