@@ -25,11 +25,11 @@ Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
 of \make, the software described in this document aims to simplify the
 world by implementing a wrapper system -- implemented entirely in
-\gnumake and \texttt{bash} scripts -- which allows you to continue to
-use a recursive \make system, but provides you with dramatic
-performance improvements by only recursing when something in the
-source tree has changed and without requiring you to make widespread
-changes to your existing build process.
+\gnumake and \texttt{bash} scripts -- which allows the continued use
+of a recursive \make system, but provides dramatic performance
+improvements by only recursing when something in the source tree has
+changed and without requiring widespread changes to the existing build
+process.
 
 The following tenets guided the implementation of \lmsbw:
 
@@ -69,30 +69,29 @@ The following tenets guided the implementation of \lmsbw:
   clone the original source directory into the build directory.
 
   The upshot of this is that the original source directory will never
-  be sullied by \lmsbw, nor your own wrapped build process.  Another
-  benefit of having an immutable source tree is that you can easily
-  use different toolchains -- perhaps for cross compiling to another
-  operating system or architecture -- without having to retool your
-  own build process.
+  be sullied by \lmsbw, nor the wrapped build process.  Another
+  benefit of having an immutable source tree is that it is easy to use
+  different toolchains -- perhaps for cross compiling to another
+  operating system or architecture -- without having to retool the
+  original build process.
 
 \item Uniform Interface
 
   \lmsbw has been designed to make it easy to wrap an existing build
-  process.  In concept, you will declare each one of your
-  \emph{components}, usually a source directory containing a
-  \makefile, to \lmsbw.  Declaration includes information about the
-  directory and options for building it, including which other
-  components are prerequisites.
+  process.  In concept, declare each \emph{component}, usually a
+  source directory containing a \makefile, to \lmsbw.  Declaration
+  includes information about the directory and options for building
+  it, including which other components are prerequisites.
 
   \lmsbw compiles this information and generates, on-the-fly, a set of
-  \make rules and targets which allow your wrapped build process to be
+  \make rules and targets which allows the wrapped build process to be
   executed.
 
   Included in the generation of rules and targets is a uniform
-  interface: if you want to produce a build report for all components,
-  simply execute the \texttt{report} verb (\xref{usinglmsbw:report}),
-  but it can also be executed on a particular component with this
-  syntax: \texttt{report.dailyprocessing}.
+  interface: to produce a build report for all components, just
+  execute the \texttt{report} verb (\xref{usinglmsbw:report}), but it
+  can also be executed on a particular component with this syntax:
+  \texttt{report.dailyprocessing}.
 
   Similarly, many other \emph{verbs} (\xref{lmsbw:target:verbs}) which
   are exported by \lmsbw can be executed globally or on an individual
@@ -104,14 +103,13 @@ The following tenets guided the implementation of \lmsbw:
   components.  See \xref{chap:extending}.
 \end{itemize}
 
-\section{Will \lmsbw Benefit You?}
+\section{What Benefit Will \lmsbw Provide?}
 
-At this point you may be interested, but you're reticent to invest a
-lot of time just to find out if \lmsbw will benefit your build.
+At this point there may be interest, but also reticence to invest a
+lot of time just to find out if \lmsbw will provide a speed benefit.
 Fortunately, there is a way to quickly determine if \lmsbw will
-provide a benefit, because this source package has a handy script
-which will provide you with benchmark numbers.  Just follow these
-instructions:
+provide a benefit, because this package has a handy script which will
+provide benchmark numbers.  Just follow these instructions:
 
 \begin{itemize}
 \item Download \& extract \lmsbw sources
@@ -143,11 +141,10 @@ This test will create \texttt{/tmp/lmsbw-test} to hold the
 \end{minipage}}\end{center}
 
 
-The output of this test is a rough estimate of what your \nullbuild
-time should be.  To get a roughly representative idea of how long a
-normal \nullbuild will take for your project, you should run this
-command multiple times to ensure that the in-RAM disk caches are
-filled.
+The output of this test is a rough estimate of what the \nullbuild
+time should be; to get a better estimate of how long a normal
+\nullbuild will take, run this command multiple times to ensure that
+the in-RAM disk caches are filled.
 
 In short, the \mtree utility performs a \texttt{stat} on every file in
 the named directories and produces output which can be used later to
@@ -156,28 +153,27 @@ files have changed in a source directory, \lmsbw will not recurse into
 that directory to build -- modulo other dependency issues which can
 force the component's build to be re-invoked.
 
-What this means, for you, is that the elapsed time shown is a very
-good approximation for how long a full \nullbuild for your project
-will take.  Developers performing incremental builds will greatly
-benefit by never recursively building source directories that have not
-changed.
+This means that the elapsed time shown is a very good approximation
+for how long a full \nullbuild of the project will take.  Developers
+performing incremental builds will greatly benefit by never
+recursively building source directories that have not changed.
 
-You might also be interested in seeing how \lmsbw fares on a
-dummied-up build system with tens of thousands of source files by
-referring to \xref{samples:generate}.  To see the relationship between
-\emph{number of component configuration files} and \emph{\lmsbw
-  startup time}, please refer to \xref{samples:startup-time}.
+To see how well \lmsbw fares on a sample build system with tens of
+thousands of source files, please see \xref{samples:generate}.
+
+To see the relationship between \emph{number of component
+  configuration files} and \emph{\lmsbw startup time}, please refer to
+\xref{samples:startup-time}.
 
 \section{How \lmsbw Works}
 
-\lmsbw is not a system that actually builds your software; rather, it
-is a wrapper for your own build system that, in most cases, will
-improve the prompt-to-prompt incremental build performance of the
-system you use now.  \lmsbw can improve an existing system because
-many build processes perform altogether too much work when no work
-needs to be performed; \lmsbw cuts out this unnecessary work by never
-invoking the wrapped build when nothing has changed since the last
-build.
+\lmsbw is not a system that actually builds software; rather, it is a
+wrapper for an existing build system that, in most cases, will improve
+the prompt-to-prompt incremental build performance of the system in
+use now.  \lmsbw can improve an existing system because many build
+processes perform altogether too much work when none needs to be
+performed; \lmsbw cuts out this unnecessary work by never invoking the
+wrapped build when nothing has changed since the last build.
 
 Let's examine the what makes \lmsbw different:
 
@@ -195,12 +191,12 @@ Let's examine the what makes \lmsbw different:
 \item Component Declarations
 
   \lmsbw automatically generates rules that are used by \make to build
-  your product, but to be able to generate these rules you must
-  declare every component that is in your project.
+  the project, but to be able to generate these rules, every component
+  is the project must be declared to \lmsbw.
 
   Once declared, \lmsbw takes control of all aspects of each
   component's build: the build directory, the \texttt{DESTDIR}, the
-  install directory, and the toolchain to use.  When your component's
+  install directory, and the toolchain to use.  When the component's
   build process is invoked, it only needs to focus on producing a
   build, and, when requested, installing it into the \texttt{DESTDIR}
   directory.
@@ -208,7 +204,7 @@ Let's examine the what makes \lmsbw different:
 \item Recurse only when needed\label{intro:build-component-criteria}
 
   \lmsbw only maintains the inter-component dependencies that are
-  explicitly defined by your component declarations.
+  explicitly defined by the component declarations.
 
   Intra-component file dependencies are entirely handled by each
   component's build process.  Not handling file dependencies reduces
@@ -261,7 +257,7 @@ Let's examine the what makes \lmsbw different:
   \item Component \makefile
 
     Finally, the \makefile of the component is executed.  This will
-    likely already exist if you are wrapping an existing build process.
+    likely already exist if wrapping an existing build process.
 
     This \makefile will be entered at most twice for each build.  The
     first invocation will be to \emph{build} the component, and the
@@ -271,7 +267,7 @@ Let's examine the what makes \lmsbw different:
 
 \item Share Build Output
 
-  If your project contains different SKUs, and those SKUs share
+  If the project contains different SKUs, and those SKUs share
   components, \lmsbw is able to share the build output from one SKU
   with another, if the components are compiled exactly the same.
 
@@ -284,21 +280,21 @@ little work as possible from run-to-run.
 \section{Steps To Wrap A Build}
 
 The work needed to wrap a build with \lmsbw is directly proportional
-to the size of your build process; a small project will obviously take
-less time than a large project, but in both cases the steps are the
-same.
+to the size of the original build process; a small project will
+obviously take less time than a large project, but in both cases the
+steps are the same.
 
 \subsection{Configuration File}
 
-You must provide a master configuration file to \lmsbw for your
-project.  The main purpose of the configuration file is to set up the
-\lmsbwconfiguration (\xref{variables:lmsbw-configuration}) variable.
+A master configuration file for the project must be provided to \lmsbw
+on the command line.  The main purpose of the file is to set up the
+\lmsbwconfiguration variable~ (\xref{variables:lmsbw-configuration}).
 
-Primarily, you must declare a \gnumake function that will load your
-component configuration
-(\xref{variables:load-configuration-function}), and you must indicate
-what \emph{kind} (\xref{variables:kind}) of components your project
-will use (\xref{variables:component-build-support}).
+A \gnumake function that will load the component configuration files
+(\xref{variables:load-configuration-function}), and an indication of
+what \emph{kind} (\xref{variables:kind}) of components the project
+will use (\xref{variables:component-build-support}) both must be
+provided.
 
 Other fields of \lmsbwconfiguration can be optionally set to further
 control the behavior of \lmsbw.
@@ -310,7 +306,7 @@ After loading the command-line-specified master configuration file,
 \lmsbw will invoke the component configuration loading function
 (\xref{variables:load-configuration-function}).  This function is
 responsible for declaring all the components that are to be included
-in your project.  Generally there is a one-to-one correspondence of
+in the project.  Generally there is a one-to-one correspondence of
 components to component configuration files.  The called function will
 generally load each component configuration file using the \gnumake
 \texttt{\$(include)} directive.
