@@ -200,6 +200,101 @@ regain the lost incremental development speed.
   directory.
 \end{itemize}
 
+\subsection{Sample Configuration File}
+Figure~\tabref{wrap:sample-master-config} shows the
+\texttt{lite-consumer-pro} sample master configuration file.  This
+configuration file does the following:
+
+\begin{itemize}
+\item{Define Component Loading Function}
+
+  At the beginning of the file, the \texttt{load\_configuration}
+  function is declared.  This function is responsible for loading the
+  component configuration files for the project.  This sample shows
+  how to configure different products by using symlinks to
+  configuration files.
+
+  \begin{itemize}
+  \item{Check \texttt{PRODUCT}}
+
+    The \texttt{PRODUCT} environment variable dictates if the
+    \texttt{lite}, \texttt{consumer} or \texttt{pro} product is being
+    built.  Consequently, the function first checks that
+    \texttt{PRODUCT} is set.
+
+    If \texttt{PRODUCT} is not set to a correct value, the build will
+    fail with an error message that shows allowed values for
+    \texttt{PRODUCT}.
+
+  \item{Assert configuration directory}
+
+    If  \texttt{PRODUCT} is set, the function next validates that it
+    is an allowed value by asserting that a directory exists with the
+    \texttt{PRODUCT} name.
+
+  \item{Set \texttt{CURRENT\_CONFIGURATION\_FILE}}
+
+    This variable is used by the component configuration files to
+    declare the components (\xref{api:declare-source-component}).
+
+    It contains the full pathname of the configuration file which is
+    currently being loaded, which is a required when declaring a
+    component.
+
+    This value can also frequently be used to concoct the source tree
+    directory, which is also a required parameter.
+
+  \item{Include component configuration}
+
+    The function loads the component configuration using the
+    \texttt{\$(include)} directive, and that causes \lmsbw to generate
+    all the rules to maintain the component.
+
+  \end{itemize}
+
+  \item{Declare Component Loading Function to \lmsbw}
+
+    The \texttt{gmsl} \texttt{set} function is used to assign
+    \texttt{load\_configuration} to the associative array key,
+    \texttt{load-configuration-function}
+    (\xref{variables:load-configuration-function}).
+
+  \item{Declare Component Support}
+
+    The project declares that it will be using \texttt{source}
+    components by assiging to the key \texttt{component-build-support}
+    (\xref{variables:component-build-support}).
+\end{itemize}
+
+\begin{landscape}
+\begin{figure}
+\hrulefill
+\begin{verbatim}
+define load_configuration
+$(call assert,$(PRODUCT), \
+    PRODUCT must be one of '$(notdir $(wildcard $(dir $(1))products/*))')
+$(call assert_exists,$(dir $(1))products/$(PRODUCT))
+$(foreach cf,$(wildcard $(dir $(1))products/$(PRODUCT)/*),	\
+          $(eval CURRENT_CONFIGURATION_FILE:=$(cf))		\
+          $(eval include $(cf))					\
+)
+endef
+
+
+# Set up the LMSBW_configuration associative array.
+#
+vv:=$(call set,LMSBW_configuration,load-configuration-function,load_configuration)
+
+# Declare the type of components which will be needed.  There is only
+# source in this sample, so only load support for 'source' components.
+#
+vv:=$(call set,LMSBW_configuration,component-build-support,source)
+\end{verbatim}
+\hrulefill
+\caption{Example Master Configuration File}\label{wrap:sample-master-config}
+\end{figure}
+\end{landscape}
+
 \section{Component Creation}\label{wrap:component-creation}
 
 A component is a set of source files that can be transformed into a
