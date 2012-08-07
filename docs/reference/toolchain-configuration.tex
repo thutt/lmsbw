@@ -22,16 +22,14 @@ to crank out a wide variety of toolchains.
 
 \section{Prerequisites}\label{toolchain-config:prerequisites}
 
-Before embarking on an odyssey to build toolchains, you must first
-make a few configuration changes for uniformity.  These changes are
-not absolutely necessary.  You may skip them if you so desire, but you
-must be aware that all future documentation about the toolchains
-assumes you have performed these steps.
+Before embarking on an odyssey to build toolchains, a few
+configuration changes must first be made, for uniformity.  These
+changes are not absolutely necessary, but all documentation about the
+toolchains assumes these steps have been performed.
 
 \subsection{Directories}
-We will put all the toolchains into a single directory tree, and
-allow \ctng to place its downloaded tarballs into a single
-directory, too.
+All toolchains and tarballs downloaded by \ctng will be put into a
+single directory trees.
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -64,24 +62,30 @@ This utility, which uses a Linux-like configuration system, handles
 all the messy details of fetching, configuring, building and
 installing Gnu toolchains.
 
+Detailed instructions for the following steps are beyond the scope of
+this reference manual.
+
 \begin{enumerate}
-\item Download \& install \ctng
+\item Download \ctng
 
-  You must download and install \ctng without instructions because
-  each host computer can run into a unique set of issues such as
-  missing prerequisites like \texttt{yacc}.
+\item Configure \ctng to install into \texttt{/opt/crosstool-ng}
 
-  Configure \ctng to install into \texttt{/opt/crosstool-ng}
+\item Build \ctng
 
-  Once downloaded, configured and installed, you are ready to
-  configure and build a toolchain.
+\item Install \ctng
 
-  \item Run \ctng
+\end{enumerate}
+
+Once \ctng has been installed, it will be possible to create
+toolchains.
+
+\begin{enumerate}
+\item Run \ctng
 
     \ctng will save its configuration and produce a build in the
-    current working directory.  It is recommended that you create a
-    directory where you want to store the build output and toolchain
-    configuration, and change into that directory.
+    current working directory.  It is recommended to create a
+    directory to store the build output and toolchain configuration,
+    and change into that directory.
 
 \begin{verbatim}
 mkdir ~/myfirsttoolchain
@@ -90,7 +94,7 @@ cd ~/myfirsttoolchain
 \end{verbatim}
 
     This will start a Linux-like configuration system.  The following
-    steps will walk you through the items you must set to produce a
+    steps provides a walk through of items to change to produce a
     toolchain.
 
     Leave unmentioned items unchanged.
@@ -110,7 +114,7 @@ cd ~/myfirsttoolchain
       \item{Save new tarballs}
 
         Select this item so that tarballs will be saved in the
-        directory you just entered above.
+        directory entered above.
 
       \item{Working Directory}
 
@@ -124,8 +128,8 @@ cd ~/myfirsttoolchain
 
       \item{Render the toolchain read-only}
 
-        If you will need to make changes to the toolchain, or possibly
-        delete it, unselect this option.
+        Unselecting this item will ensure that the toolchain is not
+        marked \emph{read-only}.
 
         Recommendation: Unselect
 
@@ -133,15 +137,14 @@ cd ~/myfirsttoolchain
 
         This option affects the number of parallel jobs used when
         building the toolchain.  The system will automatically
-        determine a reasonable number, but you can change it.
-
+        determine a reasonable number.
 
         Recommendation: Do not change.
 
       \item{Maximum Allowed load}
 
-        This option affects the total load building the toolchain can put on
-        your system.  Adjust for your personal taste.
+        This option affects the total system load building the
+        toolchain can put on the host system.
 
         Recommendation: Do not change.
 
@@ -189,10 +192,10 @@ cd ~/myfirsttoolchain
       \begin{itemize}
       \item{Target OS}
 
-        Choose the type of OS you wish to target.
+        Choose the type of OS to be the target of the toolchain.
 
-        If you choose \texttt{linux}, you will have to make several
-        more choices about the Linux kernel.
+        Choosing \texttt{linux}, will induce several more
+        kernel-specific options to appear.
       \end{itemize}
 
     \item{Binary Utilities}
@@ -216,7 +219,7 @@ cd ~/myfirsttoolchain
 
       Choose the desired companion libraries.
     \end{itemize}
-  \item Build your toolchain
+  \item Build the toolchain
 
     The next, and final step in the process of building a toolchain to
     to execute the following:
@@ -225,14 +228,13 @@ cd ~/myfirsttoolchain
 /opt/crosstool-ng/bin/ct-ng build
 \end{verbatim}
 
-   \item Use your toolchain
+   \item Use the toolchain
 
-     Your toolchain was installed in \texttt{/opt/toolchains}.
+     The toolchain was installed in \texttt{/opt/toolchains}.
 
-     You may access it directly, or you can use the \emph{populate}
-     script to install the toolchain, the headers and all the
-     libraries in a \emph{sysroot} directory that can be used for
-     building.
+     It can be accessed directly, or the \emph{populate} script to
+     install the toolchain, the headers and all the libraries in a
+     \emph{sysroot} directory that can be used for building.
 
 \end{enumerate}
 
@@ -241,22 +243,22 @@ cd ~/myfirsttoolchain
 This is a string that helps uniquely identify the toolchain.  A tuple
 is of the form 'arch-vendor-kernel-system' and is used to form the
 name of the executables in the toolchain, as well as the toolchain
-directory name.  You will provide the \emph{vendor} portion of this
-string.
+directory name.  This section describes how to concot the
+\emph{vendor} portion of this string.
 
-If you intend on creating many different toolchains -- different
-compiler versions, different architectures, different kernels, etc. --
-it is recommended to create a vendor string which mnemonically
-distinguishes toolchains from one another so that each toolchain's
-attributes are clearly discernable when looking at a directory listing
-of toolchains.
+If there is an intention to create many different toolchains --
+different compiler versions, different architectures, different
+kernels, etc. -- it is recommended to create a vendor string which
+mnemonically distinguishes toolchains from one another so that each
+toolchain's attributes are clearly discernable when looking at a
+directory listing of toolchains.
 
 The following rules were used when creating the vendor string for the
-toolchain samples included in \lmsbw; perhaps they will help you
-create a policy for the vendor string of the toolchains you produce:
+toolchain samples included in \lmsbw; perhaps they will help in
+creating a policy for the vendor string of local toolchains:
 
 \begin{itemize}
-\item{You may not use dashes in the vendor string.}
+\item{Dashes may not be used in the vendor string.}
 \item{Use '\_' for inter-section spacing.}
 \item{Use '.' for intra-section spacing.}
 \item{Use \emph{endianess}}
