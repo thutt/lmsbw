@@ -126,7 +126,7 @@ affected.  The following sections provide some suggestions, and some
 pointers to sample configurations contained in the \lmsbw
 distribution.
 
-\subsection{Directory of Configuration Files}\label{wrap:directory}
+\subsection{Directory of Component Configuration Files}\label{wrap:directory}
 
 The basic recommendation for \lmsbw component configuration is to
 place all component configuration files into the same directory.  This
@@ -134,7 +134,7 @@ centralizes maintenance and make global configuration changes much
 easier.  The \texttt{load-configuration} function can easily load all
 the component configuration files from the common directory.
 
-\subsection{Symlinks to Configuration Files}
+\subsection{Symlinks to Component Configuration Files}
 
 With a more complicated project structure, perhaps one with multiple
 SKUs and different components in each SKU, it is still possible to
@@ -165,7 +165,7 @@ configuration option is:
 See the \texttt{sports} sample (\xref{samples:sports}) for an example
 of this configuration strategy.
 
-\subsection{Configurations for More Speed}
+\subsection{Master Configurations for More Speed}
 
 If the startup time of \lmsbw is longer than the incremental build of
 any part of the project, it is possible to tune the configuration to
