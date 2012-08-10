@@ -97,6 +97,12 @@ endef
 #   changed.  The manifest of the API for <component> is stored in the
 #   <directly dependent component>.
 #
+#   The mtree manifest name is generated on-the-fly.  Pre-generating
+#   the API manifest names (like 'source-mtree-manifest') doesn't work
+#   out well (for documentation & maintainability) because the key for
+#   each such manifest would be somehow based on the name of the
+#   prerequisite component.
+#
 #   Result:
 #
 #      Sets 'api_changed' to "yes" if the API has changed.
