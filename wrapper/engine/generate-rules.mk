@@ -16,8 +16,8 @@
 
 # expand_prerequisites <component>
 #
-#  Expands to a list of prerequisites which can be used in a build
-#  target.
+#  Expands to a list of direct prerequisites which can be used in a
+#  build target.
 #
 #  Each of the items on the 'prerequisite' list must be built &
 #  installed prior to <component> being built, thus each will be
@@ -84,7 +84,7 @@ define lmsbw_expand_build_component
 		LMSBW_C_BUILD_TARGET="$(call lmsbw_gcf,$(1),build-target)"			\
 		LMSBW_C_INSTALL_TARGET="$(call lmsbw_gcf,$(1),install-target)"			\
 		LMSBW_C_NO_PARALLEL="$(call lmsbw_gcf,$(1),no-parallel)"			\
-		CFLAGS="-MMD $(call lmsbw_gcf,$(1),cflags)"					\
+		LMSBW_C_CFLAGS="-MMD $(call lmsbw_gcf,$(1),cflags)"					\
 		$(call lmsbw_expand_toolchain,$(1))						\
 		>$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log 2>&1;			\
 	$(if $(LMSBW_VERBOSE)$(LMSBW_ELAPSED_TIME),$(CAT)					\

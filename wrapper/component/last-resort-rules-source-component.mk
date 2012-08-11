@@ -27,7 +27,7 @@ DEFAULT_SOURCE_COMPONENT_MAKE_OPTIONS :=									\
 	LMSBW_C_INSTALL_DIRECTORY=$(LMSBW_C_INSTALL_DIRECTORY)							\
 	LMSBW_C_BUILD_INSTALL_DIRECTORY=$(LMSBW_C_BUILD_INSTALL_DIRECTORY)					\
 	GMSL=$(LMSBW_DIR)/wrapper/gmsl										\
-	CFLAGS="$(CFLAGS)"
+	LMSBW_C_CFLAGS="$(LMSBW_C_CFLAGS)"
 
 default.component.build.$(LMSBW_C_COMPONENT):	sync
 	$(MESSAGE) "[default] Building source component";

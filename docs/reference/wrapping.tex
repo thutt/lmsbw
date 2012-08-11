@@ -647,14 +647,14 @@ build will be executed.
 
 Compare \xref{wrap:lmsbw-c-build-directory}.
 
-\subsection{\texttt{CFLAGS}}
+\subsection{\texttt{LMSBW\_C\_CFLAGS}}
 
 This is the union of the global \texttt{CFLAGS} value managed by
 \lmsbw and the per-component value set via
 \texttt{\texttt{component\_attribute\_cflags}} (\xref{api:cflags}).
 
-The component \makefile should not assign directly to \texttt{CFLAGS},
-but instead should append additional options to it.
+The component \makefile should append the value of
+\texttt{LMSBW\_C\_CFLAGS} to \texttt{CFLAGS}.
 
 \subsection{\texttt{GMSL}}
 
@@ -677,7 +677,7 @@ If, for example, a prerequisite component declared an API at
 \texttt{/usr/include/src}, access the include files with:
 
 \begin{verbatim}
-CFLAGS  += -I$(LMSBW_C_INSTALL_DIRECTORY)/usr/include/src
+CFLAGS  := $(LMSBW_C_CFLAGS) -I$(LMSBW_C_INSTALL_DIRECTORY)/usr/include/src
 \end{verbatim}
 
 \section{Using \texttt{build} Components}\label{wrap:using-build-components}
