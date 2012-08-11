@@ -24,7 +24,6 @@ fi;
 lmsbw                                                                           \
     ${LMSBW_VERBOSE}                                                            \
     --build-root "${LMSBW_TEST_BUILD_ROOT}"                                     \
-    --tarball-repository "${LMSBW_TEST_BUILD_ROOT}/tarballs"                    \
     --configuration "${cfg}" >"${LMSBW_TEST_BUILD_ROOT}/lmsbw-build.log";
 expect_command_failure;
 expect_error "${LMSBW_TEST_BUILD_ROOT}" "E1003";
