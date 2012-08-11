@@ -39,5 +39,5 @@ $(call declare_source_component,		\
 	Pro Program,				\
 	image,					\
 	$(CURRENT_CONFIGURATION_FILE),		\
-	$(subst product.cfg,src/pro,$(1)))
+	$(subst sample.cfg,src/pro,$(1)))
 $(call component_attribute_cflags,pro,-DPRODUCT=$(PRODUCT))

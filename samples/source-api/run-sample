@@ -22,7 +22,7 @@ function setup ()
     this_dir=$(readlink -f $(dirname "${0}"));
     lmsbw_dir=$(echo ${this_dir}|sed -e "s%samples/.*$%%g");
     lmsbw="${lmsbw_dir}scripts/lmsbw";
-    config_file="${this_dir}/source-api.cfg";
+    config_file="${this_dir}/sample.cfg";
     build_root="/tmp/$(basename ${config_file} .cfg)";
     set -e;
 }

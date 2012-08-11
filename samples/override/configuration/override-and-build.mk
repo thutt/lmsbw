@@ -30,4 +30,5 @@ $(call declare_source_component,					\
 component.build.override-and-build:	sync
 	echo "Locally overriding build rule.";
 	$(MAKE)									\
-		$(DEFAULT_$(call uc,$(LMSBW_C_KIND))_COMPONENT_MAKE_OPTIONS) $(LMSBW_C_BUILD_TARGET)
+		$(DEFAULT_$(call uc,$(LMSBW_C_KIND))_COMPONENT_MAKE_OPTIONS)	\
+		$(LMSBW_C_BUILD_TARGET)

@@ -39,6 +39,6 @@ $(call declare_source_component,		\
 	Lite Program,				\
 	image,					\
 	$(CURRENT_CONFIGURATION_FILE),		\
-	$(subst product.cfg,src/lite,$(1)))
+	$(subst sample.cfg,src/lite,$(1)))
 
 $(call component_attribute_cflags,lite,-DPRODUCT=$(PRODUCT))
