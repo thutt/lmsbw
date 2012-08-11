@@ -72,7 +72,7 @@ $(call lmsbw_load_component_support)
 # Load component configuration files.
 #
 $(eval $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FILE)))
-
+$(call preqrequisite_test)
 
 # check_components_form_dag_work <main component>,
 #                                <checking component>,

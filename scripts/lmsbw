@@ -26,10 +26,11 @@ function display_help ()
 {
     cat <<EOF
 ${program} \\
-   [--help | --verbose |                                   \\
-    --build-root <pathname> | --configuration <pathname> | \\
-    --parallel <integer> | --progress | --time |           \\
-    --toolchains-root <pathname> | --toolchain <name>]...  \\
+   [--help | --verbose |                                      \\
+    --build-root <pathname> | --configuration <pathname> |    \\
+    --parallel <integer> | --prerequisite-check <component> | \\
+     --progress | --time | --toolchains-root <pathname> |     \\
+     --toolchain <name>]...                                   \\
     -- [Gnu Make options]...
 
   Builds a set of software based on a configuration file by wrapping
@@ -43,6 +44,7 @@ ${program} \\
   --build-root          : Specify LMSBW_BUILD_ROOT
   --configuration       : Full path to LMSBW configuration file
   --parallel            : Specify LMSBW_PARALLEL_LEVEL (-j to Make)
+  --prerequisite-check  : Check component prerequisite correctness
   --progress            : Produce more progress messages during build
   --time                : Show elapsed time for component builds
   --toolchain           : Specify LMSBW_TOOLCHAIN
@@ -85,6 +87,7 @@ function main ()
         --long configuration:                   \
         --long debug                            \
         --long parallel:                        \
+        --long prerequisite-check:              \
         --long progress                         \
         --long toolchain:                       \
         --long toolchains-root:                 \
@@ -126,6 +129,10 @@ function main ()
 
             --parallel)
                 export LMSBW_PARALLEL_LEVEL="${2}";
+                shift 2 ;;
+
+            --prerequisite-check)
+                export LMSBW_PREREQUISITE_CHECK_COMPONENT="${2}";
                 shift 2 ;;
 
             --progress)

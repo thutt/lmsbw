@@ -146,3 +146,7 @@ endef
 define lmsbw_assert_toolchain_exists
 $(if $(strip $(1)),$(call assert_exists,$(LMSBW_TOOLCHAINS_ROOT)/$(strip $(1))))
 endef
+
+define lmsbw_prerequisite_test_no_component
+$(call lmsbw_assert,E1012,$(false),No component '$(1)')
+endef
