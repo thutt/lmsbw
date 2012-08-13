@@ -592,8 +592,8 @@ $(CP) --recursive                          \
   \lmsbw guarantees that \texttt{DESTDIR} will be defined.
 
   The \texttt{component\_attribute\_install\_target} API
-  (\xref{api:component-attribute-install-target}) allows the
-  specification of the target used to build a individual component.
+  (\xref{api:component-attribute-install-target}) allows specifying of
+  the target used to install an individual component.
 
   \xref{overriding:overriding-install} shows how to override this
   default behavior.
@@ -653,8 +653,8 @@ This is the union of the global \texttt{CFLAGS} value managed by
 \lmsbw and the per-component value set via
 \texttt{\texttt{component\_attribute\_cflags}} (\xref{api:cflags}).
 
-The component \makefile should append the value of
-\texttt{LMSBW\_C\_CFLAGS} to \texttt{CFLAGS}.
+The component \makefile should append \texttt{LMSBW\_C\_CFLAGS} to
+\texttt{CFLAGS}.
 
 \subsection{\texttt{GMSL}}
 
@@ -676,9 +676,11 @@ by appending the API directory to the value of
 If, for example, a prerequisite component declared an API at
 \texttt{/usr/include/src}, access the include files with:
 
+\begin{footnotesize}
 \begin{verbatim}
 CFLAGS  := $(LMSBW_C_CFLAGS) -I$(LMSBW_C_INSTALL_DIRECTORY)/usr/include/src
 \end{verbatim}
+\end{footnotesize}
 
 \section{Using \texttt{build} Components}\label{wrap:using-build-components}
 

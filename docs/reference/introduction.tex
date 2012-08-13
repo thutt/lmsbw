@@ -91,7 +91,10 @@ The following tenets guided the implementation of \lmsbw:
   interface: to produce a build report for all components, just
   execute the \texttt{report} verb (\xref{usinglmsbw:report}), but it
   can also be executed on a particular component with this syntax:
-  \texttt{report.dailyprocessing}.
+
+  \begin{center}
+    \texttt{report.dailyprocessing}
+  \end{center}
 
   Similarly, many other \emph{verbs} (\xref{lmsbw:target:verbs}) which
   are exported by \lmsbw can be executed globally or on an individual
@@ -190,9 +193,9 @@ Let's examine the what makes \lmsbw different:
 
 \item Component Declarations
 
-  \lmsbw automatically generates rules that are used by \make to build
-  the project, but to be able to generate these rules, every component
-  is the project must be declared to \lmsbw.
+  \lmsbw automatically generates the rules that are used by \make to
+  build the project, but to be able to generate these rules, every
+  component in the project must be declared to \lmsbw.
 
   Once declared, \lmsbw takes control of all aspects of each
   component's build: the build directory, the \texttt{DESTDIR}, the
@@ -268,8 +271,9 @@ Let's examine the what makes \lmsbw different:
 \item Share Build Output
 
   If the project contains different SKUs, and those SKUs share
-  components, \lmsbw is able to share the build output from one SKU
-  with another, if the components are compiled exactly the same.
+  components, it is possible for \lmsbw to share the build output from
+  one SKU with another, if the components are compiled exactly the
+  same.
 
 \end{description}
 
