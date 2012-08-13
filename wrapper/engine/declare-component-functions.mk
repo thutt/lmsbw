@@ -133,6 +133,12 @@ define set_component_internal_data
 $(call lmsbw_assert_known_component,$(1))
 endef
 
+define check_build_prerequisites
+$(foreach p,$(call lmsbw_gcf,$(1),prerequisite), \
+	$(if $(call seq,$(call lmsbw_gcf,$(p),reason),image), \
+		$(call lmsbw_build_needs_image,$(1),$(p))))
+endef
+
 
 # fixup_component_fields <component>
 #
@@ -150,4 +156,6 @@ $(call lmsbw_scf,$(1),install-directory,					\
 	$(call lmsbw_expand_install_directory,$(call lmsbw_gcf,$(1),reason)))
 $(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),			\
 	$(call component_attribute_install_target,$(strip $(1)),install))
+$(if $(call seq,$(call lmsbw_gcf,$(1),reason),build), 	\
+	$(call check_build_prerequisites,$(1)))
 endef

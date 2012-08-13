@@ -158,6 +158,18 @@ The following rules are recommended when creating API directories:
   Not prefixing with \destdir, will likely cause the build process to
   fail with permission errors on the root-based pathnames.
 
+\item Crossing \texttt{build} / \texttt{image} boundary
+
+  Components with a \texttt{build} reason (\xref{variables:reason})
+  can be prerequisites of \texttt{image} components, but not vice
+  versa.
+
+  The \texttt{build} component should provide the directory containing
+  the executable as an API so that \texttt{image} components can use
+  the tool.  However, an \texttt{image} component should never use any
+  type of exported programmatic interface of the \texttt{build}
+  component.
+
 \end{itemize}
 
 \section{\texttt{component\_attribute\_cflags}}\label{api:cflags}

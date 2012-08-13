@@ -1,6 +1,14 @@
  o Sharing interfaces between between 'build' and 'image' components must
    be disallowed.  The compilers may be different, and their set of
    include directories should not intersect.
+
+   The directories do not intersect, but LMSBW cannot prevent a
+   'image' component from using the API of an 'image' component, nor
+   vice versa.  This must be documented, instead.  Indeed, this cannot
+   be prevented because a 'build' component should set it's executable
+   directory as the API so that any time the executable changes, all
+   dependent component's builds will be invoked.
+
  o Add new target which reports on build space used per component
  o document that component.makefile is run in the directory where the
    configuration file is stored.  XXX Is this still true?
@@ -33,3 +41,4 @@
    file is returned.  If it does not exist, then it should be built
    locally.
  o Applying patches should be part of lmsbw
+ o 'build' component cannot be dependent on 'image' components.

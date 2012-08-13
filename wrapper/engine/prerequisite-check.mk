@@ -57,7 +57,7 @@ endef
 #
 define perform_prerequisite_check_guard
 $(if $(call not,$(filter $(LMSBW_PREREQUISITE_CHECK_COMPONENT),$(LMSBW_components))),
-	$(call lmsbw_prerequisite_test_no_component,$(LMSBW_PREREQUISITE_CHECK_COMPONENT)))
+	$(call lmsbw_prerequisite_check_no_component,$(LMSBW_PREREQUISITE_CHECK_COMPONENT)))
 $(call perform_prerequisite_check_check)
 endef
 

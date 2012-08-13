@@ -184,3 +184,13 @@ E1012: No component <component>
 \end{footnotesize}
 
 When using the \texttt{--prerequisite-check}
+
+\section{E1013}
+\begin{footnotesize}
+\begin{verbatim}
+E1012: 'build' component '<component>' cannot depend on 'image' component '<component>'
+\end{verbatim}
+\end{footnotesize}
+
+Components with reason \texttt{build} (\xref{variables:reason}) cannot
+depend on components with reason \texttt{image}.
