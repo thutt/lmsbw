@@ -80,7 +80,7 @@ define generate_component_report
 $(call lmsbw_assert_known_function,$(1),				\
 	generate_component_report_$(call lmsbw_gcf,$(1),kind))
 
-report:: report.$(strip $(1))
+report:: report-project-info report.$(strip $(1))
 .PHONY:	report.$(strip $(1)) __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind)
 
 $(call generate_component_report_$(call lmsbw_gcf,$(1),kind),$(1))
@@ -89,3 +89,5 @@ report.$(strip $(1)): __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind)
 
 endef
 
+report-project-info:
+	$(ATSIGN)$(ECHO) "lmsbw-project|configuration: $(LMSBW_CONFIGURATION_FILE)";

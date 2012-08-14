@@ -63,8 +63,21 @@ endef
 #      chosen for each component affects their output directories,
 #      too.
 #
-define lmsbw_expand_install_directory_hash
-$(call lmsbw_expand_md5sum_text,$(realpath $(LMSBW_CONFIGURATION_FILE))$(LMSBW_components)$(LMSBW_TOOLCHAIN))
+define lmsbw_expand_project_hash
+$(call lmsbw_expand_md5sum_text,$(LMSBW_CONFIGURATION_FILE)$(LMSBW_components)$(LMSBW_TOOLCHAIN)
+endef
+
+# lmsbw_expand_component_hash <component>
+#
+#   Expands to the md5sum value of a component.
+#
+#   This is used when creating directory names for the compoment.  The
+#   hash should be a representation of attributes which should
+#   manifest as a new directory.  For example, the toolchain for the
+#   component, or the compiler options.
+#
+define lmsbw_expand_component_hash
+$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain)$(call lmsbw_gcf,$(strip $(1)),cflags))
 endef
 
 # lmsbw_expand_install_directory <build | image>
