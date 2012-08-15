@@ -316,6 +316,13 @@ cp include-file.h $(DESTDIR)/usr/include
 
 \apiref{api:declare-source-component}
 
+\subsection{\lmsbwcomponentfield{hash}}\label{variables:hash}
+
+This key contains a hash that is used to create directory names for
+build output.  The attributes of the component which dictate a
+different build directory (toolchain, compiler flags, etc.) particpate
+in this hash.
+
 \subsection{\lmsbwcomponentfield{install-directory}}\label{variables:install-directory}
 
 This key holds the absolute path of the shared install directory.
