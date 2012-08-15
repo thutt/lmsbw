@@ -25,7 +25,7 @@
 define __expand_build_root
 $(call lmsbw_assert_known_component,$(1))
 $(call lmsbw_assert_known_function,$(1),lmsbw_expand_$(call lmsbw_gcf,$(1),reason)_build_root)
-$(call lmsbw_expand_$(call lmsbw_gcf,$(1),reason)_build_root)/$(strip $(1))/$(call lmsbw_expand_component_hash,$(1))
+$(call lmsbw_expand_$(call lmsbw_gcf,$(1),reason)_build_root)/$(strip $(1))/$(call lmsbw_gcf,$(1),hash)
 endef
 
 # declare_component_kind <component>, <kind>
@@ -145,8 +145,8 @@ endef
 #   Sets the component fields which cannot be assigned until the full
 #   set of components is known.
 #
-#$(call lmsbw_scf,$(1),build-root-directory,$(call __expand_build_root,$(1)))
 define fixup_component_fields
+$(call lmsbw_scf,$(1),hash,$(call lmsbw_expand_component_hash,$(1)))
 $(eval __brd:=$(call set,LMSBW_component_$(strip $(1)),build-root-directory,$(strip $(call __expand_build_root,$(1)))))
 $(call lmsbw_scf,$(1),build-directory,$(__brd)/build)
 $(call lmsbw_scf,$(1),destdir-directory,$(__brd)/destdir)

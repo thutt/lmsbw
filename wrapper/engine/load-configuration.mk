@@ -39,6 +39,9 @@ endef
 #  o Top-level targets
 #  o Function to load configuration files
 #
+#  The value must be the absolute pathname of the configuration file.
+#  This is enforced by the lmsbw script.
+#
 ifndef LMSBW_CONFIGURATION_FILE
 $(call lmsbw_error,E1006,LMSBW_CONFIGURATION_FILE is not defined; no wrapped build system)
 endif
