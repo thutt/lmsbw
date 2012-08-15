@@ -53,16 +53,17 @@ In many cases, this mechanism works flawlessly, but there is a
 particular method of configuration that is not recommended.
 
 \begin{itemize}
-\item{Different products are produced}
-\item{Same master configuration file}
+\item{Different SKUs are produced}
+\item{Same master configuration file for all SKUs}
 \item{Same set of components for each product}
 \item{Component build output differs via conditional compilation}
 \end{itemize}
 
-In the case described above, the component's configuration is usually
-controlled via environment variables that are proxied to the toolchain
-and used in conditional compilation.  The problem is that this will
-cause each SKU to share the same install directory.
+In the case described above, the configuration of each component is
+usually controlled via environment variables that are proxied to the
+toolchain and used in conditional compilation.  However, due to the
+way \lmsbw is written to choose the install directory, this mode of
+configuration will cause each SKU to share the same install directory.
 
 To ensure that each SKU has its own install directory, at least one of
 the criteria used to create the install directory must be changed.
