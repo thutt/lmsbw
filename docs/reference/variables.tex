@@ -471,9 +471,13 @@ This value should not be used by a client of \lmsbw.
 \subsection{\lmsbwcomponentfield{toolchain}}\label{variables:toolchain}
 
 This is the name of the toolchain that will be used to build the
-component.  It can be specified at the component level.  If it is not
-specified at the component level, the globally specified toolchain is
-used.  If no global toolchain is specified, the host toolchain will be
-used.
+component.  If it is not specified at the component level, and the
+component is not a \texttt{build} component (\xref{variables:reason}),
+the globally specified toolchain is used.  If no global toolchain is
+specified, the host toolchain will be used.
+
+The global toolchain setting is never used for \texttt{build}
+components.  If the toolchain is not specified at the component level
+for a \texttt{build} component, then the host toolchain will be used.
 
 \apiref{api:toolchain}
