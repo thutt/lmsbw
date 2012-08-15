@@ -6,17 +6,8 @@
  o Figure out why generate-rules.mk causes errors when put in
    lmsbw-system.mk.
  o Figure out why error occurs if assignment to __dsm in declare_source_component() is removed.
- o Document that global toolchain settings can be harmful when cross
-   compiling.  Components built for use in the build process will be
-   built with the global compiler, and thus be unusable.
  o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
  o Support LDFLAGS wrapping per-component.
- o Document that the install directory for a project uses the full
-   pathname of the configuration file in the hash.  If you have
-   projects with different SKUs, but the SKUs have exactly the same
-   components, only with compile-time differences in the components,
-   you can force different install directories by having different
-   configuration files.
  o One could imagine an extension to the component system.  A plugin
    for subdirectory makefiles which would has CFLAGS, the relative
    pathname and the contents of the source file.  The hash would be

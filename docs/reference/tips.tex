@@ -1,0 +1,120 @@
+% Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+%
+% This program is free software: you can redistribute it and/or
+% modify it under the terms of the GNU General Public License as
+% published by the Free Software Foundation, either version 3 of the
+% License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+\chapter{Tips \& Tricks}
+
+This chapter describes tips \& tricks that are not obvious from
+reading the reference manual.
+
+\section{Global Toolchain \& \texttt{build} Components}
+
+The global toolchain (\xref{usinglmsbw:toolchain}) is never used for
+\texttt{build} components.  If the toolchain is not specified at the
+component level, then the host toolchain will be used.
+
+\section{Build Output Differentiation}
+
+The following are two features that contribute to the incremental
+speed of \lmsbw.
+
+\begin{itemize}
+\item Shared Build Output
+
+  When possible, \lmsbw will share the build output of a component
+  between different master configuration files.  This is useful to
+  reduce build time if the different master configuration files
+  produce different SKUs of the same product.
+
+\item Install Directory Location
+
+  The name of the install directory is computed based on the
+  following:
+
+  \begin{itemize}
+  \item{The pathname of the master configuration file}
+  \item{The set of loaded components}
+  \item{The global toolchain}
+  \end{itemize}
+\end{itemize}
+
+In many cases, this mechanism works flawlessly, but there is a
+particular method of configuration that is not recommended.
+
+\begin{itemize}
+\item{Different products are produced}
+\item{Same master configuration file}
+\item{Same set of components for each product}
+\item{Component build output differs via conditional compilation}
+\end{itemize}
+
+In the case described above, the component's configuration is usually
+controlled via environment variables that are proxied to the toolchain
+and used in conditional compilation.  The problem is that this will
+cause each SKU to share the same install directory.
+
+To ensure that each SKU has its own install directory, at least one of
+the criteria used to create the install directory must be changed.
+The following recommendations are easy to follow:
+
+\begin{itemize}
+\item Different Master Configurations
+
+  Create physically different master configuration files; symlinks
+  will not suffice because \lmsbw resolves symlinks to the absolute
+  pathname of the file.
+
+  One trick is to make a common configuration file that is included by
+  the differently-named master configuration files.
+
+\item{Different Component Sets}
+
+  Ensure that each SKU has a different set of components.
+\end{itemize}
+
+\section{Master Configurations for More Speed}
+
+If the startup time of \lmsbw is longer than the incremental build of
+any part of the project, it is possible to tune the configuration to
+regain the lost incremental development speed.
+
+\begin{itemize}
+\item New Master Configuration
+
+  Create a new master configuration which contains only the desired
+  component and necessary perquisites.
+
+  Because \lmsbw shares build output, the \emph{small} master
+  configuration will cause the component to be built in the same
+  directory as the \emph{original} master configuration.
+
+\item Incrementally Build
+
+  Once the new master configuration is set up, incrementally build the
+  component with a much smaller startup time.
+
+  If the component can be tested stand-alone, it is also feasible to
+  test using this smaller master configuration.
+
+\item Switch Back to \emph{Original} Master Configuration
+
+  Once work has been completed and verified, switch back to the
+  \emph{original} master configuration file, and re-build.
+
+  Since the sub-project is already built in the shared build
+  directory, the only work \lmsbw needs to perform will be to install
+  the component into the \emph{original} configuration's install
+  directory.
+\end{itemize}
+
