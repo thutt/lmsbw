@@ -24,7 +24,7 @@ The global toolchain (\xref{usinglmsbw:toolchain}) is never used for
 \texttt{build} components.  If the toolchain is not specified at the
 component level, then the host toolchain will be used.
 
-\section{Install Directory Differentiation}
+\section{Install Directory Differentiation}\label{tips:install-directory}
 
 The following are two features that contribute to the incremental
 speed of \lmsbw.
@@ -37,16 +37,12 @@ speed of \lmsbw.
   reduce build time if the different master configuration files
   produce different SKUs of the same product.
 
-\item Install Directory Location
+\item Install Directory Location (\xref{variables:install-directory})
 
-  The name of the install directory is computed based on the
-  following:
+  \lmsbw handles the install directory location, automatically
+  changing it when the geometry -- configuration file, components
+  included, toolchain used -- of the project changes.
 
-  \begin{itemize}
-  \item{The pathname of the master configuration file}
-  \item{The set of loaded components}
-  \item{The global toolchain}
-  \end{itemize}
 \end{itemize}
 
 In many cases, this mechanism works flawlessly, but there is a

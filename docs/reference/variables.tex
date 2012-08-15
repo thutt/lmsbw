@@ -326,6 +326,20 @@ in this hash.
 \subsection{\lmsbwcomponentfield{install-directory}}\label{variables:install-directory}
 
 This key holds the absolute path of the shared install directory.
+
+The location of the install directory is computed using the following:
+
+\begin{itemize}
+\item{The pathname of the master configuration file}
+\item{The set of loaded components}
+\item{The global toolchain}
+\end{itemize}
+
+If the project produces different SKUs, be sure to alter at least one
+of these attributes for each SKU, or each SKU's build will share the
+same install directory.  See \xref{tips:install-directory} for further
+information on this topic.
+
 After building, \lmsbw will invoke the component's build process with
 the \emph{install} target (\xref{variables:install-target}), and this
 target must place files to be installed into the \destdir directory.
