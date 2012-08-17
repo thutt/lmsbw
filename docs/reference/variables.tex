@@ -189,6 +189,9 @@ It is not necessary to set this key if there is no exported API.
 This key is used internally; it contains the absolute pathname of the
 directory in which the build will be performed.
 
+This key builds on the the \texttt{build-root-directory} value
+(\xref{variables:build-root-directory}).
+
 This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
@@ -212,6 +215,9 @@ This key must not be used by clients of \lmsbw.
 
 This key holds the root directory where all build-related output is
 placed for the associated component.
+
+The pathname contains the component hash value (\xref{variables:hash})
+as the leaf directory.
 
 This key must not be used by clients of \lmsbw.
 
@@ -304,6 +310,9 @@ building, the component's public files must be \emph{installed} to this
 intermediate install directory when the \texttt{install} target of the
 component's \makefile is invoked.
 
+This key builds on the the \texttt{build-root-directory} value
+(\xref{variables:build-root-directory}).
+
 \lmsbw will copy the files from \destdir to the shared install directory.
 
 To install files, append the actual install pathname to \destdir.  For
@@ -319,9 +328,17 @@ cp include-file.h $(DESTDIR)/usr/include
 \subsection{\lmsbwcomponentfield{hash}}\label{variables:hash}
 
 This key contains a hash that is used to create directory names for
-build output.  The attributes of the component which dictate a
-different build directory (toolchain, compiler flags, etc.) particpate
-in this hash.
+build output.  The hash is created using the following component
+attributes:
+
+\begin{itemize}
+\item component name
+\item component toolchain (\xref{variables:toolchain})
+\item component cflags (\xref{variables:cflags})
+\end{itemize}
+
+As long as the above items do not change, the hash will remain the
+same.
 
 \subsection{\lmsbwcomponentfield{install-directory}}\label{variables:install-directory}
 \index{install-directory}
