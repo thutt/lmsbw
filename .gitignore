@@ -8,3 +8,6 @@ tmp
 *.dvi
 *.toc
 *.lof
+*.idx
+*.ilg
+*.ind
