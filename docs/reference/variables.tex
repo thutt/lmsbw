@@ -189,6 +189,9 @@ It is not necessary to set this key if there is no exported API.
 This key is used internally; it contains the absolute pathname of the
 directory in which the build will be performed.
 
+This key builds on the the \texttt{build-root-directory} value
+(\xref{variables:build-root-directory}).
+
 This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
@@ -212,6 +215,9 @@ This key must not be used by clients of \lmsbw.
 
 This key holds the root directory where all build-related output is
 placed for the associated component.
+
+The pathname contains the component hash value (\xref{variables:hash})
+as the leaf directory.
 
 This key must not be used by clients of \lmsbw.
 
@@ -304,6 +310,9 @@ building, the component's public files must be \emph{installed} to this
 intermediate install directory when the \texttt{install} target of the
 component's \makefile is invoked.
 
+This key builds on the the \texttt{build-root-directory} value
+(\xref{variables:build-root-directory}).
+
 \lmsbw will copy the files from \destdir to the shared install directory.
 
 To install files, append the actual install pathname to \destdir.  For
@@ -316,9 +325,38 @@ cp include-file.h $(DESTDIR)/usr/include
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{install-directory}}\label{variables:install-directory}
+\subsection{\lmsbwcomponentfield{hash}}\label{variables:hash}
 
+This key contains a hash that is used to create directory names for
+build output.  The hash is created using the following component
+attributes:
+
+\begin{itemize}
+\item component name
+\item component toolchain (\xref{variables:toolchain})
+\item component cflags (\xref{variables:cflags})
+\end{itemize}
+
+As long as the above items do not change, the hash will remain the
+same.
+
+\subsection{\lmsbwcomponentfield{install-directory}}\label{variables:install-directory}
+\index{install-directory}
 This key holds the absolute path of the shared install directory.
+
+The location of the install directory is computed using the following:
+
+\begin{itemize}
+\item{The pathname of the master configuration file}
+\item{The set of loaded components}
+\item{The global toolchain}
+\end{itemize}
+
+If the project produces different SKUs, be sure to alter at least one
+of these attributes for each SKU, or each SKU's build will share the
+same install directory.  See \xref{tips:install-directory} for further
+information on this topic.
+
 After building, \lmsbw will invoke the component's build process with
 the \emph{install} target (\xref{variables:install-target}), and this
 target must place files to be installed into the \destdir directory.
@@ -464,9 +502,13 @@ This value should not be used by a client of \lmsbw.
 \subsection{\lmsbwcomponentfield{toolchain}}\label{variables:toolchain}
 
 This is the name of the toolchain that will be used to build the
-component.  It can be specified at the component level.  If it is not
-specified at the component level, the globally specified toolchain is
-used.  If no global toolchain is specified, the host toolchain will be
-used.
+component.  If it is not specified at the component level, and the
+component is not a \texttt{build} component (\xref{variables:reason}),
+the globally specified toolchain is used.  If no global toolchain is
+specified, the host toolchain will be used.
+
+The global toolchain setting is never used for \texttt{build}
+components.  If the toolchain is not specified at the component level
+for a \texttt{build} component, then the host toolchain will be used.
 
 \apiref{api:toolchain}

@@ -143,6 +143,9 @@ See \xref{chap:toolchain-usage} for details on using different
 toolchains and \xref{chap:toolchain-configuration} for information
 about creating toolchains.
 
+The global toolchain is never used for \texttt{build} components
+(\xref{variables:reason}).
+
 \subsection{\texttt{--toolchain-root}}\label{usinglmsbw:toolchain-root}
 
 This option sets the root directory that contains the toolchains which
@@ -347,7 +350,7 @@ If the build fails, the component that failed to build will be shown
 on the console; use the \texttt{log} verb to view the actual output of
 building that component.
 
-\subsection{\texttt{destdir}}
+\subsection{\texttt{destdir}}\label{usinglmsbw:destdir}
 
 Because \lmsbw determines the location of the \destdir based on global
 configuration options, this target will print out the \destdir for the
@@ -373,7 +376,7 @@ goodbye-world:/tmp/hello/host/goodbye-world/917400cac32350dc041660456b128124/des
 \caption{\texttt{destdir} verb}\label{usinglmsbw:destdir-verb}
 \end{figure}
 
-\subsection{\texttt{builddir}}
+\subsection{\texttt{builddir}}\label{usinglmsbw:builddir}
 
 Because \lmsbw determines the location of the build directory based on
 global configuration options, this target will print out the build

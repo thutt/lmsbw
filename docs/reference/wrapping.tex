@@ -165,41 +165,6 @@ configuration option is:
 See the \texttt{sports} sample (\xref{samples:sports}) for an example
 of this configuration strategy.
 
-\subsection{Master Configurations for More Speed}
-
-If the startup time of \lmsbw is longer than the incremental build of
-any part of the project, it is possible to tune the configuration to
-regain the lost incremental development speed.
-
-\begin{itemize}
-\item New Master Configuration
-
-  Create a new master configuration which contains only the desired
-  component and necessary prequisites.
-
-  Because \lmsbw shares build output, the \emph{small} master
-  configuration will cause the component to be built in the same
-  directory as the \emph{original} master configuration.
-
-\item Incrementally Build
-
-  Once the new master configuration is set up, incrementally build the
-  component with a much smaller startup time.
-
-  If the component can be tested stand-alone, it is also feasible to
-  test using this smaller master configuration.
-
-\item Switch Back to \emph{Original} Master Configuration
-
-  Once work has been completed and verified, switch back to the
-  \emph{original} master configuration file, and re-build.
-
-  Since the sub-project is already built in the shared build
-  directory, the only work \lmsbw needs to perform will be to install
-  the component into the \emph{original} configuration's install
-  directory.
-\end{itemize}
-
 \subsection{Sample Configuration File}
 Figure~\tabref{wrap:sample-master-config} shows the
 \texttt{lite-consumer-pro} sample master configuration file.  This

@@ -14,10 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-define lmsbw_expand_component_hash
-$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain)$(call lmsbw_gcf,$(strip $(1)),cflags))
-endef
-
 define lmsbw_expand_image_build_root
 $(LMSBW_TARGET_BUILD_ROOT)
 endef
@@ -26,10 +22,12 @@ define lmsbw_expand_build_build_root
 $(LMSBW_HOST_BUILD_ROOT)
 endef
 
-# lmsbw_expand_install_directory_hash
+# lmsbw_expand_project_hash
 #
-#  This functions ensures that the install directory is globally
-#  unique, based on a set of global attributes.  If a global attribute
+#  This function produces a unique hash for the entire project.
+#
+#  It is used to ensure that the install directory is globally unique,
+#  based on a set of global attributes.  If a global attribute
 #  changes, for example:
 #
 #    o master configuration file
@@ -63,8 +61,21 @@ endef
 #      chosen for each component affects their output directories,
 #      too.
 #
-define lmsbw_expand_install_directory_hash
-$(call lmsbw_expand_md5sum_text,$(realpath $(LMSBW_CONFIGURATION_FILE))$(LMSBW_components)$(LMSBW_TOOLCHAIN))
+define lmsbw_expand_project_hash
+$(call lmsbw_expand_md5sum_text,$(LMSBW_CONFIGURATION_FILE)$(LMSBW_components)$(LMSBW_TOOLCHAIN))
+endef
+
+# lmsbw_expand_component_hash <component>
+#
+#   Expands to the md5sum value of a component.
+#
+#   This is used when creating directory names for the compoment.  The
+#   hash should be a representation of attributes which should
+#   manifest as a new directory.  For example, the toolchain for the
+#   component, or the compiler options.
+#
+define lmsbw_expand_component_hash
+$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain)$(call lmsbw_gcf,$(strip $(1)),cflags))
 endef
 
 # lmsbw_expand_install_directory <build | image>
@@ -83,7 +94,7 @@ endef
 # This can only be done AFTER all the components are configured.
 #
 define lmsbw_expand_install_directory
-$(call lmsbw_expand_$(strip $(1))_build_root)/install/$(call lmsbw_expand_install_directory_hash)
+$(call lmsbw_expand_$(strip $(1))_build_root)/install/$(call lmsbw_expand_project_hash)
 endef
 
 # lmsbw_expand_mtree_guard <component label>,
@@ -153,4 +164,3 @@ endef
 define lmsbw_scf
 $(eval __scf:=$(call set,LMSBW_component_$(strip $(1)),$(strip $(2)),$(strip $(3))))
 endef
-
