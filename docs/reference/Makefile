@@ -31,6 +31,8 @@ $(THIS_DOC).ps:		$(THIS_DOC).dvi
 $(THIS_DOC).tex:
 $(THIS_DOC).dvi:	$(THIS_DOC).tex $(TEX)
 	latex $<
+	makeindex $(<:.tex=)
+	latex $<
 
 clean:
 	rm *.aux *.log *.toc *.ps *.dvi
