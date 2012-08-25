@@ -61,7 +61,11 @@ endef
 # lmsbw_expand_build_component <component>
 #
 #   Expands to the commands which invoke a subordinate make on the
-#   provided component sources.
+#   provided component sources using the component.makefile.
+#
+#   The component.makefile is a trampoline that very quickly invokes
+#   the components buildprocess to satisfy 'LMSBW_C_BUILD_TARGET' and
+#   'LMSBW_C_INSTALL_TARGET'.
 #
 define lmsbw_expand_build_component
 	$(MESSAGE) "$(1): Trampoline to '$(1)' build system";					\
