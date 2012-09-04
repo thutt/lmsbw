@@ -1,0 +1,173 @@
+\chapter{Environment Variables}
+
+\lmsbw provides several variables to facilitate ease-of-use.  This
+chapter describes the variables which are intended to be used by
+developers using this system.
+
+\section{Entire \lmsbw Process}
+
+Variables listed in the following sections are exported by \lmsbwcmd
+and are available to the main \lmsbw process, and each component build
+process.
+
+\subsection{\texttt{LMSBW\_VERBOSE}}
+
+This variable is created when \texttt{--verbose}
+(\xref{usinglmsbw:verbose}) is used with \lmsbwcmd.
+
+It is used to control verbosity within \lmsbw.
+
+\subsection{\texttt{LMSBW\_BUILD\_ROOT}}
+
+This variable is assigned the value of the \texttt{--build-root}
+(\xref{usinglmsbw:build-root}) parameter.
+
+\subsection{\texttt{LMSBW\_CONFIGURATION\_FILE}}
+
+This variable is assigned the value of the \texttt{--configuration}
+(\xref{usinglmsbw:build-root}) parameter.
+
+\subsection{\texttt{LMSBW\_DISABLE\_BUILD\_OUTPUT\_DOWNLOAD}}
+
+This variable is created when \texttt{--disable-build-output-download}
+(\xref{usinglmsbw:disable-build-output-download}) is used with
+\lmsbwcmd.
+
+It is used to disable the downloading the build output for components
+marked to download the build output.  In other words, it's used to
+build components which would normally have their build output
+downloaded.
+
+\subsection{\texttt{LMSBW\_BUILD\_OUTPUT\_NO\_DOWNLOAD}}
+
+This variable contains the list of components named with
+\texttt{--no-download} (\xref{usinglmsbw:no-download}) parameter.
+
+This is used internally to cause components, marked to have their
+build output download, to be actually built.
+
+\subsection{\texttt{LMSBW\_PARALLEL\_LEVEL}}
+
+This variable is assigned the value of the \texttt{--parallel}
+(\xref{usinglmsbw:parallel}) parameter.
+
+It is used to control the number of parallel invocations of component
+build processes.
+
+\subsection{\texttt{LMSBW\_PREREQUISITE\_CHECK\_COMPONENT}}
+
+This variable is assigned the value of the
+\texttt{--prerequisite-check} (\xref{usinglmsbw:prerequisite-check})
+parameter.
+
+It is used to ensure that an individual component has configured the
+proper set of prerequisite compoenents.
+
+\subsection{\texttt{LMSBW\_PROGRESS}}
+
+This variable is created when \texttt{--progress}
+(\xref{usinglmsbw:progress}) is used with \lmsbwcmd.
+
+When this is set, \lmsbw will produce more \emph{progress}-related
+output during a build.
+
+\subsection{\texttt{LMSBW\_ELAPSED\_TIME}}
+
+This variable is created when \texttt{--time} (\xref{usinglmsbw:time})
+is used with \lmsbwcmd.
+
+When set, \lmsbw will output the elapsed time to build each component.
+
+\subsection{\texttt{LMSBW\_TOOLCHAIN}}
+
+This variable is assigned the value of the \texttt{--toolchain}
+(\xref{usinglmsbw:toolchain}) parameter.
+
+This is used internally to use a specific toolchain when building all
+components.
+
+\subsection{\texttt{LMSBW\_TOOLCHAINS\_ROOT}}
+
+This variable is assigned the value of the \texttt{--toolchain-root}
+(\xref{usinglmsbw:toolchain-root}) parameter.
+
+This is used internally to use a specific toolchain when building.
+
+\subsection{\texttt{LMSBW\_SCRIPT\_DIRECTORY}}
+
+Since \lmsbw need not be put in the path, it is important to be able
+to execute any script present in the \lmsbw system.
+
+\texttt{LMSBW\_SCRIPT\_DIRECTORY} is the full pathname of the
+directory containing the scripts associated with the \lmsbw package.
+
+This variable is exported as a convenience, and should be used as
+convention, to directly access scripts; do not assume that
+\lmsbw-based scripts are in the path.
+
+\subsection{\texttt{GMSL}}
+
+This is the absolute pathname of the directory containing the \gmsl
+library.  To use \gmsl in a component's build process, do the
+following:
+
+\begin{verbatim}
+  include $(GMSL)/gmsl
+\end{verbatim}
+
+\section{Component Build Process}
+
+Variables listed in the following sections are exported by \lmsbw and
+are only available to component build processes.
+
+\subsection{\destdir}
+
+The \destdir variable must be used as a root-directory prefix on the
+component \emph{install} rules.
+
+\lmsbw creates the directory and sets \destdir to the absolute
+pathname.  The rules may assume the directory exists and that full
+control of the directory is available.
+
+
+\subsection{\texttt{LMSBW\_C\_BUILD\_INSTALL\_DIRECTORY}}\label{wrap:build-install-directory}
+
+Use this as a prefix to access the build output for components that
+have their \texttt{reason} (\xref{variables:reason}) variable set to
+\texttt{build}.
+
+See \xref{wrap:using-build-components} for details on using this variable.
+
+\subsection{\texttt{LMSBW\_C\_INSTALL\_DIRECTORY}}
+
+This is the root directory where all components are installed.  Use
+this as the base directory when accessing the API directories exported
+by other, prerequisite, components.
+
+\subsection{\texttt{LMSBW\_C\_BUILD\_DIRECTORY}}\label{wrap:lmsbw-c-build-directory}
+
+This is set to the root of the build directory for the associated
+component.  The component \makefile can place files such as \mtree
+manifests or \make sentinels into this directory.
+
+This is \emph{not} the directory in which the component \makefile is
+started.   Do not put object files into this directory.
+
+Compare \xref{wrap:lmsbw-c-build-working-directory}.
+
+\subsection{\texttt{LMSBW\_C\_BUILD\_WORKING\_DIRECTORY}}\label{wrap:lmsbw-c-build-working-directory}
+
+This variable holds the actual directory in which the component's
+build will be executed.
+
+Compare \xref{wrap:lmsbw-c-build-directory}.
+
+\subsection{\texttt{LMSBW\_C\_CFLAGS}}
+
+This is the union of the global \texttt{CFLAGS} value managed by
+\lmsbw and the per-component value set via
+\texttt{\texttt{component\_attribute\_cflags}} (\xref{api:cflags}).
+
+The component \makefile should append \texttt{LMSBW\_C\_CFLAGS} to
+\texttt{CFLAGS}.
+

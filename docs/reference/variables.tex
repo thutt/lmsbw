@@ -36,8 +36,8 @@ declare and define components.
 
 This variable is the nexus of all global configuration for a porject.
 It must be initialized by the master configuration file
-(\xref{lmsbw:configuration}, \xref{wrap:master-configuration}), or
-\lmsbw will fail with an error message indicating that the
+(\xref{usinglmsbw:configuration}, \xref{wrap:master-configuration}),
+or \lmsbw will fail with an error message indicating that the
 configuration is bad.
 
 It is implemented as an associative array, and is readily extensible
@@ -111,6 +111,22 @@ Upon successful exit, the named function must have done the following:
 
 \end{itemize}
 
+
+\subsection{\texttt{component-build-output-download-script}}
+\label{variables:component-build-output-download-script}
+
+This key must be the full pathname of a script that \lmsbw will invoke
+to download the \destdir output of the component's build process.
+This can be used to speed up the overall build process by providing
+pre-built build output from a common server.
+
+This script is only invoked for components with the
+\texttt{build-output-download}
+(\xref{variables:build-output-download}) attribute set.
+
+If the script does not exist, \lmsbw will exit with an appropriate
+error message.  Documentation describing how this script must be
+implemented can be found in \xref{api:build-output-download-script}.
 
 \section{\texttt{LMSBW\_components}}\label{variables:lmsbw-components}
 
@@ -210,6 +226,82 @@ lmbw log.hello-world
 This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
+
+\subsection{\lmsbwcomponentfield{build-output-download}}
+\label{variables:build-output-download}
+
+When set, this key indicates that \lmsbw must not build this component
+using the component's build process, but instead will download the
+\destdir directory (\xref{variables:build-directory}).  The normal
+\lmsbw process will then copy the \destdir to the install directory.
+
+The intention is to speed up local builds by utilizing build output
+produced by an official build machine.
+
+The following invariants are enforced:
+
+\begin{itemize}
+\item Key Value
+
+  The value of this key is used internally and can only be set via the
+  API described in \xref{api:build-output-download}.  If the value has
+  not been set for a component, then the compoment will be built.  If
+  the value has been set for a component, then the component's build
+  output will be downloaded, provided the remaining invariants are
+  met.
+
+\item{All prerequisites must be attributed as \emph{download}}
+
+  It is not possible to download the build output for a component, yet
+  build its prerequisites from source.
+
+  This ensures that prerequisite APIs and their client components are
+  always synchronized.
+
+  See \xref{errors:E1016}.
+
+\item{Download Script Must Be Declared}
+
+  If the download script
+  (\xref{variables:component-build-output-download-script}) has not
+  been declared, \lmsbw will exit with an apprpriate error
+  message.
+
+  See \xref{errors:E1014}.
+
+\item{Download Script Must Exist}
+
+  If the download script
+  (\xref{variables:component-build-output-download-script}) does not
+  exist, \lmsbw will exit with an apprpriate error message.
+
+  See \xref{errors:E1015}.
+
+  The download script is not provided by \lmsbw; it must be
+  custom-written by the development team using this feature.
+
+  See \xref{api:build-output-download-script} for information about
+  writing a conformant script.
+
+\item{Download Script Invocation}
+
+  This script is invoked following the rules discussed in
+  \xref{intro:build-component-criteria} in lieu of executing the
+  component's build process.
+
+\item{Component does not use build directory (\xref{variables:build-directory})}
+
+  The download script is invoked to download the build-produced output
+  into the component's \destdir directory.
+
+\end{itemize}
+
+The setting of this key affects the hash (\xref{variables:hash})
+computed for the component.  In other words, a downloaded component's
+set of directories will be disjoint from the set of directories used
+if the same component were actually built.
+
+\apiref{api:build-output-download}
 
 \subsection{\lmsbwcomponentfield{build-root-directory}}\label{variables:build-root-directory}
 
@@ -332,9 +424,11 @@ build output.  The hash is created using the following component
 attributes:
 
 \begin{itemize}
-\item component name
-\item component toolchain (\xref{variables:toolchain})
-\item component cflags (\xref{variables:cflags})
+\item component \emph{name}
+\item component \emph{toolchain} (\xref{variables:toolchain})
+\item component \emph{cflags} (\xref{variables:cflags})
+\item component \emph{build output download setting}
+  (\xref{variables:build-output-download})
 \end{itemize}
 
 As long as the above items do not change, the hash will remain the

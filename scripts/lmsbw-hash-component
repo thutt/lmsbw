@@ -1,0 +1,135 @@
+#!/bin/bash
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+function error ()
+{
+    echo "${program}: ${@}" >/dev/stderr;
+}
+
+function verbose ()
+{
+    if [ ! -z "${arg_verbose}" ] ; then
+        echo "${program}: ${@}";
+    fi;
+}
+
+function option_check ()
+{
+    local option="${1}";
+    local value="${2}";
+
+    if [ -z "${value}" ] ; then
+        echo "--${option} must be specified on the command line";
+        exit 3;                 # missing command line argument
+    fi;
+}
+
+function display_help ()
+{
+    cat <<EOF
+${program}
+   (--verbose                         |
+    --component <component-name>      |
+    --source-directory <pathname>)...
+
+This program produces a single hash for the component source tree.
+
+EOF
+}
+
+# hash_source_files: obtain hash for each file in source tree
+#
+#  This function finds all the files in the source directory and
+#  performs a hash on them.
+#
+function hash_source_files ()
+{
+    while read pathname ; do
+        sha1sum ${pathname} 2>/dev/null|cut -d ' ' -f 1;
+    done < <(find ${arg_source} 2>/dev/null);
+}
+
+# hash_component: Obtains single hash for the component sources
+#
+#  This function hashes all the hash of the source directory tree to
+#  yield a single hash for the entire source tree.
+#
+#  This hash is used to match official builds.
+#
+function hash_component ()
+{
+    hash_source_files|sha1sum|cut -d ' ' -f 1;
+}
+
+function main ()
+{
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long component:                       \
+        --long source-directory:                \
+        --long verbose                          \
+        -n "${program}"                         \
+        -- "$@");
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help $(basename ${0});
+                exit 0 ;;
+
+            --verbose)
+                export arg_verbose=1
+                shift 1 ;;
+
+            --component)
+                export arg_component="${2}";
+                shift 2 ;;
+
+            --source-directory)
+                export arg_source="${2}";
+                shift 2 ;;
+
+            --) shift ;
+                break ;;
+
+            *)
+                fatal "Internal error: ${1}" ;
+                break ;;
+        esac;
+    done;
+
+    option_check "component" "${arg_component}";
+    option_check "source-directory" "${arg_source}";
+
+    hash_component;
+
+    exit 0;
+}
+
+main ${@};

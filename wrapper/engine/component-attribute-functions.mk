@@ -93,3 +93,23 @@ define component_attribute_toolchain
 $(call lmsbw_assert_known_component,$(1))	\
 $(call lmsbw_scf,$(1),toolchain,$(2))
 endef
+
+# component_attribute_build_output_download <component>
+#
+#   Sets a component have its DESTDIR downloaded.
+#
+#   Using this API removes the 'build' step for a component; the build
+#   output will be downloaded using a script declared using
+#   'component-build-output-download-script'.
+#
+#   If downloading this component's build output has been disabled
+#   with '--no-download', or downloading build output has been
+#   disabled with --disable-build-output-download, the attribute is
+#   never set; this causes the component to always build.
+#
+define component_attribute_build_output_download
+$(call lmsbw_assert_known_component,$(1))
+$(eval __cabod_filter:=$(filter $(1),$(LMSBW_BUILD_OUTPUT_NO_DOWNLOAD)))
+$(eval __cabod_or:=$(call or,$(__cabod_filter),$(LMSBW_DISABLE_BUILD_OUTPUT_DOWNLOAD)))
+$(if $(call not,$(__cabod_or)),$(call lmsbw_scf,$(1),build-output-download,$(true)))
+endef

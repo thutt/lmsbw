@@ -1,0 +1,273 @@
+\chapter{User Supplied Programs}
+
+This chapter describes the programs that must be supplied by the build
+team to support certain features of \lmsbw.  The \lmsbw features that
+require additional scripts require, for lack of a better phrase,
+\emph{business logic} which is unique to each build system using
+\lmsbw.
+
+
+\section{Build Output Download Script}\label{api:build-output-download-script}
+
+The \texttt{component\_attribute\_build\_output\_download} API
+(\xref{api:build-output-download}) attributed components will have
+their build output downloaded using the script specified with with
+configuration key described in
+\xref{variables:component-build-output-download-script}.  However, the
+script that actually performs the download of the build output must be
+supplied by the build team because \lmsbw is not written to
+incorporate the configuration specifics of various build systems using
+it.  This section describes the work necessary to write a download
+script which will work seamlessly with \lmsbw.
+
+Builds that do not use the
+\texttt{component\_attribute\_build\_output\_download} API do not need
+to provide the script.
+
+\subsection{Implementation Reference}
+
+\begin{itemize}
+  \item{Master Configuration}
+
+    To enable the functionality in \lmsbw to download build output,
+    the master configuration key
+    \texttt{component-build-output-download-script} must be set to the
+    name of the program which conforms to the semantics described in
+    this section.
+
+    See~\xref{variables:component-build-output-download-script}.
+
+  \item{Component Configuration}
+
+    Each component which is to have its build output downloaded must
+    be configured.
+
+    See \xref{variables:build-output-download} to understand the
+    per-component variable, and see \xref{api:build-output-download}
+    to understand how to set the variable using the public API.
+\end{itemize}
+
+\subsection{Script Arguments}
+
+The build output download script will always be invoked with the
+following non-optional, string type, command line arguments.
+
+\begin{itemize}
+\item{\texttt{--component <component name>}}
+
+  This is the name of the component for which the build output should
+  be downloaded.
+
+\item{\texttt{--build-root-directory <pathname>}}
+
+  This argument will provide the full pathname to the root of the
+  build directory.  See \xref{variables:build-root-directory}.
+
+  The script may place \emph{helper} files into this directory.  It
+  should not be used for intermedite files; \texttt{/tmp} must be used
+  for itnermediate files.
+
+  This directory is guaranteed to exist.
+
+\item{\texttt{--destdir-directory <pathname>}}
+
+  This argument provides the full pathname of the directory to that
+  the build output should be written.
+
+  This directory is guaranteed to exist.
+
+\item{\texttt{--source-directory <pathname>}}
+
+  This argument provides the full pathname of the component's source
+  directory.
+
+  This directory is guaranteed to exist.
+
+\item{\texttt{--help}}
+
+  This option must provide information on the allowed command line
+  arguments, and then it must exit the program with a return code of
+  zero (0).
+
+\item{\texttt{--verbose}}
+
+  When \texttt{--verbose} is provided to \lmsbwcmd, it will be
+  provided to build output download script.  When this option is
+  provided, the script can provide more verbose output to
+  \texttt{stdout}.
+
+  The script is not required to have any additional output simply
+  because \texttt{--verbose} is provided on the command line.
+\end{itemize}
+
+\subsection{Script Semantics}
+
+\begin{description}
+\item[Invocation] \mbox{} \\
+
+  This program is invoked under the conditions shown in
+  \xref{intro:build-component-criteria}.
+
+\item[Detect Source Changes] \mbox{} \\
+
+  If the local sources have been changed relative to the source
+  actually commited to the revision control system, an error must be
+  returned.
+
+\item[Missing Build] \mbox{} \\
+
+  If a build that corresponds to the unmodified sources cannot be
+  found, an error must be returned.
+
+\item[Successful Download] \mbox{} \\
+
+  The files that are downloaded must correspond to the \destdir
+  directory as produced when the component was actually built.  The
+  \destdir directory of the component must be filled with the
+  downloaded files.
+
+\item[Helper Files] \mbox{} \\
+
+  The program can write helper files to the build directory, but it
+  must not use the build directory for intermediate files.
+
+\item[Revision Control] \mbox{} \\
+
+  The program may access the revision control system to determine if
+  the component sources have changed.  It must not change the state of
+  the revision control system -- switching branches, altering files,
+  etc. -- due to the parallelism implicit in building with \lmsbw.
+
+\item[Extracted File Ownership] \mbox{} \\
+
+  Files extracted from the downloaded build must have their ownership
+  set to the current user, and to a group that includes the current
+  user.
+
+\item[Extracted File Times] \mbox{} \\
+
+  Files extracted from the downloaded build must have their timestamp
+  set to the current time so that \make will function properly.
+
+\end{description}
+
+Upon a successful download, \lmsbw will timestamp all the downloaded
+files with the current timestamp; this will ensure that any dependent
+components will build as if the prerequisite component is entirely
+new.
+
+\subsection{Return Values}
+The program that downloads build output must return one of the
+values shown in the following table.  If any other value is returned,
+\lmsbw treats it as an indeterminate fatal error.
+
+
+\begin{description}
+\item[0]{Successful download}
+
+  All files that must be installed into the component's \destdir have
+  been successfully downloaded \& installed.
+
+\item[1]{Failure; sources have been locally modified}
+
+  If the source has been locally modified, the script should report
+  the situation by returning one (1).  The reasoning is that local
+  source modifications are interpreted as an intention to build the
+  component from source rather than downloading the build output.
+
+  Since the component is set to download the build output, the local
+  modifications would be silently ignored.  \lmsbw does not
+  automatically build this component when this result is encountered
+  because that would affect all dependent components, and their build
+  rules have already be generated and provided to \make.
+
+  The solution is to use the \texttt{--disable-build-output-download}
+  option of \lmsbwcmd; see \xref{usinglmsbw:disable-build-output-download}.
+
+\item[2]{Failure; no build corresponds to the sources}
+
+  This failure indicates that the source present in the source
+  directory has no corresponding build that can be downloaded.
+
+  This is similar to the result value one (1), but this result is not
+  intended to be used when local changes have been made to the
+  sources.
+
+  This means that the source corresponds to officially commited code,
+  but the build machines do not have a build for it.
+
+  Returning this value is strongly indicative of an internal
+  infrastructure issue: the build machines are out-of-sync with the
+  publicly available sources.  When this occurs, all builds will grind
+  to a halt unless the developer explicitly causes the affected
+  component to be built instead of being downloaded.
+
+\item[3]{Missng command line argument}
+
+  If the script is invoked without all the required parameters, it
+  must return this value.
+
+  The script may output text to \texttt{stderr} or \texttt{stdout}
+  that indicates the missing command line parameter.
+
+\end{description}
+
+\section{Sample}
+
+The \texttt{build-output-download} sample provides a complete example
+of how to implement downloadable components.  See the \texttt{README}
+in the sample directory for explicit instructions.
+
+Also, refer to \xref{tips:build-output-download} for a step-by-step
+guide on implementing such a system for local use.
+
+%% \section{Some notes on implementation}
+
+%% Download script must differentiate between a perfect match for a
+%% downloaded build, and local changed.
+
+%% Consider perforce change numbers.  Even if sources are changed, a
+%% perforce number can be deteremined.  If sources are locally changed,
+%% download script must not download new build output, unless there is a
+%% perfect match.
+
+%% \begin{enumerate}
+%%   \item Source is still cloned into build directory.
+
+%%   \item Download script must determine if source is different than the
+%%     supplied download.  If different, it must fail.
+
+%% \item command line argument processing
+
+%%   If 'download', or 'no-download' specified on command line, check that
+%%   download script defined.  Iterate for each component, setting
+%%   attribute according to 'download' and 'no download' lists.
+
+%% \item Generating Rules
+
+%%   \begin{description}
+%%   \item{download}
+
+%%     Build output download components have additional work.
+
+%%     \begin{itemize}
+%%     \item For the first build, invoke download script
+%%     \item if sources changed, invoke download script.
+%%     \end{itemize}
+
+%%     \item{no download}
+
+%%       Components which do not have this attribute set to 'download'
+%%       will generate rules as done already.
+%%   \end{description}
+%% \end{enumerate}
+
+%% After the download has been completed, \lmsbw proper will be used to
+%% install the software into the install directory.  Then, the source
+%% manifest will be updated and the download request will never be
+%% invoked until the source changes -- either manually or through a sync.
+
+%% \todo{document that this affects the hash (\xref{variables:hash})}
+
+%% All direct \& indirect prerequisites of a download component must also
+%% be download.  This forces APIs to match.

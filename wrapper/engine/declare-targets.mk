@@ -30,6 +30,6 @@ targets::	lmbw_target_description_$(strip $(1))
 
 .PHONY:		target_description_$(strip $(1))
 lmbw_target_description_$(strip $(1)):
-	@$(PRINTF) "%25s : %s\n" "$(1)$(2)" "$(3)";
+	@$(PRINTF) "%33s : %s\n" "$(1)$(2)" "$(3)";
 
 endef

@@ -172,6 +172,25 @@ The following rules are recommended when creating API directories:
 
 \end{itemize}
 
+\section{\texttt{component\_attribute\_build\_output\_download}}
+\label{api:build-output-download}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:build-output-download} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+  1 & component-name & Name of a declared component.
+\end{tabularx}
+
+This API sets up the associated component so that the build system
+will download the build output into the \destdir directory
+(\xref{variables:destdir-directory}) instead of actually building the
+component.
+
+See \xref{variables:build-output-download} for the underlying
+semantics of this API.
+
+See \xref{api:build-output-download-script} for details about creating
+a conformant script to download build output.
+
 \section{\texttt{component\_attribute\_cflags}}\label{api:cflags}
 
 \begin{tabularx}{\linewidth}{ll|X}

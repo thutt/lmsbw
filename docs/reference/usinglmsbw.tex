@@ -49,10 +49,10 @@ in the following sections.
 
 This option causes the script to display a help message and then exit.
 
-\subsection{\texttt{--build-root}}
+\subsection{\texttt{--build-root}}\label{usinglmsbw:build-root}
 
 This required option specifies the root directory where build output
-for the configured project (\xref{lmsbw:configuration}) will be
+for the configured project (\xref{usinglmsbw:configuration}) will be
 placed.
 
 This directory must not be shared with other projects wrapped by
@@ -62,7 +62,7 @@ This directory must not be shared with other projects wrapped by
 --build-root /tmp/lmsbw-build-output
 \end{verbatim}
 
-\subsection{\texttt{--configuration}}\label{lmsbw:configuration}
+\subsection{\texttt{--configuration}}\label{usinglmsbw:configuration}
 
 This required option allows the specification of the master
 configuration file that is used to configure \lmsbw for the wrapped
@@ -73,11 +73,53 @@ build process.
 \end{verbatim}
 
 
+\subsection{\texttt{--disable-build-output-download}}
+\label{usinglmsbw:disable-build-output-download}
+
+This argument turns off downloading build output globally.  It is
+intended to be used by build machines producing official builds so
+that the build-output-download components actually be built.
+
+When this option is used, all annotations (see
+\xref{variables:component-build-output-download-script} \&
+\xref{variables:build-output-download}) for causing build-output to be
+downloaded are ignored and all components will be fully built from
+source.
+
+\subsection{\texttt{--no-download}}\label{usinglmsbw:no-download}
+
+This optional argument, that can be used multiple times, allows the
+user to override the copmonent setting which causes the build output
+of a component's build process to be downloaded in binary format.
+When a component that has been attributed to download the build output
+is named with this argument, the build output will not be downloaded.
+Instead, the component will be built in the same manner as every other
+component.
+
+Naming a component which is not attributed to have its build output
+downloaded has no affect.
+
+\begin{verbatim}
+--no-download alpha --no-download beta
+\end{verbatim}
+
+See \xref{usinglmsbw:disable-build-output-download} for the way to
+cause all components to be built.
+
+See \xref{variables:build-output-download} for details on components
+which have their build output downloaded.
+
 \subsection{\texttt{--prerequisite-check}}\label{usinglmsbw:prerequisite-check}
 
 This argument requires the name of a component to also be specified.
 When used, this option checks that a components direct and indirect
 prerequisites are sufficient to allow the component to be compiled.
+
+This check is provided because it is possible to create a new
+component that builds because the implicit compilation order chosen by
+\make causes unspecified prerequisites to be built first.  In this
+scenario, if the new component is built alone in a clean tree, it will
+not build because of the missing dependencies.
 
 \subsection{\texttt{--progress}}\label{usinglmsbw:progress}
 
@@ -91,7 +133,7 @@ of the build, add this to the command line.
 
 Compare \xref{usinglmsbw:verbose}.
 
-\subsection{\texttt{--parallel}}
+\subsection{\texttt{--parallel}}\label{usinglmsbw:parallel}
 
 This option allows the direct control the number of parallel builds
 that \make is allowed to invoke.  When not specified on the command
@@ -117,7 +159,7 @@ printed to the console.
 
 Compare \xref{usinglmsbw:progress}
 
-\subsection{\texttt{--time}}
+\subsection{\texttt{--time}}\label{usinglmsbw:time}
 
 When this option is specified on the command line, \lmsbw will print
 the elapsed time to build each component as each is completed.
@@ -155,14 +197,14 @@ See \xref{chap:toolchain-usage} for details on using different
 toolchains and \xref{chap:toolchain-configuration} for information
 about creating toolchains.
 
-\section{Using \lmsbw targets}\label{lmsbw:target:verbs}
+\section{Using \lmsbw targets}\label{usinglmsbw:target:verbs}
 
 Although \lmsbw is extremely fast, it is sometimes desirable to have
 it operate on only one component, or to provide further information
 about the wrapped build.  The following sections describe methos of
 interacting with a wrapped build using \lmsbw.
 
-\subsection{\texttt{all}}\label{lmsbw:target:all}
+\subsection{\texttt{all}}\label{usinglmsbw:target:all}
 
 This is the default target, and it will cause the wrapped build to be
 executed in its entirety.
@@ -190,21 +232,23 @@ The format of the \texttt{target} report is shown in figure
 \hrulefill
 \begin{footnotesize}
 \begin{verbatim}
-                      all : Perform a full build
-                    mtree : Install and show mtree executable path
-                  targets : Produce this report
-               components : List all components in project
-      prerequisite-report : Show declared component prerequisites
-         dependent-report : Show computed component dependencies
-     measure-startup-time : Measure time to load configruation files
- measure-memory-footprint : Measure lmsbw memory overhead
-     report[.<component>] : Generate component reports
-    install[.<component>] : Build & install components
-      clean[.<component>] : Clean build output for components
-        log[.<component>] : Display component build logs
-    destdir[.<component>] : Shows the intermediate install directory
-   builddir[.<component>] : Shows the build directory
- installdir[.<component>] : Shows the install directory
+                              all : Perform a full build
+                            mtree : Install and show mtree executable path
+                          targets : Produce this report
+                       components : List all components in project
+              prerequisite-report : Show declared component prerequisites
+                 dependent-report : Show computed component dependencies
+             measure-startup-time : Measure time to load configruation files
+         measure-memory-footprint : Measure lmsbw memory overhead
+ build-output-download-components : Components that will download their build
+             report[.<component>] : Generate component reports
+            install[.<component>] : Build & install components
+              clean[.<component>] : Clean build output for components
+                log[.<component>] : Display component build logs
+            destdir[.<component>] : Shows the intermediate install directory
+           builddir[.<component>] : Shows the build directory
+          sourcedir[.<component>] : Shows the source directory
+         installdir[.<component>] : Shows the install directory
 \end{verbatim}
 \end{footnotesize}
 \hrulefill
@@ -214,9 +258,9 @@ The format of the \texttt{target} report is shown in figure
 The \texttt{[.<component>]} notation means that this target can also
 be executed on a specific component of the wrapped build.  To
 determine which components exist in the build, see
-\xref{lmsbw:target:components}.
+\xref{usinglmsbw:target:components}.
 
-\subsection{\texttt{components}}\label{lmsbw:target:components}
+\subsection{\texttt{components}}\label{usinglmsbw:target:components}
 
 The \texttt{components} target causes \lmsbw to produce a report of all
 the components present in the project build.  The report format is
@@ -232,10 +276,33 @@ shown in figure \tabref{usinglmsbw:components-verb}.
 \caption{\texttt{components} verb}\label{usinglmsbw:components-verb}
 \end{figure}
 
-\subsection{\texttt{prerequisite-report}}
+\subsection{\texttt{build-output-download-components}}
+\label{build-output-download-components}
 
-The \texttt{prerequisite-report} target will produce a report showing
-each component and its declared prerequisites.
+This target will output a list of all the components that will
+download their build output.
+
+\begin{figure}[tbh]
+\hrulefill
+\begin{verbatim}
+hello-world
+nice-to-meet-you
+\end{verbatim}
+\hrulefill
+\caption{\texttt{build-output-download-components} verb}
+\label{usinglmsbw:{build-output-download-components-verb}}
+\end{figure}
+
+It can be used by an official build server to determine the components
+that must have their \destdir archived.  See
+\xref{api:build-output-download} and
+\xref{tips:using-build-output-download}.
+
+\subsection{\texttt{prerequisite-report}}
+\label{usinglmsbw:prerequisite-report}
+
+  The \texttt{prerequisite-report} target will produce a report showing
+  each component and its declared prerequisites.
 
 This output format, shown in figure
 \tabref{usinglmsbw:prerequisites-verb}, could be used to produce a
@@ -252,7 +319,7 @@ hello-world:
 \end{figure}
 
 
-\subsection{\texttt{dependent-report}}
+\subsection{\texttt{dependent-report}}\label{usinglmsbw:dependent-report}
 
 The \texttt{dependent-report} target will produce a report showing
 each component and the components which directly depend on it.
@@ -331,7 +398,7 @@ hello-world|  build     : build
 \subsection{\texttt{install}}
 
 The \texttt{install} target is used by the default target
-(\xref{lmsbw:target:all}) to build and install each component.
+(\xref{usinglmsbw:target:all}) to build and install each component.
 
 \subsection{\texttt{clean}}
 
@@ -399,6 +466,17 @@ goodbye-world:/tmp/hello/host/goodbye-world/917400cac32350dc041660456b128124/bui
 \hrulefill
 \caption{\texttt{builddir} verb}\label{usinglmsbw:builddir-verb}
 \end{figure}
+
+\subsection{\texttt{sourcedir}}\label{usinglmsbw:sourcedir}
+
+This target is will cause the full path to the source directory for
+each component to be printed.
+
+This target can be used when creating archives of components that have
+been marked to have their build output downloaded.  The source
+directory for the component is needed because a hash for the current
+value of the source code is used to match developer's source trees
+with downloadable content.
 
 \subsection{\texttt{installdir}}\label{usinglmsbw:installdir}
 

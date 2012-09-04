@@ -1,0 +1,196 @@
+#!/bin/bash
+#
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# This sample demonstrates how build output (DESTDIR) for components
+# can be downloaded from a build server and put into the build tree to
+# reduce build time for individual developers.
+#
+# The process goes like this:
+#
+#   1. Build with '--disable-build-output-download'
+#
+#      This step will be undertaken normally by the official build
+#      machines.  This option forces all 'source' components to
+#      actually be built.
+#
+#   2. Create tarballs of build output
+#
+#      The build machine creates tarballs of DESTDIR directories that
+#      can be downloaded and used by individual developers.
+#
+#      The LMSBW target 'build-output-download-components' will output
+#      all the components that are marked to have their build output
+#      downloaded.  (Must not have '--disable-build-output-download')
+#
+#      The 'destdir' targets can be used to find the full path of each
+#      component's DESTDIR directory, and these can be easily put into
+#      a tarball.  (Needs '--disable-build-output-download')
+#
+
+SAMPLE_NAME="build-output-download";
+
+function setup ()
+{
+    this_dir=$(readlink -f $(dirname "${0}"));
+    lmsbw_dir=$(echo ${this_dir}|sed -e "s%samples/.*$%%g");
+    lmsbw_scripts_dir="${lmsbw_dir}scripts";
+    lmsbw="${lmsbw_scripts_dir}/lmsbw";
+    config_file="${this_dir}/sample.cfg";
+    set -e;
+}
+
+function execute_lmsbw ()
+{
+    local build_root="${1}";
+    local opts="${2}";
+    local cmd;
+
+    shift 2;
+    cmd="${lmsbw} --configuration ${config_file} --build-root ${build_root} ${opts} ${@}";
+    ${cmd};
+}
+
+function hash_component () # (component-name, source-directory)
+{
+    local component="${1}";
+    local source_directory="${2}";
+
+    ${lmsbw_scripts_dir}/lmsbw-hash-component           \
+        --component "${component}"                      \
+        --source-directory "${source_directory}";
+}
+
+function server_build ()
+{
+    local build_root="/tmp/${SAMPLE_NAME}-build";
+    local tarball_root="/tmp/${SAMPLE_NAME}-tarball";
+    local opts="--parallel ${PARALLEL}";
+
+    if [ ! -d "${tarball_root}" ] ; then
+        mkdir --parents "${tarball_root}";
+    fi;
+
+    # 1. Build sample.
+    execute_lmsbw "${build_root}" "${opts}" "--disable-build-output-download";
+
+    # 2. Create tarballs of the DESTDIR for build-output-download components.
+    components=$(execute_lmsbw "${build_root}" "${opts}" "build-output-download-components");
+
+    # inv: ${components} is a list of components marked as 'build-output-download'.
+    for c in ${components} ; do
+        local destdir=$(execute_lmsbw "${build_root}" \
+            "${opts}" "--disable-build-output-download" "destdir.${c}"|cut -f 2 -d ':');
+        local source=$(execute_lmsbw "${build_root}" \
+            "${opts}" "--disable-build-output-download" "sourcedir.${c}"|cut -f 2 -d ':');
+        local component_hash=$(hash_component ${c} ${source});
+        local tarball_name="${tarball_root}/${c}-${component_hash}.tgz";
+
+        if [ ! -e "${tarball_name}" ] ; then
+            # Only create the tarball if it doesn't already exist.
+            # The tarball already existing means that the component is
+            # the same as one that has already been built; there is no
+            # need to recreate an already-existing tarball.
+            tar -C "${destdir}" -czf "${tarball_name}" .
+        fi;
+    done;
+}
+
+function developer_build ()
+{
+    # This is how a normal developer's build will be performed.  LMSBW
+    # will spawn out to the program declared to handle downloading of
+    # build output for each component marked.
+    #
+    # The script used to download the builds must be written to obtain
+    # the build-output from the location that the build server placed it.
+    #
+    # For this sample, that location is /tmp/build-output-download-tarball.
+    #
+    local build_root="/tmp/${SAMPLE_NAME}-download";
+    local tarball_root="/tmp/${SAMPLE_NAME}-tarball";
+    local opts="--parallel ${PARALLEL}";
+
+    # 1. Build sample.
+    execute_lmsbw "${build_root}" "${opts}";
+
+    exit 151;
+}
+
+function main ()
+{
+    if [ -z "${PARALLEL}" ] ; then
+        PARALLEL=1;
+    fi;
+
+    setup;
+
+    case "${1}" in
+        "build-server")
+            # Build the sample project, and create the tarballs for
+            # the components marked as 'build-output-download.
+            #
+            # This is taking the place of an official build server.
+            # Just as 'build()' does, an official build server would
+            # build all the components, create the tarballs and then
+            # place the tarballs in a location from which they can be
+            # downloaded.
+            #
+            # This script uses directories in /tmp for intermediate
+            # files.
+            #
+            server_build ;;
+
+        "developer")
+            # The developer build mocks up how a developer would build
+            # the sources.  The pre-built DESTDIR directories for
+            # 'build-output-download' components will be downloaded
+            # from the server (in this case /tmp) and placed into the
+            # DESTDIR of the component being built.
+            #
+            developer_build ;;
+
+        *)
+            cat <<EOF
+
+
+This sample must be run with either 'build-server' or 'developer' as
+the first argument.
+
+'build-server' emulates a build server that will actually build
+components that are attributed with 'build-output-download'.  LMSBW
+will only build the components and provide infrastructure for
+identifying components attributed to be downloaded.  This script uses
+the infrastructure to create tarballs of all components attributed
+with 'build-output-download'.
+
+'developer' causes a developer build to be mocked.  Rather than
+building components attributed with 'build-output-download', the
+tarball created via the 'build-server' option will be extracted into
+the DESTDIR directory.
+
+The 'build-server' mode must be used to produce the tarballs used by
+the 'download' mode.  You may use 'download' first to see the runtime
+error which will occur when the tarballs cannot be found.
+
+
+EOF
+            ;;
+    esac;
+}
+
+main ${@}

@@ -36,6 +36,15 @@ define lmsbw_assert
 $(call assert,$(strip $(2)),$(strip $(1)): $(strip $(3)))
 endef
 
+# lmsbw_assert_exists <error number>, <pathname>
+#
+#   If '<pathname>' does not exist, an assertion is triggered with the
+#   given error number.
+#
+define lmsbw_assert_exists
+$(if $(call not,$(wildcard $(2))),$(call lmsbw_assert,$(strip $(1)),$(false),$(2)))
+endef
+
 # Note: E1001 is not tested because it relies upon the encoding of the
 #       associative array variable names created by 'gmsl'.  The test
 #       would be fragile and fail is the internal encoding by 'gmsl'
@@ -71,7 +80,7 @@ endef
 # lmsbw_assert_source_directory_exists <source directory pathname>
 #
 define lmsbw_assert_source_directory_exists
-$(call assert_exists,$(strip $(1)))
+$(call lmsbw_assert_exists,E1020,$(strip $(1)))
 endef
 
 # lmsbw_assert_not_self_prerequisite <component-name>
@@ -144,7 +153,7 @@ endef
 #   set, the assertion will fail anyway.
 #
 define lmsbw_assert_toolchain_exists
-$(if $(strip $(1)),$(call assert_exists,$(LMSBW_TOOLCHAINS_ROOT)/$(strip $(1))))
+$(if $(strip $(1)),$(call lmsbw_assert_exists,E1021,$(LMSBW_TOOLCHAINS_ROOT)/$(strip $(1))))
 endef
 
 # lmsbw_prerequisite_check_no_component: <component>
@@ -163,3 +172,15 @@ endef
 define lmsbw_build_needs_image
 $(call lmsbw_assert,E1013,$(false),'build' component '$(1)' cannot depend on 'image' component '$(2)')
 endef
+
+# lmsbw_no_build_output_download_script
+#
+#
+define lmsbw_no_build_output_download_script
+$(call lmsbw_assert,E1014,$(false),The 'component build output download'
+script has not been declared)
+endef
+
+# E1015: The defined build output script does not exist.
+# E1016: Component marked 'build-output-download', prerequisite not.
+# E1017: build-output-download configuration failure.

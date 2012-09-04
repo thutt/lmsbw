@@ -43,13 +43,18 @@ function expect_command_success ()
     fi;
 }
 
-function expect_error ()
+function expect_error () # (test directory, expected error text...)
 {
     local test_directory="${1}";
-    local error="${2}";
+    shift;
 
-    if ! grep --quiet -w -e "${error}" "${test_directory}/lmsbw-build.log"; then
-        echo "Expected failure, '${error}', was not found.";
-        exit -1;
-    fi;
+    while [ ! -z "${1}" ] ; do
+        local error="${1}";
+        shift;
+
+        if ! grep --quiet -w -e "${error}" "${test_directory}/lmsbw-build.log"; then
+            echo "Expected failure, '${error}', was not found.";
+            exit -1;
+        fi;
+    done;
 }

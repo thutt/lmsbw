@@ -16,7 +16,7 @@
 
 \documentclass[10pt]{report}
 
-\title{LMSBW Reference \\ \small{\textsc{A Build System Wrapper for \\ Very
+\title{LMSBW \\ \small{\textsc{A Build System Wrapper for \\ Very
     Fast Incremental Builds \\ Using \gnumake}}}
 
 \setlength{\parindent}{0pt}             % No indent on paragraphs.
@@ -43,17 +43,22 @@
 \maketitle
 \tableofcontents
 \listoffigures
+\part{User Guide}
 \include{introduction}
 \include{usinglmsbw}
 \include{samples}
 \include{wrapping}
+\part{Reference}
+\include{lmsbw-environment-variables}
 \include{variables}
 \include{api}
+\include{user-supplied-programs}
 \include{overriding}
 \include{extending}
 \include{mtree}
 \include{toolchain-usage}
 \include{toolchain-configuration}
+\appendix
 \include{errors}
 \include{tips}
 \printindex

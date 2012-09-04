@@ -15,7 +15,9 @@
 %
 \chapter{Errors}
 
-\section{E1000}
+\newcommand{\lmsbwerror}[1]{\section{#1}\label{errors:#1}}
+
+\lmsbwerror{E1000}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -30,7 +32,7 @@ has not been set.
 See \xref{variables:load-configuration-function} for details on
 setting this value.
 
-\section{E1001}
+\lmsbwerror{E1001}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -44,7 +46,7 @@ value does not exist.  See
 \xref{variables:load-configuration-function} for details on properly
 setting this value.
 
-\section{E1002}
+\lmsbwerror{E1002}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -56,7 +58,7 @@ E1002: Configuration file '<pathname>' redefines component
 Each component name must be globally unique to a project.  Two
 configuration files declare the same component name.
 
-\section{E1003}
+\lmsbwerror{E1003}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -68,7 +70,7 @@ An attempt has been made to use an invalid \texttt{reason}.  See
 \xref{variables:reason} for details on the allowed values for this
 variable.
 
-\section{E1004}
+\lmsbwerror{E1004}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -92,7 +94,7 @@ E1004: Component '<component>' cannot have itself as a prerequisite
   \emph{Niklaus Wirth}
 \end{quote}
 
-\section{E1005}
+\lmsbwerror{E1005}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -107,7 +109,7 @@ that does not exist.
 If an invalid verb was used, \lmsbw will report that there is no rule
 to make the target.
 
-\section{E1007}
+\lmsbwerror{E1007}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -122,7 +124,7 @@ error message produce a graph with a cycle.
 
 Restructure the components so that they form a DAG.
 
-\section{E1008}
+\lmsbwerror{E1008}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -137,7 +139,7 @@ declaration function on a component which has not yet been declared.
 To remedy this situation, always declare components before trying to
 change them.
 
-\section{E1009}
+\lmsbwerror{E1009}
 
 \begin{footnotesize}
 \begin{verbatim}
@@ -153,7 +155,7 @@ are written to specifically process a component of a certain
 the \emph{source} version of the missing function as a reference on
 the function semantics.
 
-\section{E1010}
+\lmsbwerror{E1010}
 \begin{footnotesize}
 \begin{verbatim}
 E1010: No 'component-build-support' configured
@@ -164,7 +166,7 @@ The desired \texttt{component-build-support} has not been specified.
 See \xref{variables:component-build-support} for information on how to
 set this variable.
 
-\section{E1011}
+\lmsbwerror{E1011}
 \begin{footnotesize}
 \begin{verbatim}
 E1011: Component build type '<type>' is not valid)
@@ -176,7 +178,7 @@ An unsupported value has been specified for
 \xref{variables:component-build-support} for information on how to set
 this variable.
 
-\section{E1012}
+\lmsbwerror{E1012}
 \begin{footnotesize}
 \begin{verbatim}
 E1012: No component <component>
@@ -185,7 +187,7 @@ E1012: No component <component>
 
 When using the \texttt{--prerequisite-check}
 
-\section{E1013}
+\lmsbwerror{E1013}
 \begin{footnotesize}
 \begin{verbatim}
 E1012: 'build' component '<component>' cannot
@@ -193,5 +195,91 @@ E1012: 'build' component '<component>' cannot
 \end{verbatim}
 \end{footnotesize}
 
-Components with reason \texttt{build} (\xref{variables:reason}) cannot
-depend on components with reason \texttt{image}.
+\lmsbwerror{E1014}
+
+\begin{footnotesize}
+\begin{verbatim}
+E1014: The component 'build output download'
+       script has not been declared.
+\end{verbatim}
+\end{footnotesize}
+
+A component has been marked to have its build output downloaded, but
+no download script has been declared.
+
+See \xref{variables:component-build-output-download-script} for
+information on declaring a build-output download script.
+
+\lmsbwerror{E1015}
+\begin{verbatim}
+E1015: <pathname>
+\end{verbatim}
+
+This error occurs when the declared build-output-download script does
+not exist.  \lmsbw cannot proceed until the program declared to
+download component build output exists.
+
+See \xref{variables:component-build-output-download-script} for
+information on declaring a build-output download script.
+
+\lmsbwerror{E1016}
+
+\begin{verbatim}
+E1016: Component '<component>' marked
+       'build-output-download', but prerequisite
+       '<component>' is not.
+\end{verbatim}
+
+A component marked to have its build output downloaded (see
+\xref{api:build-output-download}) has prerequisites which will be
+built from source; \lmsbw does not allow this.  See
+\xref{variables:build-output-download} for the semantics of this
+attribute and the reasons why this is disallowed.
+
+\lmsbwerror{E1017}
+
+\begin{verbatim}
+E1017: build-output-download configuration failure.
+\end{verbatim}
+
+This error follows \texttt{E1016} and is used to halt the build.  This
+error means that at least one \texttt{E1016} occurred.
+
+\lmsbwerror{E1018}
+
+\begin{verbatim}
+E1018: <pathname>
+\end{verbatim}
+
+This error is generated when the file provided to via
+\texttt{--configuration} (\xref{usinglmsbw:configuration}) does not
+exist.
+
+\lmsbwerror{E1019}
+
+\begin{verbatim}
+E1019: <pathname>
+\end{verbatim}
+
+This error is produced when the \emph{build support} file name
+assigned to \texttt{component-build-support}
+(\xref{variables:component-build-support}) does not exist.
+
+\lmsbwerror{E1020}
+
+\begin{verbatim}
+E1020: <pathname>
+\end{verbatim}
+
+This error is produced when the source directory named, when declaring
+a component with \texttt{declare\_source\_component}
+(\xref{api:declare-source-component}), does not exist.
+
+\lmsbwerror{E1021}
+
+\begin{verbatim}
+E1021: <pathname>
+\end{verbatim}
+
+This error is produced when a toolchain that is attempting to be used
+does not actually exist.
