@@ -16,3 +16,4 @@
    file is returned.  If it does not exist, then it should be built
    locally.
  o Applying patches should be part of lmsbw
+ o Add facility to trace rule execution using $@, $^, etc.
