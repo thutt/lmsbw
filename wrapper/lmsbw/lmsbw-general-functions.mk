@@ -75,7 +75,7 @@ endef
 #   component, or the compiler options.
 #
 define lmsbw_expand_component_hash
-$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain)$(call lmsbw_gcf,$(strip $(1)),cflags))
+$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain)$(call lmsbw_gcf,$(strip $(1)),cflags)$(call lmsbw_gcf,$(strip $(1)),build-output-download))
 endef
 
 # lmsbw_expand_install_directory <build | image>

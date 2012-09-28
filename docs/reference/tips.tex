@@ -37,7 +37,7 @@ speed of \lmsbw.
   reduce build time if the different master configuration files
   produce different SKUs of the same product.
 
-\item Install Directory Location (\xref{variables:install-directory})\index{install-directory}
+\item Install Directory Location (\xref{variables:install-directory})
 
   \lmsbw handles the install directory location, automatically
   changing it when the geometry -- configuration file, components
@@ -152,4 +152,233 @@ See \xref{usinglmsbw:destdir} for information on using the verb.
 
 See \xref{variables:destdir-directory} for the criteria that are used
 to determine the directory name.
+
+\section{Uniquely Identifying Source Code}
+\label{tips:uniquely-identify-source-code}
+
+To be able to download the build output of components, it must first
+be possible to match the current state of the component's source code
+with an officially produced build.  In other words, the state of the
+compnent's source code must be uniquely identifiable -- each change to
+the source code must produce a different unique identifier.
+
+The following are examples of unique identifiers:
+
+\begin{itemize}
+\item{Perforce change number}
+\item{git sha1}
+\item{md5sum of sources}
+\item{sha1sum of sources}
+\end{itemize}
+
+\lmsbw defines that the
+\texttt{component-build-output-download-script}
+(\xref{variables:component-build-output-download-script}) does the
+following:
+
+  \begin{description}
+  \item[recommended] Determine if the source tree has been
+    locally modified.
+
+  \item[required] Determine if the source tree exactly matches an
+    official build.
+  \end{description}
+
+When the source tree does not exactly match an official build, the
+build output cannot be downloaded.  More specifically, if the source
+has been locally modified, and that fact can be identified, the
+developer will be notified that they have modified a component that
+will not be built, and they can then take corrective action (See
+\xref{usinglmsbw:disable-build-output-download} and
+\xref{usinglmsbw:no-download}).
+
+The method employed to uniquely identify the state of the source tree
+is ultimately determined by the build team, but \lmsbw provides a
+script which will produce a single SHA hash for all the files in the
+source directory tree.  This is called:
+
+\begin{verbatim}
+${LMSBW_SCRIPT_DIRECTORY}/lmsbw-hash-component
+\end{verbatim}
+
+This script is used by the \texttt{build-output-download} sample to
+identify official builds.
+
+\section{Downloading Build Output}
+\label{tips:build-output-download-script}
+
+\lmsbw does not directly provide a mechanism to download build output
+into the build tree; that support must be provided in the way of a
+script by the build team.  The \texttt{build-output-download} sample
+provides an example script that shows the semantics that must be
+followed.
+
+Once the component build and archive have been created (see
+\xref{tips:using-build-output-download}), the following steps must be
+undertaken to download the build output:
+
+\begin{enumerate}
+\item{Uniquely Identify Sources}
+
+  See \xref{tips:uniquely-identify-source-code}.
+
+\item Obtain build output
+
+  If the unique source identifier matches an official build, download
+  the archive of the build output.
+
+\item{Determine \destdir}
+
+  The component's \destdir directory is where the build output must be
+  placed.
+
+  use the \texttt{destdir.<component-name>} \lmsbwcmd target to find
+  the component's destdir.
+
+\item{Extract Archive}
+
+  The archive should be extracted into the determined \destdir.
+
+  The act of extracting the archive should create the directory
+  structure in the \destdir exactly as if the component build had been
+  invoked.
+
+\item{Delete Archive}
+
+  Be sure to clean up by deleting the downloaded archive.
+
+\end{enumerate}
+
+\section{Using \texttt{build-output-download}}
+\label{tips:using-build-output-download}
+
+Downloading build output can be used to speed up developer's local
+builds, but the amount of work necessary to enable this feature is not
+clearly spelled out in the reference manual.  This section provides a
+punch list that enumerates the work necessary to use the feature.
+
+Note that the \texttt{build-output-download} sample provides an
+example of all the required machinery.
+
+\begin{enumerate}
+\item{Uniquely Identify Source Tree Contents}
+
+  See \xref{tips:uniquely-identify-source-code} for details on how the
+  component's source must be identified.
+
+\item{Download Script}
+
+  A script to download build output must be provided.  See
+  \xref{tips:build-output-download-script} for details.
+
+\item{Component Configuration}
+
+ Each componet that is to have its build output downloaded must be
+ attributed using
+ \texttt{component\_attribute\_build\_output\_download}
+ (\xref{api:build-output-download}).
+
+ Once the component is attributed, each subsequent build will attempt
+ to download the component's build output, unless either of the
+ following is used:
+
+ \begin{itemize}
+ \item \texttt{--no-download} (\xref{usinglmsbw:no-download})
+ \item \texttt{--disable-build-output-download}
+   (\xref{usinglmsbw:disable-build-output-download}).
+ \end{itemize}
+
+\item{Build Components}
+
+  To build components which have been attributed to have their buid
+  output downloaded, the following argument must be provided to
+  \lmsbwcmd:
+
+ \begin{itemize}
+ \item \texttt{--disable-build-output-download}
+   (\xref{usinglmsbw:disable-build-output-download}).
+ \end{itemize}
+
+ It is intended that this option will be applied when building the
+ project using an official build server.
+
+\item{Archive Component Output}
+
+  Once the project is built, each component attributed to have the
+  build output downloaded must have its \destdir archived.  This can
+  be programmatically accomplished by:
+
+  \begin{enumerate}
+    \item{Determine Components}
+
+      The \texttt{build-output-download-components} \lmsbwcmd target
+      must be used to identify all components which have been
+      attributed.
+
+      \texttt{--disable-build-output-download} must \emph{not} be
+      applied when this target is invoked.
+
+    \item{Determine \destdir}
+
+      For each attributed component, use the
+      \texttt{destdir.<component-name>} \lmsbwcmd target.
+
+      \texttt{--disable-build-output-download} \emph{must} be applied
+      when this target is invoked.
+
+    \item Determine Source Directory
+
+      For each attributed component, use the
+      \texttt{sourcedir.<component-name>} \lmsbwcmd target.
+
+      \texttt{--disable-build-output-download} can, but need not, be
+      applied when this target is invoked.
+
+    \item{Uniquely Identify Source}
+
+      For each attributed component, the source directory must be
+      uniquely identified.  See
+      \xref{tips:uniquely-identify-source-code} for details on how the
+      component's source must be identified.
+
+    \item{Archive}
+
+      Using the determined \destdir and unique identifier, archive the
+      contents of the \destdir.
+
+      The archive must be created so that it can be extracted into the
+      current working directory and the extraction should duplicate
+      the directory tree beneath the original \destdir; in other
+      words, the archive should be created from within the component's
+      \destdir directory.
+
+  \end{enumerate}
+
+\item{Changing a downloaded component}
+
+  Once a component is attributed to have its build output downloaded,
+  under normal build circumstances it will never be built from source,
+  and the script which downloads build output must produce an error if
+  local modifications are made to the source.
+
+  To make changes to an attributed component's source, and have the
+  component built from source, use the \texttt{--no-download}
+  (\xref{usinglmsbw:no-download}) argument of \lmsbwcmd.
+
+  If a component named with \texttt{--no-download} is a prerequisite
+  to other components marked to have their build output downloaded,
+  those components, too, must be named with \texttt{--no-download}.
+
+  The following \lmsbwcmd targets can be helpful in determining the
+  full set of components that are dependent upon the original download
+  component.
+
+  \begin{itemize}
+  \item{prerequisite-report} (\xref{usinglmsbw:prerequisite-report})
+  \item{dependency-report} (\xref{usinglmsbw:dependent-report})
+  \end{itemize}
+\end{enumerate}
+
+Use dependency targets to determine the set of components which are
+dependent upon the one which needs to be built.
 

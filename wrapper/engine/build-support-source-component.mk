@@ -63,6 +63,7 @@ $(call generate_component_prerequisite_report,$(1))
 $(call generate_component_dependent_report,$(1))
 $(call generate_component_destdir,$(1))
 $(call generate_component_builddir,$(1))
+$(call generate_component_sourcedir,$(1))
 $(call generate_component_installdir,$(1))
 endef
 

@@ -22,15 +22,25 @@ __include_file="$(dirname ${0})/lmsbw-common"
 }
 source "${__include_file}";
 
+# LMSBW_SCRIPT_DIRECTORY should be used as a direct path to any script
+# which is used from the scripts directory.
+#
+export LMSBW_SCRIPT_DIRECTORY="$(dirname ${program})";
+
 function display_help ()
 {
     cat <<EOF
 ${program} \\
-   [--help | --verbose |                                      \\
-    --build-root <pathname> | --configuration <pathname> |    \\
-    --parallel <integer> | --prerequisite-check <component> | \\
-     --progress | --time | --toolchains-root <pathname> |     \\
-     --toolchain <name>]...                                   \\
+   [--help | --verbose  |               \\
+    --build-root <pathname> |           \\
+    --configuration <pathname> |        \\
+    --disable-build-output-download |   \\
+    --no-download <component> |         \\
+    --parallel <integer> |              \\
+    --prerequisite-check <component> |  \\
+    --progress | --time |               \\
+    --toolchains-root <pathname> |      \\
+    --toolchain <name>]...              \\
     -- [Gnu Make options]...
 
   Builds a set of software based on a configuration file by wrapping
@@ -40,16 +50,18 @@ ${program} \\
   To see the available targets: lmsbw targets
   To see available components : lmsbw components
 
-  --help | -h           : Show this help and exit
-  --build-root          : Specify LMSBW_BUILD_ROOT
-  --configuration       : Full path to LMSBW configuration file
-  --parallel            : Specify LMSBW_PARALLEL_LEVEL (-j to Make)
-  --prerequisite-check  : Check component prerequisite correctness
-  --progress            : Produce more progress messages during build
-  --time                : Show elapsed time for component builds
-  --toolchain           : Specify LMSBW_TOOLCHAIN
-  --toolchains-root     : Specify LMSBW_TOOLCHAINS_ROOT
-  --verbose             : Enable more verbosity from build
+  --help | -h                     : Show this help and exit
+  --build-root                    : Specify LMSBW_BUILD_ROOT
+  --configuration                 : Full path to LMSBW configuration file
+  --disable-build-output-download : Disables downloading build output
+  --no-download                   : Set component to build instead of download
+  --parallel                      : Specify LMSBW_PARALLEL_LEVEL (-j to Make)
+  --prerequisite-check            : Check component prerequisite correctness
+  --progress                      : Produce more progress messages during build
+  --time                          : Show elapsed time for component builds
+  --toolchain                     : Specify LMSBW_TOOLCHAIN
+  --toolchains-root               : Specify LMSBW_TOOLCHAINS_ROOT
+  --verbose                       : Enable more verbosity from build
 
 EOF
 }
@@ -68,6 +80,8 @@ function generate_lmsbw_env ()
     add_lmsbw_env LMSBW_BUILD_ROOT;
     add_lmsbw_env LMSBW_CONFIGURATION_FILE;
     add_lmsbw_env LMSBW_DEBUG;
+    add_lmsbw_env LMSBW_DISABLE_BUILD_OUTPUT_DOWNLOAD;
+    add_lmsbw_env LMSBW_BUILD_OUTPUT_NO_DOWNLOAD;
     add_lmsbw_env LMSBW_PARALLEL_LEVEL;
     add_lmsbw_env LMSBW_PROGRESS;
     add_lmsbw_env LMSBW_ELAPSED_TIME;
@@ -86,6 +100,8 @@ function main ()
         --long build-root:                      \
         --long configuration:                   \
         --long debug                            \
+        --long disable-build-output-download    \
+        --long no-download:                     \
         --long parallel:                        \
         --long prerequisite-check:              \
         --long progress                         \
@@ -127,6 +143,14 @@ function main ()
                 debug="--warn-undefined-variables";
                 shift 1 ;;
 
+            --disable-build-output-download)
+                export LMSBW_DISABLE_BUILD_OUTPUT_DOWNLOAD="yes";
+                shift 1 ;;
+
+            --no-download)
+                export LMSBW_BUILD_OUTPUT_NO_DOWNLOAD="${2} ${LMSBW_BUILD_OUTPUT_NO_DOWNLOAD}";
+                shift 2 ;;
+
             --parallel)
                 export LMSBW_PARALLEL_LEVEL="${2}";
                 shift 2 ;;
@@ -159,7 +183,18 @@ function main ()
         esac
     done
 
-    # Not intialized at decl so LMSBW_PARALLEL_LEVEL is not empty.
+    # When downloading build output is disabled, '--no-download' is
+    # meaningless.
+    #
+    # Removing it here maintains the invariant that it is only set
+    # when they valid.
+    if [ ! -z "${LMSBW_DISABLE_BUILD_OUTPUT_DOWNLOAD}" ] ; then
+        unset LMSBW_BUILD_OUTPUT_NO_DOWNLOAD;
+    fi;
+
+    # Not intialized at decl so that LMSBW_PARALLEL_LEVEL is not left
+    # empty (because LMSBW_PARALLEL_LEVEL will not have been
+    # processed).
     makeopts="-j ${LMSBW_PARALLEL_LEVEL:-1} --no-print-directory";
 
     if [ -z "${LMSBW_BUILD_ROOT}" ] ; then

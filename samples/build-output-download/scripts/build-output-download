@@ -1,0 +1,256 @@
+#!/bin/bash
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+program=$(basename "${0}");
+
+# Directory where build output is stored.
+BUILD_OUTPUT_CACHE="/tmp/build-output-download-tarball";
+
+function error ()
+{
+    echo "${program}: ${@}" >/dev/stderr;
+}
+
+function fatal ()
+{
+    local msg="${1}";
+    error "${msg}";
+    exit -1;
+}
+
+function verbose ()
+{
+    if [ ! -z "${arg_verbose}" ] ; then
+        echo "${program}: ${@}";
+    fi;
+}
+
+function option_check ()
+{
+    local option="${1}";
+    local value="${2}";
+
+    if [ -z "${value}" ] ; then
+        echo "--${option} must be specified on the command line";
+        exit 3;                 # missing command line argument
+    fi;
+}
+
+function display_help ()
+{
+    cat <<EOF
+${program}
+   (--verbose                         |
+    --component <component-name>      |
+    --build-root-directory <pathname> |
+    --destdir-directory <pathname>    |
+    --source-directory <pathname>)...
+
+This program downloads build output for the named component.
+
+EOF
+}
+
+# hash_component
+#
+#  Produces a single hash value for all component sources.
+#
+function hash_component ()
+{
+    local verbose;
+    if [ ! -z "${arg_verbose}" ] ; then
+        verbose="--verbose";
+    fi;
+    "${LMSBW_SCRIPT_DIRECTORY}/lmsbw-hash-component"    \
+        ${verbose}                                      \
+        --component "${arg_component}"                  \
+        --source-directory "${arg_source}";
+}
+
+# source_locally_modified:
+#
+#  Checks if the source is locally modified.
+#
+#  It is not allowed to download the build output when the sources
+#  have been locally modified.  The reason for this is that local
+#  modification of the sources strongly implies an intent to
+#  incorporate the changes into the software distribution for the
+#  build.  Downloading the build output produced by an official build
+#  machine will ignore these changes, yet silently appear as if the
+#  changes have been incorporated into the build.
+#
+#  To ensure that the developer is never surprised by the build
+#  system, local changes to the component should always cause the
+#  download step to fail.
+#
+#  result == 0 -> source is not known to be locally modified
+#  result != 0 -> source is locally modified
+#
+#  NOTE:
+#
+#   If it is impractical to determine if the source has been locally
+#   modified, this check can be written to always succeed.  However,
+#   download_and_install() must be able to determine if an official
+#   build exists for the current state of the source tree.
+#
+#
+function source_locally_modified ()
+{
+    return 0;
+}
+
+# download_and_install:
+#
+#   Attempts to download and install the build output into the
+#   component's DESTDIR directory.  If the current state of the source
+#   tree does not correspond to an official build, this function must
+#   fail.
+#
+#   It is suggested that the state of the sources used to create
+#   official builds be denoted using 'md5sum' or 'sha1sum'.  This will
+#   facilitate fast checking.  Further, once a known-good build output
+#   has been downloaded (and the corresponding hash is known), then
+#   local source modifications are easily identifiable.
+#
+#  result == 0 -> build output downloaded & installed
+#  result != 0 -> build output cannot be downloaded & installed
+#
+#                 o source does not correspond to an official
+#                   build
+#
+#                 o source corresponds to an official build, but
+#                   some other error occurred.
+#
+function download_and_install ()
+{
+    local component_hash=$(hash_component);
+    local marker_prefix="${arg_build_root}/build-output-download-";
+    local marker="${marker_prefix}${component_hash}";
+    local tarball;
+
+    verbose "component hash: ${component_hash}";
+
+    # If the marker file for the current hash exists, then the tarball
+    # has already been downloaded & installed.
+    if [ -e "${marker}" ] ; then
+        verbose "${component}: Hash value '${component_hash}' already downloaded.";
+        return 0;
+    fi;
+
+    # Marker file does not exist for the current hash value.  A new
+    # tarball will be extracted, so delete marker file.
+    rm -f "${marker_prefix}*";
+
+    # Check for a hash-matching tarball.
+    tarball="${BUILD_OUTPUT_CACHE}/${arg_component}-${component_hash}.tgz";
+    verbose "tarball: ${tarball}";
+
+    if [ ! -e "${tarball}" ] ; then
+        # Hash-matching tarball does not exist -> no build for this hash.
+        return 1;
+    fi;
+
+    # A build-output tarball has been located.  Extract it into the
+    # provided DESTDIR.
+    if tar -C "${arg_destdir}" -xzf "${tarball}"; then
+        # Tarball successfully extracted.  Leave a marker that will be
+        # used to prevent extracting the tarball again if it's already
+        # done.
+        touch "${marker}";
+    fi;
+}
+
+function main ()
+{
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long component:                       \
+        --long build-root-directory:            \
+        --long destdir-directory:               \
+        --long source-directory:                \
+        --long verbose                          \
+        -n "${program}"                         \
+        -- "$@");
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help $(basename ${0});
+                exit 0 ;;
+
+            --verbose)
+                export arg_verbose=1
+                shift 1 ;;
+
+            --component)
+                export arg_component="${2}";
+                shift 2 ;;
+
+            --build-root-directory)
+                export arg_build_root="${2}";
+                shift 2 ;;
+
+            --destdir-directory)
+                export arg_destdir="${2}";
+                shift 2 ;;
+
+            --source-directory)
+                export arg_source="${2}";
+                shift 2 ;;
+
+            --) shift ;
+                break ;;
+
+            *)
+                fatal "Internal error: ${1}" ;
+                break ;;
+        esac;
+    done;
+
+    if [ -z "${LMSBW_SCRIPT_DIRECTORY}" ] ; then
+        # If this script is executed through 'lmsbw', this variable
+        # will be set, otherwise it must be provided.  This is because
+        # it is not required to have the LMSBW scripts directory in
+        # the path.
+        #
+        fatal "LMSBW_SCRIPT_DIRECTORY is not set.  Must refer to lmsbw scripts directory.";
+    fi;
+
+    option_check "component" "${arg_component}";
+    option_check "build-root-directory" "${arg_build_root}";
+    option_check "destdir-directory" "${arg_destdir}";
+    option_check "source-directory" "${arg_source}";
+
+    if ! source_locally_modified ; then
+        verbose "${program}: Source has been locally modified."
+        exit 1;
+    fi;
+
+    if ! download_and_install ; then
+        verbose "${program}: Build not found for this source"
+        exit 2;
+    fi;
+
+    exit 0;
+}
+
+main ${@};

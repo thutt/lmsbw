@@ -29,11 +29,10 @@ all:		$(THIS_DOC).ps
 
 $(THIS_DOC).ps:		$(THIS_DOC).dvi
 $(THIS_DOC).tex:
-$(THIS_DOC).dvi:	$(THIS_DOC).ind
-	latex $(<:.ind=.tex)
-
-$(THIS_DOC).ind:	$(THIS_DOC).tex $(TEX)
+$(THIS_DOC).dvi:	$(THIS_DOC).tex $(TEX)
 	latex $<
-	makeindex $<
+	makeindex $(<:.tex=)
+	latex $<
+
 clean:
 	rm *.aux *.log *.toc *.ps *.dvi

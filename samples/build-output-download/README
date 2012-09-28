@@ -1,0 +1,50 @@
+This sample provides a reference for the ability to have components
+that are not built by a local developer, but instead have the output
+of the component build process downloaded from a central build server
+and installed into the build directories.
+
+This can save time for large projects with components that take a very
+long time to build and are infrequently changed.
+
+From the viewpoint of the developer that uses the build system, there
+is no change to their workflow.
+
+The build team, however, needs to provide an official 'build server'
+to build these 'download' components, and they need to provide a
+script that downloads the build from the server and installs it into
+the build directory.
+
+This sample provides an example of a script which will download the
+proper build output and install it into the build directory.  See the
+LMSBW reference manual for the semantics that the script must follow.
+
+This sample has two modes of operation: 'build-server' and
+'developer'.
+
+The 'build-server' mode will build the components and create archives
+of the build output for components marked to have the build output
+downloaded.
+
+The 'developer' mode will download the pre-built archives of the
+download components.
+
+There are several ways basic ways that this sample can be run:
+
+  o 'developer' first, 'build-server' second, 'developer' third
+
+     This will demonstrate the failure that the build cannot be found,
+     and then it will correctly function.
+
+  o 'build-server' first, 'developer' second
+
+    This will demonstrate that the build works correctly.
+
+After the build has been created and is downloadable, you can also
+modify the sources for the components and build with 'developer' mode
+to see that the system will not be able to find a bulid that
+corresponds to the current state of the source tree.
+
+To run, execute one of the following:
+
+  ./run-sample build-server
+  ./run-sample developer
