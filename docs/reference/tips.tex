@@ -68,8 +68,8 @@ The following recommendations are easy to follow:
 \begin{itemize}
 \item Different Master Configurations
 
-  Create physically different master configuration files; symlinks
-  will not suffice because \lmsbw resolves symlinks to the absolute
+  Create physically different master configuration files; symbolic links
+  will not suffice because \lmsbw resolves symbolic links to the absolute
   pathname of the file.
 
   One trick is to make a common configuration file that is included by
@@ -159,7 +159,7 @@ to determine the directory name.
 To be able to download the build output of components, it must first
 be possible to match the current state of the component's source code
 with an officially produced build.  In other words, the state of the
-compnent's source code must be uniquely identifiable -- each change to
+component's source code must be uniquely identifiable -- each change to
 the source code must produce a different unique identifier.
 
 The following are examples of unique identifiers:
@@ -273,7 +273,7 @@ example of all the required machinery.
 
 \item{Component Configuration}
 
- Each componet that is to have its build output downloaded must be
+ Each component that is to have its build output downloaded must be
  attributed using
  \texttt{component\_attribute\_build\_output\_download}
  (\xref{api:build-output-download}).
@@ -290,7 +290,7 @@ example of all the required machinery.
 
 \item{Build Components}
 
-  To build components which have been attributed to have their buid
+  To build components which have been attributed to have their build
   output downloaded, the following argument must be provided to
   \lmsbwcmd:
 

@@ -64,8 +64,8 @@ following non-optional, string type, command line arguments.
   build directory.  See \xref{variables:build-root-directory}.
 
   The script may place \emph{helper} files into this directory.  It
-  should not be used for intermedite files; \texttt{/tmp} must be used
-  for itnermediate files.
+  should not be used for intermediate files; \texttt{/tmp} must be used
+  for intermediate files.
 
   This directory is guaranteed to exist.
 
@@ -111,7 +111,7 @@ following non-optional, string type, command line arguments.
 \item[Detect Source Changes] \mbox{} \\
 
   If the local sources have been changed relative to the source
-  actually commited to the revision control system, an error must be
+  actually committed to the revision control system, an error must be
   returned.
 
 \item[Missing Build] \mbox{} \\
@@ -146,13 +146,13 @@ following non-optional, string type, command line arguments.
 
 \item[Extracted File Times] \mbox{} \\
 
-  Files extracted from the downloaded build must have their timestamp
+  Files extracted from the downloaded build must have their time stamp
   set to the current time so that \make will function properly.
 
 \end{description}
 
-Upon a successful download, \lmsbw will timestamp all the downloaded
-files with the current timestamp; this will ensure that any dependent
+Upon a successful download, \lmsbw will time stamp all the downloaded
+files with the current time stamp; this will ensure that any dependent
 components will build as if the prerequisite component is entirely
 new.
 
@@ -193,7 +193,7 @@ values shown in the following table.  If any other value is returned,
   intended to be used when local changes have been made to the
   sources.
 
-  This means that the source corresponds to officially commited code,
+  This means that the source corresponds to officially committed code,
   but the build machines do not have a build for it.
 
   Returning this value is strongly indicative of an internal
@@ -202,7 +202,7 @@ values shown in the following table.  If any other value is returned,
   to a halt unless the developer explicitly causes the affected
   component to be built instead of being downloaded.
 
-\item[3]{Missng command line argument}
+\item[3]{Missing command line argument}
 
   If the script is invoked without all the required parameters, it
   must return this value.

@@ -63,7 +63,7 @@ reasons to override the build phase of a component:
   been copied to the build directory.
 
   To do this, override the build rule to first apply the
-  patches\footnote{When the overriden build rule is dependent upon
+  patches\footnote{When the overridden build rule is dependent upon
     \texttt{sync}, the source files will have been copied to the build
     directory before the rule is invoked.}, then use the provided
   \lmsbw infrastructure to invoke the component's build process.
@@ -98,7 +98,7 @@ component.build.alpha:
 
 If the component configuration file does \emph{not} have this specific
 target, then the default build rules of \lmsbw will take effect, and
-tbe component's \makefile will be invoked to build the component.
+the component's \makefile will be invoked to build the component.
 
 To ultimately execute the component's actual build process, use the
 same code of \lmsbw proper to initiate this, as shown in
@@ -130,7 +130,7 @@ necessary prerequisites.
 \section{Overriding Install}\label{overriding:overriding-install}
 
 Overriding the default install rules is a task that will happen more
-frequently than overriding the build rules.  Here are some reaons why
+frequently than overriding the build rules.  Here are some reasons why
 overriding the default install rules might be necessary:
 
 \begin{itemize}
@@ -161,7 +161,7 @@ component.install.alpha:
              $(DESTDIR)/usr/include/alpha
 \end{verbatim}
 \end{small}
-  \caption{Overrding \texttt{install} For Component \texttt{alpha}}\label{overriding:override-install-alpha}
+  \caption{Overriding \texttt{install} For Component \texttt{alpha}}\label{overriding:override-install-alpha}
   \hrulefill
 \end{figure}
 

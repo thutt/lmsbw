@@ -17,12 +17,12 @@
 
 \lmsbw trivially facilitates using custom-built toolchains for
 building a project: just specify the toolchain root directory
-(\xref{usinglmsbw:toolchain-root}), and the name of a subdirectory
+(\xref{usinglmsbw:toolchain-root}), and the name of a sub-directory
 inside the root directory (\xref{usinglmsbw:toolchain}).
 
 There are many reasons to use a custom-built toolchain over the one
-prosent on the host computer.  The foremost reason for this is that it
-becomes posslbe to reproduce any build of a project, at any time and
+present on the host computer.  The foremost reason for this is that it
+becomes possible to reproduce any build of a project, at any time and
 on any machine; creating a bit-for-bit identical build at some point
 in the future using the toolchain on the host -- which may have been
 upgraded -- is unlikely to be be successful.  Secondarily, everyone on
@@ -170,16 +170,16 @@ The following steps must be taken to use a toolchain:
 \section{Examples of Using Toolchains}
 
 An example of using various toolchains to build one of the sample
-projects will helpful in undrstanding how easy it is to cross compile
+projects will helpful in understanding how easy it is to cross compile
 to different architectures, or to just use a specific compiler for the
 same architecture as the host.
 
 We will be using the \texttt{lite-consumer-pro} sample for this
 example.
 
-\subsection{Reducing Repitition with Shell Functions}
+\subsection{Reducing Repetition with Shell Functions}
 
-To reduce the reptitive, keyboard-based, work for building the sample
+To reduce the repetitive, keyboard-based, work for building the sample
 with different toolchains, several \texttt{bash} functions will be
 written and reused.
 
@@ -217,7 +217,7 @@ function build ()
 \item{\texttt{check\_lite\_file}}
 
   This function executes \texttt{file} on the file produced by the
-  sample's build porcess.  It obtains the install directory of the
+  sample's build process.  It obtains the install directory of the
   file by using the \texttt{installdir} (\xref{usinglmsbw:installdir})
   and discarding the first field -- the component name.
 

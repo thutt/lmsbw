@@ -30,9 +30,9 @@ recursive \make build system \emph{and} \lmsbw configuration files
 that enables the comparison of the difference in speed between a
 recursive \make and the same build wrapped with \lmsbw.
 
-It's just a simple, dummied-up, source tree with no complex
-dependencies, but the default configuration does produce $90,955$ source
-files in $1,856$ directories.
+It's just a simple mocked source tree with no complex dependencies,
+but the default configuration does produce $90,955$ source files in
+$1,856$ directories.
 
 The results of running this sample on the test system can be seen in
 figure~\tabref{samples:generate-results}.
@@ -96,7 +96,7 @@ build process when no work needs to be performed.
 This sample aims to show how to configure a wrapped build that has
 several different SKUs.  In this case, a \emph{lite}, \emph{consumer}
 and \emph{pro} SKU.  The component configuration files associated with
-the individual SKUs are configured using symlinks to the actual
+the individual SKUs are configured using symbolic links to the actual
 configuration files.
 
 \section{override}\label{samples:override}
@@ -124,15 +124,15 @@ criteria used to determine if a component needs to be rebuilt.
 \section{sports}\label{samples:sports}
 
 This sample showcases a component configuration mechanism which does
-not use symlinks.  Rather, it loads all the configuration files and
+not use symbolic links.  Rather, it loads all the configuration files and
 includes or excludes them through the use of \make variables.
 
 This mechanism is really only needed on systems which do not support
-symlinks.
+symbolic links.
 
 \section{startup-time}\label{samples:startup-time}
 
-This sample allows the time to load any number of dummied-up component
+This sample allows the time to load any number of mocked component
 configuration files to be measured. It's purpose is to provide a rough
 estimate of the load-time overhead of using \lmsbw on a project.
 

@@ -34,7 +34,7 @@ declare and define components.
 
 \section{\lmsbwconfiguration}\label{variables:lmsbw-configuration}
 
-This variable is the nexus of all global configuration for a porject.
+This variable is the nexus of all global configuration for a project.
 It must be initialized by the master configuration file
 (\xref{usinglmsbw:configuration}, \xref{wrap:master-configuration}),
 or \lmsbw will fail with an error message indicating that the
@@ -245,7 +245,7 @@ The following invariants are enforced:
 
   The value of this key is used internally and can only be set via the
   API described in \xref{api:build-output-download}.  If the value has
-  not been set for a component, then the compoment will be built.  If
+  not been set for a component, then the component will be built.  If
   the value has been set for a component, then the component's build
   output will be downloaded, provided the remaining invariants are
   met.
@@ -264,7 +264,7 @@ The following invariants are enforced:
 
   If the download script
   (\xref{variables:component-build-output-download-script}) has not
-  been declared, \lmsbw will exit with an apprpriate error
+  been declared, \lmsbw will exit with an appropriate error
   message.
 
   See \xref{errors:E1014}.
@@ -273,7 +273,7 @@ The following invariants are enforced:
 
   If the download script
   (\xref{variables:component-build-output-download-script}) does not
-  exist, \lmsbw will exit with an apprpriate error message.
+  exist, \lmsbw will exit with an appropriate error message.
 
   See \xref{errors:E1015}.
 

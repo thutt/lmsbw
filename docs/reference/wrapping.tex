@@ -103,7 +103,7 @@ Here are a few tenets of guidance on configuration choices:
 \end{description}
 
 Cooperation is important in all of this; a build process will only be
-successful if every participant pulls their weight and stives for the
+successful if every participant pulls their weight and strives for the
 best outcome.
 
 \section{Master Configuration Creation}\label{wrap:master-configuration}
@@ -143,7 +143,7 @@ that there will be \emph{configuration} directories for each distinct
 SKU.
 
 These \emph{configuration} directories will be populated with relative
-symlinks\footnote{Always use relative symlinks.  Absolute symlinks
+symbolic links\footnote{Always use relative symbolic links.  Absolute symbolic links
   encode full pathname structure into the build system.} to the
 original configuration file; see the \texttt{lite-consumer-pro} sample
 (\xref{samples:lite-consumer-pro}) for an example of how this is
@@ -176,7 +176,7 @@ configuration file does the following:
   At the beginning of the file, the \texttt{load\_configuration}
   function is declared.  This function is responsible for loading the
   component configuration files for the project.  This sample shows
-  how to configure different products by using symlinks to
+  how to configure different products by using symbolic links to
   configuration files.
 
   \begin{itemize}
@@ -227,7 +227,7 @@ configuration file does the following:
   \item{Declare Component Support}
 
     The project declares that it will be using \texttt{source}
-    components by assiging to the key \texttt{component-build-support}
+    components by assigning to the key \texttt{component-build-support}
     (\xref{variables:component-build-support}).
 \end{itemize}
 
