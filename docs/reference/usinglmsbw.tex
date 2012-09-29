@@ -78,7 +78,7 @@ build process.
 
 This argument turns off downloading build output globally.  It is
 intended to be used by build machines producing official builds so
-that the build-output-download components actually be built.
+that the build-output-download components can actually be built.
 
 When this option is used, all annotations (see
 \xref{variables:component-build-output-download-script} \&
@@ -89,14 +89,14 @@ source.
 \subsection{\texttt{--no-download}}\label{usinglmsbw:no-download}
 
 This optional argument, that can be used multiple times, allows the
-user to override the component setting which causes the build output
-of a component's build process to be downloaded in binary format.
-When a component that has been attributed to download the build output
-is named with this argument, the build output will not be downloaded.
+user to override the component setting that causes the build output of
+a component's build process to be downloaded in binary format.  When a
+component that has been attributed to download the build output is
+named with this argument, the build output will not be downloaded.
 Instead, the component will be built in the same manner as every other
 component.
 
-Naming a component which is not attributed to have its build output
+Naming a component that is not attributed to have its build output
 downloaded has no affect.
 
 \begin{verbatim}
@@ -107,7 +107,7 @@ See \xref{usinglmsbw:disable-build-output-download} for the way to
 cause all components to be built.
 
 See \xref{variables:build-output-download} for details on components
-which have their build output downloaded.
+that have their build output downloaded.
 
 \subsection{\texttt{--prerequisite-check}}\label{usinglmsbw:prerequisite-check}
 
@@ -190,7 +190,7 @@ The global toolchain is never used for \texttt{build} components
 
 \subsection{\texttt{--toolchain-root}}\label{usinglmsbw:toolchain-root}
 
-This option sets the root directory that contains the toolchains which
+This option sets the root directory that contains the toolchains that
 can be used to build the project.
 
 See \xref{chap:toolchain-usage} for details on using different
@@ -322,12 +322,12 @@ hello-world:
 \subsection{\texttt{dependent-report}}\label{usinglmsbw:dependent-report}
 
 The \texttt{dependent-report} target will produce a report showing
-each component and the components which directly depend on it.
+each component and the components that directly depend on it.
 
 This output format, shown in \tabref{usinglmsbw:dependents-verb},
 could be used to produce a graph of the project dependencies.
 
-Another use would be to determine which components will be directly
+Another use would be to determine that components will be directly
 affected by API changes.
 
 \begin{figure}[tbh]

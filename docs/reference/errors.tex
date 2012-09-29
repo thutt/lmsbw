@@ -134,7 +134,7 @@ E1008: Unknown component '<component>'
 
 An attempt has been made to use an unknown component.  This will
 typically occur when trying to set an attribute or call a component
-declaration function on a component which has not yet been declared.
+declaration function on a component that has not yet been declared.
 
 To remedy this situation, always declare components before trying to
 change them.
@@ -147,8 +147,8 @@ E1009: Function '<function>' for component '<component>' not written
 \end{verbatim}
 \end{footnotesize}
 
-This is an internal error which should only be seen when an extension
-to \lmsbw is incomplete.  Internally, \lmsbw will call functions which
+This is an internal error that should only be seen when an extension
+to \lmsbw is incomplete.  Internally, \lmsbw will call functions that
 are written to specifically process a component of a certain
 \emph{kind} (\xref{variables:kind}).  When adding a new component
 \emph{kind} to \lmsbw, always implement the necessary functions.  Use
@@ -231,8 +231,8 @@ E1016: Component '<component>' marked
 \end{verbatim}
 
 A component marked to have its build output downloaded (see
-\xref{api:build-output-download}) has prerequisites which will be
-built from source; \lmsbw does not allow this.  See
+\xref{api:build-output-download}) has prerequisites that will be built
+from source; \lmsbw does not allow this.  See
 \xref{variables:build-output-download} for the semantics of this
 attribute and the reasons why this is disallowed.
 

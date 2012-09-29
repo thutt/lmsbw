@@ -89,7 +89,7 @@ regain the lost incremental development speed.
 \begin{itemize}
 \item New Master Configuration
 
-  Create a new master configuration which contains only the desired
+  Create a new master configuration that contains only the desired
   component and necessary perquisites.
 
   Because \lmsbw shares build output, the \emph{small} master
@@ -194,7 +194,7 @@ will not be built, and they can then take corrective action (See
 
 The method employed to uniquely identify the state of the source tree
 is ultimately determined by the build team, but \lmsbw provides a
-script which will produce a single SHA hash for all the files in the
+script that will produce a single SHA hash for all the files in the
 source directory tree.  This is called:
 
 \begin{verbatim}
@@ -290,7 +290,7 @@ example of all the required machinery.
 
 \item{Build Components}
 
-  To build components which have been attributed to have their build
+  To build components that have been attributed to have their build
   output downloaded, the following argument must be provided to
   \lmsbwcmd:
 
@@ -312,7 +312,7 @@ example of all the required machinery.
     \item{Determine Components}
 
       The \texttt{build-output-download-components} \lmsbwcmd target
-      must be used to identify all components which have been
+      must be used to identify all components that have been
       attributed.
 
       \texttt{--disable-build-output-download} must \emph{not} be
@@ -358,7 +358,7 @@ example of all the required machinery.
 
   Once a component is attributed to have its build output downloaded,
   under normal build circumstances it will never be built from source,
-  and the script which downloads build output must produce an error if
+  and the script that downloads build output must produce an error if
   local modifications are made to the source.
 
   To make changes to an attributed component's source, and have the
@@ -379,6 +379,7 @@ example of all the required machinery.
   \end{itemize}
 \end{enumerate}
 
-Use dependency targets to determine the set of components which are
-dependent upon the one which needs to be built.
+Use dependency targets (\xref{usinglmsbw:prerequisite-report} \&
+\xref{usinglmsbw:dependent-report}) to determine the set of components
+that are dependent upon the one that needs to be built.
 

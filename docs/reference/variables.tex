@@ -67,8 +67,8 @@ exit with an error.
 
 \subsection{\texttt{load-configuration-function}}\label{variables:load-configuration-function}
 
-This key must be the name of a \gnumake function which will load the
-component configurations which comprise the project.
+This key must be the name of a \gnumake function that will load the
+component configurations that comprise the project.
 
 \begin{figure}
 \hrulefill
@@ -148,17 +148,17 @@ The list must adhere to the following rules:
   associative array.
 \end{itemize}
 
-\lmsbw will use this list of components to generate the rules which
+\lmsbw will use this list of components to generate the rules that
 will be used to build the project.
 
 % To verify that this documentation is complete, you must find all
 % component associative array keys.  This is done by looking for
-% the function which sets component keys -- lmsbw_scf -- in the
+% the function that sets component keys -- lmsbw_scf -- in the
 % 'wrapper' directory.
 \section{\lmsbwcomponent{component}}\label{variables:lmsbw-component-component}
 
 Each component named in \lmsbwcomponents must have a corresponding
-associative array which describes all the attributes needed to
+associative array that describes all the attributes needed to
 correctly build it.  Be aware that the allowed attributes will vary
 based on the \texttt{kind} (\xref{variables:kind}) of the component.
 
@@ -330,7 +330,7 @@ Compare to \xref{variables:install-target}.
 
 \subsection{\lmsbwcomponentfield{cflags}}\label{variables:cflags}
 
-This key holds a list of values which will be assigned to the
+This key holds a list of values that will be assigned to the
 \texttt{LMSBW\_C\_CFLAGS} variable before the component's \makefile is
 invoked.  The invoked \makefile should add the value of
 \texttt{LMSBW\_C\_CFLAGS} to \texttt{CFLAGS}\footnote{See
@@ -494,10 +494,10 @@ rules, produce reports, etc. -- components of that specific
 \emph{kind}.
 
 \lmsbw will check that functions used in this manner exist before
-attempting to invoke them\footnote{Invoking a function name which does
+attempting to invoke them\footnote{Invoking a function name that does
   not exist in \gnumake produces no error, and does nothing.  That's
   ok; \lmsbw takes advantage of that with component declaration
-  functions which are processed in the main \makefile and ignored in
+  functions that are processed in the main \makefile and ignored in
   \texttt{component.makefile}.}.  When implementing a new \emph{kind}
 of component, failure to create all the necessary functions will cause
 \lmsbw will produce an error and stop.
@@ -544,7 +544,7 @@ Reason can be one of two values:
 
     Components declared with this \emph{reason} are always built with
     the native toolchain present on the host; this ensures that the
-    program will actually run on the machine which is performing the
+    program will actually run on the machine that is performing the
     build.
 
   \item \texttt{image}
@@ -586,7 +586,7 @@ This key must not be used by clients of \lmsbw.
 
 \subsection{\lmsbwcomponentfield{source-mtree-manifest}}\label{variables:source-mtree-manifest}
 
-This key holds the absolute pathname of the file which holds the
+This key holds the absolute pathname of the file that contains the
 \mtree manifest for the source directory.
 
 This value should not be used by a client of \lmsbw.

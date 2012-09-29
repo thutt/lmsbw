@@ -3,7 +3,7 @@
 This chapter describes the programs that must be supplied by the build
 team to support certain features of \lmsbw.  The \lmsbw features that
 require additional scripts require, for lack of a better phrase,
-\emph{business logic} which is unique to each build system using
+\emph{business logic} that is unique to each build system using
 \lmsbw.
 
 
@@ -18,7 +18,7 @@ script that actually performs the download of the build output must be
 supplied by the build team because \lmsbw is not written to
 incorporate the configuration specifics of various build systems using
 it.  This section describes the work necessary to write a download
-script which will work seamlessly with \lmsbw.
+script that will work seamlessly with \lmsbw.
 
 Builds that do not use the
 \texttt{component\_attribute\_build\_output\_download} API do not need
@@ -32,14 +32,14 @@ to provide the script.
     To enable the functionality in \lmsbw to download build output,
     the master configuration key
     \texttt{component-build-output-download-script} must be set to the
-    name of the program which conforms to the semantics described in
+    name of the program that conforms to the semantics described in
     this section.
 
     See~\xref{variables:component-build-output-download-script}.
 
   \item{Component Configuration}
 
-    Each component which is to have its build output downloaded must
+    Each component that is to have its build output downloaded must
     be configured.
 
     See \xref{variables:build-output-download} to understand the

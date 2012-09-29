@@ -25,8 +25,8 @@ Rather than trying to change the world by convincing people to
 increase the complexity of their build system with non-recursive use
 of \make, the software described in this document aims to simplify the
 world by implementing a wrapper system -- implemented entirely in
-\gnumake and \texttt{bash} scripts -- which allows the continued use
-of a recursive \make system, but provides dramatic performance
+\gnumake and \texttt{bash} scripts -- that allows the continued use of
+a recursive \make system, but provides dramatic performance
 improvements by only recursing when something in the source tree has
 changed and without requiring widespread changes to the existing build
 process.
@@ -84,7 +84,7 @@ The following tenets guided the implementation of \lmsbw:
   it, including which other components are prerequisites.
 
   \lmsbw compiles this information and generates, on-the-fly, a set of
-  \make rules and targets which allows the wrapped build process to be
+  \make rules and targets that allows the wrapped build process to be
   executed.
 
   Included in the generation of rules and targets is a uniform
@@ -97,7 +97,7 @@ The following tenets guided the implementation of \lmsbw:
   \end{center}
 
   Similarly, many other \emph{verbs} (\xref{usinglmsbw:target:verbs})
-  which are exported by \lmsbw can be executed globally or on an
+  that are exported by \lmsbw can be executed globally or on an
   individual component.
 
 \item Extensible
@@ -108,10 +108,10 @@ The following tenets guided the implementation of \lmsbw:
 
 \section{What Benefit Will \lmsbw Provide?}
 
-At this point there may be interest, but also reticence to invest a
+At this point there may be interest, but also reticence, to invest a
 lot of time just to find out if \lmsbw will provide a speed benefit.
 Fortunately, there is a way to quickly determine if \lmsbw will
-provide a benefit, because this package has a handy script which will
+provide a benefit, because this package has a handy script that will
 provide benchmark numbers.  Just follow these instructions:
 
 \begin{itemize}
@@ -150,10 +150,10 @@ time should be; to get a better estimate of how long a normal
 the in-RAM disk caches are filled.
 
 In short, the \mtree utility performs a \texttt{stat} on every file in
-the named directories and produces output which can be used later to
+the named directories and produces output that can be used later to
 determine if any file in the directory tree has changed.  When no
 files have changed in a source directory, \lmsbw will not recurse into
-that directory to build -- modulo other dependency issues which can
+that directory to build -- modulo other dependency issues that can
 force the component's build to be re-invoked.
 
 This means that the elapsed time shown is a very good approximation
@@ -238,7 +238,7 @@ Let's examine the what makes \lmsbw different:
   \begin{itemize}
   \item \lmsbw \makefile
 
-    The first is the main \lmsbw \makefile which handles all the
+    The first is the main \lmsbw \makefile tbat handles all the
     configuration and dependencies between components.
 
   \item Component Trampoline \makefile
@@ -316,7 +316,7 @@ generally load each component configuration file using the \gnumake
 \texttt{\$(include)} directive.
 
 The component configuration files are, in fact, \makefile snippets
-which can actually have rules that will override the default behavior
+that can actually have rules that will override the default behavior
 of \lmsbw.  See \xref{chap:overriding} for more details on overriding
 the default behavior of component building.
 
@@ -327,7 +327,7 @@ of data:
 \item \lmsbwcomponents
 
   This is a standard \gnumake variable that is a list of all the
-  component names which are to be built.
+  component names that are to be built.
 
   This variable is internally managed as a by-product of declaring
   components when using the standard declaration functions.
@@ -340,15 +340,15 @@ of data:
   The keys that are defined for the component's associative array are
   dependent upon the \emph{kind} (\xref{variables:kind}) of the
   component.  For example, a \emph{source} component will define a set
-  of keys which would include information such as the source
-  directory.  A \emph{download} component would have different keys,
-  such as the \texttt{URL} from which the component can be downloaded.
+  of keys that would include information such as the source directory.
+  A \emph{download} component would have different keys, such as the
+  \texttt{URL} from which the component can be downloaded.
 \end{itemize}
 
 
 \subsection{\lmsbwcomponent{component} Configuration}
 
-Each component's associative array contains data which enables \lmsbw
+Each component's associative array contains data that enables \lmsbw
 to build and install it.
 
 Such user-provided data, for a \emph{source} component, includes:
@@ -366,5 +366,5 @@ Such user-provided data, for a \emph{source} component, includes:
 
 Conveniently, there are \lmsbw functions, such as
 \texttt{declare\_source\_component}
-(\xref{api:declare-source-component}), which simplify the
-configuration of components.
+(\xref{api:declare-source-component}), that simplify the configuration
+of components.

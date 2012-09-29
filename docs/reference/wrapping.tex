@@ -21,7 +21,7 @@ chapter provides guidance for setting up and creating the master
 configuration, component configurations and the API requirements of a
 component \makefile.
 
-The following is a breakdown of the steps which should be taken to
+The following is a breakdown of the steps that should be taken to
 wrap a build:
 
 \begin{description}
@@ -151,7 +151,7 @@ performed.
 
 \subsection{Conditional Component Declaration}
 
-For operating system which do not support symbolic links, one
+For operating systems that do not support symbolic links, one
 configuration option is:
 
 \begin{itemize}
@@ -202,11 +202,10 @@ configuration file does the following:
     This variable is used by the component configuration files to
     declare the components (\xref{api:declare-source-component}).
 
-    It contains the full pathname of the configuration file which is
-    currently being loaded, which is a required when declaring a
-    component.
+    It contains the full pathname of the configuration file that is
+    currently being loaded.
 
-    This value can also frequently be used to concoct the source tree
+    This value can also frequently be used to derive the source tree
     directory, which is also a required parameter.
 
   \item{Include component configuration}
@@ -250,7 +249,7 @@ endef
 #
 vv:=$(call set,LMSBW_configuration,load-configuration-function,load_configuration)
 
-# Declare the type of components which will be needed.  There is only
+# Declare the type of components that will be needed.  There is only
 # source in this sample, so only load support for 'source' components.
 #
 vv:=$(call set,LMSBW_configuration,component-build-support,source)
@@ -459,7 +458,7 @@ the full path to the configuration file is still available as
 Figure \tabref{wrap:config-structure} shows that the idiom in argument
 five (5) is correct because the project configuration file resides in
 the same directory as the component source directory.  The code for
-this parameter replaces the configuration file name -- which is known
+this parameter replaces the configuration file name -- that is known
 -- with the name of the source directory for the component.
 
 \subsubsection{Valid Attributes}
@@ -482,7 +481,7 @@ rules:
 \begin{itemize}
 \item \makefile
 
-  Each component declares a directory which contains the source code
+  Each component declares a directory that contains the source code
   and, implicitly, the build process for it.  The build process must
   be invoked through a \makefile and the \makefile must be present in
   the top-level source directory of the component.
@@ -502,7 +501,7 @@ rules:
 \item Test Execution
 
   Because \lmsbw facilitates easy cross-compilation to a different
-  architecture, no component which is declared to be part of the
+  architecture, no component that is declared to be part of the
   product image (see \xref{variables:reason}) should execute any
   program that is built by the component build\footnote{Unless it is
     known with certainty that the build will never be cross-compiled
