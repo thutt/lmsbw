@@ -20,7 +20,7 @@ when creating \lmsbw.  After creating the configuration files to wrap
 the project's build process, \lmsbwcmd is used to build it.
 
 This chapter only describes how to execute \lmsbwcmd;
-\xref{chap:wrapping} describes how to produce the configuration for
+\xref{chap:wrapping} describes how to create the configuration for
 wrapping the build.
 
 \section{Accessing \lmsbwcmd}
@@ -33,7 +33,9 @@ is to add the \texttt{scripts} directory to the \texttt{PATH}
 environment variable.
 
 If modifying \texttt{PATH} is undesirable, just use the full pathname
-of \lmsbwcmd when executing.
+of \lmsbwcmd when executing.  \xref{envvars:lmsbw-script-directory}
+describes an environment variable that can be used to locate
+\lmsbw-provided scripts.
 
 \section{\lmsbwcmd script}
 
@@ -58,9 +60,15 @@ placed.
 This directory must not be shared with other projects wrapped by
 \lmsbw.
 
+Excepting \texttt{/tmp}, all work produced by \lmsbw will be contained
+in this directory.
+
 \begin{verbatim}
 --build-root /tmp/lmsbw-build-output
 \end{verbatim}
+
+Only the last \texttt{--build-root} argument provided on the command
+line is used.
 
 \subsection{\texttt{--configuration}}\label{usinglmsbw:configuration}
 
@@ -72,6 +80,8 @@ build process.
 --configuration ~/src/project/project.cfg
 \end{verbatim}
 
+Only the last \texttt{--configuration} argument provided on the
+command line is used.
 
 \subsection{\texttt{--disable-build-output-download}}
 \label{usinglmsbw:disable-build-output-download}
@@ -117,9 +127,16 @@ prerequisites are sufficient to allow the component to be compiled.
 
 This check is provided because it is possible to create a new
 component that builds because the implicit compilation order chosen by
-\make causes unspecified prerequisites to be built first.  In this
-scenario, if the new component is built alone in a clean tree, it will
-not build because of the missing dependencies.
+\make causes unspecified prerequisites to be built and installed
+first.  In this scenario, if the new component is built alone in a
+clean tree, it will not build because of the missing dependencies.
+
+Only the last \texttt{--prerequisite-check} argument provided on the
+command line is used.
+
+\begin{verbatim}
+--prerequisite-check new-component
+\end{verbatim}
 
 \subsection{\texttt{--progress}}\label{usinglmsbw:progress}
 
@@ -135,7 +152,7 @@ Compare \xref{usinglmsbw:verbose}.
 
 \subsection{\texttt{--parallel}}\label{usinglmsbw:parallel}
 
-This option allows the direct control the number of parallel builds
+This option allows the direct control of the number of parallel builds
 that \make is allowed to invoke.  When not specified on the command
 line, the default is one (1).
 
@@ -155,7 +172,11 @@ This option causes \lmsbw to be much more verbose while running.
 \end{verbatim}
 
 This option causes every command executed by the main \makefile to be
-printed to the console.
+printed to the console.  Each component's \make output is still placed
+into a component-specific log file; see
+\xref{using:component-log-target} for information on how to view a
+component's build log file.
+
 
 Compare \xref{usinglmsbw:progress}
 
@@ -172,14 +193,15 @@ the elapsed time to build each component as each is completed.
 
 This option globally specifies the toolchain that is to be used to
 compile the project.  All components will be compiled using this
-toolchain, unless they specify a toolchain in their configuration
-file.
+toolchain, unless a different toolchain is specified in their
+configuration file.
 
 If a toolchain is specified with this argument, then the toolchain
-root directory with \texttt{--toolchain-root} must also be specified.
+root directory with \texttt{--toolchains-root}
+(\xref{usinglmsbw:toolchains-root}) must also be specified.
 
 The value provided as an argument to this option must be the name of a
-sub-directory of the directory named with \texttt{--toolchain-root}.
+sub-directory of the directory named with \texttt{--toolchains-root}.
 
 See \xref{chap:toolchain-usage} for details on using different
 toolchains and \xref{chap:toolchain-configuration} for information
@@ -188,7 +210,10 @@ about creating toolchains.
 The global toolchain is never used for \texttt{build} components
 (\xref{variables:reason}).
 
-\subsection{\texttt{--toolchain-root}}\label{usinglmsbw:toolchain-root}
+Only the last \texttt{--toolchain} argument provided on the command
+line is used.
+
+\subsection{\texttt{--toolchains-root}}\label{usinglmsbw:toolchains-root}
 
 This option sets the root directory that contains the toolchains that
 can be used to build the project.
@@ -196,6 +221,9 @@ can be used to build the project.
 See \xref{chap:toolchain-usage} for details on using different
 toolchains and \xref{chap:toolchain-configuration} for information
 about creating toolchains.
+
+Only the last \texttt{--toolchains-root} argument provided on the command
+line is used.
 
 \section{Using \lmsbw targets}\label{usinglmsbw:target:verbs}
 
@@ -406,6 +434,7 @@ The \texttt{clean} target is used to clean out the entire build
 directory, or the build directory of a specific component.
 
 \subsection{\texttt{log}}
+\label{using:component-log-target}
 
 The \texttt{log} target is used to display all the build logs, or the
 build log of a specific component, to the console.
