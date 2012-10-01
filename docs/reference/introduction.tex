@@ -181,17 +181,17 @@ wrapped build when nothing has changed since the last build.
 Let's examine the what makes \lmsbw different:
 
 \begin{description}
-\item Defined Build Process API
+\item{Defined Build Process API}
 
   To facilitate rebuilding dependent components when necessary --
   especially when the exported API of a prerequisite component changes
-  -- \lmsbw defines an API that wrapped builds must follow.  This API
-  requires that each component install its public build product into a
-  \texttt{DESTDIR}.  This facilitates automatic checking of
-  inter-component APIs that will force dependent components to be
-  rebuilt upon changes to the API.
+  -- \lmsbw, itself, defines an API that wrapped builds must follow.
+  This API requires that each component install its public build
+  product into a \texttt{DESTDIR}.  This facilitates automatic
+  checking of inter-component APIs that will force dependent
+  components to be rebuilt upon changes to the API.
 
-\item Component Declarations
+\item{Automatic Rule Generation}
 
   \lmsbw automatically generates the rules that are used by \make to
   build the project, but to be able to generate these rules, every
@@ -204,23 +204,23 @@ Let's examine the what makes \lmsbw different:
   build, and, when requested, installing it into the \texttt{DESTDIR}
   directory.
 
-\item Recurse only when needed\label{intro:build-component-criteria}
+\item{Recurse only when needed}\label{intro:build-component-criteria}
 
-  \lmsbw only maintains the inter-component dependencies that are
-  explicitly defined by the component declarations.
+  \lmsbw maintains the inter-component dependencies that are
+  explicitly defined by the component declarations and the
+  intra-component file dependencies are handled by each component's
+  build process.  Not handling intra-component file dependencies
+  reduces memory use and makes the criteria for recursing easier to
+  determine, thereby simplify \lmsbw.
 
-  Intra-component file dependencies are entirely handled by each
-  component's build process.  Not handling file dependencies reduces
-  memory use and makes the criteria for recursing easier to determine.
-
-  The general determination for building components is this:
+  The general determination for recursing into each component's build
+  process is this:
 
   \begin{itemize}
-  \item If the component is not built
-  \item If \emph{any} file has been changed in the source tree
-  \item If \emph{any} file in a prerequisite's declared API has
-    changed
-  \item If the component's configuration file has changed
+  \item{If the component is not built}
+  \item{If \emph{any} file in the source tree has been changed}
+  \item{If \emph{any} file in a prerequisite's declared API has changed}
+  \item{If the component's configuration file has changed}
   \end{itemize}
 
   Any of the above conditions being true causes \lmsbw to recurse into
@@ -230,34 +230,33 @@ Let's examine the what makes \lmsbw different:
   already built saves an amount of time that is proportional to the
   number and complexity of \make rules present in that directory.
 
-\item \makefile Simplicity
+\item{\makefile Simplicity}
 
   During the execution of the build process, \lmsbw executes, at most,
   three different \makefile processes:
 
   \begin{itemize}
-  \item \lmsbw \makefile
+  \item{\lmsbw \makefile}
 
     The first is the main \lmsbw \makefile tbat handles all the
     configuration and dependencies between components.
 
-  \item Component Trampoline \makefile
+  \item{Component Trampoline \makefile}
 
     The second \makefile performs configuration such as standard
     macros for the toolchain (\xref{chap:toolchain-usage})
     selected to build the component.
 
     It also ensures that each component's build process is completely
-    disjoint from other components; the settings for \emph{component
-      $\alpha$} cannot interfere with the settings for \emph{component
-      $\beta$}.
+    disjoint from other components; the settings for one component
+    cannot interfere with the settings for any other component.
 
     Because each individual component is fulfilled through a separate
     \make process, this trampoline also ensures that the parallelism
     available through \gnumake is effectively used when it becomes
     necessary to invoke a component's build process.
 
-  \item Component \makefile
+  \item{Component \makefile}
 
     Finally, the \makefile of the component is executed.  This will
     likely already exist if wrapping an existing build process.
@@ -268,18 +267,20 @@ Let's examine the what makes \lmsbw different:
     \destdir.
 \end{itemize}
 
-\item Share Build Output
+\item{Share Build Output}
 
   If the project contains different SKUs, and those SKUs share
   components, it is possible for \lmsbw to share the build output from
-  one SKU with another, if the components are compiled exactly the
-  same.
+  one SKU with another, if the components are compiled in exactly the
+  same way.
 
 \end{description}
 
 \lmsbw is a lightweight system that has been designed for speeding up
 incremental builds.  It handily achieves that goal by performing as
-little work as possible from run-to-run.
+little work as possible from run-to-run.  See
+\xref{samples:startup-time} for examples of startup speed and memory
+usage.
 
 \section{Steps To Wrap A Build}
 
@@ -311,14 +312,14 @@ After loading the command-line-specified master configuration file,
 (\xref{variables:load-configuration-function}).  This function is
 responsible for declaring all the components that are to be included
 in the project.  Generally there is a one-to-one correspondence of
-components to component configuration files.  The called function will
-generally load each component configuration file using the \gnumake
-\texttt{\$(include)} directive.
+components to component configuration files, but this is not a
+requirement.  The called function will generally load each component
+configuration file using the \gnumake \texttt{\$(include)} directive.
 
 The component configuration files are, in fact, \makefile snippets
 that can actually have rules that will override the default behavior
-of \lmsbw.  See \xref{chap:overriding} for more details on overriding
-the default behavior of component building.
+of \lmsbw.  See \xref{chap:overriding} for details on overriding the
+default behavior of component building.
 
 This configuration-loading function must ultimately produce two sets
 of data:
@@ -334,19 +335,22 @@ of data:
 
 \item \lmsbwcomponent{component}
 
-  Each component loaded is assigned an associative array that holds
-  all the data relevant to building the component.
+  Each component contained in \lmsbwcomponents is assigned an
+  associative array that holds all the data relevant to building the
+  component.
 
   The keys that are defined for the component's associative array are
   dependent upon the \emph{kind} (\xref{variables:kind}) of the
   component.  For example, a \emph{source} component will define a set
   of keys that would include information such as the source directory.
-  A \emph{download} component would have different keys, such as the
-  \texttt{URL} from which the component can be downloaded.
+  A \emph{download}\footnote{Hypothetical case; a pure
+    \texttt{download} component type does not exist.} component would
+  have different keys, such as the \texttt{URL} from which the
+  component can be downloaded.
 \end{itemize}
 
 
-\subsection{\lmsbwcomponent{component} Configuration}
+\subsubsection{\lmsbwcomponent{component} Configuration}
 
 Each component's associative array contains data that enables \lmsbw
 to build and install it.
