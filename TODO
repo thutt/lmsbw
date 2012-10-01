@@ -17,3 +17,5 @@
    locally.
  o Applying patches should be part of lmsbw
  o Add facility to trace rule execution using $@, $^, etc.
+ o Remove 'hypothetical' footnote in documentation when a pure
+   download component is created.
