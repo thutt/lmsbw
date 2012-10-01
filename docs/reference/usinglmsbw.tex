@@ -395,10 +395,13 @@ nice-to-meet-you
 \label{usinglmsbw:{build-output-download-components-verb}}
 \end{figure}
 
-It can be used by an official build server to determine the components
-that must have their \destdir archived.  See
+It can be used on an official build server to programmatically
+determine the components that must have their \destdir archived.  See
 \xref{api:build-output-download} and
 \xref{tips:using-build-output-download}.
+
+This verb will produce no output is
+\texttt{--disable-build-output-download} is specified.
 
 \subsection{\texttt{prerequisite-report}}
 \label{usinglmsbw:prerequisite-report}
@@ -504,8 +507,9 @@ The \texttt{install} target is used by the default target
 
 \subsection{\texttt{clean}}
 
-The \texttt{clean} target is used to clean out the entire build
-directory, or the build directory of a specific component.
+The \texttt{clean} target is used to clean out the build directory, or
+the build directory of a specific component, for the current
+configuration.
 
 \subsection{\texttt{log}}
 \label{using:component-log-target}
@@ -580,6 +584,22 @@ been marked to have their build output downloaded.  The source
 directory for the component is needed because a hash for the current
 value of the source code is used to match developer's source trees
 with downloadable content.
+
+The easily parsed output format is shown in
+\tabref{usinglmsbw:sourcedir-verb}.
+
+\begin{figure}[tbh]
+\hrulefill
+\begin{footnotesize}
+\begin{verbatim}
+hello-world:/tmp/build-process/samples/build-output-download/src
+goodbye-world:/tmp/build-process/samples/build-output-download/src
+\end{verbatim}
+\end{footnotesize}
+\hrulefill
+\caption{\texttt{sourcedir} verb}\label{usinglmsbw:sourcedir-verb}
+\end{figure}
+
 
 \subsection{\texttt{installdir}}\label{usinglmsbw:installdir}
 
