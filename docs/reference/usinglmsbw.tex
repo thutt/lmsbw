@@ -63,9 +63,15 @@ This directory must not be shared with other projects wrapped by
 Excepting \texttt{/tmp}, all work produced by \lmsbw will be contained
 in this directory.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 --build-root /tmp/lmsbw-build-output
 \end{verbatim}
+  \caption{Syntax: \texttt{--build-root}}
+  \hrulefill
+\end{figure}
+
 
 Only the last \texttt{--build-root} argument provided on the command
 line is used.
@@ -76,9 +82,14 @@ This required option allows the specification of the master
 configuration file that is used to configure \lmsbw for the wrapped
 build process.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 --configuration ~/src/project/project.cfg
 \end{verbatim}
+  \caption{Syntax: \texttt{--configuration}}
+  \hrulefill
+\end{figure}
 
 Only the last \texttt{--configuration} argument provided on the
 command line is used.
@@ -89,6 +100,15 @@ command line is used.
 This argument turns off downloading build output globally.  It is
 intended to be used by build machines producing official builds so
 that the build-output-download components can actually be built.
+
+\begin{figure}[h]
+  \hrulefill
+\begin{verbatim}
+--disable-build-output-download
+\end{verbatim}
+  \caption{Syntax: \texttt{--disable-build-output-download}}
+  \hrulefill
+\end{figure}
 
 When this option is used, all annotations (see
 \xref{variables:component-build-output-download-script} \&
@@ -109,9 +129,14 @@ component.
 Naming a component that is not attributed to have its build output
 downloaded has no affect.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 --no-download alpha --no-download beta
 \end{verbatim}
+  \caption{Syntax: \texttt{--no-download}}
+  \hrulefill
+\end{figure}
 
 See \xref{usinglmsbw:disable-build-output-download} for the way to
 cause all components to be built.
@@ -134,9 +159,14 @@ clean tree, it will not build because of the missing dependencies.
 Only the last \texttt{--prerequisite-check} argument provided on the
 command line is used.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 --prerequisite-check new-component
 \end{verbatim}
+  \caption{Syntax: \texttt{--prerequisite-check}}
+  \hrulefill
+\end{figure}
 
 \subsection{\texttt{--progress}}\label{usinglmsbw:progress}
 
@@ -144,9 +174,14 @@ In normal operation, \lmsbw is very silent about the activities it is
 undertaking.  To be presented with more information about the progress
 of the build, add this to the command line.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 --progress
 \end{verbatim}
+  \caption{Syntax: \texttt{--progress}}
+  \hrulefill
+\end{figure}
 
 Compare \xref{usinglmsbw:verbose}.
 
@@ -159,17 +194,27 @@ line, the default is one (1).
 This value for this argument is directly used with the \gnumake
 \texttt{-j} option.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 --parallel 3
 \end{verbatim}
+  \caption{Syntax: \texttt{--parallel}}
+  \hrulefill
+\end{figure}
 
 \subsection{\texttt{--verbose}}\label{usinglmsbw:verbose}
 
 This option causes \lmsbw to be much more verbose while running.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 --verbose
 \end{verbatim}
+  \caption{Syntax: \texttt{--verbose}}
+  \hrulefill
+\end{figure}
 
 This option causes every command executed by the main \makefile to be
 printed to the console.  Each component's \make output is still placed
@@ -185,9 +230,14 @@ Compare \xref{usinglmsbw:progress}
 When this option is specified on the command line, \lmsbw will print
 the elapsed time to build each component as each is completed.
 
+\begin{figure}[h]
+  \hrulefill
 \begin{verbatim}
 --time
 \end{verbatim}
+  \caption{Syntax: \texttt{--time}}
+  \hrulefill
+\end{figure}
 
 \subsection{\texttt{--toolchain}}\label{usinglmsbw:toolchain}
 
@@ -202,6 +252,15 @@ root directory with \texttt{--toolchains-root}
 
 The value provided as an argument to this option must be the name of a
 sub-directory of the directory named with \texttt{--toolchains-root}.
+
+\begin{figure}[h]
+  \hrulefill
+\begin{verbatim}
+--toolchain mips-be_bare.metal_gcc.4.6.3_newlib.1.17.0-elf
+\end{verbatim}
+  \caption{Syntax: \texttt{--toolchain}}
+  \hrulefill
+\end{figure}
 
 See \xref{chap:toolchain-usage} for details on using different
 toolchains and \xref{chap:toolchain-configuration} for information
@@ -221,6 +280,15 @@ can be used to build the project.
 See \xref{chap:toolchain-usage} for details on using different
 toolchains and \xref{chap:toolchain-configuration} for information
 about creating toolchains.
+
+\begin{figure}[h]
+  \hrulefill
+\begin{verbatim}
+--toolchains-root /opt/toolchains
+\end{verbatim}
+  \caption{Syntax: \texttt{--toolchains-root}}
+  \hrulefill
+\end{figure}
 
 Only the last \texttt{--toolchains-root} argument provided on the command
 line is used.
@@ -242,11 +310,17 @@ executed in its entirety.
 This target will build, install and show the location of the resulting
 \mtree utility executable.
 
-The output will appear in this easily parsed format:
+The output will appear in the easily parsed format show in
+figure~\xref{usinglmsbw:mtree-output}.
 
+\begin{figure}[ht]
+  \hrulefill
 \begin{verbatim}
 mtree:/tmp/hello/lmsbw/utilities/bin/mtree
 \end{verbatim}
+  \caption{Target \texttt{mtree} output}\label{usinglmsbw:mtree-output}
+  \hrulefill
+\end{figure}
 
 \subsection{\texttt{targets}}
 
