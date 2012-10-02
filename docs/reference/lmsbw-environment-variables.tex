@@ -87,6 +87,7 @@ This is used internally to use a specific toolchain when building all
 components.
 
 \subsection{\texttt{LMSBW\_TOOLCHAINS\_ROOT}}
+\label{envvar:lmsbw-toolchains-root}
 
 This variable is assigned the value of the \texttt{--toolchains-root}
 (\xref{usinglmsbw:toolchains-root}) parameter.
@@ -129,6 +130,19 @@ component \emph{install} rules.
 pathname.  The rules may assume the directory exists and that full
 control of the directory is available.
 
+
+\subsection{\texttt{LMSBW\_C\_TOOLCHAIN}}\label{wrap:lmsbw-c-toolchain}
+
+If a component has a toolchain associated with it, this variable will
+be set to the toolchain directory name.  If there is no aasociated
+toolchain, this variable will not be set.
+
+\subsection{\texttt{LMSBW\_C\_TOOLCHAINS\_ROOT}}\label{wrap:lmsbw-c-toolchains-root}
+
+This will be set to \texttt{LMSBW\_TOOLCHAINS\_ROOT}
+(\xref{envvar:lmsbw-toolchains-root}) if a component has a toolchain
+associated with it.  If there is no aasociated toolchain, this
+variable will not be set.
 
 \subsection{\texttt{LMSBW\_C\_BUILD\_INSTALL\_DIRECTORY}}\label{wrap:build-install-directory}
 
