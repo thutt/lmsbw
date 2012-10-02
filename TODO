@@ -6,7 +6,6 @@
  o Figure out why generate-rules.mk causes errors when put in
    lmsbw-system.mk.
  o Figure out why error occurs if assignment to __dsm in declare_source_component() is removed.
- o Document LMSBW_C_TOOLCHAINS_ROOT, and LMSBW_C_TOOLCHAIN
  o Support LDFLAGS wrapping per-component.
  o One could imagine an extension to the component system.  A plugin
    for subdirectory makefiles which would has CFLAGS, the relative
