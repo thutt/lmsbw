@@ -130,7 +130,7 @@ distribution.
 
 The basic recommendation for \lmsbw component configuration is to
 place all component configuration files into the same directory.  This
-centralizes maintenance and make global configuration changes much
+centralizes maintenance and makes global configuration changes much
 easier.  The \texttt{load-configuration} function can easily load all
 the component configuration files from the common directory.
 
@@ -152,14 +152,29 @@ performed.
 \subsection{Conditional Component Declaration}
 
 For operating systems that do not support symbolic links, one
-configuration option is:
+configuration option is the following:
 
 \begin{itemize}
-\item Export an environment variable from the shell,
+\item Export an environment variable from the shell which can be used
+  to discriminate the product configuration,
+  Figure~\xref{wrapping:configuration-using-environment-variables}
+  shows how this can be done.
+
+\begin{figure}[b]
+\hrulefill
+\begin{verbatim}
+export PRODUCT=shareware;   # freeware, shareware, commercial
+\end{verbatim}
+\hrulefill
+\caption{Component Configuration using Environment Variables}
+\label{wrapping:configuration-using-environment-variables}
+\label{usinglmsbw:sourcedir-verb}
+\end{figure}
+
 \item Include all the component configuration files, as described in
   \xref{wrap:directory},
 \item Use the facilities of \gnumake to conditionally include only the
-  desired components.
+  desired components using the exported environment variable.
 \end{itemize}
 
 See the \texttt{sports} sample (\xref{samples:sports}) for an example
@@ -188,7 +203,7 @@ configuration file does the following:
     \texttt{PRODUCT} is set.
 
     If \texttt{PRODUCT} is not set to a correct value, the build will
-    fail with an error message that shows allowed values for
+    fail with an error message that shows the allowed values for
     \texttt{PRODUCT}.
 
   \item{Assert configuration directory}
@@ -205,8 +220,8 @@ configuration file does the following:
     It contains the full pathname of the configuration file that is
     currently being loaded.
 
-    This value can also frequently be used to derive the source tree
-    directory, which is also a required parameter.
+    This value can also be used to derive the source tree directory,
+    which is also a required parameter.
 
   \item{Include component configuration}
 
@@ -262,9 +277,9 @@ vv:=$(call set,LMSBW_configuration,component-build-support,source)
 \section{Component Creation}\label{wrap:component-creation}
 
 A component is a set of source files that can be transformed into a
-deliverable for a project.  Components must be declared to \lmsbw
-through a simple API that has been provided; once declared, \lmsbw
-takes care of all the administrative details for building.
+set of deliverables for a project.  Components must be declared to
+\lmsbw through a simple API that has been provided; once declared,
+\lmsbw takes care of all the administrative details for building.
 
 One good heuristic for determining how to split a system into
 components is to start with the top-level directories that are entered
@@ -282,8 +297,8 @@ build times.  It will have a great impact because fewer directories
 will be entered to build changed components.
 
 For each declared source component, \lmsbw will internally generate
-\makefile rules that are used to perform the \lmsbw verbs on the
-component.
+\makefile rules that are used to perform the \lmsbw verbs
+(\xref{usinglmsbw:target:verbs}) on the component.
 
 The following sections describe how to declare the supported
 component types of \lmsbw.
@@ -303,6 +318,8 @@ information is required:
   when using \lmsbwcmd, or as a prerequisite of other components.
 
   The name supplied must be a valid \makefile variable name.
+
+  The name must be unique in the project.
 
 \item{Component Description}
 
@@ -328,8 +345,8 @@ information is required:
 
   The full pathname of the configuration file that defines the
   component.  It is included as part of the declaration so that
-  changes to the configuration file will force the component to be
-  rebuilt.
+  changes to the configuration file will force the component build
+  process to be entered.
 
   Since the pathname may not be known until the configuration file
   itself is loaded, it is the responsibility of the
@@ -354,6 +371,14 @@ information is required:
       the configuration file.
     \item Use an environment variable to denote the root of the source
       tree, and append the relative path to the component.
+
+      See the sources associated with \xref{samples:linux-kernel},
+      \xref{samples:override} and \xref{samples:sports} for examples
+      similar in concept.
+
+      Figure~\tabref{wrap:simple-component-declaration} shows how an
+      environment variable can be used to create the source directory
+      name.
   \end{itemize}
 
 \item{List of prerequisite components}
@@ -471,6 +496,7 @@ The following attributes can be set for source components.
 \item{\texttt{component\_attribute\_build\_target}}  (\xref{api:component-attribute-build-target})
 \item{\texttt{component\_attribute\_install\_target}} (\xref{api:component-attribute-install-target})
 \item{\texttt{component\_attribute\_api}} (\xref{api:component-attribute-api})
+\item{\texttt{component\_attribute\_build\_output\_download}} (\xref{api:build-output-download})
 \end{itemize}
 
 \section{Component \makefile Creation}\label{wrap:component-makefile}
@@ -519,7 +545,7 @@ rules:
 
   The \texttt{component\_attribute\_build\_target} API
   (\xref{api:component-attribute-build-target}) allows the
-  specification of the target used to build a individual component.
+  specification of the target(s) used to build a individual component.
 
   \xref{overriding:overriding-build} shows how to override this
   default behavior.
@@ -553,7 +579,8 @@ $(CP) --recursive                          \
 \caption{Installing from \texttt{install} target}\label{wrap:install-target}
 \end{figure}
 
-  \lmsbw guarantees that \texttt{DESTDIR} will be defined.
+  \lmsbw guarantees that \texttt{DESTDIR} will be defined, and that
+  the directory will exist.
 
   The \texttt{component\_attribute\_install\_target} API
   (\xref{api:component-attribute-install-target}) allows specifying of
@@ -588,7 +615,7 @@ build process, and it can be used to access \texttt{build} component
 data.
 
 This is the root of the install directory of components that have
-their \texttt{reason} variable set to \texttt{build}
+their \texttt{reason} (\xref{api:reason}) set to \texttt{build}
 (\xref{variables:reason}).
 
 For example, if the project had a \texttt{build} component named
