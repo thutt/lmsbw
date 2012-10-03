@@ -55,9 +55,22 @@ function get_mtree ()
 {
     local dir="$(dirname ${0})";
     local lmsbw="${dir}/lmsbw";
-    local config="${dir}/../samples/hello-world/hello-world.cfg";
+    local config="${dir}/../samples/hello-world/sample.cfg";
 
     mtree=$(${lmsbw} --configuration ${config} --build-root /tmp/lmsbw-test mtree|cut -d ':' -f 2);
+}
+
+function check_usr_bin_time_quiet ()
+{
+    # Check if the installed /usr/bin/time supports '--quiet' Ubuntu
+    # 12.04 supports --quiet, but CentOS' version of /usr/bin/time
+    # does not.
+    #
+    if [ -x /usr/bin/time ] ; then
+        if /usr/bin/time --help|grep -e "quiet" &>/dev/null ; then
+            quiet_supported="yes";
+        fi;
+    fi;
 }
 
 function main ()
@@ -100,6 +113,7 @@ function main ()
         esac
     done
 
+    check_usr_bin_time_quiet;
 
     get_mtree;
 
@@ -111,10 +125,15 @@ function main ()
         if [ ! -z "${LMSBW_VERBOSE}" ] ; then
             echo "${cmd}";
         fi;
-        if [ -x /usr/bin/time ] ; then
+
+        if [ ! -z "${quiet_supported}" ] && [ -x /usr/bin/time ] ; then
             /usr/bin/time --quiet --format "%U" -o ${time_file} ${cmd} &>/dev/null;
             printf  "Checked %15s: $(cat ${time_file}) seconds\n" ${1};
         else
+            # If /usr/bin/time does not support '--quiet' the mtree
+            # command will still be executed, but no elapsed time can
+            # be displayed.
+            #
             ${cmd} &>/dev/null;
             printf  "Checked %15s\n" ${1};
         fi;
