@@ -127,14 +127,18 @@ function main ()
         fi;
 
         if [ ! -z "${quiet_supported}" ] && [ -x /usr/bin/time ] ; then
-            /usr/bin/time --quiet --format "%U" -o ${time_file} ${cmd} &>/dev/null;
+            if ! /usr/bin/time --quiet --format "%U" -o ${time_file} ${cmd} &>/dev/null; then
+                echo "*** Warning: unable to fully read ${1}";
+            fi;
             printf  "Checked %15s: $(cat ${time_file}) seconds\n" ${1};
         else
             # If /usr/bin/time does not support '--quiet' the mtree
             # command will still be executed, but no elapsed time can
             # be displayed.
             #
-            ${cmd} &>/dev/null;
+            if ! ${cmd} &>/dev/null; then
+                echo "*** Warning: unable to fully read ${1}";
+            fi;
             printf  "Checked %15s\n" ${1};
         fi;
         shift;
