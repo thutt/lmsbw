@@ -42,7 +42,7 @@ ${program} [--help | --verbose]... [directory name]...
      ld=<directory where you have extracted lmsbw>
      \${ld}/scripts/lmsbw                                      \\
          --configuration ${ld}/samples/hello-world/hello-world.cfg \\
-         --built-root /tmp/lmsbw-test  -- mtree
+         --build-root /tmp/lmsbw-test  -- mtree
 
   Be sure to run this command twice; the first execution will fill the
   disk caches and the second run will give a truer representation of
