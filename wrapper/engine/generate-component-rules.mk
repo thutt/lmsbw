@@ -293,6 +293,10 @@ $(call generate_component_install_$(call expand_component_submake_kind,$(strip $
 #  time lmsbw is executed, as this ensures that the sysroot for the
 #  current build product will be up-to-date with the latest build.
 #
+#  When switching between different build directories, the current
+#  directory must be copied into the install directory.  This is
+#  ensured with the '--checksum' option.  Do not use '--update'.
+#
 #  If it were, instead, done as part of the submake, or guarded by
 #  mtree, the sysroot would not always be up-to-date with the latest
 #  build images.
@@ -310,7 +314,7 @@ install.$(strip $(1))_update-install-directory:		\
 		--perms							\
 		--recursive						\
 		--times							\
-		--update						\
+		--checksum						\
 		$(call lmsbw_gcf,$(strip $(1)),destdir-directory)/	\
 		$(call lmsbw_gcf,$(strip $(1)),install-directory);
 
