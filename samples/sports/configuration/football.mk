@@ -19,8 +19,8 @@ $(call declare_source_component,					\
        football,							\
        $(BALL_CLASSIFICATION) football example,				\
        image,								\
-       $(CURRENT_CONFIGURATION_FILE),					\
-       $(dir $(CURRENT_CONFIGURATION_FILE))../src)			\
+       $(lastword $(MAKEFILE_LIST)),					\
+       $(dir $(lastword $(MAKEFILE_LIST)))../src)			\
 $(call component_attribute_cflags,football,-D$(BALL_CLASSIFICATION))	\
 )
 

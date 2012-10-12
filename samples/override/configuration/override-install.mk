@@ -31,8 +31,8 @@ $(call declare_source_component,					\
        override-install,						\
        override install example,					\
        image,								\
-       $(CURRENT_CONFIGURATION_FILE),					\
-       $(realpath $(dir $(CURRENT_CONFIGURATION_FILE))..)/src/override-install))
+       $(lastword $(MAKEFILE_LIST)),					\
+       $(realpath $(dir $(lastword $(MAKEFILE_LIST)))../src/override-install))
 
 
 component.install.override-install:	build

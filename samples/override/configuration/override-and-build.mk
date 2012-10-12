@@ -24,8 +24,8 @@ $(call declare_source_component,					\
        override-and-build,						\
        override and build example,					\
        image,								\
-       $(CURRENT_CONFIGURATION_FILE),					\
-       $(realpath $(dir $(CURRENT_CONFIGURATION_FILE))..)/src/override-and-build))
+       $(lastword $(MAKEFILE_LIST)),					\
+       $(realpath $(dir $(lastword $(MAKEFILE_LIST)))../src/override-and-build))
 
 component.build.override-and-build:	sync
 	echo "Locally overriding build rule.";

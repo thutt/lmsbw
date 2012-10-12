@@ -80,7 +80,6 @@ function create_configuration
     cat >"${dir}/startup-time.mk" <<EOF
 define load_configuration
 \$(foreach cf,\$(wildcard ${dir}/*.cfg),                \\
-          \$(eval CURRENT_CONFIGURATION_FILE:=\$(cf))   \\
           \$(eval include \$(cf)))
 endef
 

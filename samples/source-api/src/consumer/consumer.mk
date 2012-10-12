@@ -27,19 +27,15 @@
 # is because this file can contain rules which will be used by
 # 'component.makefile' when actually building the compoment.
 #
-# This sample's 'load-configuration' function uses the convention that
-# the loaded file pathname is present in the Makefile variable
-# 'CURRENT_CONFIGURATION_FILE'.
+# This sample's 'load-configuration' function uses the invariant that
+# the loaded file pathname is the last word of 'MAKEFILE_LIST'.
 #
-#
-
-$(call assert,$(CURRENT_CONFIGURATION_FILE),CURRENT_CONFIGURATION_FILE is not set)
 
 $(call declare_source_component,		\
 	consumer,				\
 	Consumes data structure & API,		\
 	image,					\
-	$(CURRENT_CONFIGURATION_FILE),		\
+	$(lastword $(MAKEFILE_LIST)),		\
 	$(subst sample.cfg,src/consumer,$(1)),	\
 	producer)
 
