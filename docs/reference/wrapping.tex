@@ -212,17 +212,6 @@ configuration file does the following:
     is an allowed value by asserting that a directory exists with the
     \texttt{PRODUCT} name.
 
-  \item{Set \texttt{CURRENT\_CONFIGURATION\_FILE}}
-
-    This variable is used by the component configuration files to
-    declare the components (\xref{api:declare-source-component}).
-
-    It contains the full pathname of the configuration file that is
-    currently being loaded.
-
-    This value can also be used to derive the source tree directory,
-    which is also a required parameter.
-
   \item{Include component configuration}
 
     The function loads the component configuration using the
@@ -254,7 +243,6 @@ $(call assert,$(PRODUCT), \
     PRODUCT must be one of '$(notdir $(wildcard $(dir $(1))products/*))')
 $(call assert_exists,$(dir $(1))products/$(PRODUCT))
 $(foreach cf,$(wildcard $(dir $(1))products/$(PRODUCT)/*),	\
-          $(eval CURRENT_CONFIGURATION_FILE:=$(cf))		\
           $(eval include $(cf))					\
 )
 endef
@@ -411,7 +399,7 @@ $(call declare_source_component,              \
        compiler,                              \
        Compiler for build system,             \
        build,                                 \
-       $(CURRENT_CONFIGURATION_FILE),         \
+       $(lastword $(MAKEFILE_LIST)),          \
        $(PROJECT_SOURCE_ROOT)/src/compiler)
 \end{verbatim}
 \hrulefill
@@ -437,7 +425,7 @@ $(call declare_source_component,              \
        consumer,                              \
        Consumes data structure & API,         \
        image,                                 \
-       $(CURRENT_CONFIGURATION_FILE),         \
+       $(lastword $(MAKEFILE_LIST)),          \
        $(subst sample.cfg,src/consumer,$(1)), \
        producer)
 \end{verbatim}
