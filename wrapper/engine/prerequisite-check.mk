@@ -27,25 +27,35 @@ endef
 # perform_prerequisite_check
 #
 #   This function alters the internal structure of the build to
-#   perform a build of only the component named with
-#   '--prerequisite-check'.  It does this by setting
-#   'LMSBW_components' to just the named component and all of it
-#   prerequistes (direct, and indirect).
+#   perform a build of just the component named by the
+#   '--prerequisite-check' command line option.  It does this by
+#   setting 'LMSBW_components' to just the named component and all of
+#   it prerequistes (direct, and indirect).
 #
 #   To ensure that the build system will not use the same build output
-#   directory, the 'CFLAGS' for each component are altered with a
-#   LMSBW-specific preprocessor define; this changes the hash of the
-#   build output directory and ensures that all the components will be
-#   built.
+#   directory, each of the components will have a LMSBW-specific
+#   setting declared into their 'local-settings' associative array.
+#   (This forces a different directory because each of the
+#   'local-settings' members is included in the component hash.)
 #
-#   Also, because the list of is going to be different, the install
-#   directory will be hashed differently, too.  This ensures that any
-#   missing prerequisites will be found because their 'install' will
-#   not be present in the install directory.
+#   Also, because the list of components is going to be different, the
+#   install directory will be hashed differently, too.  This ensures
+#   that any missing prerequisites will be found because their
+#   'install' will not be present in the install directory.
+#
+#   It is entirely possible that the copmonents do not have an
+#   'local-settings' array declared; if that is the case, then an
+#   array must be created.
+#
+#   A LMSBW-specific element is added to the 'local-settings' array.
 #
 define perform_prerequisite_check
 $(eval LMSBW_components:=$(sort $(call expand_all_prerequisites,$(LMSBW_PREREQUISITE_CHECK_COMPONENT))))
-$(foreach c,$(LMSBW_components),$(call lmsbw_scf,$(c),cflags,$(call lmsbw_gcf,$(c),cflags) -DLMSBW_PREREQUISITE_CHECK))
+$(foreach c,$(LMSBW_components),								\
+	$(call lmsbw_scf,$(c),cflags,$(call lmsbw_gcf,$(c),cflags) -DLMSBW_PREREQUISITE_CHECK)	\
+	$(if $(call not,$(call lmsbw_gcf,$(c),local-settings)),					\
+		$(call lmsbw_scf,$(c),local-settings,__lmsbw_settings))				\
+	$(call set,$(call lmsbw_gcf,$(c),local-settings),LMSBW_PREREQUISITE_CHECK,$(true)))
 endef
 
 # perform_prerequisite_check_guard

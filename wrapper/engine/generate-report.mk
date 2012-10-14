@@ -35,6 +35,7 @@ __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind):
 	@$(ECHO) "$(1)|  toolchain : $(call lmsbw_gcf,$(1),toolchain)";
 	@$(ECHO) "$(1)|  api       : $(call lmsbw_gcf,$(1),api)";
 	@$(ECHO) "$(1)|  build / dl: $(if $(call lmsbw_gcf,$(1),build-output-download),download,build)";
+	@$(ECHO) "$(1)|  settings  : $(call lmsbw_component_expand_settings,$(1))";
 	@$(ECHO) "$(1)|Install Root: $(call lmsbw_gcf,$(1),install-directory)";
 	@$(ECHO) "$(1)|Build Root  : $(call lmsbw_gcf,$(1),build-root-directory)";
 	@$(ECHO) "$(1)|  build     : $(call lmsbw_gcf,$(1),build-directory)";

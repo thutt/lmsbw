@@ -113,3 +113,17 @@ $(eval __cabod_filter:=$(filter $(1),$(LMSBW_BUILD_OUTPUT_NO_DOWNLOAD)))
 $(eval __cabod_or:=$(call or,$(__cabod_filter),$(LMSBW_DISABLE_BUILD_OUTPUT_DOWNLOAD)))
 $(if $(call not,$(__cabod_or)),$(call lmsbw_scf,$(1),build-output-download,$(true)))
 endef
+
+
+# component_attribute_local_settings
+#
+#   Sets the name of an associative array that contains Make-style
+#   settings that will be passed to the component's build process.
+#
+#   It is through this associative array that component-specific
+#   build-time settings (such as CFLAGS) should be set.
+#
+define component_attribute_local_settings
+$(call lmsbw_assert_known_component,$(1))
+$(call lmsbw_scf,$(1),local-settings,$(strip $(2)))
+endef

@@ -1,0 +1,30 @@
+This very simple sample shows how to use 'global-settings' and
+'local-settings'.  It creates three global settings:
+
+  CFLAGS
+  VERSION
+  PROJECT
+
+In the 'hello-world' component, 'CFLAGS' is overridden with a local
+setting.
+
+In the 'goodbye-world' component, 'VERSION' is overriden with a local
+setting.
+
+The value for 'PROJECT' is passed intact to all components.
+
+The 'run-sample' script will execute lmsbw with all the proper command
+line options to invoke the local configuration.
+
+Any additional command line parameters are passed directly to lmsbw.
+
+For example, try:
+
+   ./run-sample
+   ./run-sample log.hello-world
+   ./run-sample report
+   ./run-sample targets
+   ./run-sample dependent-report
+   ./run-sample prerequisite-report
+
+The build output is place into /tmp/sample

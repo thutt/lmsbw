@@ -81,6 +81,36 @@ If the script does not exist, \lmsbw will exit with an appropriate
 error message.  Documentation describing how this script must be
 implemented can be found in \xref{api:build-output-download-script}.
 
+\subsection{\texttt{global-settings}}\label{variables:global-settings}
+
+This key, when used, must hold the name of a \gmsl associative array.
+The contents of the named array must be values suitable for passing to
+recursive invocations of \make as command line parameters.
+
+\begin{figure}
+\hrulefill
+\begin{verbatim}
+vv:=$(call set,LMSBW_configuration, \
+      global-settings,              \
+      global_settings)
+
+vv:=$(call set,global_settings,CFLAGS,-MMD -o2)
+vv:=$(call set,global_settings,DEBUG,1)
+\end{verbatim}
+\hrulefill
+\caption{Setting \texttt{Global Settings}}\label{variables:global-settings-example}
+\end{figure}
+
+Each element of the \texttt{global-settings} array, unless overriden
+by a component's \texttt{local-settings}
+(see~\xref{variables:local-settings} is passed as a command line
+argument to the component's build process.  \lmsbw will provide quotes
+around the value during expansion of the array, and these resulting
+quoted values will be used on the sub-\make command line.
+
+Figure~\tabref{variables:global-settings-example} shows an example of
+using the global settings.
+
 \subsection{\texttt{load-configuration-function}}\label{variables:load-configuration-function}
 
 This key must be the name of a \gnumake function that will load the
@@ -507,6 +537,27 @@ loading support for a particular \emph{kind} of component in a
 project.
 
 \apiref{api:declare-source-component}
+
+\subsection{\lmsbwcomponentfield{local-settings}}\label{variables:local-settings}
+
+This key, when used, must hold the name of a \gmsl associative array.
+The contents of the named array must be values suitable for passing to
+recursive invocations of \make as command line parameters.
+
+See \xref{variables:global-settings} for information on setting the
+key~/~value pairs of the named array.
+
+Each element of the \texttt{local-settings} array will override the
+value of the corresponding key in the \texttt{global-settings}
+(\xref{variables:global-settings}) array.
+
+Each element of the \texttt{local-settings} array is passed as a
+command line argument to the component's build process.  \lmsbw will
+provide quotes around the value during expansion of the array, and
+these resulting quoted values will be used on the sub-\make command
+line.
+
+\apiref{api:component-attribute-local-settings}
 
 \subsection{\lmsbwcomponentfield{no-parallel}}\label{variables:no-parallel}
 

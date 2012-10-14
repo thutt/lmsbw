@@ -62,7 +62,57 @@ endef
 #      too.
 #
 define lmsbw_expand_project_hash
-$(call lmsbw_expand_md5sum_text,$(LMSBW_CONFIGURATION_FILE)$(LMSBW_components)$(LMSBW_TOOLCHAIN))
+$(call lmsbw_expand_md5sum_text,$(strip	\
+	$(LMSBW_CONFIGURATION_FILE)	\
+	$(LMSBW_components)		\
+	$(LMSBW_TOOLCHAIN)		\
+	$(call lmsbw_expand_global_settings)))
+endef
+
+# lmsbw_expand_global_settings
+#
+#  Expands the LMSBW_configuration{'global-settings'} array.  Expands
+#  to nothing if the associative array exists.
+#
+#  This function does not quote the values of each key; if quoting is
+#  necessary, it must be done when the key/value pair is set.
+#
+#  The keys are sorted so that the order will always be the same; this
+#  is because the output is hashed.
+#
+define lmsbw_expand_global_settings
+$(strip											\
+	$(eval __gs:=$(call __gcv,global-settings))					\
+	$(foreach key,$(sort $(call keys,$(__gs))),					\
+		$(key)="$(call get,$(__gs),$(key))"))
+endef
+
+# lmsbw_expand_component_settings <component>
+#
+#  Expands the combination of LMSBW_cofiguration{'global-setttings'}
+#  and <component>{'local-settings'} into 'key=value' expressions
+#  suitable for including on the command line for a sub-invocation of
+#  Make.
+#
+#  Keys in 'local-settings' override matching keys in
+#  'global-settings'.
+#
+#  Expands to nothing if neither associative array exists.
+#
+#  This function does not quote the values of each key; if quoting is
+#  necessary, it must be done when the key/value pair is set.
+#
+#  The keys are sorted so that the order will always be the same; this
+#  is because the output is hashed.
+#
+define lmsbw_component_expand_settings
+$(strip											\
+	$(eval __ls:=$(call lmsbw_gcf,$(1),local-settings))				\
+	$(eval __gs:=$(call __gcv,global-settings))					\
+	$(foreach key,$(sort $(filter-out $(call keys,$(__ls)),$(call keys,$(__gs)))),	\
+		$(key)="$(call get,$(__gs),$(key))")					\
+	$(foreach key,$(sort $(call keys,$(__ls))),					\
+		$(key)="$(call get,$(__ls),$(key))"))
 endef
 
 # lmsbw_expand_component_hash <component>
@@ -75,7 +125,7 @@ endef
 #   component, or the compiler options.
 #
 define lmsbw_expand_component_hash
-$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain)$(call lmsbw_gcf,$(strip $(1)),cflags)$(call lmsbw_gcf,$(strip $(1)),build-output-download))
+$(call lmsbw_expand_md5sum_text,$(strip $(1))$(call lmsbw_gcf,$(strip $(1)),toolchain)$(call lmsbw_gcf,$(strip $(1)),cflags)$(call lmsbw_gcf,$(strip $(1)),build-output-download)$(call lmsbw_component_expand_settings,$(1)))
 endef
 
 # lmsbw_expand_install_directory <build | image>

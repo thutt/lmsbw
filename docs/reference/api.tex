@@ -94,6 +94,21 @@ This function changes the target for installing a component using the
 component's build process from the \texttt{install} \make target to
 the list of targets provided.
 
+\section{\texttt{component\_attribute\_local\_settings}}\label{api:component-attribute-local-settings}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:local-settings} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & array name &  Name of associative array.
+\end{tabularx}
+
+This function allows an associative array containing key~/~value pairs
+that can be passed to the component's \makefile as command line
+arguments.  These values can be used to control the component
+\makefile via macro expansion, or conditional code.
+
+
 \section{\texttt{component\_attribute\_api}}\label{api:component-attribute-api}
 
 \begin{tabularx}{\linewidth}{ll|X}
