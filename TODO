@@ -18,3 +18,6 @@
  o Add facility to trace rule execution using $@, $^, etc.
  o Remove 'hypothetical' footnote in documentation when a pure
    download component is created.
+ o remove all reference to lmsbw_c_cflags and 'cflags'.
+ o Add -MMD to default cflags?
+ o Rename '__gcv' to '__lmsbw_gcv'
