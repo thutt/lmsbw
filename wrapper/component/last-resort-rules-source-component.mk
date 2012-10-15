@@ -17,17 +17,15 @@
 .PHONY:	default.component.install.$(LMSBW_C_COMPONENT)	\
 	default.component.build.$(LMSBW_C_COMPONENT)
 
+# Make variables passed on the command line to the make evaluating
+# this file are exported to recursive invocations of Make by default.
 DEFAULT_SOURCE_COMPONENT_MAKE_OPTIONS :=									\
 	-f $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))/Makefile				\
 	-C $(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))					\
 	$(LMSBW_C_NO_PARALLEL)											\
 	DESTDIR=$(LMSBW_C_DESTDIR_DIRECTORY)									\
-	LMSBW_C_BUILD_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)							\
 	LMSBW_C_BUILD_WORKING_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))	\
-	LMSBW_C_INSTALL_DIRECTORY=$(LMSBW_C_INSTALL_DIRECTORY)							\
-	LMSBW_C_BUILD_INSTALL_DIRECTORY=$(LMSBW_C_BUILD_INSTALL_DIRECTORY)					\
-	GMSL=$(LMSBW_DIR)/wrapper/gmsl										\
-	LMSBW_C_CFLAGS="$(LMSBW_C_CFLAGS)"
+	GMSL=$(LMSBW_DIR)/wrapper/gmsl
 
 default.component.build.$(LMSBW_C_COMPONENT):	sync
 	$(MESSAGE) "[default] Building source component";
