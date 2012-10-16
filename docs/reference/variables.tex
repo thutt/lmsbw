@@ -65,6 +65,22 @@ components of that type.
 If no component kinds are specified in the configuration, \lmsbw will
 exit with an error.
 
+\subsection{\texttt{component-build-output-download-script}}
+\label{variables:component-build-output-download-script}
+
+This key must be the full pathname of a script that \lmsbw will invoke
+to download the \destdir output of the component's build process.
+This can be used to speed up the overall build process by providing
+pre-built build output from a common server.
+
+This script is only invoked for components with the
+\texttt{build-output-download}
+(\xref{variables:build-output-download}) attribute set.
+
+If the script does not exist, \lmsbw will exit with an appropriate
+error message.  Documentation describing how this script must be
+implemented can be found in \xref{api:build-output-download-script}.
+
 \subsection{\texttt{load-configuration-function}}\label{variables:load-configuration-function}
 
 This key must be the name of a \gnumake function that will load the
@@ -111,22 +127,6 @@ Upon successful exit, the named function must have done the following:
 
 \end{itemize}
 
-
-\subsection{\texttt{component-build-output-download-script}}
-\label{variables:component-build-output-download-script}
-
-This key must be the full pathname of a script that \lmsbw will invoke
-to download the \destdir output of the component's build process.
-This can be used to speed up the overall build process by providing
-pre-built build output from a common server.
-
-This script is only invoked for components with the
-\texttt{build-output-download}
-(\xref{variables:build-output-download}) attribute set.
-
-If the script does not exist, \lmsbw will exit with an appropriate
-error message.  Documentation describing how this script must be
-implemented can be found in \xref{api:build-output-download-script}.
 
 \section{\texttt{LMSBW\_components}}\label{variables:lmsbw-components}
 
