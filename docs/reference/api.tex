@@ -206,34 +206,6 @@ semantics of this API.
 See \xref{api:build-output-download-script} for details about creating
 a conformant script to download build output.
 
-\section{\texttt{component\_attribute\_cflags}}\label{api:cflags}
-
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:cflags} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & component-name & Name of a declared component. \\
-  2 & cflags-value & \texttt{CFLAGS} value.
-\end{tabularx}
-
-This allows the specification of a set of \texttt{CFLAGS} values that
-are passed to the component build process through the
-\texttt{LMSBW\_C\_CFLAGS} variable.  It is incumbent upon the
-component's \makefile to combine the passed in
-\texttt{LMSBW\_C\_CFLAGS} with \texttt{CFLAGS}
-
-\lmsbw does not directly provide a \texttt{CFLAGS} as the \gnumake
-default is to disallow a \makefile to change variables defined on the
-command line; only variables attributed with \texttt{override} in the
-\makefile can override the command line value.
-
-\lmsbw uses the declared value of this variable when creating a hash
-to use in the build directory name; changing \texttt{CFLAGS} will
-result in a different build directory; this is effectively the same
-thing as performing a \texttt{clean} build when changing compiler
-options, except that changing the options back will result in the
-previous build directory\footnote{In other words, incremental builds
-  across compiler option changes}.
-
 \section{\texttt{declare\_component\_kind}}\label{api:kind}
 
 \begin{tabularx}{\linewidth}{ll|X}

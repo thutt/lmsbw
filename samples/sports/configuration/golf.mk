@@ -20,9 +20,7 @@ $(call declare_source_component,					\
        $(BALL_CLASSIFICATION) golfball example,				\
        image,								\
        $(lastword $(MAKEFILE_LIST)),					\
-       $(dir $(lastword $(MAKEFILE_LIST)))../src)			\
-$(call component_attribute_cflags,golfball,-D$(BALL_CLASSIFICATION))	\
-)
+       $(dir $(lastword $(MAKEFILE_LIST)))../src))
 
 component.install.golfball:
 	$(MKDIR) --parents $(LMSBW_C_DESTDIR_DIRECTORY)/$(BALL_CLASSIFICATION);

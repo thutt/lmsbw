@@ -176,12 +176,3 @@ build will be executed\footnote{The \texttt{-C} argument of \make}.
 
 Compare \xref{wrap:lmsbw-c-build-directory}.
 
-\subsection{\texttt{LMSBW\_C\_CFLAGS}}
-
-This is the union of the global \texttt{CFLAGS} value managed by
-\lmsbw and the per-component value set via
-\texttt{\texttt{component\_attribute\_cflags}} (\xref{api:cflags}).
-
-The component \makefile should append \texttt{LMSBW\_C\_CFLAGS} to
-\texttt{CFLAGS}.
-

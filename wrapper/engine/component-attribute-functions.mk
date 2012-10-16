@@ -78,14 +78,6 @@ $(call lmsbw_assert_known_component,$(1))
 lmsbw_dca:=$(call lmsbw_scf,$(1),api,$(strip $(2)))
 endef
 
-# component_attribute_cflags <component>,<cflags value>
-#
-#
-define component_attribute_cflags
-$(call lmsbw_assert_known_component,$(1))	\
-$(call lmsbw_scf,$(1),cflags,$(2))
-endef
-
 # component_attribute_toolchain <component>,<toolchain-name>
 #
 #

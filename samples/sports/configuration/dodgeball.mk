@@ -20,9 +20,7 @@ $(call declare_source_component,					\
        $(BALL_CLASSIFICATION) dodgeball example,			\
        image,								\
        $(lastword $(MAKEFILE_LIST)),					\
-       $(dir $(lastword $(MAKEFILE_LIST)))../src)			\
-$(call component_attribute_cflags,dodgeball,-D$(BALL_CLASSIFICATION))	\
-)
+       $(dir $(lastword $(MAKEFILE_LIST)))../src))
 
 component.install.dodgeball:
 	$(MKDIR) --parents $(LMSBW_C_DESTDIR_DIRECTORY)/$(BALL_CLASSIFICATION);

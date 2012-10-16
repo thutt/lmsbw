@@ -358,46 +358,6 @@ Compare to \xref{variables:install-target}.
 
 \apiref{api:component-attribute-build-target}
 
-\subsection{\lmsbwcomponentfield{cflags}}\label{variables:cflags}
-
-This key holds a list of values that will be assigned to the
-\texttt{LMSBW\_C\_CFLAGS} variable before the component's \makefile is
-invoked.  The invoked \makefile should add the value of
-\texttt{LMSBW\_C\_CFLAGS} to \texttt{CFLAGS}\footnote{See
-  \xref{api:cflags} for the reason why this indirect method is used.}.
-
-The value of this key is also used to help determine the build
-directory name for each component.  Changing value of
-\lmsbwcomponentfield{cflags} for a component will change the build
-output directory. The purpose of this several fold:
-
-\begin{itemize}
-\item \texttt{CFLAGS} changes incorporated into build
-
-  Build processes infrequently have correct dependencies to do a
-  proper build when compiler options change.  Assigning a build
-  directory based partially on the compiler options guarantees that
-  such changes are correctly reflected in the build; changing
-  \texttt{CFLAGS} results in a different build directory.
-
-\item Incremental builds
-
-  Changing the options will result in the build output directory
-  changing, but changing them back to their original value will also
-  restore the old build directory; incremental builds between compiler
-  options changes remain fast.
-
-\item Shared build output
-
-  A component compiled with the same global options, regardless if it
-  is for a different SKU, will share the same build output.
-\end{itemize}
-
-It is recommended that all compiler options be set in the component
-configuration file rather than in the component \makefile.
-
-\apiref{api:cflags}
-
 \subsection{\lmsbwcomponentfield{component}}\label{variables:component}
 
 This key contains the name of the component.
@@ -456,7 +416,7 @@ attributes:
 \begin{itemize}
 \item component \emph{name}
 \item component \emph{toolchain} (\xref{variables:toolchain})
-\item component \emph{cflags} (\xref{variables:cflags})
+\item component \emph{local settings} (\xref{variables:local-settings})
 \item component \emph{build output download setting}
   (\xref{variables:build-output-download})
 \end{itemize}

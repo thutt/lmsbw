@@ -36,5 +36,3 @@ $(call declare_source_component,		\
 	image,					\
 	$(lastword $(MAKEFILE_LIST)),		\
 	$(subst sample.cfg,src/consumer,$(1)))
-
-$(call component_attribute_cflags,consumer,-DPRODUCT=$(PRODUCT))

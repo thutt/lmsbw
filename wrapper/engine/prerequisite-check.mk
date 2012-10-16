@@ -52,7 +52,6 @@ endef
 define perform_prerequisite_check
 $(eval LMSBW_components:=$(sort $(call expand_all_prerequisites,$(LMSBW_PREREQUISITE_CHECK_COMPONENT))))
 $(foreach c,$(LMSBW_components),								\
-	$(call lmsbw_scf,$(c),cflags,$(call lmsbw_gcf,$(c),cflags) -DLMSBW_PREREQUISITE_CHECK)	\
 	$(if $(call not,$(call lmsbw_gcf,$(c),local-settings)),					\
 		$(call lmsbw_scf,$(c),local-settings,__lmsbw_settings))				\
 	$(call set,$(call lmsbw_gcf,$(c),local-settings),LMSBW_PREREQUISITE_CHECK,$(true)))
