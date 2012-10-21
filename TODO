@@ -21,3 +21,5 @@
  o remove all reference to lmsbw_c_cflags and 'cflags'.
  o Add -MMD to default cflags?
  o Rename '__gcv' to '__lmsbw_gcv'
+ o Add & document 'poc' field.  It's a point of contact.  Add to report.
+ o Should the 'global-settings' have 'image' and 'build' versions?
