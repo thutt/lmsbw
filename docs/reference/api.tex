@@ -81,6 +81,21 @@ This function changes the target for building a component using the
 component's build process from the \emph{default} \make target to the
 list of targets provided.
 
+\section{\texttt{component\_attribute\_poc}}\label{api:component-attribute-poc}
+
+\begin{tabularx}{\linewidth}{ll|X}
+\textbf{Variable:} \xref{variables:poc} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+  1 & component-name & Name of a declared component. \\
+
+  2 & list-of-contacts & Space-separated list \emph{points of contact}.
+\end{tabularx}
+
+This function assigns a list of \emph{points of contact} to the
+component.  The information is printed by the \texttt{report} verb
+(\xref{usinglmsbw:report}) and can be useful when trying to determine
+the parties responsible for maintaining or reviwing changes to a
+component.
+
 \section{\texttt{component\_attribute\_install\_target}}\label{api:component-attribute-install-target}
 
 \begin{tabularx}{\linewidth}{ll|X}

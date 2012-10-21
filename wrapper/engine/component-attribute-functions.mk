@@ -107,7 +107,7 @@ $(if $(call not,$(__cabod_or)),$(call lmsbw_scf,$(1),build-output-download,$(tru
 endef
 
 
-# component_attribute_local_settings
+# component_attribute_local_settings <component>, <associative array name>
 #
 #   Sets the name of an associative array that contains Make-style
 #   settings that will be passed to the component's build process.
@@ -116,6 +116,20 @@ endef
 #   build-time settings (such as CFLAGS) should be set.
 #
 define component_attribute_local_settings
-$(call lmsbw_assert_known_component,$(1))
+$(call lmsbw_assert_known_component,$(1))		\
 $(call lmsbw_scf,$(1),local-settings,$(strip $(2)))
+endef
+
+
+# component_attribute_poc <component>, <poc>
+#
+#   Sets a 'point of contact' for the component.
+#
+#   The 'poc' value is output by the 'log' verb.
+#
+#   The <poc> parameter is a space separated list of contact names.
+#
+define component_attribute_poc
+$(call lmsbw_assert_known_component,$(1))		\
+$(call lmsbw_scf,$(1),poc,$(strip $(2)))
 endef
