@@ -24,15 +24,14 @@
 define generate_component_report_source
 __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind):
 	@$(ECHO) "$(1)|Component   : $(call lmsbw_gcf,$(1),component)";
+	@$(ECHO) "$(1)|  desc      : $(call lmsbw_gcf,$(1),description)";
 	@$(ECHO) "$(1)|  POC       : $(call lmsbw_gcf,$(1),poc)";
 	@$(ECHO) "$(1)|  config    : $(call lmsbw_gcf,$(1),configuration-file)";
-	@$(ECHO) "$(1)|  desc      : $(call lmsbw_gcf,$(1),description)";
 	@$(ECHO) "$(1)|  kind      : $(call lmsbw_gcf,$(1),kind)";
 	@$(ECHO) "$(1)|  reason    : $(call lmsbw_gcf,$(1),reason)";
 	@$(ECHO) "$(1)|  source    : $(call lmsbw_gcf,$(1),source-directory)";
 	@$(ECHO) "$(1)|  prereq    : $(call lmsbw_gcf,$(1),prerequisite)";
 	@$(ECHO) "$(1)|  direct dep: $$(call lmsbw_direct_dependents,$(1))";
-	@$(ECHO) "$(1)|  config    : $(call lmsbw_gcf,$(1),configuration-file)";
 	@$(ECHO) "$(1)|  toolchain : $(call lmsbw_gcf,$(1),toolchain)";
 	@$(ECHO) "$(1)|  api       : $(call lmsbw_gcf,$(1),api)";
 	@$(ECHO) "$(1)|  build / dl: $(if $(call lmsbw_gcf,$(1),build-output-download),download,build)";
