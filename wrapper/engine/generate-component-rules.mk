@@ -366,7 +366,7 @@ define generate_component_component
 components:: component.$(strip $(1))
 
 component.$(strip $(1)):
-	$(ATSIGN)$(PRINTF) "%25s : %s\n" "$(1)" "$(call lmsbw_gcf,$(1),description)";
+	$(ATSIGN)$(PRINTF) "%35s : %s\n" "$(1)" "$(call lmsbw_gcf,$(1),description)";
 
 endef
 
