@@ -164,15 +164,6 @@ define lmsbw_prerequisite_check_no_component
 $(call lmsbw_assert,E1012,$(false),No component '$(1)')
 endef
 
-# lmsbw_build_needs_image <build component>, <image component>
-#
-#  A build component may not have an image component as a
-#  prerequisite.
-#
-define lmsbw_build_needs_image
-$(call lmsbw_assert,E1013,$(false),'build' component '$(1)' cannot depend on 'image' component '$(2)')
-endef
-
 # lmsbw_no_build_output_download_script
 #
 #

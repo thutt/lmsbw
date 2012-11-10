@@ -14,14 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-define lmsbw_expand_image_build_root
-$(LMSBW_TARGET_BUILD_ROOT)
-endef
-
-define lmsbw_expand_build_build_root
-$(LMSBW_HOST_BUILD_ROOT)
-endef
-
 # lmsbw_expand_project_hash
 #
 #  This function produces a unique hash for the entire project.
@@ -144,7 +136,7 @@ endef
 # This can only be done AFTER all the components are configured.
 #
 define lmsbw_expand_install_directory
-$(call lmsbw_expand_$(strip $(1))_build_root)/install/$(call lmsbw_expand_project_hash)
+$(LMSBW_BUILD_DIR)/install/$(call lmsbw_expand_project_hash)
 endef
 
 # lmsbw_expand_mtree_guard <component label>,

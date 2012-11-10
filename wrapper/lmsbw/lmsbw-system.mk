@@ -43,13 +43,7 @@ export LMSBW_SCRIPTS			:=		\
 	$(LMSBW_DIR)/scripts
 
 export LMSBW_BUILD_DIR			:=		\
-	$(LMSBW_BUILD_ROOT)
-
-export LMSBW_TARGET_BUILD_ROOT		:=		\
-	$(LMSBW_BUILD_DIR)/target
-
-export LMSBW_HOST_BUILD_ROOT		:=		\
-	$(LMSBW_BUILD_DIR)/host
+	$(LMSBW_BUILD_ROOT)/build
 
 # Stores build-system files.
 #
