@@ -25,3 +25,4 @@
  o Should the 'global-settings' have 'image' and 'build' versions?
  o doc/reference 'make clean' leaves lof and idx files
  o What would it mean for a component to have more than one source directory?
+ o Document lmsbw-graph script.
