@@ -26,7 +26,6 @@
 #
 $(LMSBW_TARBALL_REPOSITORY)			\
 $(call lmsbw_expand_install_directory,build)	\
-$(call lmsbw_expand_install_directory,image)	\
 $(LMSBW_DIRECTORIES):
 	$(ATSIGN)$(MESSAGE) "Creating directory: '$@'";
 	$(ATSIGN)$(MKDIR) --parents $@
