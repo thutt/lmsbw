@@ -306,7 +306,6 @@ install.$(strip $(1))_update-install-directory:		\
 	$(ATSIGN)$(PROGRESS) "$(1): Install";
 	$(ATSIGN)$(RSYNC)						\
 		--quiet							\
-		--compress						\
 		--executability						\
 		--group							\
 		--links							\

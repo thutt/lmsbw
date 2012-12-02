@@ -25,7 +25,6 @@ include $(LMSBW_DIR)/wrapper/component/toolchain.mk
 sync:
 	$(MESSAGE) "Syncing '$(LMSBW_C_SOURCE_DIRECTORY)' to '$(LMSBW_C_BUILD_DIRECTORY)'";
 	$(RSYNC)							\
-		--compress						\
 		--executability						\
 		--group							\
 		--links							\
