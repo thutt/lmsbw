@@ -153,7 +153,7 @@ function main ()
     fi;
 
     if [ ! -f "${manifest}" ] ; then
-	! ${mtree} -c -k flags,mode,size,cksum -p "${directory_tree}" >"${manifest}";
+	! ${mtree} -c -k size,time -p "${directory_tree}" >"${manifest}";
     else
         if ! "$(dirname "${program}")/lmsbw-mtree-check-manifest"       \
             ${verbose}                                                  \
