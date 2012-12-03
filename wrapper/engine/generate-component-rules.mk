@@ -313,7 +313,6 @@ install.$(strip $(1))_update-install-directory:		\
 		--perms							\
 		--recursive						\
 		--times							\
-		--checksum						\
 		$(call lmsbw_gcf,$(strip $(1)),destdir-directory)/	\
 		$(call lmsbw_gcf,$(strip $(1)),install-directory);
 
