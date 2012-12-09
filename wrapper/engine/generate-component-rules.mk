@@ -311,9 +311,9 @@ install.$(strip $(1))_update-install-directory:		\
 		$(LMSBW_INSTALL_DESTDIR)						\
 			$(if $(LMSBW_VERBOSE),--verbose)				\
 			--component $(1)						\
-			---destdir $(call lmsbw_gcf,$(strip $(1)),destdir-directory)	\
-			---api $(call lmsbw_gcf,$(strip $(1)),api)			\
-			---install $(call lmsbw_gcf,$(strip $(1)),install-directory),	\
+			--destdir $(call lmsbw_gcf,$(strip $(1)),destdir-directory)	\
+			--api $(call lmsbw_gcf,$(strip $(1)),api)			\
+			--install $(call lmsbw_gcf,$(strip $(1)),install-directory),	\
 		$(ATSIGN)$(MESSAGE) "$(1): No API; nothing to install";			\
 	)
 
