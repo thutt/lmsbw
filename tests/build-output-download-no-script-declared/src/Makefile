@@ -20,5 +20,5 @@ SRC	=	main.c
 build:
 	$(CC) -o executable $(SRC)
 
-install:
+install:	build
 	/usr/bin/install -D executable $(DESTDIR)/usr/bin/executable

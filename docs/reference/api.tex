@@ -68,19 +68,6 @@ This attribute only necessary when a \makefile contains incorrect
 dependencies.  Bad dependencies will manifest as intermittent failures
 when build with parallelism.
 
-\section{\texttt{component\_attribute\_build\_target}}\label{api:component-attribute-build-target}
-
-\begin{tabularx}{\linewidth}{ll|X}
-\textbf{Variable:} \xref{variables:build-target} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-  1 & component-name & Name of a declared component. \\
-
-  2 & list-of-targets & Space-separated list of targets.
-\end{tabularx}
-
-This function changes the target for building a component using the
-component's build process from the \emph{default} \make target to the
-list of targets provided.
-
 \section{\texttt{component\_attribute\_poc}}\label{api:component-attribute-poc}
 
 \begin{tabularx}{\linewidth}{ll|X}

@@ -481,7 +481,6 @@ The following attributes can be set for source components.
 \begin{itemize}
 \item{\texttt{component\_attribute\_no\_parallel\_build}}
   (\xref{api:component-attribute-no-parallel-build})
-\item{\texttt{component\_attribute\_build\_target}}  (\xref{api:component-attribute-build-target})
 \item{\texttt{component\_attribute\_install\_target}} (\xref{api:component-attribute-install-target})
 \item{\texttt{component\_attribute\_api}} (\xref{api:component-attribute-api})
 \item{\texttt{component\_attribute\_build\_output\_download}} (\xref{api:build-output-download})
@@ -524,30 +523,16 @@ rules:
   Be very careful when testing in a cross-compiled environment; the
   details of this are beyond the scope of this software.
 
-\item \texttt{build} target
-
-  The \makefile must have a target that is invoked to \emph{build} the
-  component.  By default, \lmsbw will invoke the component \makefile
-  with no target; in other words, the default target of the component
-  \makefile is used to build the component.
-
-  The \texttt{component\_attribute\_build\_target} API
-  (\xref{api:component-attribute-build-target}) allows the
-  specification of the target(s) used to build a individual component.
-
-  \xref{overriding:overriding-build} shows how to override this
-  default behavior.
-
 \item \texttt{install} target
 
   The \makefile must have a target that is invoked to \emph{install}
   the component.  By default, \lmsbw will invoke the component
   \makefile with the target \texttt{install}.
 
-  The \texttt{install} target must \emph{install} public output of the
-  build process into the directory denoted by the \makefile variable
-  \texttt{DESTDIR}.  \texttt{DESTDIR} is a standard \make variable
-  used when installing software.
+  The \texttt{install} target must build and then \emph{install}
+  public output of the build process into the directory denoted by the
+  \makefile variable \texttt{DESTDIR}.  \texttt{DESTDIR} is a standard
+  \make variable used when installing software.
 
   To be compliant, a component's build process should be written to
   assume that the directory into which it installs files is the root

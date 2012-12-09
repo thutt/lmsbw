@@ -64,8 +64,7 @@ endef
 #   provided component sources using the component.makefile.
 #
 #   The component.makefile is a trampoline that very quickly invokes
-#   the components buildprocess to satisfy 'LMSBW_C_BUILD_TARGET' and
-#   'LMSBW_C_INSTALL_TARGET'.
+#   the components buildprocess to satisfy 'LMSBW_C_INSTALL_TARGET'.
 #
 define lmsbw_expand_build_component
 	$(MESSAGE) "$(1): Trampoline to '$(1)' build system";					\
@@ -85,7 +84,6 @@ define lmsbw_expand_build_component
 		LMSBW_C_INSTALL_DIRECTORY="$(call lmsbw_gcf,$(1),install-directory)"		\
 		LMSBW_C_BUILD_INSTALL_DIRECTORY="$(call lmsbw_expand_install_directory,build)"	\
 		LMSBW_C_CONFIGURATION_FILE="$(call lmsbw_gcf,$(1),configuration-file)"		\
-		LMSBW_C_BUILD_TARGET="$(call lmsbw_gcf,$(1),build-target)"			\
 		LMSBW_C_INSTALL_TARGET="$(call lmsbw_gcf,$(1),install-target)"			\
 		LMSBW_C_NO_PARALLEL="$(call lmsbw_gcf,$(1),no-parallel)"			\
 		$(call lmsbw_component_expand_settings,$(1))					\
@@ -297,7 +295,7 @@ $(call generate_component_install_$(call expand_component_submake_kind,$(strip $
 #  directory must be copied into the install directory.  This is
 #  ensured with the '--checksum' option.  Do not use '--update'.
 #
-#  If it were, instead, done as part of the submake, or guarded by
+#  If this were, instead, done as part of the submake, or guarded by
 #  mtree, the sysroot would not always be up-to-date with the latest
 #  build images.
 

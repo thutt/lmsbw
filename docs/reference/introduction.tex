@@ -261,10 +261,10 @@ Let's examine the what makes \lmsbw different:
     Finally, the \makefile of the component is executed.  This will
     likely already exist if wrapping an existing build process.
 
-    This \makefile will be entered at most twice for each build.  The
-    first invocation will be to \emph{build} the component, and the
-    second time will be to \emph{install} the component into the
-    \destdir.
+    This \makefile will be entered at most once for each build.  The
+    invocation will be to \emph{install} the component; the \makefile
+    itself must have appropriate rules configured so that the
+    component will be built each time it is entered.
 \end{itemize}
 
 \item{Share Build Output}

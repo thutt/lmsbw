@@ -345,19 +345,6 @@ This key must not be used by clients of \lmsbw.
 
 \apiref{api:declare-source-component}
 
-\subsection{\lmsbwcomponentfield{build-target}}\label{variables:build-target}
-
-This key holds the list of targets used when invoking the component's
-\makefile to build.
-
-If not specified, the component's build system will invoked with no
-target when building; this will cause the default target of the
-component's \makefile to be built.
-
-Compare to \xref{variables:install-target}.
-
-\apiref{api:component-attribute-build-target}
-
 \subsection{\lmsbwcomponentfield{component}}\label{variables:component}
 
 This key contains the name of the component.
@@ -460,8 +447,6 @@ This key holds the component's \makefile target that is used to
 If not specified, the component's build system will invoked with
 \texttt{install} as the target when processing the \emph{install}
 phase of the build.
-
-Compare to \xref{variables:build-target}.
 
 \apiref{api:component-attribute-install-target}
 
