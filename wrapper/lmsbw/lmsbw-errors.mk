@@ -184,3 +184,15 @@ endef
 # E1015: The defined build output script does not exist.
 # E1016: Component marked 'build-output-download', prerequisite not.
 # E1017: build-output-download configuration failure.
+# E1018: configuration file does not exist
+# E1019: build support file does not exist
+# E1020: source component source directory does not exist
+# E1021: toolchain does not exist
+
+# lmsbw_assert_components
+#
+#  If LMSBW_components is empty, product an error and halt.
+#
+define lmsbw_assert_components
+$(call lmsbw_assert,E1022,$(LMSBW_components),No components defined)
+endef
