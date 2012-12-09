@@ -22,6 +22,7 @@ __include_file="$(dirname ${0})/lmsbw-common"
 }
 source "${__include_file}";
 
+PATH=${PATH}:"$(dirname ${0})";
 export LMSBW_TEST_COMMON="$(dirname ${0})/lmsbw-test-common";
 LMSBW_BUILD_ROOT="/tmp/lmsbw-run-tests-${BASHPID}";
 
