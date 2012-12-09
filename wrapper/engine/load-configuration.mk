@@ -170,6 +170,7 @@ $(if $(call __gcv,component-build-output-download-script),		\
 $(eval $(call $(call __gcv,load-configuration-function),$(LMSBW_CONFIGURATION_FILE)))
 $(call preqrequisite_test)
 
+$(call lmsbw_assert_components)
 
 # At this point, all components are configured.  LMSBW_components
 # contains the list of all components that are included in this

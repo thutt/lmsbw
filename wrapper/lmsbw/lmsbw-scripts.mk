@@ -17,3 +17,4 @@
 LMSBW_MTREE_CHECK_MANIFEST	:= $(LMSBW_DIR)/scripts/lmsbw-mtree-check-manifest
 LMSBW_MTREE_GENERATE_MANIFEST	:= $(LMSBW_DIR)/scripts/lmsbw-mtree-generate-manifest
 LMSBW_MTREE_CHECK_API		:= $(LMSBW_DIR)/scripts/lmsbw-mtree-check-api
+LMSBW_INSTALL_DESTDIR		:= $(LMSBW_DIR)/scripts/lmsbw-install-destdir

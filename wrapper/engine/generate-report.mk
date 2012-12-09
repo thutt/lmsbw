@@ -42,7 +42,6 @@ __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind):
 	@$(ECHO) "$(1)|  destdir   : $(call lmsbw_gcf,$(1),destdir-directory)";
 	@$(ECHO) "$(1)|Targets     :";
 	@$(ECHO) "$(1)|  install   : $(call lmsbw_gcf,$(1),install-target)";
-	@$(ECHO) "$(1)|  build     : $(call lmsbw_gcf,$(1),build-target)";
 
 endef
 

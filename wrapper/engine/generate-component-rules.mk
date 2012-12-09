@@ -64,8 +64,7 @@ endef
 #   provided component sources using the component.makefile.
 #
 #   The component.makefile is a trampoline that very quickly invokes
-#   the components buildprocess to satisfy 'LMSBW_C_BUILD_TARGET' and
-#   'LMSBW_C_INSTALL_TARGET'.
+#   the components buildprocess to satisfy 'LMSBW_C_INSTALL_TARGET'.
 #
 define lmsbw_expand_build_component
 	$(MESSAGE) "$(1): Trampoline to '$(1)' build system";					\
@@ -85,7 +84,6 @@ define lmsbw_expand_build_component
 		LMSBW_C_INSTALL_DIRECTORY="$(call lmsbw_gcf,$(1),install-directory)"		\
 		LMSBW_C_BUILD_INSTALL_DIRECTORY="$(call lmsbw_expand_install_directory,build)"	\
 		LMSBW_C_CONFIGURATION_FILE="$(call lmsbw_gcf,$(1),configuration-file)"		\
-		LMSBW_C_BUILD_TARGET="$(call lmsbw_gcf,$(1),build-target)"			\
 		LMSBW_C_INSTALL_TARGET="$(call lmsbw_gcf,$(1),install-target)"			\
 		LMSBW_C_NO_PARALLEL="$(call lmsbw_gcf,$(1),no-parallel)"			\
 		$(call lmsbw_component_expand_settings,$(1))					\
@@ -294,27 +292,30 @@ $(call generate_component_install_$(call expand_component_submake_kind,$(strip $
 #  current build product will be up-to-date with the latest build.
 #
 #  When switching between different build directories, the current
-#  directory must be copied into the install directory.  This is
-#  ensured with the '--checksum' option.  Do not use '--update'.
+#  directory must be copied into the install directory.
 #
-#  If it were, instead, done as part of the submake, or guarded by
+#  If this were, instead, done as part of the submake, or guarded by
 #  mtree, the sysroot would not always be up-to-date with the latest
 #  build images.
-
+#
+#  Rather than using 'rsync' to synchronize the local DESTDIR and the
+#  global install directories (which can take a long time if many, or
+#  a few large files are installed, the system will clone the
+#  directory tree using symlinks; this is faster and uses less
+#  diskspace.
+#
 install.$(strip $(1))_update-install-directory:		\
-	$(call expand_component_submake,$(1))
-	$(ATSIGN)$(PROGRESS) "$(1): Install";
-	$(ATSIGN)$(RSYNC)						\
-		--quiet							\
-		--executability						\
-		--group							\
-		--links							\
-		--owner							\
-		--perms							\
-		--recursive						\
-		--times							\
-		$(call lmsbw_gcf,$(strip $(1)),destdir-directory)/	\
-		$(call lmsbw_gcf,$(strip $(1)),install-directory);
+		$(call expand_component_submake,$(1))
+	$(if $(call lmsbw_gcf,$(strip $(1)),api),					\
+		$(ATSIGN)$(PROGRESS) "$(1): Install";					\
+		$(LMSBW_INSTALL_DESTDIR)						\
+			$(if $(LMSBW_VERBOSE),--verbose)				\
+			--component $(1)						\
+			---destdir $(call lmsbw_gcf,$(strip $(1)),destdir-directory)	\
+			---api $(call lmsbw_gcf,$(strip $(1)),api)			\
+			---install $(call lmsbw_gcf,$(strip $(1)),install-directory),	\
+		$(ATSIGN)$(MESSAGE) "$(1): No API; nothing to install";			\
+	)
 
 install.$(strip $(1)):	install.$(strip $(1))_update-install-directory
 endef

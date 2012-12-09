@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
@@ -12,22 +13,21 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 
-# load_configuration <pathname of configuration file declaring this function>
-#
-define load_configuration
-$(call declare_source_component,		\
-       lmsbw-test,				\
-       Single Source Test,			\
-       image,					\
-       $(1),					\
-       $(subst lmsbw-test.cfg,src,$(1)),        \
-       unresolved-module)
-endef
+# This test simply verifies that a single source component will easily
+# build.
 
+if [ ! -z "${LMSBW_TEST_COMMON}" ] ; then
+    source "${LMSBW_TEST_COMMON}";
+else
+    echo "LMSBW_TEST_COMMON is not set; unable to proceed with test";
+    exit -1;
+fi;
 
-# Set up the LMSBW_configuration associative array.
-#
-vv:=$(call set,LMSBW_configuration,load-configuration-function,load_configuration)
-vv:=$(call set,LMSBW_configuration,component-build-support,source)
+lmsbw                                                                           \
+    ${LMSBW_VERBOSE}                                                            \
+    --build-root "${LMSBW_TEST_BUILD_ROOT}"                                     \
+    --configuration "${cfg}" >"${LMSBW_TEST_BUILD_ROOT}/lmsbw-build.log";
+expect_command_failure;
+expect_error "${LMSBW_TEST_BUILD_ROOT}" "E1022";
+

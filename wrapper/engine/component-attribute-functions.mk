@@ -28,21 +28,6 @@ lmsbw_dcnpb:=$(call lmsbw_scf,$(1),no-parallel,-j 1)
 endef
 
 
-# component_attribute_build_target <component> <list of targets>
-#
-#  Sets the targets that will be passed to the component's Makefile as
-#  the preliminary targets for the 'bulid' phase.
-#
-#  If not set, LMSBW will not use a specific set of targets for the
-#  'build' phase, and will end up using the default (or first) rule in
-#  the component's Makefile.
-#
-define component_attribute_build_target
-$(call lmsbw_assert_known_component,$(1))
-lmsbw_dcbt:=$(call lmsbw_scf,$(1),build-target,$(2))
-endef
-
-
 # component_attribute_install_target <component> <list of targets>
 #
 #  Sets the targets that will be passed to the components's Makefile

@@ -27,11 +27,7 @@ DEFAULT_SOURCE_COMPONENT_MAKE_OPTIONS :=									\
 	LMSBW_C_BUILD_WORKING_DIRECTORY=$(LMSBW_C_BUILD_DIRECTORY)/$(notdir $(LMSBW_C_SOURCE_DIRECTORY))	\
 	GMSL=$(LMSBW_DIR)/wrapper/gmsl
 
-default.component.build.$(LMSBW_C_COMPONENT):	sync
-	$(MESSAGE) "[default] Building source component";
-	$(MAKE) $(DEFAULT_SOURCE_COMPONENT_MAKE_OPTIONS) $(LMSBW_C_BUILD_TARGET);
-
-default.component.install.$(LMSBW_C_COMPONENT):	build
+default.component.install.$(LMSBW_C_COMPONENT):	sync
 	$(MESSAGE) "[default] Installing component";
 	$(MAKE) $(DEFAULT_SOURCE_COMPONENT_MAKE_OPTIONS)  $(LMSBW_C_INSTALL_TARGET);
 
