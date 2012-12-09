@@ -292,27 +292,30 @@ $(call generate_component_install_$(call expand_component_submake_kind,$(strip $
 #  current build product will be up-to-date with the latest build.
 #
 #  When switching between different build directories, the current
-#  directory must be copied into the install directory.  This is
-#  ensured with the '--checksum' option.  Do not use '--update'.
+#  directory must be copied into the install directory.
 #
 #  If this were, instead, done as part of the submake, or guarded by
 #  mtree, the sysroot would not always be up-to-date with the latest
 #  build images.
-
+#
+#  Rather than using 'rsync' to synchronize the local DESTDIR and the
+#  global install directories (which can take a long time if many, or
+#  a few large files are installed, the system will clone the
+#  directory tree using symlinks; this is faster and uses less
+#  diskspace.
+#
 install.$(strip $(1))_update-install-directory:		\
-	$(call expand_component_submake,$(1))
-	$(ATSIGN)$(PROGRESS) "$(1): Install";
-	$(ATSIGN)$(RSYNC)						\
-		--quiet							\
-		--executability						\
-		--group							\
-		--links							\
-		--owner							\
-		--perms							\
-		--recursive						\
-		--times							\
-		$(call lmsbw_gcf,$(strip $(1)),destdir-directory)/	\
-		$(call lmsbw_gcf,$(strip $(1)),install-directory);
+		$(call expand_component_submake,$(1))
+	$(if $(call lmsbw_gcf,$(strip $(1)),api),					\
+		$(ATSIGN)$(PROGRESS) "$(1): Install";					\
+		$(LMSBW_INSTALL_DESTDIR)						\
+			$(if $(LMSBW_VERBOSE),--verbose)				\
+			--component $(1)						\
+			---destdir $(call lmsbw_gcf,$(strip $(1)),destdir-directory)	\
+			---api $(call lmsbw_gcf,$(strip $(1)),api)			\
+			---install $(call lmsbw_gcf,$(strip $(1)),install-directory),	\
+		$(ATSIGN)$(MESSAGE) "$(1): No API; nothing to install";			\
+	)
 
 install.$(strip $(1)):	install.$(strip $(1))_update-install-directory
 endef

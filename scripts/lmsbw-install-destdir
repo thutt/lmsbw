@@ -1,0 +1,160 @@
+#!/bin/bash
+#
+# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+declare -A nodes;
+
+# LMSBW_SCRIPT_DIRECTORY should be used as a direct path to any script
+# which is used from the scripts directory.
+#
+export LMSBW_SCRIPT_DIRECTORY="$(dirname ${program})";
+
+function display_help ()
+{
+    cat <<EOF
+${program} \\
+   [--help | --verbose |           \\
+    --component <component-name> | \\
+    --destdir <destdir-pathname> | \\
+    --api     <api directory>    | \\
+    --install <install-pathname>   \\
+   ]...
+
+  Builds installs a component's private DESTDIR directory into the
+  global install directory.
+
+  This implementation is specific to Linux.
+
+  --help | -h                     : Show this help and exit
+  --component                     : Name of the component being installed
+  --destdir                       : Full pathname to component's DESTDIR
+  --api                           : API pathname relative to DESTDIR
+  --install                       : Full pathname of global install directory
+  --verbose                       : Enable more verbosity from build
+
+EOF
+}
+
+function copy ()
+{
+    local api="${1}";
+    local destdir="${2}";
+    local install="${3}";
+    local api_root=$(dirname "${api}")
+    local api_dir=$(basename "${api}")
+    local install_api_root="${install}${api_root}"
+
+    mkdir --parents ${install_api_root} >/dev/null;
+    rm -rf "${install_api_root}/${api_dir}" >/dev/null;
+    lndir -silent $(dirname "${destdir}${api}") "${install_api_root}";
+}
+
+function main ()
+{
+    local makeopts;
+    local debug;
+
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long api:                             \
+        --long component:                       \
+        --long destdir:                         \
+        --long install:                         \
+        --long verbose                          \
+        -n "${program}"                         \
+        -- "$@");
+
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --verbose)
+                export LMSBW_VERBOSE=1
+                shift 1 ;;
+
+            --api)
+                api="${2}";
+                shift 2 ;;
+
+            --component)
+                component="${2}";
+                shift 2 ;;
+
+            --destdir)
+                destdir="$(readlink -f ${2})";
+                shift 2 ;;
+
+            --install)
+                install="$(readlink -f ${2})";
+                shift 2 ;;
+
+            --) shift ;
+                break ;;
+
+            *) echo "Internal error: ${1}!" ;
+                argument_failure="yes" ;
+        esac
+    done
+
+    if [ -z "${component}" ] ; then
+        fatal "A component name must be supplied with '--component'.";
+    fi;
+
+    if [ -z "${api}" ] ; then
+        fatal "An API directory must be supplied with '--api'.";
+    fi;
+
+    if [ -z "${destdir}" ] ; then
+        fatal "A destdir must be supplied with '--destdir'.";
+    fi;
+
+    if [ ! -d "${destdir}" ] ; then
+        fatal "The destdir, '${destdir}' does not exist.";
+    fi;
+
+    if [ ! -d "${destdir}${api}" ] ; then
+        fatal "The API directory, '${destdir}${api}' does not exist.";
+    fi;
+
+    if [ -z "${install}" ] ; then
+        fatal "A global install directory must be supplied with '--install'";
+    fi;
+
+    if [ ! -d "${install}" ] ; then
+        fatal "The install, '${install}' does not exist.";
+    fi;
+
+    copy "${api}" "${destdir}" "${install}";
+}
+
+main ${@};
