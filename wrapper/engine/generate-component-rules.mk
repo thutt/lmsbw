@@ -107,16 +107,16 @@ endef
 #
 #   Result:
 #
-#      Sets 'api_changed' to "yes" if the API has changed.
+#      Touches file 'api-changed' if the API has changed.
 #
 define lmsbw_check_api
 $(foreach api_dir,$(call lmsbw_gcf,$(1),api),							\
-	$(LMSBW_MTREE_CHECK_API) 								\
+	($(LMSBW_MTREE_CHECK_API) 								\
 		$(if $(LMSBW_VERBOSE),--verbose)						\
 		--component $(strip $(1))							\
 		--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(api_dir)"	\
 		--manifest "$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree"	\
-		--mtree $(MTREE) || api_changed="yes";)
+		--mtree $(MTREE) || touch api-changed) &)
 endef
 
 # lmsbw_expand_api_checks <component>
@@ -130,7 +130,6 @@ endef
 #  built.
 #
 define lmsbw_expand_api_checks
-api_changed="no";					\
 $(foreach p,$(call lmsbw_gcf,$(1),prerequisite),	\
 	$(call lmsbw_check_api,$(p),$(1)))
 endef
@@ -168,8 +167,10 @@ define generate_component_install_submake
 
 install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 	+$(ATSIGN)set -e;							\
+	rm -f api-changed;							\
 	$(call lmsbw_expand_api_checks,$(1))					\
-	if [ "$$$${api_changed}" = "no" ] &&					\
+	wait;									\
+	if [ ! -e api-changed ] &&						\
 	   [ $(call lmsbw_gcf,$(1),source-mtree-manifest) -nt			\
 		$(call lmsbw_gcf,$(1),configuration-file) ] &&			\
 	   $(LMSBW_MTREE_CHECK_MANIFEST)					\
