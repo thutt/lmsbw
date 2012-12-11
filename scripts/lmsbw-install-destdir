@@ -64,8 +64,14 @@ function copy ()
     local api_dir=$(basename "${api}")
     local install_api_root="${install}${api_root}"
 
-    mkdir --parents ${install_api_root} >/dev/null;
-    rm -rf "${install_api_root}/${api_dir}" >/dev/null;
+    # Create the root of the destination and then copy the link tree.
+    # Although it is a good idea to delete the existing tree first, it
+    # will break components that share an install directory; the
+    # installation of each component sharing the directory will delete
+    # it first.
+    if [ ! -e ${install_api_root} ] ; then
+        mkdir --parents ${install_api_root} >/dev/null;
+    fi;
     lndir -silent $(dirname "${destdir}${api}") "${install_api_root}";
 }
 
