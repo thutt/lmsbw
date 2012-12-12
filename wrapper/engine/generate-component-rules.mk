@@ -93,6 +93,13 @@ define lmsbw_expand_build_component
 		$(call lmsbw_gcf,$(1),build-directory)/build-time.text;)
 endef
 
+# expand_api_changed_file <component-name>
+#
+#
+define expand_api_changed_file
+$(call lmsbw_gcf,$(strip $(1)),build-root-directory)/api-changed
+endef
+
 # lmsbw_check_api <component>, <directly dependent component>
 #
 #   Check the source or binary API of <component> to see if it has
@@ -110,13 +117,15 @@ endef
 #      Touches file 'api-changed' if the API has changed.
 #
 define lmsbw_check_api
-$(foreach api_dir,$(call lmsbw_gcf,$(1),api),							\
-	($(LMSBW_MTREE_CHECK_API) 								\
-		$(if $(LMSBW_VERBOSE),--verbose)						\
-		--component $(strip $(1))							\
-		--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(api_dir)"	\
-		--manifest "$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree"	\
-		--mtree $(MTREE) || touch api-changed) &)
+$(foreach api_dir,$(call lmsbw_gcf,$(1),api),								\
+	[ ! -e "$(call expand_api_changed_file,$(1))" ]  &&						\
+		($(LMSBW_MTREE_CHECK_API) 								\
+			$(if $(LMSBW_VERBOSE),--verbose)						\
+			--component $(strip $(1))							\
+			--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(api_dir)"	\
+			--manifest "$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree" \
+			--mtree $(MTREE) || touch "$(call expand_api_changed_file,$(1))"); 		\
+)
 endef
 
 # lmsbw_expand_api_checks <component>
@@ -162,34 +171,43 @@ endef
 #   This is only used on components which have not been marked to
 #   download their build output.
 #
+#   The checks are done in 'most to least likely to have changed'
+#   order.
+#
+#    1. Check the component sources
+#    2. Check the component configuration file
+#    3. Check the prerequisite APIs
+#
 define generate_component_install_submake
 .PHONY:	install.$(1)_submake
 
 install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
-	+$(ATSIGN)set -e;							\
-	rm -f api-changed;							\
-	$(call lmsbw_expand_api_checks,$(1))					\
-	wait;									\
-	if [ ! -e api-changed ] &&						\
-	   [ $(call lmsbw_gcf,$(1),source-mtree-manifest) -nt			\
-		$(call lmsbw_gcf,$(1),configuration-file) ] &&			\
-	   $(LMSBW_MTREE_CHECK_MANIFEST)					\
-		$(if $(LMSBW_VERBOSE),--verbose)				\
-		--component $(1)						\
-		--mtree $(MTREE)						\
-		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
-		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";	\
-	then									\
-		$(PROGRESS) "$(1): No files changed";				\
-		exit 0;								\
-	fi;									\
-	$(call lmsbw_expand_build_component,$(1))				\
-	$(PROGRESS) "$(1): Updating manifest";					\
-	$(LMSBW_MTREE_GENERATE_MANIFEST)					\
-		$(if $(LMSBW_VERBOSE),--verbose)				\
-		--component $(1)						\
-		--mtree $(MTREE)						\
-		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
+	+$(ATSIGN)set -e;								\
+	rm -f "$(call expand_api_changed_file,$(1))";					\
+	[ ! -e "$(call expand_api_changed_file,$(1))" ] &&				\
+		($(LMSBW_MTREE_CHECK_MANIFEST)						\
+			$(if $(LMSBW_VERBOSE),--verbose)				\
+			--component $(1)						\
+			--mtree $(MTREE)						\
+			--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
+			--directory-tree "$(call lmsbw_gcf,$(1),source-directory)" ||	\
+		touch "$(call expand_api_changed_file,$(1))");				\
+	[ ! -e "$(call expand_api_changed_file,$(1))" ] &&				\
+		([ $(call lmsbw_gcf,$(1),source-mtree-manifest) -nt			\
+		 $(call lmsbw_gcf,$(1),configuration-file) ] ||				\
+		touch "$(call expand_api_changed_file,$(1))");				\
+	$(call lmsbw_expand_api_checks,$(1))						\
+	if [ ! -e "$(call expand_api_changed_file,$(1))" ] ; then			\
+		$(PROGRESS) "$(1): No files changed";					\
+		exit 0;									\
+	fi;										\
+	$(call lmsbw_expand_build_component,$(1))					\
+	$(PROGRESS) "$(1): Updating manifest";						\
+	$(LMSBW_MTREE_GENERATE_MANIFEST)						\
+		$(if $(LMSBW_VERBOSE),--verbose)					\
+		--component $(1)							\
+		--mtree $(MTREE)							\
+		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"		\
 		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";
 endef
 
