@@ -117,14 +117,15 @@ endef
 #      Touches file 'api-changed' if the API has changed.
 #
 define lmsbw_check_api
-$(foreach api_dir,$(call lmsbw_gcf,$(1),api),								\
-	[ ! -e "$(call expand_api_changed_file,$(1))" ]  &&						\
-		($(LMSBW_MTREE_CHECK_API) 								\
-			$(if $(LMSBW_VERBOSE),--verbose)						\
-			--component $(strip $(1))							\
-			--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(api_dir)"	\
-			--manifest "$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree" \
-			--mtree $(MTREE) || touch "$(call expand_api_changed_file,$(1))"); 		\
+$(foreach api_dir,$(call lmsbw_gcf,$(1),api),							\
+	$(LMSBW_MTREE_CHECK_API) 								\
+		$(if $(LMSBW_VERBOSE),--verbose)						\
+		--component $(strip $(1))							\
+		--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(api_dir)"	\
+		--manifest "$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree" \
+		--mtree $(MTREE) || 								\
+			($(PROGRESS) "$(2): $(1) interface changed";				\
+			touch "$(call expand_api_changed_file,$(1))") &		 		\
 )
 endef
 
@@ -140,7 +141,8 @@ endef
 #
 define lmsbw_expand_api_checks
 $(foreach p,$(call lmsbw_gcf,$(1),prerequisite),	\
-	$(call lmsbw_check_api,$(p),$(1)))
+	$(call lmsbw_check_api,$(p),$(1)))		\
+	wait;
 endef
 
 # expand_component_submake_kind <component>
