@@ -193,7 +193,7 @@ install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
 		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)" ||	\
 		($(PROGRESS) "$(1): component changed" && 			\
-		touch "$(call expand_api_changed_file,$(1)))";			\
+		touch "$(call expand_api_changed_file,$(1))");			\
 	[ $(call lmsbw_gcf,$(1),source-mtree-manifest) -nt			\
 		 $(call lmsbw_gcf,$(1),configuration-file) ] ||			\
 		($(PROGRESS) "$(1): component configuration changed" && 	\
