@@ -34,9 +34,7 @@ $(LMSBW_TARBALL_REPOSITORY)					\
 $(LMSBW_DIRECTORIES)						\
 $(patsubst %,install.%,$(call lmsbw_gcf,$(1),prerequisite))	\
 |								\
-$(foreach c,$(1) $(call lmsbw_gcf,$(1),direct-dependent),	\
-	$(call lmsbw_gcf,$(c),build-directory)			\
-)								\
+$(call lmsbw_gcf,$(1),build-directory)				\
 $(call lmsbw_gcf,$(1),destdir-directory)			\
 $(call lmsbw_gcf,$(1),install-directory)
 endef
@@ -128,7 +126,7 @@ endef
 define lmsbw_check_api
 $(foreach api_dir,$(call lmsbw_gcf,$(1),api),							\
 	$(eval __fb_manifest:="$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree")	\
-	$(eval __fb_sentinel:="$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/build-$(strip $(1)).sentinel") \
+	$(eval __fb_sentinel:="$(call lmsbw_gcf,$(strip $(1)),build-root-directory)/build-stamp.sentinel") \
 	([ ! -e $(__fb_manifest) ] || [ $(__fb_sentinel) -nt $(__fb_manifest) ]) &&		\
 	($(PROGRESS) "$(2): $(1) checking interface" &&						\
 		$(LMSBW_MTREE_CHECK_API) 							\
@@ -178,18 +176,6 @@ define expand_component_submake
 install.$(strip $(1))_$(call expand_component_submake_kind,$(1))
 endef
 
-# tag_dependent_components <component>
-#
-#  This function touches a sentinel file in each dependent component's
-#  build directory to signify that this component has been (re)built.
-#  This file is used by the interface checking mechanism.
-#
-define tag_dependent_components
-$(foreach d,$(call lmsbw_gcf,$(1),direct-dependent),				\
-	touch $(call lmsbw_gcf,$(d),build-root-directory)/build-$(1).sentinel;	\
-)
-endef
-
 # generate_component_install_submake <stripped component name>
 #
 #   This function expands to rules which will recursively invoke Make
@@ -204,6 +190,9 @@ endef
 #    1. Check the component sources
 #    2. Check the component configuration file
 #    3. Check the prerequisite APIs
+#
+# The 'sentinel' file is used by dependent components to determine if
+# the prerequisite has been more recently built.
 #
 define generate_component_install_submake
 .PHONY:	install.$(1)_submake
@@ -236,7 +225,7 @@ install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 		--mtree $(MTREE)						\
 		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
 		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";	\
-	$(call tag_dependent_components,$(1))
+	touch $(call lmsbw_gcf,$(1),build-root-directory)/build-stamp.sentinel;
 endef
 
 # generate_component_install_build_output_download <stripped component name>

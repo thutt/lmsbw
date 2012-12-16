@@ -113,7 +113,7 @@ function main ()
         fatal "${program}: --directory-tree value, '${directory_tree}' is not a directory.";
     fi;
 
-    "${mtree}" -c -p "${directory_tree}" >"${manifest}";
+    "${mtree}" -c -k size,time -p "${directory_tree}" >"${manifest}";
 }
 
 main "$@";
