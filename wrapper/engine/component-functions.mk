@@ -38,13 +38,3 @@ $(ATSIGN)$(call lmsbw_expand_mtree_command_guard,	\
 	$(2),						\
 	$(call lmsbw_gcf,$(1),configuration-file))
 endef
-
-# lmsbw_direct_dependents <component>
-#
-#   Expands to a list of components which are directly dependent upon the
-#   input component.
-#
-define lmsbw_direct_dependents
-$(strip $(foreach c,$(LMSBW_components),
-	$(if $(filter $(strip $(1)),$(call lmsbw_gcf,$(c),prerequisite)),$(c))))
-endef
