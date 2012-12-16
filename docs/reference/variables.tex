@@ -394,6 +394,18 @@ cp include-file.h $(DESTDIR)/usr/include
 
 \apiref{api:declare-source-component}
 
+\subsection{\lmsbwcomponentfield{direct-dependent}}\label{variables:direct-dependent}
+
+This key holds a list of all components that are directly dependent
+upon this component.  After a component is completely built, \lmsbw
+will use this information to write a file in the dependent component's
+\texttt{build-root-directory} (\xref{variables:build-root-directory}).
+This sentinel file is used to partially determine if the dependent
+component needs to be rebuilt.
+
+\lmsbw will automatically set this variable after all components are
+loaded.
+
 \subsection{\lmsbwcomponentfield{hash}}\label{variables:hash}
 
 This key contains a hash that is used to create directory names for

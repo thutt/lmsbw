@@ -132,6 +132,21 @@ define set_component_internal_data
 $(call lmsbw_assert_known_component,$(1))
 endef
 
+# update_direct_dependents <component>
+#
+#  This function traverses the set of prerequisite and updates their
+#  'direct-dependent' field to refer to '$(1)'.
+#
+#  This cannot be done until all components are loaded.
+#
+define update_direct_dependents
+$(foreach p,$(call lmsbw_gcf,$(1),prerequisite),			\
+	$(call lmsbw_scf,$(p),direct-dependent,				\
+		$(sort $(1) $(call lmsbw_gcf,$(p),direct-dependent))	\
+	)								\
+)
+endef
+
 # fixup_component_fields <component>
 #
 #   Sets the component fields which cannot be assigned until the full
@@ -139,6 +154,7 @@ endef
 #
 define fixup_component_fields
 $(call lmsbw_scf,$(1),hash,$(call lmsbw_expand_component_hash,$(1)))
+$(call update_direct_dependents,$(1))
 $(eval __brd:=$(call set,LMSBW_component_$(strip $(1)),build-root-directory,$(strip $(call __expand_build_root,$(1)))))
 $(call lmsbw_scf,$(1),build-directory,$(__brd)/build)
 $(call lmsbw_scf,$(1),destdir-directory,$(__brd)/destdir)

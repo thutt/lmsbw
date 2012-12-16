@@ -23,13 +23,22 @@
 #  installed prior to <component> being built, thus each will be
 #  transformed into the 'install.' target name.
 #
+#  A component is dependent on its 'direct-dependent' build
+#  directories because a sentinel file will be written into that
+#  directory each time the component is built.  This is used as part
+#  of the interface checking mechanism.
+#
+#
 define expand_prerequisites
-$(LMSBW_TARBALL_REPOSITORY)				\
-$(LMSBW_DIRECTORIES)					\
-$(call lmsbw_gcf,$(1),build-directory)			\
+$(LMSBW_TARBALL_REPOSITORY)					\
+$(LMSBW_DIRECTORIES)						\
+$(patsubst %,install.%,$(call lmsbw_gcf,$(1),prerequisite))	\
+|								\
+$(foreach c,$(1) $(call lmsbw_gcf,$(1),direct-dependent),	\
+	$(call lmsbw_gcf,$(c),build-directory)			\
+)								\
 $(call lmsbw_gcf,$(1),destdir-directory)			\
-$(call lmsbw_gcf,$(1),install-directory)			\
-$(patsubst %,install.%,$(call lmsbw_gcf,$(1),prerequisite))
+$(call lmsbw_gcf,$(1),install-directory)
 endef
 
 # generate_component_directory_rules <component>
@@ -118,14 +127,18 @@ endef
 #
 define lmsbw_check_api
 $(foreach api_dir,$(call lmsbw_gcf,$(1),api),							\
-	$(LMSBW_MTREE_CHECK_API) 								\
+	$(eval __fb_manifest:="$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree")	\
+	$(eval __fb_sentinel:="$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/build-$(strip $(1)).sentinel") \
+	([ ! -e $(__fb_manifest) ] || [ $(__fb_sentinel) -nt $(__fb_manifest) ]) &&		\
+	($(PROGRESS) "$(2): $(1) checking interface" &&						\
+		$(LMSBW_MTREE_CHECK_API) 							\
 		$(if $(LMSBW_VERBOSE),--verbose)						\
 		--component $(strip $(1))							\
 		--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(api_dir)"	\
-		--manifest "$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree" \
+		--manifest $(__fb_manifest)							\
 		--mtree $(MTREE) || 								\
 			($(PROGRESS) "$(2): $(1) interface changed" &&				\
-			touch "$(call expand_api_changed_file,$(2))") &		 		\
+			touch "$(call expand_api_changed_file,$(2))")) &	 		\
 )
 endef
 
@@ -163,6 +176,18 @@ endef
 #
 define expand_component_submake
 install.$(strip $(1))_$(call expand_component_submake_kind,$(1))
+endef
+
+# tag_dependent_components <component>
+#
+#  This function touches a sentinel file in each dependent component's
+#  build directory to signify that this component has been (re)built.
+#  This file is used by the interface checking mechanism.
+#
+define tag_dependent_components
+$(foreach d,$(call lmsbw_gcf,$(1),direct-dependent),				\
+	touch $(call lmsbw_gcf,$(d),build-root-directory)/build-$(1).sentinel;	\
+)
 endef
 
 # generate_component_install_submake <stripped component name>
@@ -210,7 +235,8 @@ install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 		--component $(1)						\
 		--mtree $(MTREE)						\
 		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
-		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";
+		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";	\
+	$(call tag_dependent_components,$(1))
 endef
 
 # generate_component_install_build_output_download <stripped component name>
