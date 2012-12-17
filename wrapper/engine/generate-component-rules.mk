@@ -124,19 +124,13 @@ endef
 #      Touches file 'api-changed' if the API has changed.
 #
 define lmsbw_check_api
-$(foreach api_dir,$(call lmsbw_gcf,$(1),api),							\
-	$(eval __fb_manifest:="$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/$(strip $(1))$(subst /,.,$(api_dir))-api.mtree")	\
-	$(eval __fb_sentinel:="$(call lmsbw_gcf,$(strip $(1)),build-root-directory)/build-stamp.sentinel") \
-	([ ! -e $(__fb_manifest) ] || [ $(__fb_sentinel) -nt $(__fb_manifest) ]) &&		\
-	($(PROGRESS) "$(2): $(1) checking interface" &&						\
-		$(LMSBW_MTREE_CHECK_API) 							\
-		$(if $(LMSBW_VERBOSE),--verbose)						\
-		--component $(strip $(1))							\
-		--directory-tree "$(call lmsbw_gcf,$(strip $(1)),destdir-directory)$(api_dir)"	\
-		--manifest $(__fb_manifest)							\
-		--mtree $(MTREE) || 								\
-			($(PROGRESS) "$(2): $(1) interface changed" &&				\
-			touch "$(call expand_api_changed_file,$(2))")) &	 		\
+$(foreach api_dir,$(call lmsbw_gcf,$(1),api),									\
+	$(eval __fb_dependent:="$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/build-stamp.sentinel")	\
+	$(eval __fb_prerequisite:="$(call lmsbw_gcf,$(strip $(1)),build-root-directory)/build-stamp.sentinel")	\
+	if [ ! -e $(__fb_dependent) ] || [ $(__fb_prerequisite) -nt $(__fb_dependent) ] ; then			\
+		$(PROGRESS) "$(2): $(1) interface changed";							\
+		rebuild="Y";											\
+	fi;													\
 )
 endef
 
@@ -152,8 +146,7 @@ endef
 #
 define lmsbw_expand_api_checks
 $(foreach p,$(call lmsbw_gcf,$(1),prerequisite),	\
-	$(call lmsbw_check_api,$(p),$(1)))		\
-	wait;
+	$(call lmsbw_check_api,$(p),$(1)))
 endef
 
 # expand_component_submake_kind <component>
@@ -199,21 +192,28 @@ define generate_component_install_submake
 
 install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 	+$(ATSIGN)set -e;							\
-	rm -f "$(call expand_api_changed_file,$(1))";				\
-	$(LMSBW_MTREE_CHECK_MANIFEST)						\
+	unset rebuild;								\
+	$(call lmsbw_expand_api_checks,$(1))					\
+	if [ -z "$$$${rebuild}" ] ; then					\
+		if [ $(call lmsbw_gcf,$(1),configuration-file) -nt 		\
+		     $(call lmsbw_gcf,$(1),source-mtree-manifest) ] ; then	\
+			$(PROGRESS) "$(1): component configuration changed";	\
+			rebuild="Y";						\
+		fi;								\
+	fi;									\
+	if [ -z "$$$${rebuild}" ] ; then					\
+	   if ! $(LMSBW_MTREE_CHECK_MANIFEST)					\
 		$(if $(LMSBW_VERBOSE),--verbose)				\
 		--component $(1)						\
 		--mtree $(MTREE)						\
 		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
-		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)" ||	\
-		($(PROGRESS) "$(1): component changed" && 			\
-		touch "$(call expand_api_changed_file,$(1))");			\
-	[ $(call lmsbw_gcf,$(1),source-mtree-manifest) -nt			\
-		 $(call lmsbw_gcf,$(1),configuration-file) ] ||			\
-		($(PROGRESS) "$(1): component configuration changed" && 	\
-		touch "$(call expand_api_changed_file,$(1))");			\
-	$(call lmsbw_expand_api_checks,$(1))					\
-	if [ ! -e "$(call expand_api_changed_file,$(1))" ] ; then		\
+		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)"; 	\
+		then								\
+			$(PROGRESS) "$(1): component changed"; 			\
+			rebuild="Y";						\
+		fi;								\
+	fi;									\
+	if [ -z "$$$${rebuild}" ] ; then					\
 		$(PROGRESS) "$(1): No files changed";				\
 		exit 0;								\
 	fi;									\
