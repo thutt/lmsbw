@@ -308,7 +308,6 @@ endef
 #
 define generate_component_install
 .PHONY:	install.$(strip $(1))				\
-	install.$(strip $(1))_create_binary_api		\
 	install.$(strip $(1))_update-install-directory
 
 install:: install.$(strip $(1))
