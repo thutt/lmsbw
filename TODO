@@ -26,3 +26,6 @@
  o doc/reference 'make clean' leaves lof and idx files
  o What would it mean for a component to have more than one source directory?
  o Document lmsbw-graph script.
+ o Copying the destdir to install directory using the
+   LMSBW_INSTALL_DESTDIR script does not handle multiple API
+   directories.
