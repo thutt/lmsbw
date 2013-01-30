@@ -1,4 +1,4 @@
-% Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+% Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 %
 % This program is free software: you can redistribute it and/or
 % modify it under the terms of the GNU General Public License as
@@ -495,6 +495,17 @@ project.
 
 \apiref{api:declare-source-component}
 
+\subsection{\lmsbwcomponentfield{license}}\label{variables:license}
+
+This key, when used, will hold a space separated list of
+\emph{software licenses} under which the associated component is
+released.
+
+This information is output by the \texttt{report} verb
+(\xref{usinglmsbw:report}).
+
+\apiref{api:component-attribute-license}
+
 \subsection{\lmsbwcomponentfield{local-settings}}\label{variables:local-settings}
 
 This key, when used, must hold the name of a \gmsl associative array.
@@ -529,8 +540,8 @@ bad dependencies.
 
 \subsection{\lmsbwcomponentfield{poc}}\label{variables:poc}
 
-This key, when used, will hold a space separated list of 'points of
-contact' for the associated component.
+This key, when used, will hold a space separated list of \emph{points
+  of contact} for the associated component.
 
 The points of contact information is output by the \texttt{report}
 verb (\xref{usinglmsbw:report}).

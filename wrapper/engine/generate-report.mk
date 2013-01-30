@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -26,6 +26,7 @@ __$(strip $(1)).report.$(call lmsbw_gcf,$(1),kind):
 	@$(ECHO) "$(1)|Component   : $(call lmsbw_gcf,$(1),component)";
 	@$(ECHO) "$(1)|  desc      : $(call lmsbw_gcf,$(1),description)";
 	@$(ECHO) "$(1)|  POC       : $(call lmsbw_gcf,$(1),poc)";
+	@$(ECHO) "$(1)|  license   : $(call lmsbw_gcf,$(1),license)";
 	@$(ECHO) "$(1)|  config    : $(call lmsbw_gcf,$(1),configuration-file)";
 	@$(ECHO) "$(1)|  kind      : $(call lmsbw_gcf,$(1),kind)";
 	@$(ECHO) "$(1)|  reason    : $(call lmsbw_gcf,$(1),reason)";

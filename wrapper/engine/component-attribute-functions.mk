@@ -118,3 +118,23 @@ define component_attribute_poc
 $(call lmsbw_assert_known_component,$(1))		\
 $(call lmsbw_scf,$(1),poc,$(strip $(2)))
 endef
+
+# component_attribute_license <component>, <software license>
+#
+#   Sets a 'software license' for the component.
+#
+#   The value is output by the 'report' verb, and by the
+#   'license[.<component>] verb.
+#
+#   The <software license> parameter is a space separated list of
+#   contact names.
+#
+#   This information can be used to determine if components are
+#   importing components in an incompatible manner -- for example, if
+#   a GPL-licensed component is importing an API from a proprietary
+#   component.
+#
+define component_attribute_license
+$(call lmsbw_assert_known_component,$(1))		\
+$(call lmsbw_scf,$(1),license,$(strip $(2)))
+endef
