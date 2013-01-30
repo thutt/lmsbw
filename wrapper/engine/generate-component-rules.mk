@@ -100,53 +100,41 @@ define lmsbw_expand_build_component
 		$(call lmsbw_gcf,$(1),build-directory)/build-time.text;)
 endef
 
-# expand_api_changed_file <component-name>
+# lmsbw_expand_api_checks <component-name>
 #
-#
-define expand_api_changed_file
-$(call lmsbw_gcf,$(strip $(1)),build-root-directory)/api-changed
-endef
-
-# lmsbw_check_api <component>, <directly dependent component>
-#
-#   Check the source or binary API of <component> to see if it has
-#   changed.  The manifest of the API for <component> is stored in the
-#   <directly dependent component>.
-#
-#   The mtree manifest name is generated on-the-fly.  Pre-generating
-#   the API manifest names (like 'source-mtree-manifest') doesn't work
-#   out well (for documentation & maintainability) because the key for
-#   each such manifest would be somehow based on the name of the
-#   prerequisite component.
-#
-#   Result:
-#
-#      Touches file 'api-changed' if the API has changed.
-#
-define lmsbw_check_api
-$(foreach api_dir,$(call lmsbw_gcf,$(1),api),									\
-	$(eval __fb_dependent:="$(call lmsbw_gcf,$(strip $(2)),build-root-directory)/build-stamp.sentinel")	\
-	$(eval __fb_prerequisite:="$(call lmsbw_gcf,$(strip $(1)),build-root-directory)/build-stamp.sentinel")	\
-	if [ ! -e $(__fb_dependent) ] || [ $(__fb_prerequisite) -nt $(__fb_dependent) ] ; then			\
-		$(PROGRESS) "$(2): $(1) interface changed";							\
-		rebuild="Y";											\
-	fi;													\
-)
-endef
-
-# lmsbw_expand_api_checks <component>
-#
-#  Checks that if source API & binary API directories of prerequisite
+#  Checks if source API & binary API directories of prerequisite
 #  components have changed.
 #
-#  This function generates bash code which is part of an 'if' guard.
-#  The generated code should produce TRUE when <component> should NOT
-#  be built, and it should generate FALSE when <component> should be
-#  built.
+#  This code produces a bash 'if'.
+#
+#  The 'if' statement checks the timestamp of the <component> source
+#  manifest with each of its prerequisite source manifests.  If the
+#  <component> manifest does not exist, or any prerequisite manifest
+#  is newer, then <component> must be rebuilt.
+#
+#  A prerequisite manifest will only be newer when it has been built
+#  more recently.
+#
+#  Result
+#
+#     '${lmsbw_rebuild} == non-empty -> dependent needs to be rebuilt
+#
+#     If the expression does not indicate the dependent needs to be
+#     rebuilt, '${lmsbw_rebuild}' is left unchanged.
 #
 define lmsbw_expand_api_checks
-$(foreach p,$(call lmsbw_gcf,$(1),prerequisite),	\
-	$(call lmsbw_check_api,$(p),$(1)))
+$(eval __fb_dependent:="$(call lmsbw_gcf,$(1),source-mtree-manifest)")				\
+if [ ! -e $(__fb_dependent) ]									\
+$(foreach p,$(call lmsbw_gcf,$(1),prerequisite),						\
+	$(foreach api_dir,$(call lmsbw_gcf,$(p),api),						\
+		$(eval __fb_prerequisite:="$(call lmsbw_gcf,$(p),source-mtree-manifest)")	\
+		|| [ $(__fb_prerequisite) -nt $(__fb_dependent) ]				\
+	)											\
+)												\
+; then												\
+	$(PROGRESS) "$(1): needs rebuilding";							\
+	lmsbw_rebuild="Y";									\
+fi;
 endef
 
 # expand_component_submake_kind <component>
@@ -184,24 +172,30 @@ endef
 #    2. Check the component configuration file
 #    3. Check the prerequisite APIs
 #
-# The 'sentinel' file is used by dependent components to determine if
-# the prerequisite has been more recently built.
+# The mtree manifest' file is used by dependent components to
+# determine if the prerequisite has been more recently built.
 #
 define generate_component_install_submake
 .PHONY:	install.$(1)_submake
 
+# install.<component>_submake
+#
+#   Enter component build process only when necessary.
+#
+#   If the component build process is entered, the source manifest is
+#   updated.
+#
 install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 	+$(ATSIGN)set -e;							\
-	unset rebuild;								\
 	$(call lmsbw_expand_api_checks,$(1))					\
-	if [ -z "$$$${rebuild}" ] ; then					\
+	if [ -z "$$$${lmsbw_rebuild}" ] ; then					\
 		if [ $(call lmsbw_gcf,$(1),configuration-file) -nt 		\
 		     $(call lmsbw_gcf,$(1),source-mtree-manifest) ] ; then	\
 			$(PROGRESS) "$(1): component configuration changed";	\
-			rebuild="Y";						\
+			lmsbw_rebuild="Y";					\
 		fi;								\
 	fi;									\
-	if [ -z "$$$${rebuild}" ] ; then					\
+	if [ -z "$$$${lmsbw_rebuild}" ] ; then					\
 	   if ! $(LMSBW_MTREE_CHECK_MANIFEST)					\
 		$(if $(LMSBW_VERBOSE),--verbose)				\
 		--component $(1)						\
@@ -210,10 +204,10 @@ install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)"; 	\
 		then								\
 			$(PROGRESS) "$(1): component changed"; 			\
-			rebuild="Y";						\
+			lmsbw_rebuild="Y";					\
 		fi;								\
 	fi;									\
-	if [ -z "$$$${rebuild}" ] ; then					\
+	if [ -z "$$$${lmsbw_rebuild}" ] ; then					\
 		$(PROGRESS) "$(1): No files changed";				\
 		exit 0;								\
 	fi;									\
@@ -224,8 +218,7 @@ install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 		--component $(1)						\
 		--mtree $(MTREE)						\
 		--manifest "$(call lmsbw_gcf,$(1),source-mtree-manifest)"	\
-		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";	\
-	touch $(call lmsbw_gcf,$(1),build-root-directory)/build-stamp.sentinel;
+		--directory-tree "$(call lmsbw_gcf,$(1),source-directory)";
 endef
 
 # generate_component_install_build_output_download <stripped component name>
