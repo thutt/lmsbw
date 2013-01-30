@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -110,7 +110,7 @@ endef
 #
 #   Sets a 'point of contact' for the component.
 #
-#   The 'poc' value is output by the 'log' verb.
+#   The 'poc' value is output by the 'report' verb.
 #
 #   The <poc> parameter is a space separated list of contact names.
 #
