@@ -1,0 +1,20 @@
+This very simple sample demonstrates how an adapter can be used to
+adapt LMSBW output to a different build system's build directory.
+
+It was created by cloning the 'hello-world' sample.
+
+The 'run-sample' script will execute lmsbw with all the proper command
+line options to invoke the local configuration.
+
+Any additional command line parameters are passed directly to lmsbw.
+
+For example, try:
+
+   ./run-sample
+   ./run-sample log.hello-world
+   ./run-sample report
+   ./run-sample targets
+   ./run-sample dependent-report
+   ./run-sample prerequisite-report
+
+The build output is placed into /tmp/hello-world

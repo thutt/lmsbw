@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -77,6 +77,7 @@ include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-general-functions.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-errors.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system-utilities.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-scripts.mk
+include $(LMSBW_DIR)/wrapper/engine/lmsbw-adapter.mk
 include $(LMSBW_DIR)/wrapper/engine/component-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/declare-component-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/component-attribute-functions.mk

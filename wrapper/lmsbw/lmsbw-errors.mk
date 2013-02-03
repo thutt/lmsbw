@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -187,3 +187,5 @@ endef
 define lmsbw_assert_components
 $(call lmsbw_assert,E1022,$(LMSBW_components),No components defined)
 endef
+
+# E1023: LMSBW_ADAPTER_SCRIPT already set

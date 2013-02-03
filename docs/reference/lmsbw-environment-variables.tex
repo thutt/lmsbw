@@ -10,6 +10,54 @@ Variables listed in the following sections are exported by \lmsbwcmd
 and are available to the main \lmsbw process, and each component build
 process.
 
+\subsection{\texttt{LMSBW\_ADAPTER\_SCRIPT}}\label{envvar:lmsbw-adapter-script}
+
+This variable holds the full pathname of a program that will be
+automatically used to adapt the output of \lmsbw to the build output
+structure of a different build process.
+
+This will be typically used during the time that a build process is
+transitioned to \lmsbw.
+
+See \xref{api:declare-adapter-script}.
+
+The script referenced by this variable will be invoked with a single
+command line argument that is the full pathname to a file describing
+each of the components that potentially needs to be adapted to the old
+build process.
+
+The format of the file is:
+
+\begin{verbatim}
+component-file := (component-info '\n')...
+component-info := component-name ':' build-root-directory
+\end{verbatim}
+
+The \texttt{component-name} is the name of the component as declared
+to \lmsbw in the configuration file.
+
+The \texttt{build-root-directory} is the full path to the root of the
+build directory for the named component.  The
+\texttt{build-root-directory} contains the \texttt{build} and
+\texttt{destdir} directories.
+
+The \texttt{destdir} directory contains the exported build output that
+was installed by the component's build process.  It is from this
+directory that the component's build output should be copied to the
+old build system's build directory.
+
+Since the adapter script is run unconditionally for each invocation of
+\lmsbw, it can write sentinel files in the
+\texttt{build-root-directory} to reduce the number of times the build
+files must be copied.
+
+The adapter script can also launch the old build process, though
+preferably it should only launch the old build process if something
+has actually changed.
+
+The \texttt{adapter} sample (\xref{samples:adapter}) shows how
+this can be done.
+
 \subsection{\texttt{LMSBW\_VERBOSE}}
 
 This variable is created when \texttt{--verbose}
