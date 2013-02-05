@@ -21,13 +21,23 @@
 # desired locations of the other build process.
 #
 
+# lmsbw_expand_adapter_assignment <script-pathname>
+#
+#   Assigns to LMSBW_ADAPTER_SCRIPT, and checks for errors.
+#
+define lmsbw_expand_adapter_assignment
+$(eval LMSBW_ADAPTER_SCRIPT:=$(1))						\
+$(if $(call not,$(wildcard $(LMSBW_ADAPTER_SCRIPT))),				\
+	$(call lmsbw_error,E1024,Adapter '$(LMSBW_ADAPTER_SCRIPT)' not found))
+endef
+
 # declare_adapter_script <pathname-to-adapter-script>
 #
-#
+#   Assigns to LMSBW_ADAPTER_SCRIPT if not already assigned.
 #
 define declare_adapter_script
 $(if $(call not,$(LMSBW_ADAPTER_SCRIPT)),					\
-	$(eval LMSBW_ADAPTER_SCRIPT:=$(1)),					\
+	$(call lmsbw_expand_adapter_assignment,$(1)),				\
 	$(call lmsbw_error,E1023,LMSBW_ADAPTER_SCRIPT already declared))
 endef
 

@@ -189,3 +189,4 @@ $(call lmsbw_assert,E1022,$(LMSBW_components),No components defined)
 endef
 
 # E1023: LMSBW_ADAPTER_SCRIPT already set
+# E1024: LMSBW_ADAPTER_SCRIPT not found
