@@ -138,3 +138,25 @@ define component_attribute_license
 $(call lmsbw_assert_known_component,$(1))		\
 $(call lmsbw_scf,$(1),license,$(strip $(2)))
 endef
+
+
+# component_attribute_exports_api <component>
+#
+#  This function sets an internal attribute on the component to
+#  indicate that an API is exported.  LMSBW will generate additional
+#  rules to invoke the component's Makefile using the 'install-api'
+#  target before any other rules are executed.
+#
+#  The component's Makefile must install the exported header files
+#  into the DESTDIR, and LMSBW will finish the install to the global
+#  install directory.
+#
+#  This can be used to ensure that all global header files are placed
+#  into the global install directory, ready for use, before any
+#  components are built.
+#
+define component_attribute_exports_api
+$(call lmsbw_assert_known_component,$(1))	\
+$(call lmsbw_scf,$(1),exports-api,$(true))	\
+$(eval LMSBW_API_NEED_INSTALLING=$(true))
+endef
