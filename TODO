@@ -29,3 +29,9 @@
  o Copying the destdir to install directory using the
    LMSBW_INSTALL_DESTDIR script does not handle multiple API
    directories.
+ o Add declared 'adapter' to report
+ o Generate the adapter rules
+
+ o Should all LMSBW-specific variables be put into an associative array?
+
+ o document 'exports-api' component field
