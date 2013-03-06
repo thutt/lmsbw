@@ -17,129 +17,6 @@
 
 This chapter describes the public functions present in \lmsbw.
 
-\section{\texttt{declare\_adapter\_script}}\label{api:declare-adapter-script}
-\begin{tabularx}{\linewidth}{ll|cX}
-  \multicolumn{4}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & script name & \xref{envvar:lmsbw-adapter-script} & Full
-    pathname to adapter script. \\
-\end{tabularx}
-
-This function facilitates the declaration of a script that can be used
-to convert the build output of \lmsbw to a different build system.
-
-\section{\texttt{declare\_source\_component}}\label{api:declare-source-component}
-
-\begin{tabularx}{\linewidth}{ll|cX}
-  \multicolumn{4}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & component name & \xref{api:component} & Component name used
-  throughout project. \\
-
-  2 & description & \xref{api:description} & Brief component
-  description. \\
-
-  3 & reason & \xref{api:reason} & Reason component is included
-  in build. \\
-
-  4 & configuration file & \xref{api:configuration-file} & Full
-  pathname of component configuration file. \\
-
-  5 & source directory & \xref{api:source-directory} &
-  Full pathname to component's source directory. \\
-
-  6 & prerequisites & \xref{api:prerequisite} &
-  Optional space-separated list of component names.
-\end{tabularx}
-
-This function allows the declaration of \emph{source-based} components
-in a project.
-
-Source-based means that the entire source for the component is
-available in a directory tree that is currently accessible on the
-machine running the build.  The source tree must have a \makefile at
-the top level that will build the source in an \lmsbw-compliant
-manner.  See \xref{wrap:component-makefile} for details on \makefile
-compliance.
-
-The \emph{component name} must be a valid \make identifier, and
-globally unique within the project.
-
-\section{\texttt{component\_attribute\_no\_parallel\_build}}\label{api:component-attribute-no-parallel-build}
-
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:no-parallel} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-  1 & component-name & Name of a declared component.
-\end{tabularx}
-
-This function forces the component to not recursively build in
-parallel by passing ``\texttt{-j~1}'' to its build system.
-
-This attribute only necessary when a \makefile contains incorrect
-dependencies.  Bad dependencies will manifest as intermittent failures
-when build with parallelism.
-
-\section{\texttt{component\_attribute\_license}}\label{api:component-attribute-license}
-
-\begin{tabularx}{\linewidth}{ll|X}
-\textbf{Variable:} \xref{variables:license} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-  1 & component-name & Name of a declared component. \\
-
-  2 & software-licenses & Space-separated list of \emph{software licenses}.
-\end{tabularx}
-
-This function assigns a list of \emph{software licenses} to the
-component.  The information is printed by the \texttt{report} verb
-(\xref{usinglmsbw:report}) and can be useful when to determine if a
-one component is importing from another component in an incompatible
-manner\footnote{The work of checking license compatibility is beyond
-  the scope of \lmsbw.  However, having this information embedded in
-  the build process would facilitate knowing if an open-source
-  component was importing from a proprietary component}.
-
-\section{\texttt{component\_attribute\_poc}}\label{api:component-attribute-poc}
-
-\begin{tabularx}{\linewidth}{ll|X}
-\textbf{Variable:} \xref{variables:poc} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-  1 & component-name & Name of a declared component. \\
-
-  2 & list-of-contacts & Space-separated list \emph{points of contact}.
-\end{tabularx}
-
-This function assigns a list of \emph{points of contact} to the
-component.  The information is printed by the \texttt{report} verb
-(\xref{usinglmsbw:report}) and can be useful when trying to determine
-the parties responsible for maintaining or reviwing changes to a
-component.
-
-\section{\texttt{component\_attribute\_install\_target}}\label{api:component-attribute-install-target}
-
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:install-target} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & component name & Name of a declared component. \\
-  2 & list-of-targets & Space-separated list of targets.
-\end{tabularx}
-
-This function changes the target for installing a component using the
-component's build process from the \texttt{install} \make target to
-the list of targets provided.
-
-\section{\texttt{component\_attribute\_local\_settings}}\label{api:component-attribute-local-settings}
-
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:local-settings} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & component-name & Name of a declared component. \\
-  2 & array name &  Name of associative array.
-\end{tabularx}
-
-This function allows an associative array containing key~/~value pairs
-that can be passed to the component's \makefile as command line
-arguments.  These values can be used to control the component
-\makefile via macro expansion, or conditional code.
-
-
 \section{\texttt{component\_attribute\_api}}\label{api:component-attribute-api}
 
 \begin{tabularx}{\linewidth}{ll|X}
@@ -237,7 +114,149 @@ semantics of this API.
 See \xref{api:build-output-download-script} for details about creating
 a conformant script to download build output.
 
-\section{\texttt{declare\_component\_kind}}\label{api:kind}
+\section{\texttt{component\_attribute\_install\_target}}\label{api:component-attribute-install-target} %%%%
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:install-target} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component name & Name of a declared component. \\
+  2 & list-of-targets & Space-separated list of targets.
+\end{tabularx}
+
+This function changes the target for installing a component using the
+component's build process from the \texttt{install} \make target to
+the list of targets provided.
+
+\section{\texttt{component\_attribute\_license}}\label{api:component-attribute-license} %%%%
+
+\begin{tabularx}{\linewidth}{ll|X}
+\textbf{Variable:} \xref{variables:license} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+  1 & component-name & Name of a declared component. \\
+
+  2 & software-licenses & Space-separated list of \emph{software licenses}.
+\end{tabularx}
+
+This function assigns a list of \emph{software licenses} to the
+component.  The information is printed by the \texttt{report} verb
+(\xref{usinglmsbw:report}) and can be useful when to determine if a
+one component is importing from another component in an incompatible
+manner\footnote{The work of checking license compatibility is beyond
+  the scope of \lmsbw.  However, having this information embedded in
+  the build process would facilitate knowing if an open-source
+  component was importing from a proprietary component}.
+
+\section{\texttt{component\_attribute\_local\_settings}}\label{api:component-attribute-local-settings}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:local-settings} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & array name &  Name of associative array.
+\end{tabularx}
+
+This function allows an associative array containing key~/~value pairs
+that can be passed to the component's \makefile as command line
+arguments.  These values can be used to control the component
+\makefile via macro expansion, or conditional code.
+
+
+\section{\texttt{component\_attribute\_no\_parallel\_build}}\label{api:component-attribute-no-parallel-build}
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:no-parallel} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+  1 & component-name & Name of a declared component.
+\end{tabularx}
+
+This function forces the component to not recursively build in
+parallel by passing ``\texttt{-j~1}'' to its build system.
+
+This attribute only necessary when a \makefile contains incorrect
+dependencies.  Bad dependencies will manifest as intermittent failures
+when build with parallelism.
+
+
+\section{\texttt{component\_attribute\_poc}}\label{api:component-attribute-poc}
+
+\begin{tabularx}{\linewidth}{ll|X}
+\textbf{Variable:} \xref{variables:poc} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+  1 & component-name & Name of a declared component. \\
+
+  2 & list-of-contacts & Space-separated list \emph{points of contact}.
+\end{tabularx}
+
+This function assigns a list of \emph{points of contact} to the
+component.  The information is printed by the \texttt{report} verb
+(\xref{usinglmsbw:report}) and can be useful when trying to determine
+the parties responsible for maintaining or reviwing changes to a
+component.
+
+\section{\texttt{component\_attribute\_toolchain}}\label{api:toolchain} %%%%
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:toolchain} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & toolchain & Directory of existing toolchain.
+\end{tabularx}
+
+The second argument must be a directory name that is present in the
+toolchain root directory (\xref{usinglmsbw:toolchains-root}).
+
+See \xref{chap:toolchain-usage} and
+\xref{chap:toolchain-configuration} for information on using and
+configuring toolchains.
+
+\section{\texttt{declare\_adapter\_script}}\label{api:declare-adapter-script} %%%%
+\begin{tabularx}{\linewidth}{ll|cX}
+  \multicolumn{4}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & script name & \xref{envvar:lmsbw-adapter-script} & Full
+    pathname to adapter script. \\
+\end{tabularx}
+
+This function facilitates the declaration of a script that can be used
+to convert the build output of \lmsbw to a different build system.
+
+\section{\texttt{declare\_component\_configuration\_file}}\label{api:configuration-file} %%%%
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:configuration-file} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & configuration-file & Absolute pathname of component configuration
+  file.
+\end{tabularx}
+
+This function allows the specification of the path to the component
+configuration file associated with the component.
+
+\lmsbw sets up dependencies so that changes to this file will
+automatically force the component's build process to be invoked.
+
+
+\section{\texttt{declare\_component\_component}}\label{api:component} %%%%
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:component} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & name & Component name.
+\end{tabularx}
+
+This function allows the specification of the name of the component.
+
+\section{\texttt{declare\_component\_description}}\label{api:description} %%%%
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:description} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & description & Brief component description.
+\end{tabularx}
+
+This function allows the specification of a component's description.
+
+\section{\texttt{declare\_component\_kind}}\label{api:kind} %%%%
 
 \begin{tabularx}{\linewidth}{ll|X}
   \textbf{Variable:} \xref{variables:kind} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
@@ -256,44 +275,7 @@ See \xref{variables:kind} for the allowed values and semantics of the
 second argument.
 
 
-\section{\texttt{declare\_component\_description}}\label{api:description}
-
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:description} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & component-name & Name of a declared component. \\
-  2 & description & Brief component description.
-\end{tabularx}
-
-This function allows the specification of a component's description.
-
-\section{\texttt{declare\_component\_reason}}\label{api:reason}
-
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:reason} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & component-name & Name of a declared component. \\
-  2 & reason & Component reason.
-\end{tabularx}
-
-This function allows the specification of the \emph{reason} that a
-component is included in the build.
-
-See \xref{variables:reason} for the allowed values and semantics of
-the second argument.
-
-\section{\texttt{declare\_component\_component}}\label{api:component}
-
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:component} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & component-name & Name of a declared component. \\
-  2 & name & Component name.
-\end{tabularx}
-
-This function allows the specification of the name of the component.
-
-\section{\texttt{declare\_component\_prerequisite}}\label{api:prerequisite}
+\section{\texttt{declare\_component\_prerequisite}}\label{api:prerequisite} %%%%
 
 \begin{tabularx}{\linewidth}{ll|X}
   \textbf{Variable:} \xref{variables:prerequisite} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
@@ -317,6 +299,21 @@ associated component's build process will be invoked.
 See \xref{intro:build-component-criteria} for details on what triggers
 a component's build process to be invoked.
 
+\section{\texttt{declare\_component\_reason}}\label{api:reason} %%%%
+
+\begin{tabularx}{\linewidth}{ll|X}
+  \textbf{Variable:} \xref{variables:reason} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+
+  1 & component-name & Name of a declared component. \\
+  2 & reason & Component reason.
+\end{tabularx}
+
+This function allows the specification of the \emph{reason} that a
+component is included in the build.
+
+See \xref{variables:reason} for the allowed values and semantics of
+the second argument.
+
 \section{\texttt{declare\_component\_source\_directory}}\label{api:source-directory}
 
 \begin{tabularx}{\linewidth}{ll|X}
@@ -335,35 +332,39 @@ component.
 
 \lmsbw will produce an error if the named directory does not exist.
 
-\section{\texttt{declare\_component\_configuration\_file}}\label{api:configuration-file}
+\section{\texttt{declare\_source\_component}}\label{api:declare-source-component}
 
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:configuration-file} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
+\begin{tabularx}{\linewidth}{ll|cX}
+  \multicolumn{4}{c}{\textbf{Arguments}} \\ \hline
 
-  1 & component-name & Name of a declared component. \\
-  2 & configuration-file & Absolute pathname of component configuration
-  file.
+  1 & component name & \xref{api:component} & Component name used
+  throughout project. \\
+
+  2 & description & \xref{api:description} & Brief component
+  description. \\
+
+  3 & reason & \xref{api:reason} & Reason component is included
+  in build. \\
+
+  4 & configuration file & \xref{api:configuration-file} & Full
+  pathname of component configuration file. \\
+
+  5 & source directory & \xref{api:source-directory} &
+  Full pathname to component's source directory. \\
+
+  6 & prerequisites & \xref{api:prerequisite} &
+  Optional space-separated list of component names.
 \end{tabularx}
 
-This function allows the specification of the path to the component
-configuration file associated with the component.
+This function allows the declaration of \emph{source-based} components
+in a project.
 
-\lmsbw sets up dependencies so that changes to this file will
-automatically force the component's build process to be invoked.
+Source-based means that the entire source for the component is
+available in a directory tree that is currently accessible on the
+machine running the build.  The source tree must have a \makefile at
+the top level that will build the source in an \lmsbw-compliant
+manner.  See \xref{wrap:component-makefile} for details on \makefile
+compliance.
 
-
-\section{\texttt{component\_attribute\_toolchain}}\label{api:toolchain}
-
-\begin{tabularx}{\linewidth}{ll|X}
-  \textbf{Variable:} \xref{variables:toolchain} & \multicolumn{2}{c}{\textbf{Arguments}} \\ \hline
-
-  1 & component-name & Name of a declared component. \\
-  2 & toolchain & Directory of existing toolchain.
-\end{tabularx}
-
-The second argument must be a directory name that is present in the
-toolchain root directory (\xref{usinglmsbw:toolchains-root}).
-
-See \xref{chap:toolchain-usage} and
-\xref{chap:toolchain-configuration} for information on using and
-configuring toolchains.
+The \emph{component name} must be a valid \make identifier, and
+globally unique within the project.
