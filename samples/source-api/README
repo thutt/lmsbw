@@ -13,7 +13,7 @@ This sample implements two components:
     API will cause the 'consumer' to be rebuilt.
 
 The 'run-sample' script will execute lmsbw with all the proper command
-line options to invoke the local configuration configuration.
+line options to invoke the local configuration.
 
 Any additional command line parameters are passed directly to lmsbw.
 
@@ -25,5 +25,3 @@ For example, try the following:
    ./run-sample targets
    ./run-sample dependent-report
    ./run-sample prerequisite-report
-
-The build output is placed in /tmp/source-api

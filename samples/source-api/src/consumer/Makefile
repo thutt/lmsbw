@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@ consumer.o:	consumer.c
 consumer:	consumer.o
 	$(CC) $(addprefix -L,$(LIB_SEARCH_DIRS)) -o $@ $< -lproducer
 
-install:
+install:	all
 	$(INSTALL) -D --mode=555 consumer $(DESTDIR)/usr/bin/consumer.elf
 	$(INSTALL) -D --mode=555 consumer.sh $(DESTDIR)/usr/bin/consumer
 

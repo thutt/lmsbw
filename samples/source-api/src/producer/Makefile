@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -19,7 +19,7 @@ CFLAGS		+= -fPIC
 all:	libproducer.so.1 libproducer.a
 	echo "everything built";
 
-install:	libproducer.so.1 libproducer.a
+install:	all
 	$(INSTALL) -D --mode=555 api.h $(DESTDIR)/usr/include/producer/api.h;
 	$(INSTALL) -D --mode=555 libproducer.so.1 $(DESTDIR)/usr/lib/producer/libproducer.so.1;
 	cd $(DESTDIR)/usr/lib/producer && ln -fs libproducer.so.1 libproducer.so && ln -fs libproducer.so.1 libproducer.so.1.0;

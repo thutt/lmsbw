@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -38,4 +38,4 @@ $(call declare_source_component,		\
 	$(lastword $(MAKEFILE_LIST)),		\
 	$(subst sample.cfg,src/producer,$(1)))
 
-$(call component_attribute_api,producer,/usr/include/producer)
+$(call component_attribute_api,producer,/usr/include/producer /usr/lib/producer)
