@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -334,15 +334,16 @@ $(call generate_component_install_$(call expand_component_submake_kind,$(strip $
 #
 install.$(strip $(1))_update-install-directory:		\
 		$(call expand_component_submake,$(1))
-	$(if $(call lmsbw_gcf,$(strip $(1)),api),					\
-		$(ATSIGN)$(PROGRESS) "$(1): Install";					\
-		$(LMSBW_INSTALL_DESTDIR)						\
-			$(if $(LMSBW_VERBOSE),--verbose)				\
-			--component $(1)						\
-			--destdir $(call lmsbw_gcf,$(strip $(1)),destdir-directory)	\
-			--api $(call lmsbw_gcf,$(strip $(1)),api)			\
-			--install $(call lmsbw_gcf,$(strip $(1)),install-directory),	\
-		$(ATSIGN)$(MESSAGE) "$(1): No API; nothing to install";			\
+	$(if $(call lmsbw_gcf,$(strip $(1)),api),						\
+		$(ATSIGN)$(PROGRESS) "$(1): Install";						\
+		$(foreach ad,$(call lmsbw_gcf,$(strip $(1)),api),				\
+			$(LMSBW_INSTALL_DESTDIR)						\
+				$(if $(LMSBW_VERBOSE),--verbose)				\
+				--component $(1)						\
+				--destdir $(call lmsbw_gcf,$(strip $(1)),destdir-directory)	\
+				--api $(ad)							\
+				--install $(call lmsbw_gcf,$(strip $(1)),install-directory);),	\
+		$(ATSIGN)$(MESSAGE) "$(1): No API; nothing to install";				\
 	)
 
 install.$(strip $(1)):	install.$(strip $(1))_update-install-directory
