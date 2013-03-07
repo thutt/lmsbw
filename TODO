@@ -35,3 +35,7 @@
  o Should all LMSBW-specific variables be put into an associative array?
 
  o document 'exports-api' component field
+
+ o source-api sample does not work because of lmsbw-install-destdir.
+   It's only linking the declared API directory, not the entire
+   destdire directory.
