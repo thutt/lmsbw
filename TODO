@@ -39,3 +39,10 @@
  o source-api sample does not work because of lmsbw-install-destdir.
    It's only linking the declared API directory, not the entire
    destdire directory.
+
+o When the build fails, the component that failed is not always displayed.   
+
+o When deleting the DESTDIR, files present should be removed from the
+  global install directory.
+
+o component 'clean' verb should delete all installed files?  
