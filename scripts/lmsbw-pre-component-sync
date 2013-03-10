@@ -1,0 +1,230 @@
+#!/bin/bash
+#
+# Copyright (c) 2013 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# This script ensures that the build directory is consistent with the
+# source directory.  In general, when 'rsync' is used, the source &
+# build will be consistent with respect to the source tree, but if a
+# file is deleted from the source directory, it will persist in the
+# build directory and that will yield incorrect builds.
+#
+# The script uses 'mtree' to determine if files existed in the source
+# directory at the time of the last build, but no longer exist on this
+# build.  When that is true, the build directory will be deleted, and
+# a full build of the component will ensue.
+#
+
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+function display_help ()
+{
+    cat <<EOF
+${program}: Ensures source directory is consistent with build directory
+
+            Deletes the contents of the build directory if files in
+            the source directory have been removed to ensure that old
+            files do not persist in the build directory.
+
+  --help | -h                     : Show this help and exit
+  --verbose                       : Enable more verbosity
+  --build-directory <directory>   : Source directory for named component
+  --destdir-directory <directory> : Component DESTDIR directory
+  --install-directory <directory> : Global install directory
+  --source-directory <directory>  : Build directory for named component
+  --component <component name>    : The component name [optional]
+  --mtree <pathname>              : Pathname to mtree executable
+
+EOF
+}
+
+
+function main ()
+{
+    local build_directory;
+    local destdir_directory;
+    local install_directory;
+    local source_directory;
+    local component;
+    local mtree;
+    local manifest
+    local verbose;
+    local rootdir;
+    local source_manifest="source.mtree"; # stored in build root directory of each component
+    local current_manifest="$(basename ${program}).mtree";
+
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long build-directory:                 \
+        --long component:                       \
+        --long destdir-directory:               \
+        --long install-directory:               \
+        --long mtree:                           \
+        --long source-directory:                \
+        --long verbose                          \
+        -n "${program}"                         \
+        -- "$@");
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --build-directory)
+                build_directory="${2}";
+                shift 2 ;;
+
+            --component)
+                component="${2}";
+                shift 2 ;;
+
+            --destdir-directory)
+                destdir_directory="${2}";
+                shift 2 ;;
+
+            --install-directory)
+                install_directory="${2}";
+                shift 2 ;;
+
+            --mtree)
+                mtree="${2}";
+                shift 2 ;;
+
+            --source-directory)
+                source_directory="${2}";
+                shift 2 ;;
+
+            --verbose)
+                verbose="--verbose";
+                shift 1 ;;
+
+            --) shift ;
+                break ;;
+
+            *) echo "Internal error: ${1}!" ;
+                exit -1;
+        esac
+    done
+
+    if ! which mtree ; then
+        if [ ! -x "${mtree}" ] || [ -z "${mtree}" ] ; then
+            fatal "${program}: '--mtree' argument, '${mtree}', is not the mtree executable";
+        fi;
+    fi;
+
+    if [ -z "${build_directory}" ] ; then
+        fatal "${program}: --build-directory must specify the build directory.";
+    elif [ ! -d "${build_directory}" ] ; then
+        fatal "${program}: --build-directory value, '${build_directory}' is not a directory.";
+    fi;
+
+    if [ -z "${destdir_directory}" ] ; then
+        fatal "${program}: --destdir-directory must specify the DESTDIR directory.";
+    elif [ ! -d "${destdir_directory}" ] ; then
+        fatal "${program}: --destdir-directory value, '${destdir_directory}' is not a directory.";
+    fi;
+
+    if [ -z "${install_directory}" ] ; then
+        fatal "${program}: --install-directory must specify the global install directory.";
+    elif [ ! -d "${install_directory}" ] ; then
+        fatal "${program}: --install-directory value, '${install_directory}' is not a directory.";
+    fi;
+
+    if [ -z "${source_directory}" ] ; then
+        fatal "${program}: --source-directory must specify the source directory.";
+    elif [ ! -d "${source_directory}" ] ; then
+        fatal "${program}: --source-directory value, '${source_directory}' is not a directory.";
+    fi;
+
+    rootdir="$(readlink -f ${build_directory}/..)";
+    source_manifest="${rootdir}/${source_manifest}";
+    current_manifest="${rootdir}/${current_manifest}";
+
+    if [ -e "${source_manifest}" ] ; then
+        # Component has already been built.  Compare the current
+        # source directory contents with the last time the component
+        # was built.  If there are files in the source directory that
+        # are no longer present, the build directory needs to be
+        # deleted.
+        #
+        "${mtree}" -k nochange -c -p "${source_directory}" >"${current_manifest}";
+
+        # Using mtree with two on-disk manifests cause them to be
+        # compared and output into three columns separated by <tab>
+        #
+        #  Column 1: only present in first manifest
+        #  Column 2: only present in second manifest
+        #  Column 3: different between two manifests.
+        #
+        # Column three is never valid in this scenario due to the
+        # keywords used to generate the manifests.
+        #
+        # Because we put the existing source manifest first, column 1
+        # will indicate if the file used to exist, but no longer
+        # exists.
+        #
+        # If there is anything present in column one of the output,
+        # the build & destdir directories need to be deleted.
+        #
+        stdout="$(${mtree} -f ${source_manifest} -f ${current_manifest})";
+        missing_files=$(echo ${stdout}|cut -f 1);
+
+        if [ ! -z "${missing_files}" ] ; then
+
+            # Delete files in global install directory.
+            #
+            $(dirname ${program})/lmsbw-uinstall-component      \
+                --component "${component}"                      \
+                --destdir-directory "${destdir_directory}"      \
+                --install-directory "${install_directory}"      \
+                ${verbose};
+
+            verbosity "Deleting '${build_directory}' & '${destdir_directory}'";
+            rm -rf "${build_directory}" "${destdir_directory}";
+
+            verbosity "Re-creating '${build_directory}' & '${destdir_directory}'";
+            mkdir --parents "${build_directory}" "${destdir_directory}";
+
+            rm -f ${current_manifest};
+        else
+            verbosity "'${build_directory}' does not need to be deleted";
+        fi;
+
+        # The just-created manifest does not need to be saved.  A new
+        # source manifest will be regenerated after the component is
+        # successfully built.  See 'generate-component-rules.mk'.
+    else
+        # If no source manifest has been created yet, then the
+        # component has not been built.
+        verbosity "First build of '${component}'";
+    fi;
+}
+
+main "$@";
+exit 0;
