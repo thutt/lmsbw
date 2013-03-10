@@ -77,7 +77,7 @@ define lmsbw_expand_build_component
 	$(MESSAGE) "$(1): Trampoline to '$(1)' build system";					\
 	$(TIME)											\
 	-f "$(1): elapsed time: %E"								\
-	--output="$(call lmsbw_gcf,$(1),build-directory)/build-time.text"			\
+	--output="$(call lmsbw_gcf,$(1),build-root-directory)/build-time.text"			\
 	$(MAKE)											\
 		-f $(LMSBW_DIR)/wrapper/component/component.makefile				\
 		-C $(dir $(call lmsbw_gcf,$(1),configuration-file))				\
@@ -95,9 +95,9 @@ define lmsbw_expand_build_component
 		LMSBW_C_NO_PARALLEL="$(call lmsbw_gcf,$(1),no-parallel)"			\
 		$(call lmsbw_component_expand_settings,$(1))					\
 		$(call lmsbw_expand_toolchain,$(1))						\
-		>$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log 2>&1;			\
+		>$(call lmsbw_gcf,$(1),build-root-directory)/lmsbw-build.log 2>&1;		\
 	$(if $(LMSBW_VERBOSE)$(LMSBW_ELAPSED_TIME),$(CAT)					\
-		$(call lmsbw_gcf,$(1),build-directory)/build-time.text;)
+		$(call lmsbw_gcf,$(1),build-root-directory)/build-time.text;)
 endef
 
 # lmsbw_expand_api_checks <component-name>
@@ -196,6 +196,7 @@ install.$(1)_submake:	$(MTREE) $(call expand_prerequisites,$(1))
 		fi;								\
 	fi;									\
 	if [ -z "$$$${lmsbw_rebuild}" ] ; then					\
+	   $(PROGRESS) "$(1): checking source manifest"; 			\
 	   if ! $(LMSBW_MTREE_CHECK_MANIFEST)					\
 		$(if $(LMSBW_VERBOSE),--verbose)				\
 		--component $(1)						\

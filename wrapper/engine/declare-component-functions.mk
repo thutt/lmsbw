@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -159,7 +159,7 @@ $(eval __brd:=$(call set,LMSBW_component_$(strip $(1)),build-root-directory,$(st
 $(call lmsbw_scf,$(1),build-directory,$(__brd)/build)
 $(call lmsbw_scf,$(1),destdir-directory,$(__brd)/destdir)
 $(call lmsbw_scf,$(1),source-mtree-manifest,$(__brd)/source.mtree)
-$(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-directory)/lmsbw-build.log)
+$(call lmsbw_scf,$(1),build-log,$(call lmsbw_gcf,$(1),build-root-directory)/lmsbw-build.log)
 $(call lmsbw_scf,$(1),install-directory,					\
 	$(call lmsbw_expand_install_directory,$(call lmsbw_gcf,$(1),reason)))
 $(if $(call seq,$(call lmsbw_gcf,$(1),install-target),),			\
