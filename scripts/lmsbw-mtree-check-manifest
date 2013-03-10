@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -132,8 +132,44 @@ function main ()
         fatal "${program}: --directory-tree value, '${directory_tree}' is not a directory.";
     fi;
 
-    [ -f "${manifest}" ] && \
-        "${mtree}" -f "${manifest}" -p "${directory_tree}" &>/dev/null;
+    if [ -f "${manifest}" ] ; then
+        verbosity "'${manifest}' exists";
+        # mtree does not treat deletions from the manifest as an
+        # error.  Rather, it outputs 'missing' on stdout.
+        #
+        # If only files are missing, then the exit code is 0.
+        #
+        # If files are missing from the manifest, this script should
+        # return a non-zero exit code to indicate that the component
+        # must be rebuilt.
+        #
+
+        stdout=$("${mtree}" -f "${manifest}" -p "${directory_tree}");
+        mtree_exit_code=$?;
+
+        if [ ${mtree_exit_code} -ne 0 ] ; then
+            exit 1;
+        else
+            # Check if any files were deleted.
+            #
+            # The output format of mtree is
+            #
+            #   a.c missing
+            #
+            # If 'missing' is found on stdout, even if it's part of a
+            # filename, the component build process will be executed.
+            #
+            # Another script that is used pre-syncing of the component
+            # sources to the component build directory handles the
+            # situation when files have been removed from the source
+            # directory.
+            #
+            exit ! echo ${stdout}|grep -q "^missing$";
+        fi;
+    else
+        verbosity "'${manifest}' does not exist";
+        exit 1;                 # component is not built & must be built
+    fi;
 }
 
 main "$@";
