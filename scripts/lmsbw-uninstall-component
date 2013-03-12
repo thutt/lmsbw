@@ -1,0 +1,127 @@
+#!/bin/bash
+#
+# Copyright (c) 2013 Taylor Hutt, Logic Magicians Software
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# This script iterates over the files in the component's DESTDIR and
+# deletes the corresponding file in the global install directory.
+#
+# This effectively 'uninstalls' the component's installed files.
+#
+
+__include_file="$(dirname ${0})/lmsbw-common"
+[ -r "${__include_file}" ] || {                         \
+    echo "${0}: '${__include_file}', does not exist.";  \
+    exit -1;                                            \
+}
+source "${__include_file}";
+
+function display_help ()
+{
+    cat <<EOF
+${program}: Uninstalls component's installed files
+
+            Deletes files in the global install directory that
+            correspond to files in the component's DESTDIR.
+
+  --help | -h                     : Show this help and exit
+  --verbose                       : Enable more verbosity
+  --destdir-directory <directory> : Component DESTDIR directory
+  --install-directory <directory> : Global install directory
+  --component <component name>    : The component name [optional]
+
+EOF
+}
+
+function main ()
+{
+    local destdir_directory;
+    local install_directory;
+    local component;
+    local verbose;
+
+    args=$(getopt -o h                          \
+        --long help                             \
+        --long component:                       \
+        --long destdir-directory:               \
+        --long install-directory:               \
+        --long verbose                          \
+        -n "${program}"                         \
+        -- "$@");
+
+    if [ $? != 0 ] ; then
+        fatal "${program}: Failed to canonicalize command line argument."
+    fi;
+
+    # Reset positional arguments to ${args}.
+    eval set -- "$args"
+
+    while true ; do
+        case "$1" in
+            -h|--help)
+                display_help;
+                exit 0 ;;
+
+            --component)
+                component="${2}";
+                shift 2 ;;
+
+            --destdir-directory)
+                destdir_directory="${2}";
+                shift 2 ;;
+
+            --install-directory)
+                install_directory="${2}";
+                shift 2 ;;
+
+            --verbose)
+                verbose="1";
+                shift 1 ;;
+
+            --) shift ;
+                break ;;
+
+            *) echo "Internal error: ${1}!" ;
+                exit -1;
+        esac
+    done
+
+    if [ -z "${destdir_directory}" ] ; then
+        fatal "${program}: --destdir-directory must specify the DESTDIR directory.";
+    elif [ ! -d "${destdir_directory}" ] ; then
+        fatal "${program}: --destdir-directory value, '${destdir_directory}' is not a directory.";
+    fi;
+
+    if [ -z "${install_directory}" ] ; then
+        fatal "${program}: --install-directory must specify the global install directory.";
+    elif [ ! -d "${install_directory}" ] ; then
+        fatal "${program}: --install-directory value, '${install_directory}' is not a directory.";
+    fi;
+
+    # Delete files in global install directory that are in the
+    # component's DESTDIR.
+    #
+    for f in $(find ${destdir_directory}); do
+        df=$(echo ${f}|sed -e "s#${destdir_directory}#${install_directory}#g")
+        if [ -f "${df}" ] ; then
+            verbosity "Deleting '${df}'";
+            rm -f "${df}";
+        fi;
+    done;
+}
+
+main "$@";
+exit 0;

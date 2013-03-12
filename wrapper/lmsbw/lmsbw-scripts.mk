@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,3 +18,5 @@ LMSBW_MTREE_CHECK_MANIFEST	:= $(LMSBW_DIR)/scripts/lmsbw-mtree-check-manifest
 LMSBW_MTREE_GENERATE_MANIFEST	:= $(LMSBW_DIR)/scripts/lmsbw-mtree-generate-manifest
 LMSBW_MTREE_CHECK_API		:= $(LMSBW_DIR)/scripts/lmsbw-mtree-check-api
 LMSBW_INSTALL_DESTDIR		:= $(LMSBW_DIR)/scripts/lmsbw-install-destdir
+LMSBW_UNINSTALL_COMPONENT	:= $(LMSBW_DIR)/scripts/lmsbw-uninstall-component
+
