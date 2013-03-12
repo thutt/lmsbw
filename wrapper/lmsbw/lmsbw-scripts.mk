@@ -19,4 +19,5 @@ LMSBW_MTREE_GENERATE_MANIFEST	:= $(LMSBW_DIR)/scripts/lmsbw-mtree-generate-manif
 LMSBW_MTREE_CHECK_API		:= $(LMSBW_DIR)/scripts/lmsbw-mtree-check-api
 LMSBW_INSTALL_DESTDIR		:= $(LMSBW_DIR)/scripts/lmsbw-install-destdir
 LMSBW_UNINSTALL_COMPONENT	:= $(LMSBW_DIR)/scripts/lmsbw-uninstall-component
+LMSBW_PRE_COMPONENT_SYNC	:= $(LMSBW_DIR)/scripts/lmsbw-pre-component-sync
 
