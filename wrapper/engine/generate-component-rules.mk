@@ -362,6 +362,13 @@ clean:: clean.$(strip $(1))
 
 clean.$(strip $(1)):
 	$(ATSIGN)$(MESSAGE) "$(1): Cleaning $(1)";
+	$(ATSIGN)$(LMSBW_UNINSTALL_COMPONENT)				\
+		$(if $(LMSBW_VERBOSE),--verbose)			\
+		--component "$(1)"					\
+		--destdir-directory					\
+			"$(call lmsbw_gcf,$(1),destdir-directory)"	\
+		--install-directory					\
+			"$(call lmsbw_gcf,$(1),install-directory)"
 	$(ATSIGN)$(RM) -rf $(call lmsbw_gcf,$(1),build-root-directory);
 
 endef
