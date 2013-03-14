@@ -164,7 +164,11 @@ function main ()
             # situation when files have been removed from the source
             # directory.
             #
-            exit ! echo ${stdout}|grep -q "^missing$";
+            if  echo ${stdout}|grep -q "^missing$"; then
+                exit 1;         # files deleted; need to rebuild
+            else
+                exit 0;         # no files deleted; up-to-date
+            fi;
         fi;
     else
         verbosity "'${manifest}' does not exist";
