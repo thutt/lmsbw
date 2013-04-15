@@ -78,6 +78,7 @@ include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-errors.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-system-utilities.mk
 include $(LMSBW_DIR)/wrapper/lmsbw/lmsbw-scripts.mk
 include $(LMSBW_DIR)/wrapper/engine/lmsbw-adapter.mk
+include $(LMSBW_DIR)/wrapper/engine/lmsbw-custom-toolchain.mk
 include $(LMSBW_DIR)/wrapper/engine/component-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/declare-component-functions.mk
 include $(LMSBW_DIR)/wrapper/engine/component-attribute-functions.mk
@@ -87,8 +88,3 @@ include $(LMSBW_DIR)/wrapper/engine/load-configuration.mk
 include $(LMSBW_DIR)/wrapper/engine/generate-report.mk
 include $(LMSBW_DIR)/wrapper/engine/mtree.mk
 include $(LMSBW_DIR)/wrapper/engine/misc-rules.mk
-
-# If specified, ensure toolchain exists before proceeding to build
-# anything.
-#
-$(call lmsbw_assert_toolchain_exists,$(LMSBW_TOOLCHAIN))

@@ -307,7 +307,31 @@ more than once; there can only be one adapter script for a build.
 \lmsbwerror{E1024}
 
 \begin{verbatim}
-E1023: Adapter '<script>' not found
+E1024: Adapter '<script>' not found
 \end{verbatim}
 
 This adapter script specified in the configuration file does not exist.
+
+\lmsbwerror{E1025}
+
+\begin{verbatim}
+E1025: <pathname>
+\end{verbatim}
+
+This error occurs when a \texttt{custom-toolchain} has been declared
+in the global configuration, but the associated file does not exist.
+
+See \xref{variables:custom-toolchain} for information on declaring a
+custom toolchain.
+
+\lmsbwerror{E1026}
+
+\begin{verbatim}
+E1026: Custom toolchain already declared
+\end{verbatim}
+
+This error occurs when an attempt is made to declare a custom
+toolchain when it has already been declared.
+
+See \xref{variables:custom-toolchain} for information on declaring a
+custom toolchain.
