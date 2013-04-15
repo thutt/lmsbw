@@ -46,3 +46,12 @@ o When deleting the DESTDIR, files present should be removed from the
   global install directory.
 
 o component 'clean' verb should delete all installed files?  
+
+o guarantee that custom toolchain script declarations reference an
+  existing file.  Produce an error if not.
+
+o Need a declare function for custom toolchains.
+
+o Need an error for missing custom toolchains
+
+o Duplicate use of E1025
