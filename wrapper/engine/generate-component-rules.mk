@@ -51,7 +51,7 @@ $(call lmsbw_gcf,$(1),build-directory) $(call lmsbw_gcf,$(1),destdir-directory):
 
 endef
 
-# lmsbw_expand_toolchain <component>
+# lmsbw_expand_set_toolchain <component>
 #
 #  LMSBW guarantees that when a toolchain is associated with a
 #  component, LMSBW_TOOLCHAINS_ROOT will be a valid root directory
@@ -59,10 +59,22 @@ endef
 #  toolchain specified, then set the variables for the recursive Make
 #  invocation; otherwise do not set them at all.
 #
-define lmsbw_expand_toolchain
+define lmsbw_expand_set_toolchain
 $(if $(call lmsbw_gcf,$(1),toolchain),				\
 	LMSBW_C_TOOLCHAINS_ROOT=$(LMSBW_TOOLCHAINS_ROOT)	\
 	LMSBW_C_TOOLCHAIN="$(call lmsbw_gcf,$(1),toolchain)")
+endef
+
+# lmsbw_expand_set_custom_toolchain
+#
+#  If a custom toolchain has been  declared, expands to a macro
+#  defining the toolchain.
+#
+#  If a custom toolchain has been not declared, expands to nothing.
+#
+define lmsbw_expand_set_custom_toolchain
+$(if $(call lmsbw_expand_custom_toolchain),				\
+	LMSBW_C_CUSTOM_TOOLCHAIN="$(call lmsbw_expand_custom_toolchain)")
 endef
 
 # lmsbw_expand_build_component <component>
@@ -94,7 +106,8 @@ define lmsbw_expand_build_component
 		LMSBW_C_INSTALL_TARGET="$(call lmsbw_gcf,$(1),install-target)"			\
 		LMSBW_C_NO_PARALLEL="$(call lmsbw_gcf,$(1),no-parallel)"			\
 		$(call lmsbw_component_expand_settings,$(1))					\
-		$(call lmsbw_expand_toolchain,$(1))						\
+		$(call lmsbw_expand_set_toolchain,$(1))						\
+		$(call lmsbw_expand_set_custom_toolchain)					\
 		>$(call lmsbw_gcf,$(1),build-root-directory)/lmsbw-build.log 2>&1;		\
 	$(if $(LMSBW_VERBOSE)$(LMSBW_ELAPSED_TIME),$(CAT)					\
 		$(call lmsbw_gcf,$(1),build-root-directory)/build-time.text;)

@@ -144,18 +144,6 @@ define lmsbw_invalid_component_build_support
 $(call lmsbw_assert,E1011,$(false),Component build type '$(1)' is not valid)
 endef
 
-# lmsbw_assert_toolchain_exists: <toolchain-name>
-#
-#   Ensure toolchain directory exists.
-#
-#   LMSBW guarantees that LMSBW_TOOLCHAINS_ROOT is set before invoking
-#   the Makefile; no need to redundantly check it here; if it's not
-#   set, the assertion will fail anyway.
-#
-define lmsbw_assert_toolchain_exists
-$(if $(strip $(1)),$(call lmsbw_assert_exists,E1021,$(LMSBW_TOOLCHAINS_ROOT)/$(strip $(1))))
-endef
-
 # lmsbw_prerequisite_check_no_component: <component>
 #
 #   A prerequisite check has found a prerequisite that does not exist.
@@ -190,3 +178,6 @@ endef
 
 # E1023: LMSBW_ADAPTER_SCRIPT already set
 # E1024: LMSBW_ADAPTER_SCRIPT not found
+
+# E1025: LMSBW_configuration[custom-toolchain] script does not exist
+# E1026: LMSBW_configuration[custom-toolchain] already defined

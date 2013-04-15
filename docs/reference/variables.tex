@@ -81,6 +81,144 @@ If the script does not exist, \lmsbw will exit with an appropriate
 error message.  Documentation describing how this script must be
 implemented can be found in \xref{api:build-output-download-script}.
 
+\subsection{\texttt{custom-toolchain}}\label{variables:custom-toolchain}
+
+This variable is used to specify a \gnumake \makefile that will be
+used to set up the standard \makefile macros when building a
+component.
+
+\lmsbw is designed to work seamlessly with toolchains created by
+\ctng, but can also be made to work with a toolchain of your choosing
+by using this global setting.
+
+The value of the variable must be a the full pathname of a \makefile
+that will be used by \texttt{component.makefile} in place of the
+standard \lmsbw toolchain definitions.  The user-supplied file must
+define the following variables, as defined in the \gnumake reference
+manual:
+
+\begin{itemize}
+\item{\texttt{AR}}
+\item{\texttt{AS}}
+\item{\texttt{CC}}
+\item{\texttt{CO}}
+\item{\texttt{CO}}
+\item{\texttt{CPP}}
+\item{\texttt{CTANGLE}}
+\item{\texttt{CWEAVE}}
+\item{\texttt{CXX}}
+\item{\texttt{FC}}
+\item{\texttt{GET}}
+\item{\texttt{LEX}}
+\item{\texttt{LINT}}
+\item{\texttt{M2C}}
+\item{\texttt{MAKEINFO}}
+\item{\texttt{PC}}
+\item{\texttt{RM}}
+\item{\texttt{TANGLE}}
+\item{\texttt{TEXI2DVI}}
+\item{\texttt{TEX}}
+\item{\texttt{WEAVE}}
+\item{\texttt{YACC}}
+\end{itemize}
+
+The \ctng toolchain semantics also set the following variables:
+
+\begin{itemize}
+\item{\texttt{ADDR2LINE}}
+\item{\texttt{GCOV}}
+\item{\texttt{GXX}}
+\item{\texttt{LD}}
+\item{\texttt{NM}}
+\item{\texttt{OBJCOPY}}
+\item{\texttt{OBJDUMP}}
+\item{\texttt{POPULATE}}
+\item{\texttt{RANLIB}}
+\item{\texttt{READELF}}
+\item{\texttt{SIZE}}
+\item{\texttt{STRINGS}}
+\item{\texttt{STRIP}}
+\item{\texttt{INSTALL}}
+\end{itemize}
+
+
+\lmsbw will set all undefined macros in the above set to execute the
+utility \texttt{false} so that unintended use will cause the build to
+fail predictably.  Note that \gnumake, by default, will always provide
+the first set of macros with values.
+
+When this option is set, the semantics of using toolchains are
+altered, as follows:
+
+\begin{itemize}
+
+\item{Toolchains Root}
+
+  The global root directory of \ctng toolchains, specified by
+  '\texttt{--toolchains-root}' on the \lmsbw command line need not be
+  specified.
+
+  \begin{itemize}
+
+    \item If specified, \lmsbw will continue to use \ctng toolchains
+      as documented.
+
+    \item If not specified, only the custom toolchain semantics will
+      be used.
+
+  \end{itemize}
+
+  \item{Global Toolchain}
+
+  The global toolchain, specified with '\texttt{--toolchain}' on the
+  \lmsbw command line need not be a directory contained within the
+  directory tree specified by '\texttt{--toolchains-root}'.
+
+  \begin{itemize}
+    \item If the value of '\texttt{--toolchain}' is a sub-directory in
+      the \ctng toolchain directory, the \ctng toolchain semantics
+      will be used.
+
+    \item If the value of '\texttt{--toolchain}' is not a directory, the
+      custom toolchain semantics will be used.
+  \end{itemize}
+
+  \item{Component Toolchain}
+
+    The component toolchain, specified with
+    \texttt{component\_attribute\_toolchain} (\xref{api:toolchain})
+    need not be a directory contained within the directory tree
+    specified via '\texttt{--toolchains-root}'.
+
+  \begin{itemize}
+    \item If the value of \texttt{component\_attribute\_toolchain} is
+      a sub-directory in the \ctng toolchain directory, the \ctng
+      toolchain semantics will be used.
+
+    \item If the value of \texttt{component\_attribute\_toolchain} is
+      not a directory, the custom toolchain semantics will be used.
+  \end{itemize}
+\end{itemize}
+
+When it has been determined that a custom toolchain is to be used when
+building a component, the following will happen:
+
+\lmsbw will set \texttt{LMSBW\_C\_TOOLCHAIN} to the name of the custom
+toolchain that is to be used and then include the file named by the
+configuration option described by this variable.
+
+It is incumbent upon the included file to set the above variables in
+accordance with the named toolchain.  It is also acceptable, if the
+toolchain cannot be determined, for the included file to produce an
+error.
+
+The included file can also set and export other variables for use by
+the component Makefile; management of any additional variables is
+beyond the scope of \lmsbw.
+
+Note that it is not possible to have a custom toolchain and a \ctng
+toolchain share a name.
+
 \subsection{\texttt{global-settings}}\label{variables:global-settings}
 
 This key, when used, must hold the name of a \gmsl associative array.

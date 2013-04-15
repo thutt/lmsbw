@@ -125,7 +125,7 @@ CFG="${TEST_DIR}/lmsbw-test.cfg"
 if [ ! -d "${SOURCES}" ] ; then
     mkdir --parents "${SOURCES}";
 
-    #trap "rm -rf ${TEST_DIR}" EXIT  # Remove source directory on exit.
+    trap "rm -rf ${TEST_DIR}" EXIT  # Remove source directory on exit.
 else
     echo "Directory '${SOURCES}' exists, cannot proceed";
     exit 1;

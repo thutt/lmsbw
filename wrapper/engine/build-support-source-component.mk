@@ -43,7 +43,6 @@ $(if $(LMSBW_TOOLCHAIN),							\
 		$(call not,$(call seq,$(call lmsbw_gcf,$(1),reason),build)),	\
 		$(call not,$(call lmsbw_gcf,$(1),toolchain))),			\
 	$(call lmsbw_scf,$(1),toolchain,$(LMSBW_TOOLCHAIN))))
-$(call lmsbw_assert_toolchain_exists,$(call lmsbw_gcf,$(1),toolchain))
 $(call set_component_internal_data,$(1))
 endef
 

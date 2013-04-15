@@ -1,0 +1,2 @@
+
+CC	:= /bin/true

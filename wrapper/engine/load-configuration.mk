@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Taylor Hutt, Logic Magicians Software
+# Copyright (c) 2012, 2013 Taylor Hutt, Logic Magicians Software
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -176,8 +176,8 @@ $(call lmsbw_assert_components)
 # contains the list of all components that are included in this
 # wrapped build.
 #
-# This loop performs finalizes the components by checking invariants
-# that could not be checked while they were being configured.
+# This loop finalizes the components by checking invariants that could
+# not be checked while they were being configured.
 #
 bod_unchecked:=$(LMSBW_components)
 bod_enabled:=$(false)
